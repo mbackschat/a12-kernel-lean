@@ -33,11 +33,16 @@ theorem computationFormalInputPreliminaryFinding_selected
   rw [CheckedComputationFormalInputPlan.preliminaryFindings,
     List.mem_filterMap] at member
   obtain ⟨generated, _, member⟩ := member
-  by_cases included : plan.includesField generated.address.field = true
-  · simp only [included, ite_true, Option.some.injEq] at member
+  by_cases kept : (plan.includesField generated.address.field &&
+      !preliminary.base.carriesFindingAt generated.address) = true
+  · rw [if_pos kept, Option.some.injEq] at member
     subst finding
+    have included : plan.includesField generated.address.field = true := by
+      simp only [Bool.and_eq_true] at kept
+      exact kept.1
     simpa [CheckedComputationFormalInputPlan.includesField] using included
-  · simp [included] at member
+  · rw [if_neg kept] at member
+    cases member
 
 /-- Cached and generated findings in the combined preparation inventory share one selected noncomputed field invariant. -/
 theorem computationFormalInputFindingIncludingPreliminary_selected

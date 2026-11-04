@@ -96,8 +96,8 @@ def errorCode : CustomFieldType → String
   | .federalTaxNumber => "ungueltigeBundessteuernummer"
   | .criminalFileReference => "ungueltigesStrafAktenzeichen"
 
-/-- The separate code the identification number surfaces for a value in the reserved test range. It is not any type's ordinary code, so a consumer enumerating `errorCode` alone misses it. -/
-def testRangeCode : String := RegisteredCustomRejection.testRangeCode
+/-- The separate code the identification number surfaces for a value in its test range. It is not any type's ordinary code, so a consumer enumerating `errorCode` alone misses it; the Kernel gives it no special treatment beyond its spelling. -/
+def testRangeCode : String := "testIDNummer"
 
 /-- Every registered type. -/
 def all : List CustomFieldType :=
@@ -172,7 +172,7 @@ def owners : CustomFieldTypeDetail → List CustomFieldType
   | .criminalFileFormat | .criminalFileOffice | .criminalFileCheckDigit =>
       [.criminalFileReference]
 
-/-- The code a refusal carrying this key surfaces, given the type whose validator produced it. Every key surfaces its type's own code except the reserved-test-range key, which is the whole reason this is a function of both arguments rather than of the type alone. -/
+/-- The code a refusal carrying this key surfaces, given the type whose validator produced it. Every key surfaces its type's own code except the test-range key, which is the whole reason this is a function of both arguments rather than of the type alone. -/
 def surfacedCode (detail : CustomFieldTypeDetail) (owner : CustomFieldType) : String :=
   match detail with
   | .identificationNumberTestOnly => CustomFieldType.testRangeCode

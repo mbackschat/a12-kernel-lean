@@ -113,28 +113,24 @@ example : checkedOutput true (.rejected .malformed) = some {
 example : checkedOutput false (.parsed "rejected") = none := by
   native_decide
 
-private def reportedRejection : RegisteredCustomRejection := {
-  projectCode := "testIDNummer", messageTemplate := some "Test $<fieldName>$" }
+private def codeRejection (code : String) : RegisteredCustomRejection := {
+  projectCode := code, messageTemplate := some "Test $<fieldName>$" }
 
-private def reportedWorld : World where
+private def codeWorld (code : String) : World where
   now := { epochMillis := 0 }
   customFieldValidator? := fun name =>
-    if name == "ProjectCode" then some (fun _ _ => some reportedRejection) else none
+    if name == "ProjectCode" then some (fun _ _ => some (codeRejection code)) else none
 
-example : checkedOutput true (.parsed "A\r\nB") reportedWorld = some {
-    cell := {
-      rawPresent := true, parsed := some "A\nB", findings := [],
-      reports := [.registeredCustomValidation reportedRejection] }
-    message? := some {
-      errorAddress := address, errorCode := "testIDNummer", severity := .error,
-      messageType := .value, text := { text := "Test Account" } } } := by
+/- Unmeasured on 31.1.1. A `testIDNummer` rejection yields the same unavailable cell and the same projected message shape as an ordinary code, with only the code differing. -/
+example : ["testIDNummer", "PROJECT_CODE_INVALID"].all (fun code =>
+    checkedOutput true (.parsed "A\r\nB") (codeWorld code) == some {
+      cell := {
+        rawPresent := true, parsed := none,
+        findings := [.registeredCustomValidation (codeRejection code)] }
+      message? := some {
+        errorAddress := address, errorCode := code, severity := .error,
+        messageType := .value, text := { text := "Test Account" } } }) = true := by
   native_decide
-
-example :
-    CustomFieldValidationMode.fullExamination.continuesAfterIngestion
-      ((checkedOutput true (.parsed "ABCD") reportedWorld).toList) = true ∧
-    CustomFieldValidationMode.abortOnFormalErrors.continuesAfterIngestion
-      ((checkedOutput true (.parsed "ABCD") reportedWorld).toList) = false := by native_decide
 
 private def continuationPair (relevant : Bool) (raw : RawCell String)
     (world : World := checkedWorld) : Bool × Bool :=
@@ -142,9 +138,10 @@ private def continuationPair (relevant : Bool) (raw : RawCell String)
   (CustomFieldValidationMode.fullExamination.continuesAfterIngestion outputs,
     CustomFieldValidationMode.abortOnFormalErrors.continuesAfterIngestion outputs)
 
+/- Unmeasured on 31.1.1. The `testIDNummer` entry equals the ordinary-code entry in both modes. -/
 example : [
     continuationPair true (.parsed "accepted"),
-    continuationPair true (.parsed "reported") reportedWorld,
+    continuationPair true (.parsed "reported") (codeWorld "testIDNummer"),
     continuationPair true (.parsed "rejected"),
     continuationPair true .empty,
     continuationPair true .presentEmpty,
@@ -154,6 +151,6 @@ example : [
 
 example : (checkedOutput true .empty).map (·.cell.rawPresent) = some false ∧
     (checkedOutput true .presentEmpty).map (·.cell.rawPresent) = some true ∧
-    checkedOutput false (.parsed "reported") reportedWorld = none := by native_decide
+    checkedOutput false (.parsed "reported") (codeWorld "testIDNummer") = none := by native_decide
 
 end A12Kernel.Conformance.CustomFieldFormalMessage

@@ -448,10 +448,14 @@ example : customPopulationResult none = some (.inr 0) ∧
     customPopulationResult (some "OK") = some (.inr 1) ∧
     customPopulationResult (some "BAD") = some (.inr 0) ∧
     customPopulationResult (some "OK") 2 = some (.inr 1) ∧
-    customPopulationResult (some "OK") 2 false = some (.inr 0) ∧
-    customPopulationResult (some "TEST") = some (.inr 1) ∧
-    customPopulationResult (some "TEST") 2 = some (.inr 1) ∧
-    customPopulationResult (some "TEST") 2 false = some (.inr 0) := by
+    customPopulationResult (some "OK") 2 false = some (.inr 0) := by
+  native_decide
+
+/- Unmeasured on 31.1.1. A `testIDNummer` value is unavailable for the message-cache population exactly as an ordinary rejection is, on either field and under partial relevance. -/
+example : [(1, true), (2, true), (2, false)].all (fun (field, relevant) =>
+    customPopulationResult (some "TEST") field relevant ==
+      customPopulationResult (some "BAD") field relevant) = true ∧
+    customPopulationResult (some "TEST") = some (.inr 0) := by
   native_decide
 
 private def customIndexModel : FlatModel := {
@@ -487,21 +491,48 @@ private def customIndexResult (values : List String) (code : String := "testIDNu
   let cell ← (preliminary.readAuthoredValidation first).toOption
   pure ((population.length, input.messageKeyAt? first),
     (observeCell .validation cell, observeCell .computation cell),
-    cell.formalReports)
+    cell.findings)
 
-example : customIndexResult ["TEST"] = some (
-    (2, some (.text "TEST")), (.value (.str "TEST"), .value (.str "TEST")),
-    [.registeredCustomValidation { projectCode := "testIDNummer" }]) ∧
-    customIndexResult ["TEST", "TEST"] = some (
-      (4, some (.text "TEST")), (.unknown .duplicateIndex, .poison .duplicateIndex),
-      [.registeredCustomValidation { projectCode := "testIDNummer" }, .duplicateIndex]) ∧
-    customIndexResult ["TEST"] "cacheProbe.reject" = some (
-      (1, none), (.unknown (.registeredCustomValidation { projectCode := "cacheProbe.reject" }),
-      .poison (.registeredCustomValidation { projectCode := "cacheProbe.reject" })),
-      [.registeredCustomValidation { projectCode := "cacheProbe.reject" }]) := by
-  constructor
-  · native_decide
-  constructor <;> native_decide
+/-- The second row's findings after the full index preliminary. -/
+private def secondRowFindings (values : List String) : Option (List FormalCause) := do
+  let world : World := {
+    now := { epochMillis := 0 }
+    customFieldValidator? := fun name => if name == "CacheProbe" then
+      some (fun _ _ => some { projectCode := "testIDNummer" }) else none }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler customIndexModel).toOption
+  let input ← (checkDocument prepared "en_US" {
+    instantiatedRows := values.zipIdx.map fun (_, index) => { group := 10, path := [index + 1] }
+    cells := values.zipIdx.map fun (value, index) => {
+      address := { field := 1, path := [index + 1] }, stored := value,
+      raw := .parsed (.str value) } }).toOption
+  let preliminary ← input.applyFullIndexPreliminary.toOption
+  pure (← (preliminary.readAuthoredValidation { field := 1, path := [2] }).toOption).findings
+
+private def unavailableIndexResult (population : Nat) (code : String) :
+    Option ((Nat × Option SemanticIndexKey) × (CellObservation × CellObservation) ×
+      List FormalCause) :=
+  some ((population, none),
+    (.unknown (.registeredCustomValidation { projectCode := code }),
+      .poison (.registeredCustomValidation { projectCode := code })),
+    [.registeredCustomValidation { projectCode := code }])
+
+/- Unmeasured on 31.1.1. A rejected custom index cell is unavailable and keyless whatever its code, so `testIDNummer` equals the ordinary code with only the code differing. -/
+example : ["testIDNummer", "cacheProbe.reject"].all (fun code =>
+    customIndexResult ["TEST"] code == unavailableIndexResult 1 code) = true := by
+  native_decide
+
+/- Locked: a12-dmkits `CustomTestRangeLawsTest` (`aRejectionBesideADuplicateIndexReportsBothOnEveryRow`) at `1124b523f`, kernel 31.1.1. Two equal rejected index cells still meet the uniqueness check by their stored text, so validation reports `uniqueIndex` beside the rejection, under `testIDNummer` exactly as under an ordinary code; the cell itself stays unavailable and keyless. -/
+example : ["testIDNummer", "cacheProbe.reject"].all (fun code =>
+    customIndexResult ["TEST", "TEST"] code ==
+      (unavailableIndexResult 2 code).map fun (head, observed, findings) =>
+        (head, observed, findings ++ [.duplicateIndex])) = true ∧
+    secondRowFindings ["TEST", "TEST"] = some
+      [.registeredCustomValidation { projectCode := "testIDNummer" }, .duplicateIndex] := by
+  native_decide
+
+/- Unmeasured on 31.1.1. Distinct rejected keys draw no duplicate finding, so the uniqueness scan above is not merely triggered by the rejection. -/
+example : customIndexResult ["TEST", "OTHER"] == unavailableIndexResult 2 "testIDNummer" := by
+  native_decide
 
 private def topologyModel : FlatModel := {
   fields := [{

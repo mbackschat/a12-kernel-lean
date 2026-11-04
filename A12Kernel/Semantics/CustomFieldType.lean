@@ -46,7 +46,7 @@ def elaborateCustomFieldType (world : World)
   let validator ← requireCustomFieldValidator world declaration.name
   pure { declaration, validator }
 
-/-- Classify the callback once, retaining its report independently of admitted evaluated text (spec/06 A.3). Parsed empty bypasses the validator. -/
+/-- Classify the callback once: any rejection, whatever its code, makes the cell unavailable with one registered finding. Parsed empty bypasses the validator. -/
 def CheckedCustomFieldType.classifyString (checked : CheckedCustomFieldType)
     (locale value : String) : CheckedCell String :=
   if value.isEmpty then
@@ -56,11 +56,7 @@ def CheckedCustomFieldType.classifyString (checked : CheckedCustomFieldType)
         (checked.declaration.validationContext locale) with
     | none => { rawPresent := true, parsed := some (normalizeEvaluatedString value), findings := [] }
     | some rejection =>
-        if rejection.admitsValue then
-          { rawPresent := true, parsed := some (normalizeEvaluatedString value), findings := [],
-            reports := [.registeredCustomValidation rejection] }
-        else
-          { rawPresent := true, parsed := none, findings := [.registeredCustomValidation rejection] }
+        { rawPresent := true, parsed := none, findings := [.registeredCustomValidation rejection] }
 
 /-- Preserve parser and placement decisions before sampling a custom validator. -/
 def CheckedCustomFieldType.checkStringRaw (checked : CheckedCustomFieldType)
@@ -76,7 +72,7 @@ def CheckedCustomFieldType.checkValueRaw (checked : CheckedCustomFieldType)
   | .parsed (.str value) =>
       let cell := checked.classifyString locale value
       { rawPresent := cell.rawPresent, parsed := cell.parsed.map Value.str,
-        findings := cell.findings, reports := cell.reports }
+        findings := cell.findings }
   | .parsed _ => { rawPresent := true, parsed := none, findings := [.malformed] }
   | .empty => { rawPresent := false, parsed := none, findings := [] }
   | .presentEmpty => { rawPresent := true, parsed := none, findings := [] }

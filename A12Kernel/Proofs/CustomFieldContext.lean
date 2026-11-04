@@ -22,32 +22,14 @@ theorem customField_checkValueRaw_rejection_exact
     (rejection : RegisteredCustomRejection)
     (nonempty : value.isEmpty = false)
     (rejected : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (unavailable : rejection.admitsValue = false) :
+      (checked.declaration.validationContext locale) = some rejection) :
     checked.checkValueRaw locale (.parsed (.str value)) = {
       rawPresent := true
       parsed := none
       findings := [.registeredCustomValidation rejection]
     } := by
   simp [CheckedCustomFieldType.checkValueRaw,
-    CheckedCustomFieldType.classifyString, nonempty, rejected, unavailable]
-
-/-- The heterogeneous prepared-cell route retains the same exact report and normalized String. -/
-theorem customField_checkValueRaw_report_exact
-    (checked : CheckedCustomFieldType) (locale value : String)
-    (rejection : RegisteredCustomRejection)
-    (nonempty : value.isEmpty = false)
-    (reported : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (admitted : rejection.admitsValue = true) :
-    checked.checkValueRaw locale (.parsed (.str value)) = {
-      rawPresent := true
-      parsed := some (.str (normalizeEvaluatedString value))
-      findings := []
-      reports := [.registeredCustomValidation rejection]
-    } := by
-  simp [CheckedCustomFieldType.checkValueRaw, CheckedCustomFieldType.classifyString,
-    nonempty, reported, admitted]
+    CheckedCustomFieldType.classifyString, nonempty, rejected]
 
 @[simp]
 theorem customField_checkValueRaw_empty (checked : CheckedCustomFieldType)

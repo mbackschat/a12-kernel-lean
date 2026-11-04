@@ -204,7 +204,7 @@ example : (do
     .presentValue ⟨"KEEP", by decide⟩) := by
   native_decide
 
-private def reportedTargetErrors (code : String) : Option (List (String × StringTargetError)) := do
+private def rejectedTargetErrors (code : String) : Option (List (String × StringTargetError)) := do
   let callbackWorld : World := {
     now := { epochMillis := 0 }
     customFieldValidator? := fun _ => some (fun value _ =>
@@ -219,9 +219,10 @@ private def reportedTargetErrors (code : String) : Option (List (String × Strin
   let view ← (operation.executeResult input ([] : List FormalCause)).toOption
   pure (view.string.withErrors.map fun error => (error.attempted.text, error.cause))
 
-example : reportedTargetErrors "testIDNummer" =
+/- Unmeasured on 31.1.1. A `testIDNummer` target rejection keeps the attempted text and its code in the error channel exactly as an ordinary code does. -/
+example : rejectedTargetErrors "testIDNummer" =
     some [("A\nB", .custom { projectCode := "testIDNummer" })] ∧
-    reportedTargetErrors "REJECT" =
+    rejectedTargetErrors "REJECT" =
     some [("A\nB", .custom { projectCode := "REJECT" })] := by native_decide
 
 end A12Kernel.Conformance.CustomFirstFilledComputation

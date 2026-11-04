@@ -613,7 +613,7 @@ private def replayRequest (requestPath : System.FilePath) : IO Unit := do
                   line name "-" "-" "absent" "Table\tthe retained table holds computation outcomes only"
                   if let some computed := table then
                     replayComputations (line name) clock?.isSome model language world prepared checked computed
-            for verdict in replayRules model language world checked kernel references (some (prepared, locale)) registry do
+            for verdict in replayRules model language world checked kernel references registry do
               let ruleName := replayName (model.rules.map (·.name)) verdict.rule.group verdict.rule.name
               if clock?.isNone && readsClock language verdict.rule.condition then
                 line name ruleName verdict.rule.errorCode "tier2" "Clock\tthe request pins no clock"

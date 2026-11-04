@@ -81,14 +81,14 @@ example :
 conversion drops an object, string, boolean, `null`, number or array member of a fixed group
 ([checkpoint](../../../docs/sources/domain-ingestion-probes.md#src-undeclared-document-members);
 [inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-23)); the root's object `Nope`
-locks this reader's drop there, where only a string is measured. The declared `Flag` holding an
-array and the declared root group holding a string are the refusing twins: the drop reaches only
-undeclared names. -/
+locks this reader's drop there, where only a string is measured. The declared root group holding a
+string is the refusing twin, unmeasured on 31.1.1; the declared `Flag` holding an empty array is
+dropped as an undeclared member is, which `parcelReads` below locks. -/
 example :
     let dm : DmModel := { flat := model flag, rules := [], computations := [], conditionLanguage := "en_US",
                           refusals := [] }
     [((readDocument dm (Json.mkObj [("Order", Json.mkObj [("Flag", Json.arr #[])])])).toOption.map
-        (·.refusals.length)) == some 1,
+        (fun read => (read.refusals.length, read.data.cells.length))) == some (0, 0),
      (match readDocument dm (Json.mkObj [("Order", Json.str "x")]) with
       | .ok read => !read.refusals.isEmpty
       | .error _ => true),
@@ -173,23 +173,12 @@ private def rowModel : DmModel := {
 private def rowInput (rows : Array Json) : Option DmDocument :=
   (readDocument rowModel (Json.mkObj [("Form", Json.mkObj [("Rows", Json.arr rows)])])).toOption
 
-example : (rowInput #[.null, Json.mkObj [("Value", .str "kept")], .null]).map
-    (fun input => (input.data.instantiatedRows, input.data.cells.map (·.address), input.refusals.length)) =
-    some ([{ group := 10, path := [1] }], [{ field := 0, path := [1] }], 0) := by
-  native_decide
-
 private def rowShape (rows : Array Json) : Option (List RowAddr × List CellAddr × Nat) :=
   (rowInput rows).map fun input =>
     (input.data.instantiatedRows, input.data.cells.map (·.address), input.refusals.length)
 
-example : rowShape #[] = some ([], [], 0) ∧
-    rowShape #[.null, .bool false, toJson (7 : Nat), .str "x", .arr #[]] = some ([], [], 0) ∧
-    rowShape #[.null, .bool true, Json.mkObj [("Value", .str "a")], .arr #[],
-      Json.mkObj [("Value", .str "b")], .null] =
-      some ([{ group := 10, path := [1] }, { group := 10, path := [2] }],
-        [{ field := 0, path := [1] }, { field := 0, path := [2] }], 0) := by native_decide
-
-example : rowShape #[Json.mkObj [], .null, Json.mkObj [("Value", .null)]] =
+/- Every row object is explicit, `{}` included, and rows take consecutive coordinates. -/
+example : rowShape #[] = some ([], [], 0) ∧ rowShape #[Json.mkObj [], Json.mkObj [("Value", .null)]] =
       some ([{ group := 10, path := [1] }, { group := 10, path := [2] }],
         [{ field := 0, path := [2] }], 0) ∧
     (rowInput #[Json.mkObj [("Value", .null)]]).map (·.data.cells.map (·.raw)) =
@@ -206,8 +195,8 @@ private def nestedRowModel : DmModel := { rowModel with flat := {
 private def nestedRows : Option DmDocument :=
   let child := Json.mkObj [("Value", .str "kept")]
   (readDocument nestedRowModel (Json.mkObj [("Form", Json.mkObj [("Rows", Json.arr #[
-    .null, Json.mkObj [], Json.mkObj [("Children", .arr #[.null, child])],
-    .null, Json.mkObj [("Children", .arr #[child, .null, child, .null])]])])])).toOption
+    Json.mkObj [], Json.mkObj [("Children", .arr #[child])],
+    Json.mkObj [("Children", .arr #[child, child])]])])])).toOption
 
 example : nestedRows.map (fun input =>
     (input.data.instantiatedRows, input.data.cells.map (·.address), input.refusals.length)) =
@@ -216,6 +205,52 @@ example : nestedRows.map (fun input =>
       { group := 20, path := [3, 1] }, { group := 20, path := [3, 2] }],
       [{ field := 0, path := [2, 1] }, { field := 0, path := [3, 1] },
         { field := 0, path := [3, 2] }], 0) := by native_decide
+
+/-! Kernel 31.1.1 refuses the whole document when a member of an object it reads as a group instance
+holds an array with a non-object element, whatever the model declares at that key, and never walks an
+object at a key it does not read as a group. Locked: a12-dmkits `A12JsonIngressDiffTest`
+(`notificationOnlyNodesPreserveSiblingsWhileFatalInputsRefuseTheDocument`) at `ae67703`, on its
+`Parcel { Sibling, Amount, Lines { Note } }` fixture. -/
+
+private def parcelModel : DmModel := {
+  flat := {
+    fields := [
+      { id := 1, name := "Sibling", groupPath := ["Parcel"], policy := { kind := .string } },
+      { id := 2, name := "Amount", groupPath := ["Parcel"],
+        policy := { kind := .number { scale := 0, signed := true } } },
+      { id := 3, name := "Note", groupPath := ["Parcel", "Lines"], repeatableScope := [10],
+        policy := { kind := .string } }]
+    repeatableGroups := [{ level := 10, path := ["Parcel", "Lines"], repeatability := some 3 }] }
+  rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+
+private def parcel (member : String × Json) : Except String DmDocument :=
+  readDocument parcelModel (Json.mkObj [("Parcel", Json.mkObj [("Sibling", "kept"), member])])
+
+/-- The document reads as its `Sibling` alone, the member dropped. -/
+private def parcelReads (member : String × Json) : Bool :=
+  match parcel member with
+  | .ok read => read.refusals.isEmpty && read.data.instantiatedRows.isEmpty &&
+      read.data.cells.map (·.address) == [{ field := 1, path := [] }]
+  | .error _ => false
+
+private def parcelUnread (member : String × Json) : Bool := !(parcel member).isOk
+
+private def note (text : String) : Json := Json.mkObj [("Note", .str text)]
+
+example : [("Lines", Json.arr #[.null]), ("Lines", .arr #[note "a", .null]), ("Lines", .arr #[toJson (7 : Nat)]),
+      ("Lines", .arr #[.str "x"]), ("Lines", .arr #[.arr #[]]),
+      ("Amount", .arr #[.null]), ("Sibling", .arr #[.null]), ("Unexpected", .arr #[.null]),
+      ("id", .arr #[.null]), ("Lines", .arr #[Json.mkObj [("Note", .arr #[.null])]])].all parcelUnread ∧
+    [("Lines", toJson (7 : Nat)), ("Lines", .null), ("Lines", .arr #[]), ("Amount", Json.mkObj []),
+      ("Amount", .arr #[]), ("Amount", .arr #[Json.mkObj []]), ("Unexpected", toJson (7 : Nat)),
+      ("Unexpected", Json.mkObj []), ("Unexpected", .arr #[]), ("Unexpected", .arr #[Json.mkObj []]),
+      ("Unexpected", .arr #[Json.mkObj [("Tiers", .arr #[.null])]]),
+      ("Amount", Json.mkObj [("Tiers", .arr #[.null])])].all parcelReads := by native_decide
+
+/- The positive control: rows of objects read in order. -/
+example : (parcel ("Lines", .arr #[note "a", Json.mkObj [], note "b"])).toOption.map
+    (fun read => (read.data.instantiatedRows.length, read.data.cells.length)) = some (3, 3) := by
+  native_decide
 
 private def readEnumDefault (value : Option Json) : Except String (Option String) := do
   let body := Json.mkObj ([("values", .arr #[Json.mkObj [("value", "a")],

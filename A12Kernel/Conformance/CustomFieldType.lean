@@ -57,28 +57,26 @@ private def phasePair (world : World) (decl : CustomFieldTypeDeclaration)
       (checked.checkRelevantRaw locale true (.parsed value)).map
         (fun cell => (observeCell .validation cell, observeCell .computation cell))
 
-example : phasePair (worldWith (fun _ _ => some (rejection "testIDNummer")))
-    (declaration none none) "en_US" "ABCD" =
-    some (.value "ABCD", .value "ABCD") := by native_decide
+private def unavailablePair (code : String) :
+    Option (CellObservation String × CellObservation String) :=
+  some (.unknown (.registeredCustomValidation (rejection code)),
+    .poison (.registeredCustomValidation (rejection code)))
 
-example : phasePair (worldWith (fun _ _ => some (rejection "testIDNummer")))
-    (declaration none none) "en_US" "A\r\r\nB" =
-    some (.value "A\r\nB", .value "A\r\nB") := by native_decide
+/- Unmeasured on 31.1.1. The code `testIDNummer` is an ordinary rejection: for a plain value and a CRLF-collapsing one it is unavailable in both phases, and its result equals the ordinary-code twin's with only the code differing. -/
+example : ["testIDNummer", "PROJECT_CODE_INVALID"].all (fun code =>
+    ["ABCD", "A\r\r\nB"].all (fun value =>
+      phasePair (worldWith (fun _ _ => some (rejection code)))
+        (declaration none none) "en_US" value == unavailablePair code)) = true := by
+  native_decide
 
 private def reservedChecked : CheckedCustomFieldType := {
   declaration := declaration none none
   validator := fun _ _ => some (rejection "testIDNummer") }
 
+/- Unmeasured on 31.1.1. The checked cell of a `testIDNummer` rejection keeps no parsed value and carries the one registered finding, as an ordinary code does. -/
 example : reservedChecked.checkRelevantRaw "en_US" true (.parsed "A\r\nB") = some {
-    rawPresent := true, parsed := some "A\nB", findings := [],
-    reports := [.registeredCustomValidation (rejection "testIDNummer")] } := by
-  native_decide
-
-example : ["TestIDNummer", "testIDNummerSuffix", " testIDNummer", "testIDNummer "].all
-    (fun code => phasePair (worldWith (fun _ _ => some (rejection code)))
-      (declaration none none) "en_US" "ABCD" ==
-        some (.unknown (.registeredCustomValidation (rejection code)),
-          .poison (.registeredCustomValidation (rejection code)))) = true := by
+    rawPresent := true, parsed := none,
+    findings := [.registeredCustomValidation (rejection "testIDNummer")] } := by
   native_decide
 
 example : [RawCell.empty, .presentEmpty, .parsed ""].map

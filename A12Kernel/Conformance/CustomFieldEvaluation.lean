@@ -27,13 +27,14 @@ private def rawLinebreakWorld : World where
       some (fun value _ => if value == "A\r\r\nB" then none else some rejection)
     else none
 
-private def reportedWorld : World where
+private def rejectingWorld (code : String) : World where
   now := { epochMillis := 0 }
   customFieldValidator? := fun name =>
-    if name == "ProjectCode" then
-      some (fun value _ => some { projectCode :=
-        if value == "A\r\r\nB" then "testIDNummer" else "PROJECT_CODE_INVALID" })
+    if name == "ProjectCode" then some (fun _ _ => some { projectCode := code })
     else none
+
+/-- The former test-range code and an ordinary one: the twin pair every rejection row is asserted over. -/
+private def twinCodes : List String := ["testIDNummer", "PROJECT_CODE_INVALID"]
 
 private def emptyWorld : World :=
   { now := { epochMillis := 0 } }
@@ -114,15 +115,17 @@ private def unpreparedVerdict (model : FlatModel) (world : World)
   | .ok verdict => some verdict
   | .error _ => none
 
-example : verdictOf { fields := [code] } reportedWorld "en_US"
-    (rawAt code.id (.parsed (.str "A\r\r\nB")))
-    (.lengthCompare .greater (path "Code") { value := 3, authoredScale := 0 }) =
-    some (.fired .value) := by native_decide
+/- Letter-B, stored source read by a rule (a12-dmkits `CustomTestRangeLawsTest` at `1124b523f`, kernel 31.1.1): a stored value rejected with `testIDNummer` is unavailable, so a length rule over it is unknown exactly as under an ordinary code. -/
+example : twinCodes.all (fun rejectionCode =>
+    verdictOf { fields := [code] } (rejectingWorld rejectionCode) "en_US"
+      (rawAt code.id (.parsed (.str "A\r\r\nB")))
+      (.lengthCompare .greater (path "Code") { value := 3, authoredScale := 0 }) ==
+      some .unknown) = true := by native_decide
 
-private def reportedModel : FlatModel := { fields := [code, ordinary] }
+private def rejectedModel : FlatModel := { fields := [code, ordinary] }
 
-private def reportedInput? : Option (CheckedDocument reportedModel) := do
-  let prepared ← (prepareFlatStringContext reportedWorld compilePattern reportedModel).toOption
+private def rejectedInput? (rejectionCode : String) : Option (CheckedDocument rejectedModel) := do
+  let prepared ← (prepareFlatStringContext (rejectingWorld rejectionCode) compilePattern rejectedModel).toOption
   (checkDocument prepared "en_US" {
     instantiatedRows := []
     cells := [
@@ -131,35 +134,38 @@ private def reportedInput? : Option (CheckedDocument reportedModel) := do
       { address := { field := ordinary.id, path := [] }, stored := "bad",
         raw := .rejected .malformed }] }).toOption
 
-example : (do
-    let input ← reportedInput?
-    let plan ← (checkComputationFormalInputPlan reportedModel [code.id, ordinary.id] []).toOption
+/- Letter-B, stored source read by a computation (a12-dmkits `CustomTestRangeLawsTest` at `1124b523f`, kernel 31.1.1): the computation reads a `testIDNummer` source as poison, and the formal-input inventory lists it before the other rejected operand, exactly as for an ordinary code. -/
+example : twinCodes.all (fun rejectionCode => (do
+    let input ← rejectedInput? rejectionCode
+    let plan ← (checkComputationFormalInputPlan rejectedModel [code.id, ordinary.id] []).toOption
     let prepared ← (plan.prepare input).toOption
     let cell ← (prepared.preliminary.readComputation { field := code.id, path := [] }).toOption
-    pure (observeCell .computation cell, prepared.formalErrorsInOperands)) =
-      some (.value (.str "A\r\nB"), [
+    pure (observeCell .computation cell, prepared.formalErrorsInOperands)) ==
+      some (.poison (.registeredCustomValidation { projectCode := rejectionCode }), [
         { address := { field := code.id, path := [] },
-          cause := .registeredCustomValidation { projectCode := "testIDNummer" } },
-        { address := { field := ordinary.id, path := [] }, cause := .malformed }]) := by
+          cause := .registeredCustomValidation { projectCode := rejectionCode } },
+        { address := { field := ordinary.id, path := [] }, cause := .malformed }])) = true := by
   native_decide
 
-private def customInvalidPointerGuard : Option Bool := do
-  let input ← reportedInput?
-  let flat ← (elaborate reportedModel ["Order"] (.fieldFilled (path "Code"))).toOption
+private def customInvalidPointerGuard (rejectionCode : String) : Option Bool := do
+  let input ← rejectedInput? rejectionCode
+  let flat ← (elaborate rejectedModel ["Order"] (.fieldFilled (path "Code"))).toOption
   let condition ← (CheckedValidationCondition.fromFlat flat).toOption
-  let rule ← (assembleResolvedValidationRule reportedModel condition code.id
+  let rule ← (assembleResolvedValidationRule rejectedModel condition code.id
     "CUSTOM" .error { parts := [] }).toOption
-  let context : AddressedValidationEvaluationContext reportedModel := {
+  let context : AddressedValidationEvaluationContext rejectedModel := {
     scalar := { fields := input.flatContext, groups := GroupPresenceContext.unavailable }
     outer := [], input := .checked input }
   let invoked := rule.withCustomConditions context .all {
     configured := some fun _ => some fun invocation =>
-      invocation.formallyIncorrect == [{ field := ordinary.id, path := [] }] &&
+      invocation.formallyIncorrect == [{ field := code.id, path := [] }, { field := ordinary.id, path := [] }] &&
       (invocation.data.read { field := code.id, path := [] }).toOption.map
-        (·.formalReports) == some [.registeredCustomValidation { projectCode := "testIDNummer" }] }
+        (·.findings) == some [.registeredCustomValidation { projectCode := rejectionCode }] }
   (invoked.scalar.customConditions "Check").toOption
 
-example : customInvalidPointerGuard = some true := by native_decide
+/- Unmeasured on 31.1.1. A `testIDNummer` cell is among the callback's formally incorrect addresses, ahead of the other rejected cell, exactly as an ordinary code's cell is. -/
+example : twinCodes.all (fun rejectionCode =>
+    customInvalidPointerGuard rejectionCode == some true) = true := by native_decide
 
 private def modeInputCells (relevant : Bool) (raw : RawCell String) : List ClassifiedCellInput :=
   let custom := if !relevant then [] else match raw with
@@ -172,7 +178,7 @@ private def modeInputCells (relevant : Bool) (raw : RawCell String) : List Class
 private def modeContinuation (mode : CustomFieldValidationMode)
     (relevant : Bool) (raw : RawCell String) (world : World) :
     Option (CellObservation Value × Option (Verdict × Bool)) := do
-  let prepared ← (prepareFlatStringContext world compilePattern reportedModel).toOption
+  let prepared ← (prepareFlatStringContext world compilePattern rejectedModel).toOption
   let input ← (checkDocument prepared "en_US" {
     instantiatedRows := [], cells := modeInputCells relevant raw }).toOption
   let cell ← (input.read { field := code.id, path := [] }).toOption
@@ -180,23 +186,22 @@ private def modeContinuation (mode : CustomFieldValidationMode)
     cell := {
       rawPresent := cell.rawPresent
       parsed := cell.parsed.bind fun | .str text => some text | _ => none
-      findings := cell.findings
-      reports := cell.reports }
+      findings := cell.findings }
     message? := cell.registeredCustomRejection?.map fun cause =>
       cause.toFormalMessage (MessagePointer.ofCellAddr { field := code.id, path := [] })
         "Code" { text := "Invalid" } }
   let outputs := if relevant then [output] else []
   let continuation : Option (Verdict × Bool) :=
     if mode.continuesAfterIngestion outputs then do
-      let flat ← (elaborate reportedModel ["Order"]
+      let flat ← (elaborate rejectedModel ["Order"]
         (.lengthCompare .greater (path "Code") { value := 3, authoredScale := 0 })).toOption
       let condition ← (CheckedValidationCondition.fromFlat flat).toOption
-      let rule ← (assembleResolvedValidationRule reportedModel condition code.id
+      let rule ← (assembleResolvedValidationRule rejectedModel condition code.id
         "LENGTH" .error { parts := [] }).toOption
-      let context : AddressedValidationEvaluationContext reportedModel := {
+      let context : AddressedValidationEvaluationContext rejectedModel := {
         scalar := { fields := input.flatContext, groups := GroupPresenceContext.unavailable }
         outer := [], input := .checked input }
-      let registry : CustomValidationRegistry reportedModel := {
+      let registry : CustomValidationRegistry rejectedModel := {
         configured := some fun name => if name == "Check" then some fun invocation =>
           (invocation.data.read { field := ordinary.id, path := [] }).toOption.map
             (observeCell .validation) == some (.value (.str "marker")) else none }
@@ -214,10 +219,13 @@ example : continuationModes.map (fun mode =>
       some (.value (.str "accepted"), some (.fired .value, true)),
       some (.value (.str "accepted"), some (.fired .value, true))] := by native_decide
 
-example : continuationModes.map (fun mode =>
-    modeContinuation mode true (.parsed "A\r\r\nB") reportedWorld) = [
-      some (.value (.str "A\r\nB"), some (.fired .value, true)),
-      some (.value (.str "A\r\nB"), none)] := by native_decide
+/- Unmeasured on 31.1.1. A `testIDNummer` rejection is an ordinary formal error in both modes: the cell is unavailable, full examination continues to an unknown rule, and the abort mode stops, exactly as under an ordinary code. -/
+example : twinCodes.all (fun rejectionCode => continuationModes.map (fun mode =>
+    modeContinuation mode true (.parsed "A\r\r\nB") (rejectingWorld rejectionCode)) == [
+      some (.unknown (.registeredCustomValidation { projectCode := rejectionCode }),
+        some (.unknown, true)),
+      some (.unknown (.registeredCustomValidation { projectCode := rejectionCode }),
+        none)]) = true := by native_decide
 
 example : continuationModes.map (fun mode =>
     modeContinuation mode true (.parsed "rejected") worldWithValidator) = [

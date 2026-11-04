@@ -2055,9 +2055,6 @@ run_cmd do
 #print axioms A12Kernel.customFieldType_parsedEmpty_bypasses_validator
 #print axioms A12Kernel.customFieldType_rejection_exact
 #print axioms A12Kernel.customFieldType_rejection_phase_projection
-#print axioms A12Kernel.customFieldType_report_exact
-#print axioms A12Kernel.customFieldType_report_phase_projection
-#print axioms A12Kernel.customFieldType_report_requires_exactCode
 #print axioms A12Kernel.customFieldMessage_absent
 #print axioms A12Kernel.customFieldMessage_supplied_exact
 #print axioms A12Kernel.customFieldMessage_projectCode_irrelevant
@@ -2068,10 +2065,9 @@ run_cmd do
 #print axioms A12Kernel.checkedCell_nonCustomCause_hasNoRegisteredRejection
 #print axioms A12Kernel.customFieldValidationOutput_nonrelevant
 #print axioms A12Kernel.customFieldValidationOutput_rejection_exact
-#print axioms A12Kernel.customFieldValidationOutput_report_exact
 #print axioms A12Kernel.customFieldValidationOutput_acceptance_exact
 #print axioms A12Kernel.customFieldValidationMode_abort_append
-#print axioms A12Kernel.customFieldValidationMode_readable_report_stops_abort
+#print axioms A12Kernel.customFieldValidationMode_registered_rejection_stops_abort
 #print axioms A12Kernel.explicitCustomFieldValidationContext_exact
 #print axioms A12Kernel.elaborateCustomFieldValidity_emptyName
 #print axioms A12Kernel.elaborateCustomFieldValidity_admits
@@ -2092,7 +2088,6 @@ run_cmd do
 #print axioms A12Kernel.prepareFlatCustomFields_modelError
 #print axioms A12Kernel.customField_checkValueRaw_acceptance_exact
 #print axioms A12Kernel.customField_checkValueRaw_rejection_exact
-#print axioms A12Kernel.customField_checkValueRaw_report_exact
 #print axioms A12Kernel.customField_checkValueRaw_empty
 #print axioms A12Kernel.customField_checkValueRaw_wrongKind
 #print axioms A12Kernel.preparedCustomContext_lookup_exact
@@ -2274,7 +2269,6 @@ run_cmd do
 #print axioms A12Kernel.noValueDependency_reads_noValue
 #print axioms A12Kernel.acceptedDependency_reads_value
 #print axioms A12Kernel.erroredDependency_reads_computedDependencyPoison
-#print axioms A12Kernel.reportedDependency_reads_value
 #print axioms A12Kernel.dependencyCell_preserves_customContext
 #print axioms A12Kernel.inheritedDependency_reads_computedDependencyPoison
 #print axioms A12Kernel.invalidNoValueDependency_reads_computedDependencyPoison

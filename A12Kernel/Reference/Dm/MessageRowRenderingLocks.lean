@@ -71,9 +71,9 @@ private def row (cells : List (String × String)) (members : List (String × Jso
 /-- The capture's documents, without the groups no rule here reads, with the computation capture's
 `RA` and `RT` values merged into its `Rows`, which no other rule here reads. The two documents differ
 only in their first `Rows` row: `doc3.json`'s lacks `Base` and holds the other `Status`. -/
-private def documentJson (firstRowEmpty : Bool) : Json :=
+private def documentJson (firstRowEmpty : Bool) (pick : String := "k0") : Json :=
   .mkObj [("Kp", .mkObj [
-    ("Anchor", .str "a"), ("Pick", .str "k0"),
+    ("Anchor", .str "a"), ("Pick", .str pick),
     ("Rows", .arr #[
       if firstRowEmpty then row [("Key", "k0"), ("Status", "B"), ("RA", "2"), ("RT", "4")]
       else row [("Key", "k0"), ("Base", "b0"), ("Status", "A"), ("RA", "2"), ("RT", "4")],
@@ -104,9 +104,9 @@ private def outcome : Except ValidationMessageRenderingError (List String) →
   | .error error => .inl error
 
 /-- Every firing's rendered text, in evaluation order, or the first rendering error. -/
-private def rendered (definition : DmRule) (template : String) (firstRowEmpty := false) :
+private def rendered (definition : DmRule) (template : String) (firstRowEmpty := false) (pick := "k0") :
     Option (Sum ValidationMessageRenderingError (List String)) := do
-  let input ← (readDocument dm (documentJson firstRowEmpty)).toOption
+  let input ← (readDocument dm (documentJson firstRowEmpty pick)).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
@@ -185,18 +185,34 @@ example : rendered (rule ["Kp", "ERows"] "REnum" "../Key" "FieldFilled(Key) And 
       "x=[$X.value$] k=[$Key.value$] kc=[$Key->Band$] ik=[$index(Key).value$]" =
     some (.inr ["x=[0] k=[A] kc=[Hi] ik=[A]"]) := by native_decide
 
-/-- A key selecting no row fires the rule. A value parameter faults the rendering, where the Kernel
-replaces the whole text with its evaluation-fault text; a name renders the name and a category renders
-empty. -/
+/-- A key selecting no row fires the rule. On kernel 31.1.1 a value parameter renders the empty text
+beside its neighbours, a name renders the name and a category renders empty. Locked: a12-dmkits
+`MessageParameterRowDiffTest` at `1124b523f` (KF668), both strategies, whose rows measured the value
+and name forms; the category row is unmeasured on 31.1.1. -/
 example : rendered (rule ["Kp"] "RMiss" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")")
-      "m=[$/Kp/Rows/Base.value For \"k9\"$] mk=[$/Kp/Rows/Key.value For \"k9\"$] mn=[$/Kp/Rows/Base For \"k9\"$]" =
-      some (.inl .unresolvedSelection) ∧
+      "m=[$/Kp/Rows/Base.value For \"k9\"$] mk=[$/Kp/Rows/Key.value For \"k9\"$] mn=[$/Kp/Rows/Base For \"k9\"$] a=[$Anchor.value$]" =
+      some (.inr ["m=[] mk=[] mn=[Base] a=[a]"]) ∧
     rendered (rule ["Kp"] "RMissK" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")")
-      "mk=[$/Kp/Rows/Key.value For \"k9\"$]" = some (.inl .unresolvedSelection) ∧
+      "mk=[$/Kp/Rows/Key.value For \"k9\"$]" = some (.inr ["mk=[]"]) ∧
     rendered (rule ["Kp"] "RMissN" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")")
       "mn=[$/Kp/Rows/Base For \"k9\"$]" = some (.inr ["mn=[Base]"]) ∧
     rendered (rule ["Kp"] "RMissC" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Status For \"k9\")")
       "mc=[$/Kp/Rows/Status->Band For \"k9\"$]" = some (.inr ["mc=[]"]) := by native_decide
+
+/-- A field key that is empty, or names no row, selects none: its value renders empty while the
+label still renders (locked as above for the empty key; the unmatched key is unmeasured on 31.1.1). -/
+example : rendered (rule ["Kp"] "RFkE" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For Pick)")
+      "f=[$/Kp/Rows/Base.value For Pick$] fn=[$/Kp/Rows/Base For Pick$]" (pick := "") =
+      some (.inr ["f=[] fn=[Base]"]) ∧
+    rendered (rule ["Kp"] "RFkE" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For Pick)")
+      "f=[$/Kp/Rows/Base.value For Pick$] fn=[$/Kp/Rows/Base For Pick$]" (pick := "k9") =
+      some (.inr ["f=[] fn=[Base]"]) := by native_decide
+
+/-- A rule iterating the keyed group reports its own message at every row it fires on, the unselected
+value empty at each (locked as above), where 30.8.1 faulted once at the first row. -/
+example : rendered (rule ["Kp", "Rows"] "RMissI" "../Key" "FieldFilled(Key) And FieldNotFilled(/Kp/Rows/Base For \"k9\")")
+      "k=[$Key.value$] m=[$/Kp/Rows/Base.value For \"k9\"$]" =
+    some (.inr ["k=[k0] m=[]", "k=[k1] m=[]", "k=[k2] m=[]"]) := by native_decide
 
 /-- An unkeyed read of a level the firing row leaves unbound renders that level's first row, empty
 cell included, rather than the keyed row the condition also reads: the second document's first row
@@ -225,27 +241,6 @@ example : rendered (rule ["Kp"] "RNum02" "../Anchor" "FieldFilled(Anchor) And Fi
     rendered (rule ["Kp"] "RNest" "../Anchor" "FieldFilled(Anchor) And GroupFilled(/Kp/Rows For \"k1\")")
         "n=[$/Kp/Rows/Sub/SubV For \"k1\"$] b=[$/Kp/Rows/Base.value For \"k1\"$]" =
       some (.inr ["n=[SubV] b=[b1]"]) := by native_decide
-
-/-- Each finding of a rule iterating `Rows` after `renderFirings`, as its origin, its value-error
-flag and its error coordinates. Rows `k0` and `k1` both fire; the value parameter's key fault at the
-first ends the row loop, as peer KF561's `KeyedMissRow` measured on both strategies (a12-dmkits
-`7b98fae62`), while the name twin keeps both rows' omission findings. -/
-private def loopFindings (template : String) :
-    Option (List (RuleMessageOrigin × Bool × List MessageRepetitionCoordinate)) := do
-  let input ← (readDocument dm (documentJson false)).toOption
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-  let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let definition := { rule ["Kp", "Rows"] "RMissRow" "../Base"
-    "FieldFilled(Base) And FieldNotFilled(/Kp/Rows/Base For \"k9\")" with messages := [("en_US", template)] }
-  let .ordinary checkedRule ← (checkValidationRule dm .english definition).toOption | none
-  let fired ← (runRuleAt world checked checkedRule).toOption
-  pure ((renderFirings prepared .english "en_US" checked definition checkedRule fired).map fun (_, message) =>
-    (message.origin, message.messageType == .value, message.errorAddress.coordinates))
-
-example : loopFindings "mr=[$/Kp/Rows/Base.value For \"k9\"$]" =
-      some [(.runtimeFailure, true, [.concrete 1])] ∧
-    loopFindings "mr=[$/Kp/Rows/Base For \"k9\"$]" =
-      some [(.condition, false, [.concrete 1]), (.condition, false, [.concrete 2])] := by native_decide
 
 /-- A computation's message is its generated rule's: it fires only on the filled row whose holding
 alternative disagrees, the second, and renders that row's cells and coordinate

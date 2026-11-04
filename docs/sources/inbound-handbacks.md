@@ -1063,6 +1063,16 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`), built and runtime, through in-process JUnit locks: the Kernel's expansion and model check for §1 and §3, its Document reader for §2. No document is evaluated.
 - `state`: Received and read on 2026-11-03, not yet reviewed or adopted. §2 contradicts [spec/01 §2.3](../../spec/01-data-model.md#23-reading-a-document-from-json)'s discard of a non-object array element and joins batch `M7`; §1 and §3 join batch `M1–M3` in the [migration milestone](../PLAN.md#kernel-31-migration).
 
+<a id="src-m7-runtime-values-adoption"></a>
+## Adopted kernel 31.1.1 runtime values from a12-dmkits locks (batch M7)
+
+- `source`: [Letter B](#src-inbound-2026-11-03e) §5m and §5n and [Letter E](#src-inbound-2026-11-03f) §2, with the a12-dmkits kernel-executing locks that assert their rows; every lock runs against kernel 31.1.1 (`a12-kernel` `eec9134`) on both strategies.
+- `review`: A HIGH reconciliation on 2026-11-04 read each letter row against the asserting lock's name and wrote one Lean row per letter row, red before the implementation changed.
+- `locks`: at `1124b523f090d4f999de0f74e4192b5046e13636`, under `adapter/src/test/kotlin/io/github/mbackschat/a12/dm/adapter/laws/`: `CustomTestRangeLawsTest` (`testIDNummer` against `PROJECT_REJECT`, `aRejectionBesideADuplicateIndexReportsBothOnEveryRow`), `ComputationDiagnosticAssemblyLawsTest` (one rejection per row in the computation inventory), `MessageParameterRowDiffTest` (unselected value, KF668); at `ae67703efe43edba265d46098d01b7c4fb2681d3`, `A12JsonIngressDiffTest.notificationOnlyNodesPreserveSiblingsWhileFatalInputsRefuseTheDocument`.
+- `adopted`: spec/06's ordinary `testIDNummer` rejection, spec/09's rejected-attempt poison and duplicate-index assembly, spec/02's reserved-report removal; spec/11 A.11's empty value for a key selecting no row and spec/08's pointer to it; spec/01 §2.3's whole-document refusal and its dropped shape-mismatched members.
+- `not-adopted`: The mechanism that keeps a rejected key in the uniqueness scan while the computation inventory carries only the rejection is this project's account of the two measured outcomes, not a source reading. A malformed non-custom duplicate key, an unselected category, the reference lists beside an unselected value, the document object outside the root group and the mismatched shapes the letter does not list stay unmeasured. Letter B §5l is a separate batch step.
+- `sync`: an inbound adoption from committed peer revisions; no ledger entry is created. The Lean implementation lands in batch `M7` of the [migration milestone](../PLAN.md#kernel-31-migration).
+
 <a id="src-m8-temporal-adoption"></a>
 ## Adopted kernel 31.1.1 temporal semantics from a12-dmkits locks (batch M8)
 

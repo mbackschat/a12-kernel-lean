@@ -623,7 +623,7 @@ def readStoredText (checked : CheckedDocument model) (address : CellAddr) :
   pure {
     rawPresent := cell.rawPresent
     parsed := if cell.parsed.isSome then checked.storedTextAt address else none
-    findings := cell.findings, reports := cell.reports }
+    findings := cell.findings }
 
 /-- Read one checked Number input as a typed cell carrying the regime-selected text. Empty, invalid, and over-limit states retain their ordinary checked-cell structure; the text is never reconstructed from the parsed rational. -/
 def readNumberFormalText (checked : CheckedDocument model)
@@ -641,7 +641,6 @@ def readNumberFormalText (checked : CheckedDocument model)
     rawPresent := cell.rawPresent
     parsed := if cell.parsed.isSome then formalRead else none
     findings := cell.findings
-    reports := cell.reports
   }
   pure textCell
 
@@ -719,7 +718,6 @@ def stringComputationContext (checked : CheckedDocument model) :
                   rawPresent := cell.rawPresent
                   parsed := cell.parsed.map Value.str
                   findings := cell.findings
-                  reports := cell.reports
                 }
               | .error _ => malformedCheckedCell
           | _ => checked.flatContext.read field

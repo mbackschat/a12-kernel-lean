@@ -105,9 +105,9 @@ private def model : FlatModel := {
     { id := 91, name := "Target", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
     { id := 92, name := "Gate", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } }]
   repeatableGroups := [{ level := 90, path := ["Form", "Box", "Rows"], repeatability := some 2, indexField := some 90 }] }
-private def world : World := {
+private def world (code : String) : World := {
   now := { epochMillis := 0 }
-  customFieldValidator? := fun _ => some fun _ _ => some { projectCode := "testIDNummer" } }
+  customFieldValidator? := fun _ => some fun _ _ => some { projectCode := code } }
 private def boxGuard : CheckedComputationCondition model := .leaf (.groupPresence .filled {
   reference := { path := ["Form", "Box"], origin := .path, boundRepeatableScope := [] }
   content := model.computationGroupSource ["Form", "Box"]
@@ -117,12 +117,12 @@ private def table? : Option (CheckedNumericComputationTable model) :=
     (some (.fieldNotFilled 92), .literal { value := 1, authoredScale := 0 }),
     (some boxGuard, .literal { value := 2, authoredScale := 0 })]).toOption
 
-private def results? (same : Bool) : Option (Bool × Bool × Nat ×
+private def results? (code : String) (same : Bool) : Option (Bool × Bool × Nat ×
     Option (List (FieldId × Int × Nat)) × Option (List (FieldId × Int × Nat))) := do
   let table ← table?
   let numeric ← (certifyNumericComputationRun [table]).toOption
   let scalar ← (certifyScalarComputationRun [.number table]).toOption
-  let patterns ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let patterns ← (prepareFlatStringContext (world code) builtinStringPatternCompiler model).toOption
   let input ← (checkDocument patterns "en_US" {
     instantiatedRows := [{ group := 90, path := [1] }, { group := 90, path := [2] }]
     cells := [
@@ -131,8 +131,8 @@ private def results? (same : Bool) : Option (Bool × Bool × Nat ×
         raw := .parsed (.str (if same then "ABCD" else "EFGH")) }] }).toOption
   let plan ← numeric.formalInputPlan.toOption
   let prepared ← (plan.prepare input).toOption
-  let numericResult := numeric.executeResultWithFormalInputs world input
-  let scalarResult := scalar.executeResultWithFormalInputs world patterns.patterns input (fun _ => ()) [] ([] : List Unit)
+  let numericResult := numeric.executeResultWithFormalInputs (world code) input
+  let scalarResult := scalar.executeResultWithFormalInputs (world code) patterns.patterns input (fun _ => ()) [] ([] : List Unit)
   let numericFailed := match numericResult with
     | .error (.assembly _ _) => true
     | _ => false
@@ -145,8 +145,9 @@ private def results? (same : Bool) : Option (Bool × Bool × Nat ×
     scalarResult.toOption.map fun view => view.scalar.number.withoutErrors.map fun entry =>
       (entry.targetField, entry.value.unscaled, entry.value.scale))
 
-example : (results? false == some (false, false, 2,
-    some [(91, 1, 0)], some [(91, 1, 0)])) = true := by native_decide
-example : (results? true == some (true, true, 4, none, none)) = true := by native_decide
+/- Locked: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1. With equal or distinct keys, both rejected index rows contribute only the custom finding to the computation inventory and assembly completes in both routes, for `testIDNummer` exactly as for an ordinary code. -/
+example : ["testIDNummer", "CODE_BAD"].all (fun code => [false, true].all fun same =>
+    results? code same == some (false, false, 2,
+      some [(91, 1, 0)], some [(91, 1, 0)])) = true := by native_decide
 
 end A12Kernel.Conformance.GuardReportAssembly

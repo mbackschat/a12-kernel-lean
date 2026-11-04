@@ -188,6 +188,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [November 3d letter](sources/inbound-handbacks.md#src-inbound-2026-11-03d): a12-dmkits `7def7526711298bbf486fba342a8007f797b2271` and `28432881b25193bcf402c14655bdebd45bba4a8b`, re-run at `1124b523f090d4f999de0f74e4192b5046e13636`, kernel 31.1.1; `SumOfTerms` adopted as spec/07 §3.10.
 - [November 3e letter](sources/inbound-handbacks.md#src-inbound-2026-11-03e): a12-dmkits `fe4d26e1417cef069fafcbd5ca45234ac3a4c589`, re-run at `1124b523f090d4f999de0f74e4192b5046e13636`, kernel 31.1.1; received, adopted batch by batch.
 - [November 3f letter](sources/inbound-handbacks.md#src-inbound-2026-11-03f): a12-dmkits `ae67703efe43edba265d46098d01b7c4fb2681d3`, kernel 31.1.1; received, adopted in batches `M7` and `M1–M3`.
+- [M7 runtime-values adoption](sources/inbound-handbacks.md#src-m7-runtime-values-adoption): a12-dmkits locks at `1124b523f090d4f999de0f74e4192b5046e13636` and `ae67703efe43edba265d46098d01b7c4fb2681d3`, kernel 31.1.1; `testIDNummer` as an ordinary rejection, the unselected message value and the Document reader's array refusal.
 - [M8 temporal adoption](sources/inbound-handbacks.md#src-m8-temporal-adoption): a12-dmkits locks at `1124b523f090d4f999de0f74e4192b5046e13636`, kernel 31.1.1; the runtime calendar, zone resolution, day arithmetic and yearless long-shift labels of spec/05.
 - [Question-to-locus lookup](sources/kernel-loci.md)
 
@@ -224,7 +225,7 @@ Edit the source shard when its provenance or drill route changes; change this hu
 - [Selected overlap streams](sources/date-range-construction.md#src-selected-overlap-streams): both-arm admission, selected scalar/list roles and reached-versus-bypassed poison.
 
 <a id="src-json-row-normalization"></a>
-- [Document JSON row normalization](sources/evaluation-and-application-routes.md#src-json-row-normalization): non-object removal, dense surviving coordinates, nested parent scope and the separate V1 placement route.
+- [Document JSON row normalization](sources/evaluation-and-application-routes.md#src-json-row-normalization): kernel 30.8.1's non-object removal and dense surviving coordinates, superseded on 31.1.1 by the whole-document refusal; nested parent scope and the separate V1 placement route.
 
 <a id="src-non-number-direct-alternatives"></a>
 - [Direct Boolean, Confirm and DateRange alternative matrix](sources/computation-placement-and-constant-probes.md#src-non-number-direct-alternatives)

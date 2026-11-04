@@ -89,7 +89,16 @@ private def CheckedDocument.indexComponentAt (checked : CheckedDocument model)
     | none => checked.read address |>.mapError .document
   match declaration.policy.kind, observeCell .validation cell with
   | _, .empty => pure .empty
-  | _, .unknown cause | _, .poison cause => pure (.unknown cause)
+  | _, .unknown cause | _, .poison cause =>
+      -- A key its registered validator rejected still meets the uniqueness check by its stored text, so a
+      -- duplicate draws `uniqueIndex` beside the rejection on every row (a12-dmkits
+      -- `CustomTestRangeLawsTest` at `1124b523f`, KF669). Other formal invalidity keeps the key unknown.
+      let customRejected := !cell.findings.isEmpty && cell.findings.all fun
+        | .registeredCustomValidation _ => true
+        | _ => false
+      match customRejected, storedAt? checked defaulted address with
+      | true, some stored => pure (.present (.token (normalizeEvaluatedString stored)))
+      | _, _ => pure (.unknown cause)
   | .number _, .value (.num value) => pure (.present (.number value))
   | .number _, .value _ => throw (.incoherentValueKind address)
   | _, .value _ =>

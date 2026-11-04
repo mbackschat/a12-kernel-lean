@@ -6,11 +6,12 @@ namespace A12Kernel.Dm.ComputationAssemblyLocks
 open Lean
 
 private inductive InputKind where
-  | accepted | reported | rejected | malformed
+  | accepted | rejected (code : String) | malformed
   deriving DecidableEq
 
-private def rejection : RegisteredCustomRejection := { projectCode := "CODE_BAD" }
-private def report : RegisteredCustomRejection := { projectCode := "testIDNummer" }
+private def rejectedWith (code : String) : RegisteredCustomRejection := { projectCode := code }
+/-- The former test-range code and an ordinary one: the twin pair every rejection row is asserted over. -/
+private def twinCodes : List String := ["testIDNummer", "CODE_BAD"]
 private def targetRejection : RegisteredCustomRejection := { projectCode := "TARGET_BAD" }
 
 private def model (kind : InputKind) (rejectTarget : Bool) : FlatModel := {
@@ -30,8 +31,7 @@ private def world (kind : InputKind) : World := {
   customFieldValidator? := fun name => some fun value _ =>
     if name == "Code" then match kind with
       | .accepted | .malformed => none
-      | .reported => some report
-      | .rejected => some rejection
+      | .rejected code => some (rejectedWith code)
     else if name == "Copy" then some targetRejection
     else if value == "audited" then none else some { projectCode := "AUDIT_NOT_COMPLETED" } }
 
@@ -39,7 +39,6 @@ private structure Summary where
   result : Except (ComputationFormalInputRunFault MixedComputationPlanFault) MixedComputationCheckedResult
   reader : Lowering (List ComputedOutcome)
   execution : Except MixedComputationPlanFault (List MixedComputationOutcome)
-  originalCopies : List String
 
 private def summary (kind : InputKind) (same : Bool := false)
     (copy : Bool := true) (audit : Bool := false) (rejectTarget : Bool := false) : Option Summary := do
@@ -76,9 +75,7 @@ private def summary (kind : InputKind) (same : Bool := false)
   pure {
     result := plan.executeResultWithFormalInputs world prepared.patterns input
     reader := runComputations world prepared input lowered
-    execution := plan.execute world prepared.patterns staged.preliminary.computationInput
-    originalCopies := input.source.cells.filterMap fun cell =>
-      if cell.address.field == 2 then some cell.stored else none }
+    execution := plan.execute world prepared.patterns staged.preliminary.computationInput }
 
 private def finding (row : Nat) (cause : FormalCause) : ComputationFormalInputFinding := {
   address := { field := 1, path := [row] }, cause }
@@ -91,45 +88,33 @@ private def readerChanges (scenario : Option Summary) : Option (List (String × 
   let changes ← scenario.reader.toOption
   pure (changes.map fun change => (change.pointer, change.outcome))
 
-private def collisionGuard (scenario : Option Summary) : Option Bool := do
-  let scenario ← scenario
-  match scenario.result, scenario.reader with
-  | .error (.assembly findings (.duplicatePointer pointer)), .error refusal =>
-      pure (findings == [finding 1 (.registeredCustomValidation report),
-        finding 2 (.registeredCustomValidation report), finding 1 .duplicateIndex,
-        finding 2 .duplicateIndex] &&
-        [MessagePointer.ofCellAddr { field := 1, path := [1] },
-          MessagePointer.ofCellAddr { field := 1, path := [2] }].contains pointer &&
-        refusal.construct == "ComputationRun" &&
-        refusal.detail == oneLine ((repr (ComputationFormalInputRunFault.assembly findings
-          (.duplicatePointer pointer) : ComputationFormalInputRunFault MixedComputationPlanFault)).pretty 100000) &&
-        (scenario.result.toOption.bind fun result => some result.outcomes).isNone &&
-        scenario.originalCopies == ["old", "old"])
-  | _, _ => pure false
-
-example : collisionGuard (summary .reported true) = some true := by native_decide
-
 example : (summary .accepted true).map (·.result.toOption) = some (some {
     outcomes := [copyOutcome 1 (.poison .duplicateIndex), copyOutcome 2 (.poison .duplicateIndex)]
     formalErrorsInOperands := [finding 1 .duplicateIndex, finding 2 .duplicateIndex] }) ∧
     readerChanges (summary .accepted true) = some [
       ("Form/Rows/Copy", "cleared"), ("Form/Rows[2]/Copy", "cleared")] := by native_decide
 
-example : (summary .reported).map (·.result.toOption) = some (some {
-    outcomes := [copyOutcome 1 (.accepted ⟨"ABCD", by decide⟩),
-      copyOutcome 2 (.accepted ⟨"EFGH", by decide⟩)]
-    formalErrorsInOperands := [finding 1 (.registeredCustomValidation report),
-      finding 2 (.registeredCustomValidation report)] }) ∧
-    readerChanges (summary .reported) = some [
-      ("Form/Rows/Copy", "value ABCD"), ("Form/Rows[2]/Copy", "value EFGH")] := by native_decide
+private def clearedCopies : List (String × String) :=
+  [("Form/Rows/Copy", "cleared"), ("Form/Rows[2]/Copy", "cleared")]
 
-example : (summary .rejected).map (·.result.toOption) = some (some {
-    outcomes := [copyOutcome 1 (.poison (.registeredCustomValidation rejection)),
-      copyOutcome 2 (.poison (.registeredCustomValidation rejection))]
-    formalErrorsInOperands := [finding 1 (.registeredCustomValidation rejection),
-      finding 2 (.registeredCustomValidation rejection)] }) ∧
-    readerChanges (summary .rejected) = some [
-      ("Form/Rows/Copy", "cleared"), ("Form/Rows[2]/Copy", "cleared")] := by native_decide
+private def rejectedResult (code : String) : MixedComputationCheckedResult := {
+  outcomes := [copyOutcome 1 (.poison (.registeredCustomValidation (rejectedWith code))),
+    copyOutcome 2 (.poison (.registeredCustomValidation (rejectedWith code)))]
+  formalErrorsInOperands := [finding 1 (.registeredCustomValidation (rejectedWith code)),
+    finding 2 (.registeredCustomValidation (rejectedWith code))] }
+
+private def copiesWithAudit (code : String) : List MixedComputationOutcome :=
+  (rejectedResult code).outcomes ++ [.string 3 (.accepted ⟨"audited", by decide⟩)]
+
+/- Unmeasured on 31.1.1. A rejected operand poisons the dependent copy and clears it in the reader route, and a `testIDNummer` rejection does so exactly as the ordinary code does. -/
+example : twinCodes.all (fun code =>
+    (summary (.rejected code)).map (·.result.toOption) == some (some (rejectedResult code)) &&
+    readerChanges (summary (.rejected code)) == some clearedCopies) = true := by native_decide
+
+/- Locked: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1. Equal rejected index cells keep the rejection as their one formal-input finding (validation still reports `uniqueIndex` beside it, locked in `MessageCacheOrder`), so result assembly completes with the same result as distinct keys; the ordinary code behaves identically. -/
+example : twinCodes.all (fun code =>
+    (summary (.rejected code) true).map (·.result.toOption) == some (some (rejectedResult code)) &&
+    readerChanges (summary (.rejected code) true) == some clearedCopies) = true := by native_decide
 
 example : (summary .malformed).map (·.result.toOption) = some (some {
     outcomes := [copyOutcome 1 (.poison .malformed), copyOutcome 2 (.poison .malformed)]
@@ -137,10 +122,13 @@ example : (summary .malformed).map (·.result.toOption) = some (some {
     readerChanges (summary .malformed) = some [
       ("Form/Rows/Copy", "cleared"), ("Form/Rows[2]/Copy", "cleared")] := by native_decide
 
-example : (summary .reported true false true).map (·.result.toOption) = some (some {
-    outcomes := [.string 3 (.accepted ⟨"audited", by decide⟩)]
-    formalErrorsInOperands := [] }) ∧
-    readerChanges (summary .reported true false true) = some [("Form/Audit", "value audited")] := by native_decide
+/- Unmeasured on 31.1.1. A rejected field outside the computation's operand union contributes no formal-input finding, for `testIDNummer` as for an ordinary code. -/
+example : twinCodes.all (fun code =>
+    (summary (.rejected code) true false true).map (·.result.toOption) == some (some {
+      outcomes := [.string 3 (.accepted ⟨"audited", by decide⟩)]
+      formalErrorsInOperands := [] }) &&
+    readerChanges (summary (.rejected code) true false true) ==
+      some [("Form/Audit", "value audited")]) = true := by native_decide
 
 example : (summary .accepted false true false true).map (·.result.toOption) = some (some {
     outcomes := [copyOutcome 1 (.errored ⟨"ABCD", by decide⟩ (.custom targetRejection)),
@@ -149,9 +137,11 @@ example : (summary .accepted false true false true).map (·.result.toOption) = s
     readerChanges (summary .accepted false true false true) = some [
       ("Form/Rows/Copy", "errored ABCD"), ("Form/Rows[2]/Copy", "errored EFGH")] := by native_decide
 
-example : collisionGuard (summary .reported true true true) = some true ∧
-    (summary .reported true true true).map (·.execution.toOption) = some (some [
-      copyOutcome 1 (.poison .duplicateIndex), copyOutcome 2 (.poison .duplicateIndex),
-      .string 3 (.accepted ⟨"audited", by decide⟩)]) := by native_decide
+/- Unmeasured on 31.1.1. Beside an independent computation, equal rejected index cells still contribute only their rejection: the copies are poisoned by the custom finding in both the assembled result and the staged execution. -/
+example : twinCodes.all (fun code =>
+    (summary (.rejected code) true true true).map (fun scenario =>
+      (scenario.result.toOption.map (·.outcomes), scenario.execution.toOption)) ==
+      some (some (copiesWithAudit code), some (copiesWithAudit code))) = true := by
+  native_decide
 
 end A12Kernel.Dm.ComputationAssemblyLocks

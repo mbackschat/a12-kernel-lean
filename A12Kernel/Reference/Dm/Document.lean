@@ -232,7 +232,10 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
     match model.flat.fields.find? fun field => field.groupPath == group && field.name == name with
     | some declaration =>
         match storedText? value with
-        | none => refuse childPath "field value is no scalar, or its numeric scale exceeds the represented profile"
+        -- Kernel 31.1.1 drops an object or array at a field key (spec/01 §2.3).
+        | none => match value with
+          | .obj _ | .arr _ => pure ()
+          | _ => refuse childPath "field value's numeric scale exceeds the represented profile"
         | some stored =>
             match classifyStored model.flat declaration { field := declaration.id, path } stored with
             | .ok cell => modify fun state => { state with cells := state.cells.push cell }
@@ -240,7 +243,7 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
     | none =>
         match model.flat.repeatableGroups.find? (·.path == childPath), value with
         | some repeatable, .arr instances =>
-            -- JSON conversion discards non-object rows before assigning coordinates; V1 placement padding is a separate route (spec/01 §2.3).
+            -- `arrayDefect?` has refused a non-object row; V1 placement padding is a separate route (spec/01 §2.3).
             let objects := instances.toList.filterMap fun
               | .obj members => some members.toList
               | _ => none
@@ -256,6 +259,8 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
               readInstance model childPath path members.toList
             -- Nothing can read a declared empty group, and an undeclared object is dropped.
             else pure ()
+        -- Kernel 31.1.1 drops a scalar or `null` at a repeatable key (spec/01 §2.3).
+        | some _, .null | some _, .str _ | some _, .num _ | some _, .bool _ => pure ()
         | _, _ =>
             if model.refusals.any (·.1 == childPath) then refuse childPath "declaration refused by the model reader"
             else if model.flat.repeatableGroups.any (·.path == childPath) ||
@@ -264,9 +269,36 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
               refuse childPath "group value of the wrong JSON kind"
             else pure ()
 
+/-- The first member, of an object the reader walks as a group instance, holding an array with a
+non-object element: kernel 31.1.1 then reads no document at all, whatever the model declares at that
+key (spec/01 §2.3). The walk enters a row of a repeatable key and an object at a declared group key, and
+never an object at a field or undeclared key. The document object holding the root groups is walked
+like a group instance, an assumption no measurement covers. -/
+private partial def arrayDefect? (model : DmModel) (group : GroupPath) (members : List (String × Json)) :
+    Option (List String) :=
+  members.findSome? fun (name, value) =>
+    let childPath := group ++ [name]
+    match value with
+    | .arr elements =>
+        if elements.any (fun | .obj _ => false | _ => true) then some childPath
+        else if model.flat.repeatableGroups.any (·.path == childPath) then
+          elements.toList.findSome? fun
+            | .obj row => arrayDefect? model childPath row.toList
+            | _ => none
+        else none
+    | .obj nested =>
+        if model.flat.fields.any (fun field => field.groupPath == group && field.name == name) then none
+        else if model.flat.fields.any (childPath.isPrefixOf ·.groupPath) ||
+            model.flat.declaresEmptyGroup childPath then
+          arrayDefect? model childPath nested.toList
+        else none
+    | _ => none
+
 /-- Read one document, given as the object holding its root groups. -/
 def readDocument (model : DmModel) (json : Json) : Except String DmDocument := do
   let .obj roots := json | throw "document is no object"
+  if let some path := arrayDefect? model [] roots.toList then
+    throw s!"array holding a non-object element at {"/".intercalate path}"
   let ((), state) := (readInstance model [] [] roots.toList).run {}
   pure { data := { instantiatedRows := state.rows.toList, cells := state.cells.toList,
                     groupOccurrences := state.groups.toList }

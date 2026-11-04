@@ -54,24 +54,29 @@ private def cascadeOutcome (answer : Option RegisteredCustomRejection) :
       targetRegime := nextTarget.stringTargetRegime, prior := .empty } }
   pure (cascade.evaluate input.stringComputationContext)
 
-example : (cascadeOutcome (some { projectCode := "testIDNummer" })).map
-    (fun result => result.toOption.map (·.consumer.outcome)) =
-      some (some (.accepted ⟨"ABCD", by decide⟩)) := by native_decide
+private def cascadeConsumer (code : String) : Option (Option StringTargetOutcome) :=
+  (cascadeOutcome (some { projectCode := code })).map
+    (fun result => result.toOption.map (·.consumer.outcome))
 
-private def reserved : RegisteredCustomRejection := {
+/- Letter-B (a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1): a computed target rejected with `testIDNummer` poisons its dependent exactly as the ordinary code does. -/
+example : cascadeConsumer "testIDNummer" = cascadeConsumer "ordinary-reject" ∧
+    cascadeConsumer "testIDNummer" = some (some (.poison .computedDependency)) := by native_decide
+
+private def testCodeRejection : RegisteredCustomRejection := {
   projectCode := "testIDNummer", messageTemplate := some "Computed $<fieldName>$" }
 
 example : outcome none = some (.accepted ⟨"ABCD", by decide⟩) ∧
-    outcome (some reserved) = some (.errored ⟨"ABCD", by decide⟩ (.custom reserved)) ∧
-    outcome (some reserved) "A\r\nB" =
-      some (.errored ⟨"A\r\nB", by decide⟩ (.custom reserved)) := by native_decide
+    outcome (some testCodeRejection) = some (.errored ⟨"ABCD", by decide⟩ (.custom testCodeRejection)) ∧
+    outcome (some testCodeRejection) "A\r\nB" =
+      some (.errored ⟨"A\r\nB", by decide⟩ (.custom testCodeRejection)) := by native_decide
 
-example : ["PROJECT_CODE_INVALID", "TestIDNummer", "testIDNummerSuffix", "testIDNummer "].all
+/- Unmeasured on 31.1.1. The target is rejected and keeps its attempted text for `testIDNummer` exactly as for an ordinary code. -/
+example : ["PROJECT_CODE_INVALID", "testIDNummer"].all
     (fun code => outcome (some { projectCode := code }) ==
       some (.errored ⟨"ABCD", by decide⟩ (.custom { projectCode := code }))) = true := by
   native_decide
 
-example : (outcome (some reserved)).map
+example : (outcome (some testCodeRejection)).map
     (fun result => (result.applyTo (.presentValue ⟨"old", by decide⟩), result.appliedValue)) =
       some (.presentEmpty, none) ∧
     (cascadeOutcome (some { projectCode := "ordinary-reject" })).map
@@ -80,7 +85,7 @@ example : (outcome (some reserved)).map
 
 private def noCapability : StringComputationContext := { read := fun _ => malformedCheckedCell }
 
-example : outcome (some reserved) "" = some .noValue ∧
+example : outcome (some testCodeRejection) "" = some .noValue ∧
     ((StringTargetRegime.custom { name := "Missing" }).check {} none .noValue noCapability).toOption = some .noValue ∧
     ((StringTargetRegime.custom { name := "Missing" }).check {} none
       (.poison .malformed) noCapability).toOption = some (.poison .malformed) := by native_decide
@@ -151,13 +156,6 @@ private def checkedRunOutcome (answer : Option RegisteredCustomRejection)
   pure (outcomes, outcomes.map fun (field, result) =>
     result.applyTo (input.sourceStringTargetState field))
 
-example : (checkedRunOutcome (some reserved)).map (·.1) = some [
-    (1, .errored ⟨"ABCD", by decide⟩ (.custom reserved)),
-    (2, .accepted ⟨"ABCD", by decide⟩), (3, .accepted ⟨"free", by decide⟩)] ∧
-    (checkedRunOutcome (some { projectCode := "testIDNummer " })).map (·.1) = some [
-      (1, .errored ⟨"ABCD", by decide⟩ (.custom { projectCode := "testIDNummer " })),
-      (2, .poison .computedDependency), (3, .accepted ⟨"free", by decide⟩)] := by native_decide
-
 private def priorStates : List StringTargetState := [
   .absent, .presentEmpty, .presentValue ⟨"old", by decide⟩,
   .presentValue ⟨"ABCD", by decide⟩]
@@ -168,24 +166,22 @@ example : priorStates.all (fun prior => checkedRunOutcome none prior == some ([
       .presentValue ⟨"ABCD", by decide⟩, .presentValue ⟨"ABCD", by decide⟩,
       .presentValue ⟨"free", by decide⟩])) = true := by native_decide
 
-example : priorStates.all (fun prior => checkedRunOutcome (some reserved) prior == some ([
-    (1, .errored ⟨"ABCD", by decide⟩ (.custom reserved)),
-    (2, .accepted ⟨"ABCD", by decide⟩), (3, .accepted ⟨"free", by decide⟩)], [
-      prior.clearValue, .presentValue ⟨"ABCD", by decide⟩,
-      .presentValue ⟨"free", by decide⟩])) = true := by native_decide
-
-example : ["ordinary-reject", "TestIDNummer", "testIDNummerSuffix", "testIDNummer "].all
+/- Letter-B (a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1): a computed CUSTOM target rejected with `testIDNummer` is errored and poisons its dependent exactly as an ordinary code does. The sweep over prior target states, and their clearing, is unmeasured on 31.1.1 beyond the ordinary-code twin. -/
+example : ["ordinary-reject", "testIDNummer"].all
     (fun projectCode => priorStates.all fun prior =>
       checkedRunOutcome (some { projectCode }) prior == some ([
         (1, .errored ⟨"ABCD", by decide⟩ (.custom { projectCode })),
         (2, .poison .computedDependency), (3, .accepted ⟨"free", by decide⟩)], [
           prior.clearValue, prior.clearValue, .presentValue ⟨"free", by decide⟩])) = true := by native_decide
 
+/- Unmeasured on 31.1.1 for the normalized stored-source route; the `testIDNummer` rows equal their ordinary-code twins with only the code differing. -/
 example : (checkedRunOutcome none .absent true).map (·.1) = some [
     (1, .accepted ⟨"A\r\nB", by decide⟩), (2, .accepted ⟨"A\r\nB", by decide⟩),
     (3, .accepted ⟨"free", by decide⟩)] ∧
-    (checkedRunOutcome (some reserved) .absent true).map (·.1) = some [
-      (1, .errored ⟨"A\r\nB", by decide⟩ (.custom reserved)),
-      (2, .accepted ⟨"A\r\nB", by decide⟩), (3, .accepted ⟨"free", by decide⟩)] := by native_decide
+    ["ordinary-reject", "testIDNummer"].all (fun projectCode =>
+      (checkedRunOutcome (some { projectCode }) .absent true).map (·.1) == some [
+        (1, .errored ⟨"A\r\nB", by decide⟩ (.custom { projectCode })),
+        (2, .poison .computedDependency), (3, .accepted ⟨"free", by decide⟩)]) = true := by
+  native_decide
 
 end A12Kernel.Conformance.CustomFieldComputation

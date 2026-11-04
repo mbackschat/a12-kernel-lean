@@ -21,7 +21,7 @@ structure ComputationFormalInputFinding where
   cause : FormalCause
   deriving Repr, DecidableEq
 
-/-- Validate report construction independently of whether each finding blocks its operand value. -/
+/-- Validate report construction over every collected operand finding. -/
 def ComputationFormalInputFinding.checkAssembly (findings : List ComputationFormalInputFinding) :
     Except ComputationReportAssemblyFault Unit :=
   checkComputationReportPointers (findings.map fun finding => MessagePointer.ofCellAddr finding.address)
@@ -102,19 +102,26 @@ def findings (plan : CheckedComputationFormalInputPlan model)
     (input : CheckedDocument model) : List ComputationFormalInputFinding :=
   input.checkedCells.flatMap fun placement =>
     if plan.includesField placement.address.field then
-      placement.cell.formalReports.map fun cause => {
+      placement.cell.findings.map fun cause => {
         address := placement.address
         cause
       }
     else
       []
 
-/-- Project generated mandatory and uniqueness findings only at selected noncomputed operand indexes. -/
+/-- Whether the placement's cached cell already carries a formal finding. -/
+def _root_.A12Kernel.CheckedDocument.carriesFindingAt (input : CheckedDocument model) (address : CellAddr) : Bool :=
+  match input.read address with
+  | .ok cell => !cell.findings.isEmpty
+  | .error _ => false
+
+/-- Project generated mandatory and uniqueness findings only at selected noncomputed operand indexes. A placement that already carries a cached finding keeps it as its one diagnostic, so a duplicate key its validator rejected reports the rejection alone and the call assembles (a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, KF669). -/
 def preliminaryFindings (plan : CheckedComputationFormalInputPlan model)
     (preliminary : CheckedIndexPreliminary model) :
     List ComputationFormalInputFinding :=
   preliminary.findings.filterMap fun finding =>
-    if plan.includesField finding.address.field then
+    if plan.includesField finding.address.field &&
+        !preliminary.base.carriesFindingAt finding.address then
       some {
         address := finding.address
         cause := finding.kind.cause

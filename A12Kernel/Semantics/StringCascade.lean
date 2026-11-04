@@ -37,13 +37,12 @@ def poison (cause : FormalCause) : StringDependencyCell := {
     findings := [cause] }
   wellFormed := by simp [CheckedCell.WellFormed] }
 
-/-- Convert one completed target outcome into the cell observed by an explicitly later dependent computation. Unavailable producers become the cause-blind computed-dependency marker; the reserved custom report retains its attempted value (spec/06 A.3). -/
+/-- Convert one completed target outcome into the cell observed by an explicitly later dependent computation. Unavailable producers, including a target rejected by a registered custom validator, become the cause-blind computed-dependency marker. -/
 def ofOutcome : StringTargetOutcome → Except StringDependencyFault StringDependencyCell
   | .noValue => pure empty
   | .accepted stored => pure (value stored)
   | .invalidNoValue => pure (poison .computedDependency)
-  | .errored attempted cause =>
-      if cause.admitsValue then pure (value attempted) else pure (poison .computedDependency)
+  | .errored _ _ => pure (poison .computedDependency)
   | .poison .required =>
       throw .validationScopedRequired
   | .poison _ => pure (poison .computedDependency)

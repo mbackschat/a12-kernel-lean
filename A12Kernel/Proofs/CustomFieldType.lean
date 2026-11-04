@@ -54,12 +54,12 @@ theorem customFieldType_parsedEmpty_bypasses_validator
     } := by
   rfl
 
+/-- Any rejection, whatever its project code, makes the cell unavailable with exactly one registered finding. -/
 theorem customFieldType_rejection_exact (checked : CheckedCustomFieldType)
     (locale value : String) (rejection : RegisteredCustomRejection)
     (nonempty : value.isEmpty = false)
     (rejected : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (unavailable : rejection.admitsValue = false) :
+      (checked.declaration.validationContext locale) = some rejection) :
     checked.checkRelevantRaw locale true (.parsed value) = some {
       rawPresent := true
       parsed := none
@@ -67,15 +67,14 @@ theorem customFieldType_rejection_exact (checked : CheckedCustomFieldType)
     } := by
   simp [CheckedCustomFieldType.checkRelevantRaw,
     CheckedCustomFieldType.checkStringRaw,
-    CheckedCustomFieldType.classifyString, nonempty, rejected, unavailable]
+    CheckedCustomFieldType.classifyString, nonempty, rejected]
 
 theorem customFieldType_rejection_phase_projection
     (checked : CheckedCustomFieldType) (locale value : String)
     (rejection : RegisteredCustomRejection)
     (nonempty : value.isEmpty = false)
     (rejected : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (unavailable : rejection.admitsValue = false) :
+      (checked.declaration.validationContext locale) = some rejection) :
     checked.checkRelevantRaw locale true (.parsed value) = some {
       rawPresent := true
       parsed := none
@@ -89,46 +88,7 @@ theorem customFieldType_rejection_phase_projection
       rawPresent := true, parsed := (none : Option String)
       findings := [.registeredCustomValidation rejection]
     } = .poison (.registeredCustomValidation rejection) := by
-  exact ⟨customFieldType_rejection_exact checked locale value rejection nonempty rejected unavailable,
+  exact ⟨customFieldType_rejection_exact checked locale value rejection nonempty rejected,
     rfl, rfl⟩
-
-/-- A reserved callback result keeps its exact report beside the normalized, readable value. -/
-theorem customFieldType_report_exact (checked : CheckedCustomFieldType)
-    (locale value : String) (rejection : RegisteredCustomRejection)
-    (nonempty : value.isEmpty = false)
-    (reported : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (admitted : rejection.admitsValue = true) :
-    checked.checkRelevantRaw locale true (.parsed value) = some {
-      rawPresent := true
-      parsed := some (normalizeEvaluatedString value)
-      findings := []
-      reports := [.registeredCustomValidation rejection]
-    } := by
-  simp [CheckedCustomFieldType.checkRelevantRaw, CheckedCustomFieldType.checkStringRaw,
-    CheckedCustomFieldType.classifyString, nonempty, reported, admitted]
-
-/-- Both phases read the admitted report's value; the report remains available to formal output. -/
-theorem customFieldType_report_phase_projection (checked : CheckedCustomFieldType)
-    (locale value : String) (rejection : RegisteredCustomRejection) (phase : Phase)
-    (nonempty : value.isEmpty = false)
-    (reported : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (admitted : rejection.admitsValue = true) :
-    (checked.checkRelevantRaw locale true (.parsed value)).map
-      (fun cell => (observeCell phase cell, cell.formalReports)) =
-      some (.value (normalizeEvaluatedString value), [.registeredCustomValidation rejection]) := by
-  rw [customFieldType_report_exact checked locale value rejection nonempty reported admitted]
-  cases phase <;> rfl
-
-/-- Exact spelling is necessary: a trailing-space near code still makes validation unavailable. -/
-theorem customFieldType_report_requires_exactCode :
-    (({
-      declaration := { name := "NearCode" }
-      validator := fun _ _ => some { projectCode := "testIDNummer " }
-    } : CheckedCustomFieldType).checkRelevantRaw "en_US" true (.parsed "x")).map
-      (observeCell .validation) =
-      some (.unknown (.registeredCustomValidation { projectCode := "testIDNummer " })) := by
-  decide
 
 end A12Kernel

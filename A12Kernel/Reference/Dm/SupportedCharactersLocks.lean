@@ -247,15 +247,17 @@ example :
     [" AB", "AB "].all (fun text => baselineFirst text .leadingOrTrailingSpace) := by
   native_decide
 
+/- Unmeasured on 31.1.1. The `Report` validator's `testIDNummer` rejection leaves its cell unavailable with the one registered finding, as an ordinary code does. -/
 example :
     (ingestion (some "AB")).map Prod.fst = some (
       List.replicate 4 { rawPresent := true, parsed := some (.str "AB"), findings := [] } ++
-      [{ rawPresent := true, parsed := some (.str "AB"), findings := [], reports :=
-           [.registeredCustomValidation { projectCode := "testIDNummer" }] }]) := by
+      [{ rawPresent := true, parsed := none,
+         findings := [.registeredCustomValidation { projectCode := "testIDNummer" }] }]) := by
   native_decide
 
+/- Unmeasured on 31.1.1. The `testIDNummer` cell carries the same finding shape as the ordinary-code `UPPER` cell beside it, with only the code differing. -/
 example :
-    (ingestion (some "77")).map (fun (cells, _) => cells.map (·.formalReports)) =
+    (ingestion (some "77")).map (fun (cells, _) => cells.map (·.findings)) =
       some [[], [], [.declaredConstraint], [.registeredCustomValidation { projectCode := "UPPER" }],
         [.registeredCustomValidation { projectCode := "testIDNummer" }]] := by
   native_decide
@@ -279,7 +281,7 @@ private def letters (count : Nat) : String := String.ofList (List.replicate coun
 
 example :
     let text := letters 99999
-    (ingestion (some text)).map (fun (cells, results) => (cells.map (·.formalReports), results)) =
+    (ingestion (some text)).map (fun (cells, results) => (cells.map (·.findings), results)) =
       some ([[], [.declaredConstraint], [], [],
         [.registeredCustomValidation { projectCode := "testIDNummer" }]],
         rowResults s!"value {text}" "value 99999") := by

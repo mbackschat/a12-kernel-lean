@@ -210,7 +210,7 @@ def evaluate (expression : StringExpr FieldId) (context : StringComputationConte
 
 end StringExpr
 
-/-- Computed String targets retain either an ordinary format failure or the registered callback report, including its exact project payload. -/
+/-- Computed String targets retain either an ordinary format failure or the registered callback rejection, including its exact project payload. -/
 inductive StringTargetError where
   | ordinary (cause : StringFieldError)
   | custom (rejection : RegisteredCustomRejection)
@@ -222,11 +222,6 @@ namespace StringTargetError
 @[match_pattern] abbrev pattern : StringTargetError := .ordinary .pattern
 @[match_pattern] abbrev tooShort : StringTargetError := .ordinary .tooShort
 @[match_pattern] abbrev tooLong : StringTargetError := .ordinary .tooLong
-
-/-- The reserved custom report retains dependency admission even though result application clears the target (spec/06 A.3). -/
-def admitsValue : StringTargetError → Bool
-  | .ordinary _ => false
-  | .custom rejection => rejection.admitsValue
 
 end StringTargetError
 
@@ -258,7 +253,7 @@ inductive StringTargetRegime where
   | custom (declaration : CustomFieldTypeDeclaration)
   deriving Repr, DecidableEq
 
-/-- Check the attempted text exactly once; empty and poisoned roots never invoke a target callback. Custom validation reports retain the unnormalized attempted payload, as does ordinary target checking (spec/09 §11). -/
+/-- Check the attempted text exactly once; empty and poisoned roots never invoke a target callback. A custom rejection retains the unnormalized attempted payload, as does ordinary target checking (spec/09 §11). -/
 def StringTargetRegime.check (regime : StringTargetRegime) (policy : StringFieldPolicy)
     (matcher : Option (String → Bool)) (store : StringStore)
     (context : StringComputationContext) : Except StringComputationFault StringTargetOutcome := do

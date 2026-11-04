@@ -21,8 +21,8 @@ inductive ValidationMessageRenderingError where
   | unsupportedDisplayLocale (locale : String)
   | reference (error : ReferenceProjectionError)
   | invalidGroupBinding
-  /-- A keyed value parameter's key selects no row, which faults the rule's evaluation; see
-  `FlatRuleMessage.afterRendering` for the finding it reports. A keyed name or category does not fault. -/
+  /-- A keyed reference's key selects no row. `toRenderPartAt` renders that value or category empty, so
+  the fault never leaves a render plan. -/
   | unresolvedSelection
   deriving Repr, DecidableEq
 
@@ -155,9 +155,13 @@ def CheckedValidationMessagePart.toRenderPartAt
           | .concrete coordinate => pure (.group { repetitionIndex := coordinate })
           | .unknown => pure (.text "?")
           | .wildcard | .parallelIteration => throw .invalidGroupBinding
-  | .fieldValue reference => do
-      let path ← context.referencePath reference
-      pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => path))
+  | .fieldValue reference =>
+      -- Kernel 31.1.1 renders a value whose key selects no row as the empty text, beside the rule's own
+      -- message (a12-dmkits `MessageParameterRowDiffTest` at `1124b523f`, KF668); 30.8.1 faulted the rule.
+      match context.referencePath reference with
+      | .ok path => pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => path))
+      | .error .unresolvedSelection => pure (.text "")
+      | .error error => throw error
   | .fieldCategory access =>
       -- A key selecting no row renders an empty category rather than faulting (rule `RMissC`).
       match context.referencePath access.reference with
@@ -173,20 +177,5 @@ def CheckedValidationMessageTemplate.toRenderPlanAt
     (context : ValidationMessageRowContext model compilePattern)
     (inputs : ValidationMessageInputs) : Except ValidationMessageRenderingError MessageRenderPlan := do
   pure { parts := ← template.parts.mapM (·.toRenderPartAt context inputs) }
-
-/-- A firing's finding once its template rendered at the firing row. A rendering fault is caught by the
-generated rule's whole-rule handler, the one a runtime evaluation failure reaches
-(MainValidatorController.addValidatorMessage): the finding keeps its code, address and severity, becomes
-a value error, reports empty reference lists and carries the host's evaluation-fault text, which this
-theory leaves empty (rules `RMiss`, `RMissK`, whose condition alone would report an omission error;
-[checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15)).
-Measured on a nonrepeatable error field only. Any other rendering error stays structural. -/
-def FlatRuleMessage.afterRendering (message : FlatRuleMessage) :
-    Except ValidationMessageRenderingError MessageRenderPlan →
-      Except ValidationMessageRenderingError FlatRuleMessage
-  | .ok plan => pure { message with text := plan.render }
-  | .error .unresolvedSelection =>
-      pure { message with origin := .runtimeFailure, messageType := .value, text := { text := "" } }
-  | .error error => throw error
 
 end A12Kernel

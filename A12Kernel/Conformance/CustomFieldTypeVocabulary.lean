@@ -43,8 +43,8 @@ example :
         "ungueltigesDatumTTMMJJ" := by
   native_decide
 
-/- Second counterexample, in the other direction: one type, two surfaced codes. The reserved
-   test-range key is the only detail in the whole catalog whose surfaced code is not its owner's,
+/- Second counterexample, in the other direction: one type, two surfaced codes. The test-range
+   key is the only detail in the whole catalog whose surfaced code is not its owner's,
    and the neighbouring identification-number refusals are what make that visible. -/
 example :
     CustomFieldTypeDetail.identificationNumberTestOnly.surfacedCode .identificationNumber =

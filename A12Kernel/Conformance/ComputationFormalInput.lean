@@ -240,23 +240,23 @@ example :
       some true := by
   native_decide
 
-private def reportedIndex : FlatFieldDecl := {
+private def rejectedIndex : FlatFieldDecl := {
   id := 90, name := "Code", groupPath := ["Form", "Rows"], repeatableScope := [90]
   policy := { kind := .string }, customType := some { name := "Code" } }
 private def auditTarget : FlatFieldDecl := {
   id := 91, name := "Audit", groupPath := ["Form"], policy := { kind := .string }
   customType := some { name := "Audit" } }
 private def reportModel : FlatModel := {
-  fields := [reportedIndex, auditTarget]
+  fields := [rejectedIndex, auditTarget]
   repeatableGroups := [
     { level := 90, path := ["Form", "Rows"], repeatability := some 2, indexField := some 90 }] }
-private def reportWorld : World := {
+private def reportWorld (code : String) : World := {
   now := { epochMillis := 0 }
   customFieldValidator? := fun name => some fun value _ =>
-    if name == "Code" then some { projectCode := "testIDNummer" }
+    if name == "Code" then some { projectCode := code }
     else if value == "checked" then none else some { projectCode := "bad-audit" } }
-private def reportRun (same : Bool) : Option Bool := do
-  let prepared ← (prepareFlatStringContext reportWorld builtinStringPatternCompiler reportModel).toOption
+private def reportRun (code : String) (same : Bool) : Option Bool := do
+  let prepared ← (prepareFlatStringContext (reportWorld code) builtinStringPatternCompiler reportModel).toOption
   let input ← (checkDocument prepared "en_US" {
     instantiatedRows := [{ group := 90, path := [1] }, { group := 90, path := [2] }]
     cells := [
@@ -268,6 +268,9 @@ private def reportRun (same : Bool) : Option Bool := do
     (fun _ _ => operation.evaluateOutcome prepared.patterns input)
   pure result.toOption.isSome
 
-example : reportRun true = some false ∧ reportRun false = some true := by native_decide
+/- Locked: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1. A rejected index cell keeps its rejection as its one formal-input finding even where validation also reports `uniqueIndex`, so result assembly completes with and without equal keys, under `testIDNummer` exactly as under an ordinary code. -/
+example : ["testIDNummer", "CODE_BAD"].all (fun code =>
+    reportRun code true == some true && reportRun code false == some true) = true := by
+  native_decide
 
 end A12Kernel.Conformance.ComputationFormalInput

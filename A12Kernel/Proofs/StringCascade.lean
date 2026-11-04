@@ -69,17 +69,15 @@ theorem acceptedDependency_reads_value (context : StringComputationContext)
     exact computation_observes_clean_value (Value.str stored.text)]
   simp [stored.nonempty, pure, Except.pure]
 
-/-- An unavailable String target error becomes cause-blind computed-dependency poison for a later read. -/
+/-- A rejected String target, whatever its error, becomes cause-blind computed-dependency poison for a later read. -/
 theorem erroredDependency_reads_computedDependencyPoison
     (context : StringComputationContext) (field : FieldId)
-    (attempted : StoredString) (cause : StringTargetError)
-    (unavailable : cause.admitsValue = false) :
+    (attempted : StoredString) (cause : StringTargetError) :
     (context.withDependencyOutcome field (.errored attempted cause)).map
       (fun updated => updated.readTerm field) =
         .ok (.ok (.poison .computedDependency)) := by
   simp only [StringComputationContext.withDependencyOutcome,
-    StringDependencyCell.ofOutcome, unavailable, Bool.false_eq_true, ite_false,
-    pure, Except.pure, Except.map,
+    StringDependencyCell.ofOutcome, pure, Except.pure, Except.map,
     Except.ok.injEq]
   unfold StringComputationContext.readTerm
   rw [dependencyCell_shadows_target]
@@ -88,15 +86,6 @@ theorem erroredDependency_reads_computedDependencyPoison
         .poison .computedDependency by
     exact computation_observes_single_poison .computedDependency (by decide)]
   rfl
-
-/-- An admitted custom report has the same exact later read as an accepted attempted value. -/
-theorem reportedDependency_reads_value (context : StringComputationContext)
-    (field : FieldId) (attempted : StoredString) (cause : StringTargetError)
-    (admitted : cause.admitsValue = true) :
-    (context.withDependencyOutcome field (.errored attempted cause)).map
-      (fun updated => updated.readTerm field) = .ok (.ok (.text attempted.text)) := by
-  simpa only [StringComputationContext.withDependencyOutcome, StringDependencyCell.ofOutcome,
-    admitted, ite_true] using acceptedDependency_reads_value context field attempted
 
 /-- Dependency overlays retain the capability context required by later custom target callbacks. -/
 theorem dependencyCell_preserves_customContext (context : StringComputationContext)
@@ -139,13 +128,12 @@ theorem requiredDependencyPoison_is_rejected
       .error .validationScopedRequired := by
   rfl
 
-/-- Unavailable target failures erase attempted payloads from the dependency representation. -/
+/-- Target failures erase attempted payloads from the dependency representation. -/
 theorem erroredDependency_does_not_expose_attempt
-    (first second : StoredString) (cause : StringTargetError)
-    (unavailable : cause.admitsValue = false) :
+    (first second : StoredString) (cause : StringTargetError) :
     StringDependencyCell.ofOutcome (.errored first cause) =
       StringDependencyCell.ofOutcome (.errored second cause) := by
-  simp [StringDependencyCell.ofOutcome, unavailable]
+  simp [StringDependencyCell.ofOutcome]
 
 /-- Producer prior state does not participate in the checked outcome supplied to a dependent step. -/
 theorem stringStep_outcome_independent_of_prior
@@ -203,16 +191,14 @@ theorem same_delta_does_not_imply_same_dependency
 
 /-- Equal applied values do not determine the actual dependency state: an unavailable attempt poisons while quiet no-value remains empty. -/
 theorem same_appliedValue_does_not_imply_same_dependency
-    (attempted : StoredString) (cause : StringTargetError)
-    (unavailable : cause.admitsValue = false) :
+    (attempted : StoredString) (cause : StringTargetError) :
     (StringTargetOutcome.errored attempted cause).appliedValue =
         StringTargetOutcome.noValue.appliedValue ∧
       (StringDependencyCell.ofOutcome (.errored attempted cause)).map (·.checked) ≠
         (StringDependencyCell.ofOutcome .noValue).map (·.checked) := by
   constructor
   · rfl
-  · simp only [StringDependencyCell.ofOutcome, unavailable, Bool.false_eq_true, ite_false,
-      pure, Except.pure, Except.map]
+  · simp only [StringDependencyCell.ofOutcome, pure, Except.pure, Except.map]
     intro collapsed
     have cells := Except.ok.inj collapsed
     have placement := congrArg CheckedCell.rawPresent cells

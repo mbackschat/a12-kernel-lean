@@ -89,8 +89,7 @@ theorem customFieldValidationOutput_rejection_exact
     (fallbackText : ResolvedMessageText)
     (nonempty : value.isEmpty = false)
     (rejected : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (unavailable : rejection.admitsValue = false) :
+      (checked.declaration.validationContext locale) = some rejection) :
     checked.checkRelevantWithMessage locale true (.parsed value) errorAddress
         resolvedFieldLabel fallbackText = some {
       cell := {
@@ -102,31 +101,7 @@ theorem customFieldValidationOutput_rejection_exact
         resolvedFieldLabel fallbackText)
     } := by
   rw [CheckedCustomFieldType.checkRelevantWithMessage,
-    customFieldType_rejection_exact checked locale value rejection nonempty rejected unavailable]
-  rfl
-
-/-- A report-only custom result projects the same formal message while retaining its readable cell. -/
-theorem customFieldValidationOutput_report_exact
-    (checked : CheckedCustomFieldType) (locale value : String)
-    (rejection : RegisteredCustomRejection)
-    (errorAddress : MessagePointer) (resolvedFieldLabel : String)
-    (fallbackText : ResolvedMessageText)
-    (nonempty : value.isEmpty = false)
-    (reported : checked.validator value
-      (checked.declaration.validationContext locale) = some rejection)
-    (admitted : rejection.admitsValue = true) :
-    checked.checkRelevantWithMessage locale true (.parsed value) errorAddress
-        resolvedFieldLabel fallbackText = some {
-      cell := {
-        rawPresent := true
-        parsed := some (normalizeEvaluatedString value)
-        findings := []
-        reports := [.registeredCustomValidation rejection]
-      }
-      message? := some (rejection.toFormalMessage errorAddress resolvedFieldLabel fallbackText)
-    } := by
-  rw [CheckedCustomFieldType.checkRelevantWithMessage,
-    customFieldType_report_exact checked locale value rejection nonempty reported admitted]
+    customFieldType_rejection_exact checked locale value rejection nonempty rejected]
   rfl
 
 /-- Acceptance retains the evaluated String and has no custom formal message. -/
@@ -149,9 +124,9 @@ theorem customFieldValidationOutput_acceptance_exact
   simp [CheckedCustomFieldType.checkRelevantWithMessage,
     CheckedCustomFieldType.checkRelevantRaw, nonempty, accepted,
     CheckedCustomFieldType.checkStringRaw, CheckedCustomFieldType.classifyString,
-    CheckedCell.registeredCustomRejection?, CheckedCell.formalReports]
+    CheckedCell.registeredCustomRejection?]
 
-/-- Abort-mode ingestion can be composed across field batches without discarding either batch's formal reports. -/
+/-- Abort-mode ingestion can be composed across field batches without discarding either batch's findings. -/
 theorem customFieldValidationMode_abort_append
     (left right : List CustomFieldValidationOutput) :
     CustomFieldValidationMode.abortOnFormalErrors.continuesAfterIngestion (left ++ right) =
@@ -159,19 +134,17 @@ theorem customFieldValidationMode_abort_append
         CustomFieldValidationMode.abortOnFormalErrors.continuesAfterIngestion right) := by
   simp [CustomFieldValidationMode.continuesAfterIngestion, List.all_append]
 
-/-- A readable custom report is still a formal error for abort-mode continuation (spec/06 A.3). -/
-theorem customFieldValidationMode_readable_report_stops_abort
-    (value : String) (rejection : RegisteredCustomRejection) :
+/-- A registered rejection is an ordinary unavailable cell, so it stops abort-mode continuation like any other formal error (spec/06 A.3). -/
+theorem customFieldValidationMode_registered_rejection_stops_abort
+    (rejection : RegisteredCustomRejection) :
     let output : CustomFieldValidationOutput := {
       cell := {
         rawPresent := true
-        parsed := some value
-        findings := []
-        reports := [.registeredCustomValidation rejection] }
+        parsed := none
+        findings := [.registeredCustomValidation rejection] }
       message? := none }
-    observeCell .validation output.cell = .value value ∧
+    observeCell .validation output.cell = .unknown (.registeredCustomValidation rejection) ∧
       CustomFieldValidationMode.abortOnFormalErrors.continuesAfterIngestion [output] = false := by
-  simp [CustomFieldValidationMode.continuesAfterIngestion, CheckedCell.formalReports,
-    observeCell]
+  simp [CustomFieldValidationMode.continuesAfterIngestion, observeCell]
 
 end A12Kernel

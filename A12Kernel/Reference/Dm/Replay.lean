@@ -2,7 +2,6 @@ import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.ParallelValidation
 import A12Kernel.Reference.Dm.GeneratedComputationRule
 import A12Kernel.Elaboration.ValidationCondition.Omission
-import A12Kernel.Elaboration.ValidationMessageRendering
 
 /-! # Replaying one retained observation row through Lean
 
@@ -107,48 +106,6 @@ private def compareReferences (lean kernel : List ObservedReferences) : RuleStat
   if normalize lean == normalize kernel then .matched
   else .divergedReferences (normalize lean) (normalize kernel)
 
-/-- Display inputs that render nothing: the replay compares findings, not texts, and the one rendering
-outcome that changes a finding, a fault, does not read them. -/
-private def blankInputs : ValidationMessageInputs where
-  fieldName := fun _ => { providerResult := none, modelLabel := none, debugDisplay := "" }
-  fieldValue := fun _ => { displayValue := none, defaultDisplay := "" }
-  fieldStoredToken := fun _ => none
-  formPointer := fun _ _ => ""
-
-/-- Each ordinary firing after the request locale's template renders at its row, so a rendering fault
-reports as the Kernel reports it. The fault reaches the generated rule's whole-loop handler, as a
-reached condition failure does in `evalOrdinaryRepeatableFull`: earlier firings stay, later rows report
-nothing, and the finding points at the iterator's first error address. Peer KF561 measured the fault
-once, at the first row, in a rule iterating the keyed group (a12-dmkits `7b98fae62`); a fault first
-reached at a later row is that handler's account, not a separate measurement. A rule without a template
-in that locale, or with one this theory refuses, keeps its firings, as does a firing whose rendering
-fails structurally. -/
-def renderFirings (prepared : PreparedFlatStringContext model compilePattern) (language : Language)
-    (locale : String) (document : CheckedDocument model) (definition : DmRule)
-    (rule : CheckedResolvedValidationRule model) (fired : List (Env × FlatRuleMessage)) :
-    List (Env × FlatRuleMessage) :=
-  match (definition.messages.lookup locale).map
-      (elaborateValidationMessageTemplate model language.messageKeywordProfile (.rule rule)) with
-  | some (.ok template) =>
-      let references := document.applyFullIndexPreliminary.toOption.bind (·.messageReferenceInputs.toOption)
-      let failureAddress? : Option RulePointer := do
-        let (environments, _) ← (rule.fullRowsAndRepetitionResults document).toOption
-        let path ← (rule.errorPathAt (← environments.head?)).toOption
-        (rule.core.emitAt path (.fired .value)).message?.map (·.errorAddress)
-      let rec render : List (Env × FlatRuleMessage) → List (Env × FlatRuleMessage)
-        | [] => []
-        | (environment, message) :: remaining =>
-            let context : ValidationMessageRowContext model compilePattern := {
-              environment, document := document.source.toDocument, prepared, locale, references }
-            let plan := template.toRenderPlanAt context blankInputs
-            match message.afterRendering plan, plan with
-            | .ok faulted, .error .unresolvedSelection =>
-                [(environment, { faulted with errorAddress := failureAddress?.getD faulted.errorAddress })]
-            | .ok rendered, _ => (environment, rendered) :: render remaining
-            | .error _, _ => (environment, message) :: render remaining
-      render fired
-  | _ => fired
-
 /-- Project every fired message's reference channels at the environment it fired at, with the
 message-cache inputs of full validation for selected operands, and compare them as sets. -/
 def replayReferences (model : FlatModel) (document : CheckedDocument model)
@@ -242,13 +199,11 @@ def replayRulesPartial (model : DmModel) (language : Language) (world : World)
             { rule, status := if actual == expected then .matched else .diverged actual expected }
 
 /-- Compare every authored and generated rule of `model` on one checked document against the
-Kernel's messages, attributed by code and error field. With `rendering`, an ordinary rule's firings
-first pass through `renderFirings` for that prepared context and locale. A custom condition resolves
-through `registry`, the host's factories. -/
+Kernel's messages, attributed by code and error field. A custom condition resolves through `registry`,
+the host's factories. -/
 def replayRules (model : DmModel) (language : Language) (world : World)
     (checked : CheckedDocument model.flat) (kernel : List ObservedMessage)
     (kernelReferences : List ObservedReferences := [])
-    (rendering : Option (PreparedFlatStringContext model.flat builtinStringPatternCompiler × String) := none)
     (registry : CustomValidationRegistry model.flat := {}) :
     List RuleVerdict :=
   -- Rules read required-empty cells as formally unavailable (spec/03 §B.2), so they run on the
@@ -266,9 +221,6 @@ def replayRules (model : DmModel) (language : Language) (world : World)
           match checked' with
           | .parallel _ => (runValidationRule world document checked' (registry := registry)).map (·, none)
           | .ordinary ordinary => (runRuleAt world document ordinary registry).map fun fired =>
-              let fired := match rendering with
-                | some (prepared, locale) => renderFirings prepared language locale document rule ordinary fired
-                | none => fired
               (fired.map (·.2), some fired)
         match run with
         | .error detail => { rule, status := .runFault detail }
