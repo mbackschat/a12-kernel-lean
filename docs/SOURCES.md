@@ -126,6 +126,7 @@ These links open the detailed source owners directly. Search their `src-` anchor
 - [Temporal constants and BaseYear](sources/temporal-constant-and-base-year-probes.md)
 - [Repeatable temporal computations](sources/repeatable-temporal-computation-probes.md)
 - [Having filters](sources/having-filter-probes.md), including [captured predicate compositions](sources/having-filter-probes.md#src-captured-filter-compositions)
+- [Kernel 31.1.1 calibration](sources/kernel-31-calibration-probes.md), this repository's own measurements on the migration target
 - [Groups and iteration](sources/group-and-iteration-probes.md), including [sparse filter traversal](sources/group-and-iteration-probes.md#src-sparse-filter-traversal) and [Number parallel tokens](sources/key-join-and-parallel-probes.md#src-parallel-number-index-tokens)
 - [Group lists and capacity](sources/group-list-and-capacity-probes.md)
 - [Group-count topology and declared extent](sources/group-count-topology.md), including [reviewed inbound fixed-suffix coverage](sources/group-count-topology.md#src-group-fixed-suffix-coverage) and the [Enumeration literal gate](sources/group-count-topology.md#src-group-value-count-literal-domain).

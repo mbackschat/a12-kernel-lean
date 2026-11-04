@@ -169,16 +169,21 @@ private def peerRows : List (String × GroupPath × String × String × String) 
    ("len==0", O, "Lines/Sku", "Length(Lines/Sku) == 0", NEG),
    ("len>0", O, "Lines/Sku", "Length(Lines/Sku) > 0", "admitted")]
 
-/-- Rows the Kernel's visitor settles by source reading and no capture measures (`external evidence
-pending`): its reference test skips filter bodies, so a `$` read inside a `Having` names `Picks`
-without referencing it. The `Sum` leaf then rescues no `And` and fails an `Or`, and the value list
-does not iterate at all. -/
+/-- Locked: the [kernel 31.1.1 static capture](../../../evidence/kernel-31.1.1/captures/first-calibration-2026-11-04/static-ops.json)
+on a reduced order model holding "Lines" (50, keyed) and "Picks" (10, keyed). The Kernel's reference
+test skips filter bodies, so a "$" read inside a "Having" names "Picks" without referencing it. The
+"Sum" leaf then rescues no "And" and fails an "Or", and the filtered value list does not iterate at
+all. "f-list-direct" is the control that the value list's own read of "Picks" is judged, and
+"f-list-nofilter" that a value list over "Lines" alone beside a positive "Picks" read is admitted. -/
 private def sourceReadRows : List (String × GroupPath × String × String × String) :=
   let sum := "Sum(Lines*/Qty Having [Lines/Sku] == [$Picks/Ref]) > 0"
   [("f-and", O, "Picks/Ref", s!"FieldNotFilled(Picks/Ref) And {sum}", NEG),
    ("f-or", O, "Picks/Ref", s!"FieldFilled(Picks/Ref) Or {sum}", NEG),
    ("f-list", O, "Picks/Ref",
-     "NoFieldValueIncludedInValueList(Lines*/Sku Having [Lines/Code] == [$Picks/Ref] In \"X\")", "admitted")]
+     "NoFieldValueIncludedInValueList(Lines*/Sku Having [Lines/Code] == [$Picks/Ref] In \"X\")", "admitted"),
+   ("f-list-direct", O, "Picks/Ref", "NoFieldValueIncludedInValueList(Picks/Ref In \"X\")", NEG),
+   ("f-list-nofilter", O, "Picks/Ref",
+     "FieldFilled(Picks/Ref) And NoFieldValueIncludedInValueList(Lines*/Sku In \"X\")", "admitted")]
 
 /-- The rows this reader answers otherwise, each named by its capture row. -/
 private def mismatches : List (String × String × String) :=

@@ -1,0 +1,266 @@
+{
+ "model": "Claims31_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "validatePart",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "div-zero-second",
+   "documentInline": {
+    "Policy": {
+     "Claims": [
+      {
+       "Status": "open",
+       "Amount": 10,
+       "Reserve": 2
+      },
+      {
+       "Status": "open",
+       "Amount": 6,
+       "Reserve": 0
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Policy/Holder"
+    },
+    {
+     "path": "/Policy/Cap"
+    },
+    {
+     "path": "/Policy/Total"
+    },
+    {
+     "path": "/Policy/Claims/Status"
+    },
+    {
+     "path": "/Policy/Claims/Amount"
+    },
+    {
+     "path": "/Policy/Claims/Reserve"
+    },
+    {
+     "path": "/Policy/Claims"
+    }
+   ]
+  },
+  {
+   "name": "div-control",
+   "documentInline": {
+    "Policy": {
+     "Claims": [
+      {
+       "Status": "open",
+       "Amount": 10,
+       "Reserve": 2
+      },
+      {
+       "Status": "open",
+       "Amount": 6,
+       "Reserve": 3
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Policy/Holder"
+    },
+    {
+     "path": "/Policy/Cap"
+    },
+    {
+     "path": "/Policy/Total"
+    },
+    {
+     "path": "/Policy/Claims/Status"
+    },
+    {
+     "path": "/Policy/Claims/Amount"
+    },
+    {
+     "path": "/Policy/Claims/Reserve"
+    },
+    {
+     "path": "/Policy/Claims"
+    }
+   ]
+  },
+  {
+   "name": "div-zero-only",
+   "documentInline": {
+    "Policy": {
+     "Claims": [
+      {
+       "Status": "open",
+       "Amount": 6,
+       "Reserve": 0
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Policy/Holder"
+    },
+    {
+     "path": "/Policy/Cap"
+    },
+    {
+     "path": "/Policy/Total"
+    },
+    {
+     "path": "/Policy/Claims/Status"
+    },
+    {
+     "path": "/Policy/Claims/Amount"
+    },
+    {
+     "path": "/Policy/Claims/Reserve"
+    },
+    {
+     "path": "/Policy/Claims"
+    }
+   ]
+  },
+  {
+   "name": "div-empty-reserve",
+   "documentInline": {
+    "Policy": {
+     "Claims": [
+      {
+       "Status": "open",
+       "Amount": 10,
+       "Reserve": 2
+      },
+      {
+       "Status": "open",
+       "Amount": 6
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Policy/Holder"
+    },
+    {
+     "path": "/Policy/Cap"
+    },
+    {
+     "path": "/Policy/Total"
+    },
+    {
+     "path": "/Policy/Claims/Status"
+    },
+    {
+     "path": "/Policy/Claims/Amount"
+    },
+    {
+     "path": "/Policy/Claims/Reserve"
+    },
+    {
+     "path": "/Policy/Claims"
+    }
+   ]
+  },
+  {
+   "name": "partial-sum-count",
+   "documentInline": {
+    "Policy": {
+     "Holder": "h",
+     "Cap": 1,
+     "Claims": [
+      {
+       "Status": "open",
+       "Amount": 3,
+       "Reserve": 1
+      },
+      {
+       "Status": "open",
+       "Amount": 4,
+       "Reserve": 1
+      },
+      {
+       "Status": "closed",
+       "Amount": 10,
+       "Reserve": 1
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Policy/Holder"
+    },
+    {
+     "path": "/Policy/Cap"
+    },
+    {
+     "path": "/Policy/Total"
+    },
+    {
+     "path": "/Policy/Claims/Status"
+    },
+    {
+     "path": "/Policy/Claims/Amount"
+    },
+    {
+     "path": "/Policy/Claims/Reserve"
+    },
+    {
+     "path": "/Policy/Claims"
+    }
+   ]
+  },
+  {
+   "name": "partial-value-list",
+   "documentInline": {
+    "Policy": {
+     "Holder": "h",
+     "Cap": 100,
+     "Claims": [
+      {
+       "Status": "closed",
+       "Amount": 10,
+       "Reserve": 1
+      },
+      {
+       "Status": "closed",
+       "Amount": 8,
+       "Reserve": 1
+      }
+     ]
+    }
+   },
+   "relevant": [
+    {
+     "path": "/Policy/Holder"
+    },
+    {
+     "path": "/Policy/Cap"
+    },
+    {
+     "path": "/Policy/Total"
+    },
+    {
+     "path": "/Policy/Claims/Status"
+    },
+    {
+     "path": "/Policy/Claims/Amount"
+    },
+    {
+     "path": "/Policy/Claims/Reserve"
+    },
+    {
+     "path": "/Policy/Claims"
+    }
+   ]
+  }
+ ]
+}

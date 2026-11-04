@@ -1,0 +1,548 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.14.0",
+    "kernel" : {
+      "builtAgainst" : "31.1.1",
+      "runtime" : "31.1.1"
+    },
+    "source" : {
+      "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Claims31_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "div-zero-second",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "div-control",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "7"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "div-zero-only",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "div-empty-reserve",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "5"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "partial-sum-count",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PC",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PC",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            },
+            {
+              "code" : "PC0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "PC0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PS",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PS",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Cap"
+              ]
+            },
+            {
+              "code" : "PS0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PS0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ]
+            },
+            {
+              "code" : "PV",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "17"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "PC0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "PC0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PS0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PS0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PC",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PC",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            },
+            {
+              "code" : "PC0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "PC0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PS",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PS",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Cap"
+              ]
+            },
+            {
+              "code" : "PS0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PS0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ]
+            },
+            {
+              "code" : "PV",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "17"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "PC0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "PC0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "PS0",
+              "field" : "Policy/Cap",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PS0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "Policy/Cap"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "partial-value-list",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "PV",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            },
+            {
+              "code" : "PV0",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "18"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "PV0",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "PV",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Amount",
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            },
+            {
+              "code" : "PV0",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Policy/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "18"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          },
+          "partialMessages" : [
+            {
+              "code" : "PV0",
+              "field" : "Policy/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "PV0",
+              "referenced" : [
+                "/Policy[1]/Claims[0]/Status",
+                "Policy/Holder"
+              ],
+              "fillToFix" : [
+                "/Policy[1]/Claims[0]/Status"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

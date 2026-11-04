@@ -290,15 +290,19 @@ private def repetitionRows : List (String × String × String) :=
 
 example : mismatches policyParts P false repetitionRows = [] := by native_decide
 
-/-- Derived from the same statement and unmeasured, `external evidence pending`: every peer row keeps its
-outer level judged, so a refusal there cannot tell "at every level the rule iterates" from "at the
-levels the repetition itself iterates". With the outer `Claims` repeating twice and keyed, the guard
-skips it and judges `Parts` alone, where the outer repetition does not iterate: the first account
-admits the comparison, the second refuses it. -/
+/-- Locked: the [kernel 31.1.1 static capture](../../../evidence/kernel-31.1.1/captures/first-calibration-2026-11-04/static-ops.json),
+rows "keyed-*". Every peer row keeps its outer level judged, so a refusal there cannot tell "at every
+level the rule iterates" from "at the levels the repetition itself iterates". With the outer "Claims"
+repeating twice and keyed, the guard skips it (the first row, a bare negative over "Claims", is
+admitted) and judges "Parts" alone, where the outer repetition does not iterate; the comparison is
+still refused, so the refusal follows the levels the rule iterates. -/
 private def skippedOuterRows : List (String × String × String) :=
-  [("Claims/Parts/Qty", "[Claims/Parts/Qty] > CurrentRepetition(Claims)", NEG),
+  [("Claims/Amount", "FieldNotFilled(Claims/Amount)", "admitted"),
+   ("Claims/Parts/Qty", "FieldNotFilled(Claims/Parts/Qty)", NEG),
+   ("Claims/Parts/Qty", "[Claims/Parts/Qty] > CurrentRepetition(Claims)", NEG),
    ("Claims/Parts/Qty", "FieldFilled(Claims/Parts/Qty) And [Claims/Parts/Qty] > CurrentRepetition(Claims)",
-    "admitted")]
+    "admitted"),
+   ("Claims/Parts/Qty", "[Claims/Parts/Qty] > CurrentRepetition(Claims/Parts)", NEG)]
 
 example : mismatches policyPartsKeyed P false skippedOuterRows = [] := by native_decide
 

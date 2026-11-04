@@ -1,0 +1,124 @@
+{
+  "header" : {
+    "id" : "IterGuard31_DM",
+    "modelType" : "document",
+    "modelVersion" : "29.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "IterGuard31_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Order",
+        "name" : "Order",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Order/Email",
+            "name" : "Email",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Order/Lines",
+            "name" : "Lines",
+            "Group" : {
+              "repeatability" : 50,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Order/Lines/LineNo",
+                "name" : "LineNo",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Sku",
+                "name" : "Sku",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Code",
+                "name" : "Code",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Lines/Qty",
+                "name" : "Qty",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ],
+              "indexFieldName" : "LineNo"
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Order/Picks",
+            "name" : "Picks",
+            "Group" : {
+              "repeatability" : 10,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Order/Picks/LineNo",
+                "name" : "LineNo",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Order/Picks/Ref",
+                "name" : "Ref",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              } ],
+              "indexFieldName" : "LineNo"
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}

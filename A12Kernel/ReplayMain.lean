@@ -169,6 +169,7 @@ import A12Kernel.Reference.Dm.OverlapAgreementLocks
 import A12Kernel.Reference.Dm.IndexedProductLocks
 import A12Kernel.Reference.Dm.SumOfTermsLocks
 import A12Kernel.Reference.Dm.SumOfTermsRuntimeLocks
+import A12Kernel.Reference.Dm.FirstKernel31CaptureLocks
 import A12Kernel.Reference.Dm.FieldFillGuardLocks
 import A12Kernel.Reference.Dm.TemporalExpressionLocks
 import A12Kernel.Reference.Dm.TemporalRowsetLocks

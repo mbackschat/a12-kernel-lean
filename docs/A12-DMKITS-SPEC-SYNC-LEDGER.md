@@ -37,6 +37,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-04-02"></a>
+### SPEC-2026-11-04-02 — A `SumOfTerms` computation's row that divides by zero adds nothing and does not poison the sum
+
+- `status`: pending
+- `canonical`: [spec/07 §3.10](../spec/07-repetition-and-iteration.md#310-sumofterms), the evaluation paragraph.
+- `delta`: Replaces "unmeasured" with the rule: in a computation, as in validation, a row whose term divides by zero, including by an empty divisor, adds nothing, and a sum whose only row divides by zero is 0; no outcome is cleared or errored. The same change records three measured scopes that change no rule: spec/10 §5.2 step 2's skip of a filtered `Sum`, `NumberOfFilledFields` and value-list subject, spec/07's `$` read inside a filter that references no leaf, and the `CurrentRepetition` guard row's refusal at an inner level under a skipped keyed outer level.
+- `basis`: `:adapter:kernelProbe` at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, both strategies agreeing, kernel 31.1.1 ([checkpoint](sources/kernel-31-calibration-probes.md#src-first-kernel-31-capture)).
+- `acceptance`: a12-dmkits reconciles its account of a `SumOfTerms` computation over a dividing row with the rule, its interpreter computing the checkpoint's four `Total` rows as stated.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-11-04-01"></a>
 ### SPEC-2026-11-04-01 — The wholly relevant group extent never folds a capacity-one level, and a declared empty sub-group keeps its parent from being wholly relevant
 

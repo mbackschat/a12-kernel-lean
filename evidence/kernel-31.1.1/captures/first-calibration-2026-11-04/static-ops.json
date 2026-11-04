@@ -1,0 +1,240 @@
+[
+ {
+  "id": "keyed-neg-outer",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyKeyed_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Amount",
+   "--group=/Policy",
+   "--condition=FieldNotFilled(Claims/Amount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "keyed-neg-inner",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyKeyed_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=FieldNotFilled(Claims/Parts/Qty)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "keyed-cr-outer",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyKeyed_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=[Claims/Parts/Qty] > CurrentRepetition(Claims)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "keyed-cr-outer-guarded",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyKeyed_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=FieldFilled(Claims/Parts/Qty) And [Claims/Parts/Qty] > CurrentRepetition(Claims)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "keyed-cr-inner",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyKeyed_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=[Claims/Parts/Qty] > CurrentRepetition(Claims/Parts)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "plain-neg-outer",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyPlain_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Amount",
+   "--group=/Policy",
+   "--condition=FieldNotFilled(Claims/Amount)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "plain-neg-inner",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyPlain_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=FieldNotFilled(Claims/Parts/Qty)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "plain-cr-outer",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyPlain_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=[Claims/Parts/Qty] > CurrentRepetition(Claims)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "plain-cr-outer-guarded",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyPlain_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=FieldFilled(Claims/Parts/Qty) And [Claims/Parts/Qty] > CurrentRepetition(Claims)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "plain-cr-inner",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=PolicyPlain_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Policy/Claims/Parts/Qty",
+   "--group=/Policy",
+   "--condition=[Claims/Parts/Qty] > CurrentRepetition(Claims/Parts)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "e10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=IterGuard31_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Picks/Ref",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Picks/Ref)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "c02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=IterGuard31_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Lines/Sku",
+   "--group=/Order",
+   "--condition=FieldFilled(Lines/Qty) And FieldNotFilled(Lines/Sku)",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "f-and",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=IterGuard31_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Picks/Ref",
+   "--group=/Order",
+   "--condition=FieldNotFilled(Picks/Ref) And Sum(Lines*/Qty Having [Lines/Sku] == [$Picks/Ref]) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "f-or",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=IterGuard31_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Picks/Ref",
+   "--group=/Order",
+   "--condition=FieldFilled(Picks/Ref) Or Sum(Lines*/Qty Having [Lines/Sku] == [$Picks/Ref]) > 0",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "f-list",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=IterGuard31_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Picks/Ref",
+   "--group=/Order",
+   "--condition=NoFieldValueIncludedInValueList(Lines*/Sku Having [Lines/Code] == [$Picks/Ref] In \"X\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "f-list-direct",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=IterGuard31_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Picks/Ref",
+   "--group=/Order",
+   "--condition=NoFieldValueIncludedInValueList(Picks/Ref In \"X\")",
+   "--message=en_US=x"
+  ]
+ },
+ {
+  "id": "f-list-nofilter",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m=IterGuard31_DM.json",
+   "--name=GuardProbe",
+   "--code=P",
+   "--field=/Order/Picks/Ref",
+   "--group=/Order",
+   "--condition=FieldFilled(Picks/Ref) And NoFieldValueIncludedInValueList(Lines*/Sku In \"X\")",
+   "--message=en_US=x"
+  ]
+ }
+]

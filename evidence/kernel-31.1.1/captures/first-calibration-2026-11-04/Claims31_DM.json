@@ -1,0 +1,212 @@
+{
+  "header" : {
+    "id" : "Claims31_DM",
+    "modelType" : "document",
+    "modelVersion" : "29.4.0",
+    "locales" : [ {
+      "code" : "en_US"
+    } ],
+    "labels" : [ ],
+    "annotations" : [ ],
+    "modelReferences" : [ ]
+  },
+  "content" : {
+    "modelInfo" : {
+      "name" : "Claims31_DM",
+      "variant" : "cockpit",
+      "revision" : "Arbeitsversion",
+      "immutable" : false
+    },
+    "modelConfig" : {
+      "decimalSeparator" : ".",
+      "timeZone" : "Europe/Berlin",
+      "conditionLanguage" : {
+        "code" : "en_US"
+      },
+      "fieldRefByShortNameAllowed" : true
+    },
+    "modelRoot" : {
+      "rootGroups" : [ {
+        "type" : "Group",
+        "id" : "/Policy",
+        "name" : "Policy",
+        "Group" : {
+          "repeatability" : 1,
+          "elements" : [ {
+            "type" : "Field",
+            "id" : "/Policy/Holder",
+            "name" : "Holder",
+            "Field" : {
+              "fieldType" : {
+                "type" : "StringType"
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Policy/Cap",
+            "name" : "Cap",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Field",
+            "id" : "/Policy/Total",
+            "name" : "Total",
+            "Field" : {
+              "fieldType" : {
+                "type" : "NumberType",
+                "NumberType" : {
+                  "maxFractionalDigits" : 0
+                }
+              }
+            }
+          }, {
+            "type" : "Group",
+            "id" : "/Policy/Claims",
+            "name" : "Claims",
+            "Group" : {
+              "repeatability" : 4,
+              "elements" : [ {
+                "type" : "Field",
+                "id" : "/Policy/Claims/Status",
+                "name" : "Status",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "StringType"
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Policy/Claims/Amount",
+                "name" : "Amount",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              }, {
+                "type" : "Field",
+                "id" : "/Policy/Claims/Reserve",
+                "name" : "Reserve",
+                "Field" : {
+                  "fieldType" : {
+                    "type" : "NumberType",
+                    "NumberType" : {
+                      "maxFractionalDigits" : 0
+                    }
+                  }
+                }
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Policy/PS",
+            "name" : "PS",
+            "Rule" : {
+              "errorEntityRelPath" : "../Cap",
+              "errorCode" : "PS",
+              "errorCondition" : "FieldFilled(Cap) And Sum(Claims*/Amount Having [Claims/Status] == \"open\") > [Cap]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "PS"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Policy/PS0",
+            "name" : "PS0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Cap",
+              "errorCode" : "PS0",
+              "errorCondition" : "FieldFilled(Cap) And Sum(Claims*/Amount) > [Cap]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "PS0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Policy/PC",
+            "name" : "PC",
+            "Rule" : {
+              "errorEntityRelPath" : "../Cap",
+              "errorCode" : "PC",
+              "errorCondition" : "FieldFilled(Cap) And NumberOfFilledFields(Claims*/Amount Having [Claims/Status] == \"open\") > [Cap]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "PC"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Policy/PC0",
+            "name" : "PC0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Cap",
+              "errorCode" : "PC0",
+              "errorCondition" : "FieldFilled(Cap) And NumberOfFilledFields(Claims*/Amount) > [Cap]",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "PC0"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Policy/PV",
+            "name" : "PV",
+            "Rule" : {
+              "errorEntityRelPath" : "../Holder",
+              "errorCode" : "PV",
+              "errorCondition" : "FieldFilled(Holder) And NoFieldValueIncludedInValueList(Claims*/Status Having [Claims/Amount] > 5 In \"open\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "PV"
+              } ]
+            }
+          }, {
+            "type" : "Rule",
+            "id" : "/Policy/PV0",
+            "name" : "PV0",
+            "Rule" : {
+              "errorEntityRelPath" : "../Holder",
+              "errorCode" : "PV0",
+              "errorCondition" : "FieldFilled(Holder) And NoFieldValueIncludedInValueList(Claims*/Status In \"open\")",
+              "severity" : "ERROR",
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "PV0"
+              } ]
+            }
+          }, {
+            "type" : "Computation",
+            "id" : "/Policy/TotalComp",
+            "name" : "TotalComp",
+            "Computation" : {
+              "computedFieldRelPath" : "../Total",
+              "computationAlternatives" : [ {
+                "operation" : "RoundDown(SumOfTerms(Claims*, [Claims/Amount] / [Claims/Reserve]), 0)"
+              } ],
+              "errorMessage" : [ {
+                "locale" : "en_US",
+                "text" : "T"
+              } ]
+            }
+          } ]
+        }
+      } ]
+    }
+  }
+}
