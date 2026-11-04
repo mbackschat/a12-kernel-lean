@@ -116,6 +116,8 @@ A new semantic capsule may land as `external evidence pending`. Before claiming 
 
 A pure Lean refactor or protocol-layout change must not alter retained observation bytes. A semantic disagreement is investigated at the definition or projection boundary; expected evidence is never refreshed merely to make a test green. A correction carries explicit provenance, and a new kernel version receives a new versioned bundle rather than rewriting `kernel-30.8.1`.
 
+Since the [kernel 31.1.1 migration](PLAN.md#kernel-31-migration) the `kernel-30.8.1` bundles are frozen replay evidence for the 31.1.1 theory. A row whose outcome 31.1.1 changed is compared under its renamed code or deferred with a named reason in [`RuleCheckProjection.lean`](../A12Kernel/Evidence/RuleCheckProjection.lean) and [`DeclarationNotificationProjection.lean`](../A12Kernel/Evidence/DeclarationNotificationProjection.lean), never re-expected. An agreeing row measures kernel 30.8.1 only: its correspondence on 31.1.1 is carried forward, not measured, until a 31.1.1 bundle retains it.
+
 The exact historical validation estate, receipt and model identities, triangulation detail, dual-path checkpoint, deletion inventory, and recovery commands are in the validation archive (`docs/archived/VALIDATION-RAW-EVIDENCE.md` at `a050f150`). Use Git to inspect those bytes when an audit needs them; do not restore the retired schema/replay stack to routine source.
 
 ### Having predicate-family runtime capture
