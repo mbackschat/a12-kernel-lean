@@ -7,7 +7,7 @@ import A12Kernel.Reference.Dm.ModelConsistencyRead
 
 /-! # What kernel 31.1.1 makes of an Enumeration's members, shared element ids, the type-definition order, an empty range pair and a Number bound
 
-Five settled readings of kernel 31.1.1, each locked on the carrier its peer oracle names. A row is one model
+Six settled readings of kernel 31.1.1, each locked on the carrier its peer oracle names. A row is one model
 with one declaration varied, and asserts what the readers draw together: the coded classes the declaration
 walk and the consistency check report, with their multiplicity and no class beyond them, or no model on all
 three. The model reader must keep its field exactly when no class is drawn; a row where the three readers
@@ -18,6 +18,8 @@ part is `split`, which no row expects.
   `MVK_NAME_MISSING` at its field and takes no part in the pairing, and a category token that is absent,
   empty, blank or `null` is no token (a number or a boolean binds as its text, an object or an array leaves no
   model).
+* A value entry with no `value` member is a value with no token that keeps its position, and a label in any
+  locale, declared or not, makes a value carry labels.
 * Every element sharing an id is stated by the basic check, at its own path.
 * The basic check walks a model's own type definitions as declared unless the model has something to expand,
   and by id in UTF-16 code-unit order when it has.
@@ -244,6 +246,111 @@ private def nameRows : List (String × Json × Verdict) :=
    row "no token list" "[{\"name\":\"Band\"}]" (cls [missingCategory, missingCategory])]
 
 example : failures nameRows = [] := by native_decide
+
+/-! ## Value entries without a token, and a label in any locale
+
+Locked: a12-dmkits `CheckerReaderBindingAgreementTest`, `CheckerDeclarationAdmissionAgreementTest` and
+`EnumCategoryWireShapeLawsTest` at 1124b523f, kernel 31.1.1 (peer KF654, KF655). A row asserts every class the
+declaration walk and the basic check draw together, sorted and codeless ones included, and for a token-less
+body whether the model reader keeps the field. The one row the Kernel admits with a token-less entry is a model
+the reader refuses all the same: a stored token the entry does not declare has no account in a document
+(the runtime meaning of such an entry is unmeasured), so `EnumerationDeclaration.validate` leaves no checked
+declaration for it.
+
+The label rows assert the model reader too, except the two where it parts from the Kernel: it reads labels as the
+declaration validator does, blind to the model's declared locales, so it keeps a model whose every label is for an
+undeclared locale and refuses one whose label repeats only there. -/
+
+private def valuesMissing : String := "MVK_INTERNAL_VALUES_MISSING"
+private def valueMissing : String := "MVK_INTERNAL_VALUE_MISSING"
+private def displayValues : String := "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"
+private def countOfValues : String := "MVK_COUNT_OF_VALUES_INVALID"
+private def displayDuplicate : String := "MVK_DISPLAY_VALUES_DUPLICATE"
+private def repeatedValue : String := "codeless:repeated-value"
+
+/-- One `values` entry written as JSON text: the token under `value`, or under the misspelled member `valu`
+for a token-less entry, and its labels as `(locale, text)` pairs. -/
+private def entryText (token : Option String) (labels : List (String × String) := []) : String :=
+  let member := match token with
+    | some text => s!"\"value\":\"{text}\""
+    | none => "\"valu\":\"X\""
+  let label := if labels.isEmpty then "" else
+    ",\"label\":[" ++ ",".intercalate (labels.map fun (locale, text) =>
+      s!"\{\"locale\":\"{locale}\",\"text\":\"{text}\"}") ++ "]"
+  s!"\{{member}{label}}"
+
+private def categoryText (name : String) (tokens : List String) : String :=
+  s!"\{\"name\":\"{name}\",\"values\":[" ++ ",".intercalate (tokens.map fun token => s!"\"{token}\"") ++ "]}"
+
+/-- A `Tier` Enumeration over `entries`, with the categories `(name, tokens)` beside them. -/
+private def entriesModel (entries : List String) (categories : List (String × List String) := []) : Json :=
+  let categoryMember := if categories.isEmpty then "" else
+    ",\"categories\":[" ++ ",".intercalate (categories.map fun (name, tokens) => categoryText name tokens) ++ "]"
+  tierModel (s!"\{\"values\":[" ++ ",".intercalate entries ++ s!"]{categoryMember}}")
+
+/-- Every class the walk and the basic check draw, sorted, or none when either leaves no model. -/
+private def drawnClasses (json : Json) : Option (List String) :=
+  match walkOf json, consistencyOf json with
+  | some walk, some consistency => some (((walk ++ consistency).map (·.1)).mergeSort (· ≤ ·))
+  | _, _ => none
+
+/-- Whether the model reader keeps the `Tier` field, none when it reads no model. -/
+private def readerKeepsTier (json : Json) : Option Bool :=
+  (builtOf json).map fun model => model.flat.fields.any (·.name == "Tier")
+
+private def entryFailures (rows : List (String × Json × List String × Option Bool)) :
+    List (String × Option (List String) × Option Bool) :=
+  rows.filterMap fun (label, json, expected, keeps) =>
+    if drawnClasses json == some (expected.mergeSort (· ≤ ·)) && keeps.all (readerKeepsTier json == some ·) then none
+    else some (label, drawnClasses json, readerKeepsTier json)
+
+private def tokenlessRows : List (String × Json × List String × Option Bool) :=
+  let tokenless := entryText none
+  let open_ := entryText (some "OPEN")
+  [("no entry carries a token", entriesModel [tokenless, tokenless], [valuesMissing, repeatedValue], some false),
+   ("no entry carries a token, both labelled",
+    entriesModel [entryText none [("en_US", "Open")], entryText none [("en_US", "Closed")]],
+    [valuesMissing, displayValues, valueMissing, repeatedValue], some false),
+   ("one entry without a token, beside a category",
+    entriesModel [tokenless] [("State", ["OPEN"])], [valuesMissing, missingInternal], some false),
+   ("a value entry's member misspelled, beside a category",
+    entriesModel ["{\"sValue\":\"BASIC\"}", "{\"sValue\":\"PLUS\"}"] [("Band", ["STANDARD"])],
+    [valuesMissing, missingInternal, repeatedValue], some false),
+   ("one of two entries without a token, unlabelled", entriesModel [open_, tokenless], [], some false),
+   ("two of three entries without a token", entriesModel [open_, tokenless, tokenless], [repeatedValue], some false),
+   ("one of two entries without a token, both labelled",
+    entriesModel [entryText (some "OPEN") [("en_US", "Open")], entryText none [("en_US", "Closed")]],
+    [valueMissing, displayValues], some false),
+   ("a token-less entry between two, beside a two-token category",
+    entriesModel [open_, tokenless, entryText (some "CLOSED")] [("State", ["A", "B"])],
+    [missingCategory, missingInternal], some false),
+   ("a token-less entry first, beside a one-token category",
+    entriesModel [tokenless, open_] [("State", ["A"])], [missingCategory, missingInternal], some false)]
+
+example : entryFailures tokenlessRows = [] := by native_decide
+
+private def labelRows : List (String × Json × List String × Option Bool) :=
+  let labelled (token : String) (labels : List (String × String)) := entryText (some token) labels
+  let plus := entryText (some "PLUS")
+  [("one value labelled for an undeclared locale only, beside an unlabelled one",
+    entriesModel [labelled "BASIC" [("fr_FR", "Base")], plus], [countOfValues, displayValues], some false),
+   ("one value blank-labelled for an undeclared locale",
+    entriesModel [labelled "BASIC" [("fr_FR", "")], plus], [countOfValues, displayValues], some false),
+   ("declared beside undeclared, against undeclared alone",
+    entriesModel [labelled "BASIC" [("en_US", "Basic"), ("fr_FR", "Base")], labelled "PLUS" [("fr_FR", "Plus")]],
+    [displayValues], some false),
+   ("every value labelled for an undeclared locale only",
+    entriesModel [labelled "BASIC" [("fr_FR", "Base")], labelled "PLUS" [("fr_FR", "Plus")]], [displayValues], none),
+   ("one value labelled for the declared locale, the control",
+    entriesModel [labelled "BASIC" [("en_US", "Basic")], plus], [countOfValues], some false),
+   ("a label repeated only in an undeclared locale",
+    entriesModel [labelled "BASIC" [("en_US", "Basic"), ("fr_FR", "Same")],
+      labelled "PLUS" [("en_US", "Plus"), ("fr_FR", "Same")]], [], none),
+   ("a label repeated in the declared locale, the control",
+    entriesModel [labelled "BASIC" [("en_US", "Same"), ("fr_FR", "Base")],
+      labelled "PLUS" [("en_US", "Same"), ("fr_FR", "Plus")]], [displayDuplicate], some false)]
+
+example : entryFailures labelRows = [] := by native_decide
 
 /-! ## Elements sharing an id
 

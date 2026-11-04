@@ -24,6 +24,18 @@ theorem eraseDups_nodup_of_length_le {α : Type} [BEq α] [LawfulBEq α] :
       · exact eraseDups_nodup_of_length_le bound _
           (Nat.le_trans (List.length_filter_le _ _) (by simp at small; omega))
 
+/-- Without a token-less entry the value entries are the stored tokens, one `some` each. -/
+theorem EnumerationDeclaration.valueEntries_eq_map_some (declaration : EnumerationDeclaration)
+    (holeless : declaration.tokenlessPositions = []) :
+    declaration.valueEntries = declaration.storedTokens.map some := by
+  unfold EnumerationDeclaration.valueEntries
+  rw [holeless]
+  apply List.ext_getElem
+  · simp
+  · intro index bound _
+    simp only [List.length_map, List.length_range, List.length_nil, Nat.add_zero] at bound
+    simp [List.getElem_map, List.getElem_range, List.getElem?_eq_getElem bound]
+
 /-- No notification is reported twice, whatever the charset and declaration. -/
 theorem enumerationDeclaration_notifications_nodup (charset : LegalCharset)
     (declaration : EnumerationDeclaration) :
@@ -41,7 +53,8 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
       ExecutableDeclaration.blank category.name = false ∧
         ∀ token ∈ category.tokens, ExecutableDeclaration.blank token = false) :
     declaration.notifications .defaultBmp = [] := by
-  obtain ⟨trimmedNodup, arity⟩ := declaration.validate_ok_shape valid
+  obtain ⟨holeless, trimmedNodup, arity⟩ := declaration.validate_ok_shape valid
+  have entries := declaration.valueEntries_eq_map_some holeless
   have unrepeated : ∀ tokens : List String, tokens.Nodup → EnumerationDeclaration.duplicated tokens = [] := by
     intro tokens nodup
     simp only [EnumerationDeclaration.duplicated, List.filter_eq_nil_iff, decide_eq_true_eq]
@@ -57,8 +70,9 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
       declaration.surplusNotifications = [] ∧
       declaration.categoryDuplicateNotifications = [] ∧
       declaration.internalDuplicateNotifications = [] ∧
-      declaration.repeatedValueNotifications = [] := by
-    refine ⟨rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
+      declaration.repeatedValueNotifications = [] ∧
+      declaration.valuesMissingNotifications = [] := by
+    refine ⟨rfl, ?_, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
     · simp [EnumerationDeclaration.supplementaryNotifications, noSupplementary]
     · have unblank : ¬ (declaration.categories.any fun category =>
           ExecutableDeclaration.blank category.name) = true := by
@@ -69,26 +83,34 @@ theorem enumerationDeclaration_notifications_eq_nil_of_validate_ok
     · simp only [EnumerationDeclaration.shortfallNotifications, List.flatMap_eq_nil_iff]
       intro category member
       have declared := (List.mem_filter.mp member).1
-      simp only [List.map_eq_nil_iff, List.filter_eq_nil_iff, List.mem_mapIdx]
-      rintro ⟨value, token⟩ ⟨index, bound, same⟩
+      simp only [List.filterMap_eq_nil_iff, List.mem_mapIdx, entries]
+      rintro ⟨entry, token⟩ ⟨index, bound, same⟩
       simp only [Prod.mk.injEq] at same
-      obtain ⟨-, rfl⟩ := same
-      have inside : index < category.tokens.length := by rw [arity category declared]; exact bound
+      obtain ⟨rfl, rfl⟩ := same
+      have inside : index < category.tokens.length := by
+        rw [arity category declared]; simpa using bound
       rw [List.getElem?_eq_getElem inside]
       simp [(filled category declared).2 _ (List.getElem_mem inside)]
     · simp only [EnumerationDeclaration.surplusNotifications, List.flatMap_eq_nil_iff]
       intro category member
       have declared := (List.mem_filter.mp member).1
-      simp [List.drop_eq_nil_of_le (Nat.le_of_eq (arity category declared))]
+      simp only [List.filterMap_eq_nil_iff, List.mem_mapIdx, entries]
+      rintro ⟨entry, token⟩ ⟨index, bound, same⟩
+      simp only [Prod.mk.injEq] at same
+      obtain ⟨rfl, rfl⟩ := same
+      have inside : index < declaration.storedTokens.length := by
+        rw [← arity category declared]; exact bound
+      simp [List.getElem?_eq_getElem inside]
     · simp [EnumerationDeclaration.categoryDuplicateNotifications, noTrimmedDuplicates]
     · simp [EnumerationDeclaration.internalDuplicateNotifications, noTrimmedDuplicates]
-    · simp [EnumerationDeclaration.repeatedValueNotifications, noDuplicates]
+    · simp [EnumerationDeclaration.repeatedValueNotifications, noDuplicates, holeless]
+    · simp [EnumerationDeclaration.valuesMissingNotifications, holeless]
   obtain ⟨invalid, supplementary, categoryName, shortfall, surplus, categoryDuplicate, internalDuplicate,
-    repeated⟩ := emptyBlocks
+    repeated, valuesMissing⟩ := emptyBlocks
   unfold EnumerationDeclaration.notifications
   split
   · rfl
   · simp [invalid, supplementary, categoryName, shortfall, surplus, categoryDuplicate, internalDuplicate,
-      repeated]
+      repeated, valuesMissing]
 
 end A12Kernel

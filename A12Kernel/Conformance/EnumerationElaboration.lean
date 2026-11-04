@@ -133,4 +133,51 @@ example : checkedComplete.categoryTokenFor? "Kind" "B" = some "Shared" := by nat
 
 example : (checkedComplete.categoryProjection? "kind").isNone := by native_decide
 
+/-! ## Value entries that declare no token
+
+Kernel 31.1.1 reads past a misspelled `value` member, so the entry keeps its position (a12-dmkits
+`CheckerReaderBindingAgreementTest` at 1124b523f, KF655; the retained rows are locked through the readers in
+`DeclarationShapeLocks`). Each row below is a payload the rows' class sets do not show. -/
+
+private def withTokenless (storedTokens : List String) (tokenlessPositions : List Nat)
+    (categories : List EnumerationCategoryDeclaration := []) : EnumerationDeclaration :=
+  { storedTokens, tokenlessPositions, categories }
+
+/-- The entries are the stored tokens with a hole at each token-less position, and the checked declaration
+has none: an entry with no token is refused after every other check, an empty domain first. -/
+example :
+    (withTokenless ["A", "B"] [1]).valueEntries = [some "A", none, some "B"] ∧
+    (withTokenless [] [0, 1]).valueEntries = [none, none] ∧
+    rejectsWith (withTokenless ["A", "B"] [1]) (.tokenlessEntry 1) ∧
+    rejectsWith (withTokenless [] [0, 1]) .emptyStoredDomain := by
+  native_decide
+
+/-- **A hole keeps its position in the pairing.** The token at the hole is a surplus, and the value after it
+is the one left without a token; a pairing over the entries that carry a token would admit this declaration. -/
+example :
+    (withTokenless ["OPEN", "CLOSED"] [1] [category "State" ["A", "B"]]).notifications .defaultBmp =
+      [.missingCategoryValue "State" "CLOSED", .missingInternalValue "State" "B"] ∧
+    (withTokenless ["OPEN"] [0] [category "State" ["A"]]).notifications .defaultBmp =
+      [.missingCategoryValue "State" "OPEN", .missingInternalValue "State" "A"] := by
+  native_decide
+
+/-- **Two holes are one repeated value and no duplicate of a stored token.** The absent token repeats as written,
+while the duplicate classes read trimmed tokens and never reach it; a single hole repeats nothing, and a hole
+beside a repeated stored token leaves that token's own classes unchanged. -/
+example :
+    (withTokenless ["OPEN"] [1, 2]).notifications .defaultBmp = [.repeatedTokenless] ∧
+    (withTokenless ["OPEN"] [1]).notifications .defaultBmp = [] ∧
+    (withTokenless ["A", "A"] [2]).notifications .defaultBmp = [.internalValuesDuplicate "A", .repeatedValue "A"] := by
+  native_decide
+
+/-- No entry carries a token: the class is raised once however many entries there are, after the pairing's
+surplus notification, and a single hole already raises it. -/
+example :
+    (withTokenless [] [0]).notifications .defaultBmp = [.internalValuesMissing] ∧
+    (withTokenless [] [0, 1] [category "Band" ["STANDARD"]]).notifications .defaultBmp =
+      [.missingInternalValue "Band" "STANDARD", .repeatedTokenless, .internalValuesMissing] ∧
+    EnumerationDeclarationNotification.internalValuesMissing.kernelCode? = some "MVK_INTERNAL_VALUES_MISSING" ∧
+    EnumerationDeclarationNotification.repeatedTokenless.kernelCode? = none := by
+  native_decide
+
 end A12Kernel.Conformance.EnumerationElaboration

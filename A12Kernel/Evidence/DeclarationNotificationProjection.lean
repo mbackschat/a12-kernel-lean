@@ -38,6 +38,8 @@ def deferred : List (String × String) :=
   ["tb-time-nobody", "tb-dt-nobody", "tb-frag-nobody"].map (fun id =>
     (id, "kernel 30.8.1 refused a temporal type without its body, which kernel 31.1.1 reads as an empty body (spec/01 §1.1)")) ++
   [("fc-nv-null", "kernel 30.8.1 read a null boolean member as false, which kernel 31.1.1 refuses (spec/01 §1.1)")] ++
+  ["ec-undecl", "ed-undecl", "ed-tab-undecl"].map (fun id =>
+    (id, "kernel 30.8.1 counted a label only in a declared locale, while kernel 31.1.1 counts one in any locale (spec/01 §1.3)")) ++
   ["r-filtered", "nv-filtered", "pi-filtered", "lb1-filtered", "mm-n-filtered", "p-only", "h-only",
     "ml-only", "ar-only", "mv-only", "ec-only", "ed-only", "dd-only", "ev-tab-only", "nl-only",
     "sv-only", "u-only", "cn-only", "od-only", "pa-f-only", "pa-g-only", "dg-only", "xf-only", "dc-only",

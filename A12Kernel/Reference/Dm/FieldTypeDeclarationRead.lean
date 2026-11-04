@@ -95,7 +95,7 @@ private def readEnumeration (body : Json) : Except String EnumerationTypeDeclara
     | .ok _ => throw "EnumerationType sValue must be a string"
   pure {
     values := ← (← arrayMembers body "values").mapM fun entry => do
-      pure { token := ← entry.getObjValAs? String "value"
+      pure { token := ← valueEntryToken entry
              labels := (← localizedTextMember entry "label").map fun (locale, text) => { locale, text } }
     categories := ← boundCategories body
     sValue

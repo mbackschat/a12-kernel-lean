@@ -23,7 +23,12 @@ structure EnumerationCategoryDeclaration where
 
 /-- The normalized ordinary closed declaration. -/
 structure EnumerationDeclaration where
+  /-- The stored tokens of the value entries that declare one, in declaration order. -/
   storedTokens : List String
+  /-- The positions, counted over every value entry, of the entries that declare no token. Kernel 31.1.1 reads past
+  a misspelled `value` member, so such an entry keeps its position in the category pairing (a12-dmkits
+  `CheckerReaderBindingAgreementTest` at 1124b523f, KF655). The checked declaration has none: `validate` refuses it. -/
+  tokenlessPositions : List Nat := []
   displayFacts : List EnumerationDisplayFact := []
   categories : List EnumerationCategoryDeclaration := []
   /-- The optional model-owned default text used by eligible index-default staging, as written: a padded
@@ -33,6 +38,8 @@ structure EnumerationDeclaration where
 
 inductive EnumerationDeclarationError where
   | emptyStoredDomain
+  /-- A value entry declares no token; kernel 31.1.1 admits one such unlabelled entry, whose runtime meaning is unmeasured. -/
+  | tokenlessEntry (position : Nat)
   | duplicateStoredToken (token : String)
   | unknownDefaultStoredToken (token : String)
   | emptyDisplayLocale (stored : String)
@@ -109,7 +116,7 @@ private def invalidCategory? (expectedArity : Nat) :
         | some tokenIndex => some (.emptyCategoryToken category.name tokenIndex)
         | none => invalidCategory? expectedArity remaining (index + 1)
 
-/-- Validate the shared ordinary closed declaration invariants in deterministic source order. Identity displays are legal, and category tokens may repeat because category projection is many-to-one. An empty stored token is legal: the Kernel loads it and admits it as a value-list literal, while a stored empty cell stays empty, so no cell ever holds it (empty-token capture, 2026-10-14). -/
+/-- Validate the shared ordinary closed declaration invariants in deterministic source order. Identity displays are legal, and category tokens may repeat because category projection is many-to-one. An empty stored token is legal: the Kernel loads it and admits it as a value-list literal, while a stored empty cell stays empty, so no cell ever holds it (empty-token capture, 2026-10-14). A value entry with no token is refused after every other check: a token-less entry has no checked account, because the Kernel's runtime reading of one is unmeasured. -/
 def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
     Except EnumerationDeclarationError Unit :=
   if declaration.storedTokens.isEmpty then
@@ -133,7 +140,10 @@ def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
                 | none =>
                     match invalidCategory? declaration.storedTokens.length declaration.categories 0 with
                     | some error => .error error
-                    | none => .ok ()
+                    | none =>
+                        match declaration.tokenlessPositions with
+                        | position :: _ => .error (.tokenlessEntry position)
+                        | [] => .ok ()
 
 private theorem firstDuplicate?_eq_none_nodup :
     ∀ tokens : List String, firstDuplicate? tokens = none → tokens.Nodup
@@ -170,9 +180,10 @@ private theorem invalidCategory?_eq_none_arity (expectedArity : Nat) :
                   exact invalidCategory?_eq_none_arity expectedArity remaining (index + 1)
                     none_ candidate later
 
-/-- A validated declaration lists each stored token once even after Java's `trim` and gives every category exactly one token per stored token. Declaration-notification laws consume this shape instead of re-deriving it from the ordered refusal chain. -/
+/-- A validated declaration has a token at every value entry, lists each stored token once even after Java's `trim` and gives every category exactly one token per stored token. Declaration-notification laws consume this shape instead of re-deriving it from the ordered refusal chain. -/
 theorem EnumerationDeclaration.validate_ok_shape (declaration : EnumerationDeclaration)
     (valid : declaration.validate = .ok ()) :
+    declaration.tokenlessPositions = [] ∧
     (declaration.storedTokens.map javaTrim).Nodup ∧
       ∀ category ∈ declaration.categories,
         category.tokens.length = declaration.storedTokens.length := by
@@ -181,7 +192,8 @@ theorem EnumerationDeclaration.validate_ok_shape (declaration : EnumerationDecla
   repeat' split at valid
   all_goals first
     | contradiction
-    | exact ⟨firstDuplicate?_eq_none_nodup _ ‹firstDuplicate? (declaration.storedTokens.map javaTrim) = none›,
+    | exact ⟨‹declaration.tokenlessPositions = []›,
+        firstDuplicate?_eq_none_nodup _ ‹firstDuplicate? (declaration.storedTokens.map javaTrim) = none›,
         invalidCategory?_eq_none_arity _ _ _
           ‹invalidCategory? declaration.storedTokens.length declaration.categories 0 = none›⟩
 

@@ -35,6 +35,8 @@
 - `host-boundary`: clock and zone profiles are rows of the [host-input contract](../IMPLEMENTER-GUIDE.md#host-input-contract).
 - `calibration`: deeper selected partial extents, wider token value-count/first-filled filters and message references, and additional category/domain combinations. The [October 25 handback](../sources/inbound-handbacks.md#src-inbound-2026-10-25)'s keyed-category roles and Enumeration-into-text rows are not yet checked against Lean. C05/C07 close their named ordinary matrices, not every profile permutation.
 - `host-boundary`: partial/dynamic table-backed Enumeration declarations need an input owner beyond normalized DM-JSON. [The declaration source](../sources/static-admission-and-class-probes.md#src-distinct-count-operand-domain) records this as a model-format boundary, not a missing dmtool verb.
+- `representation-boundary`: the evaluation model reader validates an Enumeration declaration without the model's declared locales, so it keeps a model whose every label is in an undeclared locale, which kernel 31.1.1's check refuses with `MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES`, and refuses one whose label repeats only in an undeclared locale, which the Kernel admits; the declaration walk and the consistency check answer as the Kernel ([declaration-shape locks](../../A12Kernel/Reference/Dm/DeclarationShapeLocks.lean)).
+- `calibration`: the evaluation model reader refuses an Enumeration field one of whose value entries has no token, which kernel 31.1.1's check admits, because no row measures how the runtime reads a value without a token.
 - `reopen-when`: a named consumer needs one residual profile or a current counterexample invalidates the accepted typed route.
 - `route-state`: discovery-required
 

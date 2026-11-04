@@ -36,7 +36,7 @@ namespace A12Kernel.Dm
 name of one of the two codeless classes. -/
 def _root_.A12Kernel.EnumerationDeclarationNotification.observedLabel : EnumerationDeclarationNotification → String
   | .supplementaryCharacter => "codeless:supplementary-character"
-  | .repeatedValue _ => "codeless:repeated-value"
+  | .repeatedValue _ | .repeatedTokenless => "codeless:repeated-value"
   | notification => notification.kernelCode?.getD "codeless:unclassified"
 
 
@@ -162,6 +162,16 @@ def partialMode? : Option String → Except String TemporalPartialMode
   | some "YEAR_OPTIONAL" => pure .yearOptional
   | some other => throw s!"datePrecision {other}"
 
+/-- The token of one entry of an Enumeration's `values`: absent when its `value` member is, which kernel 31.1.1
+reads as a value with no token that keeps its place (a12-dmkits `CheckerReaderBindingAgreementTest` at
+`1124b523f`, KF654/KF655). An entry that is no object, or whose `value` is present and no string, `null` included,
+leaves no model, as it did before; neither shape is measured on 31.1.1. -/
+def valueEntryToken (entry : Json) : Except String (Option String) := do
+  let .obj _ := entry | throw s!"value entry {entry.compress} is no object"
+  match entry.getObjVal? "value" with
+  | .error _ => pure none
+  | .ok token => some <$> token.getStr?
+
 /-- The ordinary Enumeration declaration of a DM `EnumerationType` body. It decides whether the body is
 readable for the field's declaration, its notification pass and the declaration-generation reader, which
 reads the members this declaration does not keep only from a body this parse admits. -/
@@ -171,19 +181,21 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
     | some (.str value) => pure (if value.isEmpty then none else some value)
     | some _ => throw "EnumerationType sValue must be a string"
   let entries := (← body.getObjValAs? (Array Json) "values").toList
-  let values ← entries.mapM (·.getObjValAs? String "value")
+  let tokens ← entries.mapM valueEntryToken
   -- Labels stay attached to their stored token: messages render them and the declaration checks read
-  -- them, although no comparison, copy or concatenation does (kernel 31.1.1).
+  -- them, although no comparison, copy or concatenation does (kernel 31.1.1). The labels of an entry with
+  -- no token have no stored token to attach to; the declaration walk reads them from the entry itself.
   let displayFacts ← entries.mapM fun entry => do
-    let stored ← entry.getObjValAs? String "value"
+    let some stored ← valueEntryToken entry | pure []
     pure ((← localizedTextMember entry "label").map fun (locale, display) =>
       ({ stored, locale, display } : EnumerationDisplayFact))
-  -- A blank token past the values is no token (peer KF660), so it never counts toward the arity the
-  -- declaration is validated for; one inside the values is the notification's to report.
+  -- A blank token past the entries is no token (peer KF660), so it never counts toward the arity the
+  -- declaration is validated for; one inside the entries is the notification's to report.
   let categories := (← boundCategories body).map fun category =>
-    { category with tokens := category.tokens.take values.length ++
-        (category.tokens.drop values.length).filter fun token => !ExecutableDeclaration.blank token }
-  pure { storedTokens := values, displayFacts := displayFacts.flatten, categories, defaultStoredToken }
+    { category with tokens := category.tokens.take entries.length ++
+        (category.tokens.drop entries.length).filter fun token => !ExecutableDeclaration.blank token }
+  pure { storedTokens := tokens.filterMap id, tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf tokens,
+         displayFacts := displayFacts.flatten, categories, defaultStoredToken }
 
 /-- The notifications the Kernel raises for a field's ordinary Enumeration declaration, empty for any other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
 private def fieldEnumerationNotifications (charset : LegalCharset) (fieldJson : Json) :

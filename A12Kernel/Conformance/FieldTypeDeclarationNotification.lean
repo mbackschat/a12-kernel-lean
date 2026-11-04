@@ -8,6 +8,9 @@ assertion is the multiset of capture labels one field raises, sorted, because th
 and its order carries no claim. A repeated label is a repeated notification with different parameters.
 The reader aggregation over whole models is replayed by the evidence projection, not here.
 
+A row whose kernel 30.8.1 outcome kernel 31.1.1 changes is asserted at the 31.1.1 outcome and names the
+superseded capture row.
+
 The Java pattern compilation is a host capability: `javaCompiler` rejects only the one source the
 capture shows as invalid Java, as the pattern-admission locks inject theirs.
 -/
@@ -363,15 +366,19 @@ example : labels .other = [] := by
   native_decide
 
 /- Law 7, the count of labelled values: once one value carries a label and another does not, every
-   declared locale reports; a label for an undeclared locale is not counted (ec-1, ec-twin, ec-empty,
-   ec-2loc, ec-undecl). -/
+   declared locale reports. A label in any locale makes a value carry labels, an undeclared one included,
+   so a value labelled only for `fr_FR` beside an unlabelled one draws the count and, lacking a text for the
+   declared locale, the display class; kernel 30.8.1 counted a declared locale's label only and admitted it
+   (ec-1, ec-twin, ec-empty, ec-2loc; the `ec-undecl` row is superseded; a12-dmkits
+   `CheckerDeclarationAdmissionAgreementTest` at 1124b523f, kernel 31.1.1). -/
 example :
     labels (enumeration [("A", [("en_US", "Alpha")]), ("B", [])]) =
       ["MVK_COUNT_OF_VALUES_INVALID"] ∧
     labels (enumeration [("A", [("en_US", "Alpha")]), ("B", [("en_US", "Beta")])]) = [] ∧
     labels (enumeration [("A", [("en_US", "Alpha"), ("de_DE", "AlphaDe")]), ("B", [])])
       ["en_US", "de_DE"] = ["MVK_COUNT_OF_VALUES_INVALID", "MVK_COUNT_OF_VALUES_INVALID"] ∧
-    labels (enumeration [("A", [("fr_FR", "Alpha")]), ("B", [])]) = [] := by
+    labels (enumeration [("A", [("fr_FR", "Alpha")]), ("B", [])]) =
+      ["MVK_COUNT_OF_VALUES_INVALID", "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"] := by
   native_decide
 
 /- Law 7's blank text is Java's `Character.isWhitespace`: an empty or U+2003 label is blank and a
@@ -386,7 +393,10 @@ example :
 /- Law 7, a carrying value needs a non-blank text in every declared locale, once per field however
    many locales fall short; a value that does not carry is not asked, and partial labelling beside a
    second locale draws both classes (ed-blank, ed-bi, ed-tri, ed-half, ec-2loc-partial, ec-2loc-de,
-   ed-undecl, dd-incomplete). -/
+   dd-incomplete). A value labelled only for an undeclared locale is asked for the declared one too, so
+   every value labelled for `fr_FR` alone draws the display class where kernel 30.8.1 admitted it
+   (`ed-undecl` superseded; a12-dmkits `CheckerDeclarationAdmissionAgreementTest` at 1124b523f, kernel
+   31.1.1). -/
 example :
     labels (enumeration [("A", [("en_US", "Alpha")]), ("B", [("en_US", " ")])]) =
       ["MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"] ∧
@@ -402,7 +412,8 @@ example :
     labels (enumeration [("A", [("de_DE", "AlphaDe")]), ("B", [])]) ["en_US", "de_DE"] =
       ["MVK_COUNT_OF_VALUES_INVALID", "MVK_COUNT_OF_VALUES_INVALID",
         "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"] ∧
-    labels (enumeration [("A", [("fr_FR", "Alpha")]), ("B", [("fr_FR", "Beta")])]) = [] ∧
+    labels (enumeration [("A", [("fr_FR", "Alpha")]), ("B", [("fr_FR", "Beta")])]) =
+      ["MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"] ∧
     labels (enumeration [("A", [("en_US", "Same")]), ("B", [("en_US", "Same")]), ("C", [])]) =
       ["MVK_COUNT_OF_VALUES_INVALID", "MVK_DISPLAY_VALUES_DUPLICATE"] := by
   native_decide
@@ -425,9 +436,11 @@ example :
   native_decide
 
 /- Law 7, a tab or pipe in a value token, a counted label text or a category token is one notification
-   per distinct text in its own class; a label of an undeclared locale is not counted and a space is
-   admitted (ev-tab, ev-pipe, ev-space, ev-both, ev-two, ed-tab, ed-tab-undecl, ecat-tab, ecat-tab2,
-   ev-dup-tab, ev-tab-label-both). -/
+   per distinct text in its own class, and a space is admitted (ev-tab, ev-pipe, ev-space, ev-both, ev-two,
+   ed-tab, ecat-tab, ecat-tab2, ev-dup-tab, ev-tab-label-both). These classes read the labels of the declared
+   locales only, so a tab in an `fr_FR` label draws none of them; that kernel 31.1.1 does not read an undeclared
+   locale's text for them is unmeasured. The `ed-tab-undecl` model now draws the display class instead, as
+   every value is labelled for an undeclared locale alone. -/
 example :
     labels (enumeration [("A\tB", []), ("C", [])]) = ["MVK_INTERNAL_VALUE_INVALID"] ∧
     labels (enumeration [("A|B", []), ("C", [])]) = ["MVK_INTERNAL_VALUE_INVALID"] ∧
@@ -437,7 +450,8 @@ example :
       ["MVK_INTERNAL_VALUE_INVALID", "MVK_INTERNAL_VALUE_INVALID"] ∧
     labels (enumeration [("A", [("en_US", "Al\tpha")]), ("B", [("en_US", "Beta")])]) =
       ["MVK_DISPLAY_VALUE_INVALID"] ∧
-    labels (enumeration [("A", [("fr_FR", "Al\tpha")]), ("B", [("fr_FR", "Beta")])]) = [] ∧
+    labels (enumeration [("A", [("fr_FR", "Al\tpha")]), ("B", [("fr_FR", "Beta")])]) =
+      ["MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"] ∧
     labels (enumeration [("X\tY", []), ("Z", [])] { categories := [{ name := "Cat", tokens := ["X\tY", "Z"] }] }) =
       ["MVK_CATEGORY_VALUE_INVALID", "MVK_INTERNAL_VALUE_INVALID"] ∧
     labels (enumeration [("X", []), ("Z", [])] { categories := [{ name := "Cat", tokens := ["X\tY", "Z"] }] }) =

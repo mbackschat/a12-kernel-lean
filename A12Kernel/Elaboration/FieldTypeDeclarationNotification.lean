@@ -17,6 +17,8 @@ The input is a small read-model of the field's body after type-definition resolu
 
 **A model with a field the Kernel cannot build has no other notification.** Two hint-list entries for one locale, an Enumeration declaring no values (an absent or empty `values`) and an Enumeration whose categories share a name (`categoryNamesCollide`) each give `FieldTypeJudgement.modelNotBuilt`, which replaces every notification of every field.
 
+**Kernel 31.1.1 changes two Enumeration laws** (a12-dmkits `CheckerDeclarationAdmissionAgreementTest` and `CheckerReaderBindingAgreementTest` at 1124b523f, KF655). A label in any locale, declared or not, makes a value carry labels, where 30.8.1 counted a declared locale's label only, so the retained capture's `ec-undecl`, `ed-undecl` and `ed-tab-undecl` rows predate the law. A value entry with no `value` member is a value with no token, which the count, display and missing-token classes still judge as a value; the stored-token classes read the entries that declare one.
+
 Choices no row separates, recorded where they are made: a declared but refused integer count is not replaced by the amount-derived one; two label entries for one value and locale are both counted; a repeated hint-list locale is judged whether or not the model declares it; the label texts of every declared locale are pooled for the tab, pipe and line-break classes, and a text shared by two locales is one notification.
 
 Not claimed: element-name, group, rule, computation and annotation classes ([`ElementNameNotification`](ElementNameNotification.lean) owns them), notification order, and the Enumeration invalid-character class under a restricted charset beyond what `EnumerationDeclaration.notifications` already answers.
@@ -55,6 +57,7 @@ inductive FieldTypeNotificationKind where
   | additionalCheckInvalid
   | countOfValuesInvalid
   | internalValuesAndDisplayValues
+  | internalValueMissing
   | displayValuesDuplicate
   | internalValueInvalid
   | displayValueInvalid
@@ -78,7 +81,7 @@ def all : List FieldTypeNotificationKind :=
     fractDigitsMissing, fractDigitsInvalid, maxLengthTooBig, minLengthTooBig, maxLengthTooSmall,
     arityTooBig, minValueBiggerThanMaxValue, customNameMissing, customNameContent,
     optionalDateTypeInvalid, additionalCheckInvalid, countOfValuesInvalid,
-    internalValuesAndDisplayValues, displayValuesDuplicate, internalValueInvalid,
+    internalValuesAndDisplayValues, internalValueMissing, displayValuesDuplicate, internalValueInvalid,
     displayValueInvalid, categoryValueInvalid, lineBreak, sValueInvalid, dateFormatInvalid,
     dateRangeFormatInvalid, dateRangeFormatMissing, dateRangeSeparatorInvalid]
 
@@ -113,6 +116,7 @@ def label : FieldTypeNotificationKind → String
   | additionalCheckInvalid => "MVK_ADDITIONAL_CHECK_INVALID"
   | countOfValuesInvalid => "MVK_COUNT_OF_VALUES_INVALID"
   | internalValuesAndDisplayValues => "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"
+  | internalValueMissing => "MVK_INTERNAL_VALUE_MISSING"
   | displayValuesDuplicate => "MVK_DISPLAY_VALUES_DUPLICATE"
   | internalValueInvalid => "MVK_INTERNAL_VALUE_INVALID"
   | displayValueInvalid => "MVK_DISPLAY_VALUE_INVALID"
@@ -194,9 +198,10 @@ structure EnumerationLabel where
   text : String
   deriving Repr, DecidableEq
 
-/-- One Enumeration value token with the labels authored for it, in any locale. -/
+/-- One Enumeration value entry with the labels authored for it, in any locale. An entry whose `value` member is
+absent has no token (`none`); kernel 31.1.1 reads past a misspelled member rather than refusing the body. -/
 structure EnumerationValueDeclaration where
-  token : String
+  token : Option String
   labels : List EnumerationLabel := []
   deriving Repr, DecidableEq
 
@@ -253,7 +258,7 @@ def FieldTypeNotification.label : FieldTypeNotification → String
   | .declared kind _ => kind.label
   | .message diagnostic => diagnostic.kernelCode
   | .enumerationBlock .supplementaryCharacter => "codeless:supplementary-character"
-  | .enumerationBlock (.repeatedValue _) => "codeless:repeated-value"
+  | .enumerationBlock (.repeatedValue _) | .enumerationBlock .repeatedTokenless => "codeless:repeated-value"
   | .enumerationBlock notification => notification.kernelCode?.getD "codeless:unclassified"
 
 /-- Every label the field collection can produce: the classes above, the field-message classes, the
@@ -265,7 +270,7 @@ def fieldTypeNotificationVocabulary : List String :=
     ([KernelStaticDiagnostic.invalidMessageLinebreak, .invalidMessageCharacters,
       .wrongNumberOfDollars, .invalidMessageParameter, .errorMessageAndPatternInvalid,
       .errorMessageAndNoPattern, .errorMessageForLanguageMissing].map (·.kernelCode)) ++
-    ([.invalidCharacter "" 0, .supplementaryCharacter, .missingCategoryValue "" "",
+    ([.invalidCharacter "" 0, .supplementaryCharacter, .internalValuesMissing, .missingCategoryValue "" "",
       .missingInternalValue "" "", .categoryValueDuplicate "" "", .internalValuesDuplicate "",
       .repeatedValue ""].map fun notification =>
         (FieldTypeNotification.enumerationBlock notification).label) ++
@@ -569,34 +574,50 @@ private def hasSeparator (text : String) : Bool :=
 private def labelTexts (value : EnumerationValueDeclaration) (locale : String) : List String :=
   (value.labels.filter (·.locale == locale)).map (·.text)
 
-private def carriesLabel (locales : List String) (value : EnumerationValueDeclaration) : Bool :=
-  value.labels.any fun label => locales.contains label.locale
+/-- A value carries labels when it has a label in any locale, a declared one or not (kernel 31.1.1, a12-dmkits
+`CheckerDeclarationAdmissionAgreementTest` at 1124b523f; kernel 30.8.1 counted a declared locale's label only). -/
+private def carriesLabel (value : EnumerationValueDeclaration) : Bool := !value.labels.isEmpty
+
+/-- Whether the value draws the display class for a declared locale: a labelled value with a token lacks a
+non-blank text for it, or one with no token has one. The second arm follows the peer's reading of the Kernel's
+law ("the reverse", KF655); the measured rows give every token-less entry a declared-locale text, so a
+token-less entry labelled only in an undeclared locale is not separated. -/
+private def displayClassFor (locale : String) (value : EnumerationValueDeclaration) : Bool :=
+  let texts := labelTexts value locale
+  match value.token with
+  | some _ => carriesLabel value && (texts.isEmpty || texts.any ExecutableDeclaration.blank)
+  | none => texts.any (!ExecutableDeclaration.blank ·)
 
 /-- The text classes read each text after Java's `trim`, and none names a text holding a supplementary
 scalar, which draws the repertoire notification instead ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
-§2.3, §2.4): a trailing tab or line break is no defect, `Tier` beside `Tier ` is a duplicate. -/
+§2.3, §2.4): a trailing tab or line break is no defect, `Tier` beside `Tier ` is a duplicate. The count,
+display and missing-token classes read every value entry, a token-less one included. The duplicate, tab and
+pipe classes read the labels of the declared locales only, which kernel 31.1.1 is measured to do for the
+duplicate class; whether it reads an undeclared locale's text for the other two is unmeasured. The labels of
+an entry with no token are not scanned for supplementary scalars, which `EnumerationDeclaration` holds as
+display facts of a stored token. -/
 private def enumerationNotifications (context : FieldTypeContext)
     (declaration : EnumerationTypeDeclaration) : List FieldTypeNotification :=
   let locales := context.declaredLocales
   let values := declaration.values
   let coded := fun (texts : List String) => (texts.filter (!hasSupplementaryScalar ·)).map javaTrim
-  let tokens := values.map (·.token)
+  let tokens := values.filterMap (·.token)
   let countedTexts := values.flatMap fun value =>
     (value.labels.filter fun label => locales.contains label.locale).map (·.text)
   let categoryTokens := declaration.categories.flatMap (·.tokens)
   let blockOwner : EnumerationDeclaration := {
     storedTokens := tokens
-    displayFacts := values.flatMap fun value => value.labels.map fun label =>
-      { stored := value.token, locale := label.locale, display := label.text }
+    tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf (values.map (·.token))
+    displayFacts := values.flatMap fun value => (value.token.map fun stored =>
+      value.labels.map fun label => { stored, locale := label.locale, display := label.text }).getD []
     categories := declaration.categories
     defaultStoredToken := declaration.sValue }
   (blockOwner.notifications context.charset).map .enumerationBlock ++
-    (if values.any (carriesLabel locales) && values.any (!carriesLabel locales ·) then
+    (if values.any carriesLabel && values.any (!carriesLabel ·) then
       locales.map fun locale => .declared .countOfValuesInvalid [locale]
     else []) ++
-    raiseIf ((values.filter (carriesLabel locales)).any fun value => locales.any fun locale =>
-      (labelTexts value locale).isEmpty || (labelTexts value locale).any ExecutableDeclaration.blank)
-      .internalValuesAndDisplayValues ++
+    raiseIf (values.any fun value => locales.any (displayClassFor · value)) .internalValuesAndDisplayValues ++
+    raiseIf (values.any fun value => value.token.isNone && carriesLabel value) .internalValueMissing ++
     locales.flatMap (fun locale =>
       let perValue := values.flatMap fun value => (coded (labelTexts value locale)).eraseDups
       (perValue.eraseDups.filter fun text => 1 < perValue.count text).map
