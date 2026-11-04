@@ -12,6 +12,13 @@ validation-model converter drops included, and records only whether that convers
 member reads as the empty text, which the check then reports; a field whose type is absent is a read
 error, since no capture measures it.
 
+The document uniqueness criteria of `content.documentUniquenessCriteria` read as spec/01 §1.5 states them: a
+`name`, the `fullName` of each `fields` entry and each `errorMessage` entry's locale and text, an absent member
+or an absent or `null` list reading as none. A member the section does not state leaves no model here, derived
+and unmeasured: a criterion or field entry that is no object, a `fields` or `errorMessage` member that is no
+list, a `fullName` that is no text and an error entry the localized-text binding refuses. An absent `name` or
+`fullName` reads as the empty text.
+
 Whether the model has something to expand is read from the header's references and the groups' `includeConfig`
 members, the only part of an expansion the type-definition order depends on (`ConsistencyModel.expands`).
 
@@ -58,8 +65,11 @@ private def readField (definitions : List (String × Json)) (id name : String)
         | .error _ => pure none
         | .ok resolved => some <$> readConsistencyFieldType (← resolved.getObjVal? "fieldType")
     | other => pure (some other)
+  let config := (body.getObjVal? "requirednessConfig").toOption
   pure { id, name, declared, effective
-         requirednessDeclared := (body.getObjVal? "requirednessConfig").toOption.any (· != .null) }
+         requirednessDeclared := config.any (· != .null)
+         requirednessMode := config.bind fun config => (config.getObjValAs? String "mode").toOption
+         transient := ← booleanMember? body "transient" }
 
 private partial def readElement (definitions : List (String × Json))
     (element : Json) : Except String ConsistencyElement := do
@@ -102,6 +112,18 @@ private def mountsBelow : Nat → Json → Except String Bool
         if ← mountsBelow fuel child then return true
       pure false
 
+/-- The criteria a model declares, each field and error text bound as the section states. -/
+private def readUniquenessCriteria (content : Json) : Except String (List ConsistencyUniquenessCriterion) := do
+  let some entries ← frameList content "documentUniquenessCriteria" | pure []
+  entries.toList.mapM fun entry => do
+    let .obj _ := entry | throw "a document uniqueness criterion is no object"
+    let fieldPaths ← ((← frameList entry "fields").getD #[]).toList.mapM fun field => do
+      let .obj _ := field | throw "a document uniqueness criterion field is no object"
+      pure ((← frameText field "fullName").getD "")
+    pure { name := (← frameText entry "name").getD ""
+           fieldPaths
+           errorTexts := ← localizedTextValue (.arr ((← frameList entry "errorMessage").getD #[])) }
+
 /-- Read the model the consistency check judges. An absent condition language is en_US. -/
 def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
   let frame ← bindModelFrame json
@@ -117,6 +139,7 @@ def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
       (text definition "id", definition)))
     conditionLanguage := frame.conditionLanguage.getD "en_US"
     declaredLocales := ← headerLocales json
+    uniquenessCriteria := ← readUniquenessCriteria content
     frameCheckFailure? := frame.checkFailure?
     validationModelUnbuilt := (convertModel frame).unbuilt
     expands := !frame.modelReferences.isEmpty ||

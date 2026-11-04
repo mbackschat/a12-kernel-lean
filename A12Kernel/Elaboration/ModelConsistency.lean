@@ -1,6 +1,8 @@
 import A12Kernel.Elaboration.CharsetSpec
 import A12Kernel.Elaboration.DeclaredLocale
 import A12Kernel.Elaboration.IndexAndSortDeclaration
+import A12Kernel.Elaboration.StaticDiagnostic
+import A12Kernel.Elaboration.ValidationMessageTypes
 import A12Kernel.Semantics.NumberBound
 
 /-! # A12Kernel.Elaboration.ModelConsistency — the notifications a model's consistency check raises
@@ -22,8 +24,8 @@ categories of one name, the empty name and an absent one reading as one key (pee
 empty or blank name, a type-definition reference with no id and a computation with no computed-field path
 are not such defects on kernel 31.1.1: its converter states a sentence and goes on without the declaration
 (the validation-model converter, `Reference/Dm/ModelConversion.lean`), while this basic check still walks
-the authored model. Otherwise five checks run in this registration order and their notifications concatenate
-in it, so a class is never interleaved with another check's. Their numbers are those of spec/01 §1.2, whose
+the authored model. Otherwise six checks run in this registration order and their notifications concatenate
+in it, so a class is never interleaved with another check's. The numbered ones follow spec/01 §1.2, whose
 second rule, the Number value limit, kernel 31.1.0 deleted (peer KF582, a12-dmkits
 `CheckerNumberBoundMagnitudeAgreementTest` at `1124b523f`): a bound is judged by no magnitude its fractional
 digits allow, and its number is not reused.
@@ -34,6 +36,9 @@ digits allow, and its number is not reused.
    configuration.
 4. Multi-select groups: repeatability, the single Enumeration or String field and its requiredness, and
    the absence of nested groups and computations.
+   Then, unnumbered in spec/01 §1.2, the document uniqueness criteria (spec/01 §1.5). This placement follows
+   the registration order reported for kernel 31.1.1, after the multi-select rule and before code generation;
+   it is not separately measured here, and the criteria's order against every other rule is unmeasured.
 5. The formal check of each printed bound (`NumberBound.printed?`), maximum first.
 6. Emptiness of identifiers, element names, type-definition references, computed-field paths, group index
    fields, rule conditions, rule error entities, computation operations and type definition names.
@@ -55,6 +60,9 @@ Two build failures in one model and the order across distinct duplicated identif
 a label-only capture cannot separate the latter. The order of one element's classes in check 6 is
 unmeasured too: a peer measurement of a12-dmkits `1124b523f` (`CheckerConverterSentenceAgreementTest`,
 kernel 31.1.1) compares sets of classes.
+
+The criteria check is measured on one `en_US` model, so each declared locale needing a text, and the order of
+one criterion's refusals, are derived and unmeasured (`uniquenessCriterionNotifications`).
 
 Not claimed: type definitions' own bodies, a bound outside the normal double range (an error, not a
 class), attachment condition texts under a language the captures do not cover, the combination of
@@ -84,6 +92,10 @@ structure ConsistencyField where
   effective : Option ConsistencyFieldType
   /-- Whether a requiredness configuration is authored. -/
   requirednessDeclared : Bool
+  /-- The text of the requiredness configuration's `mode`, absent when the field authors none. -/
+  requirednessMode : Option String := none
+  /-- Whether the field is not persisted. -/
+  transient : Bool := false
   deriving Repr, DecidableEq
 
 /-- One authored element. A group lists its children in authored order. -/
@@ -112,6 +124,14 @@ inductive FrameCheckFailure where
   | conditionLanguageUnsupported
   deriving Repr, DecidableEq
 
+/-- One document uniqueness criterion as the check reads it (spec/01 §1.5): its name, each field's full path
+as written, and each error text with its locale as `ParsedLocale.key`. -/
+structure ConsistencyUniquenessCriterion where
+  name : String
+  fieldPaths : List String
+  errorTexts : List (String × String)
+  deriving Repr, DecidableEq
+
 structure ConsistencyModel where
   typeDefinitions : List ConsistencyTypeDefinition
   rootGroups : List ConsistencyElement
@@ -127,6 +147,8 @@ structure ConsistencyModel where
   a group carrying an `includeConfig` that is not `null` (a12-dmkits Letter E §4, source-read). The check then
   walks the type definitions by id; otherwise in declared order. -/
   expands : Bool := false
+  /-- The document uniqueness criteria, in authored order; an absent member and an empty list are none. -/
+  uniquenessCriteria : List ConsistencyUniquenessCriterion := []
 
 /-- A notification class of the consistency check. Every class is an ERROR. -/
 inductive ModelConsistencyClass where
@@ -163,6 +185,27 @@ inductive ModelConsistencyClass where
   | supportedLanguagesMissing
   /-- Two distinct declared locales sharing one JDK language tag (`ParsedLocale.languageTag`). -/
   | supportedLanguagesDuplicate
+  /-- A document uniqueness criterion whose name is empty. -/
+  | uniquenessCriterionNameMissing
+  /-- A criterion naming no field. -/
+  | uniquenessCriterionNoField
+  /-- A criterion field whose path names no field: nothing, a group or a relative path. -/
+  | uniquenessCriterionFieldNotFound
+  /-- A criterion field with no requiredness or required relative to its parent. -/
+  | uniquenessCriterionFieldNotRequired
+  /-- A criterion field inside a repeatable group. -/
+  | uniquenessCriterionFieldRepeatable
+  /-- A transient criterion field. -/
+  | uniquenessCriterionFieldTransient
+  /-- A criterion with no error text for a declared locale. -/
+  | uniquenessCriterionTextMissing
+  /-- A criterion sharing its name with another, drawn once for each of the two. -/
+  | uniquenessCriterionNameDuplicate
+  /-- An error text parameter naming no field of its own criterion. -/
+  | uniquenessCriterionParameterInvalid
+  /-- An error text with an unterminated `$`: the keyed class `WRONG_NUMBER_OF_DOLLARS` the rule messages
+  share, reached through the shared message-text gate. -/
+  | uniquenessCriterionDollars
   deriving Repr, DecidableEq
 
 namespace ModelConsistencyClass
@@ -175,7 +218,10 @@ def all : List ModelConsistencyClass :=
     multiSelectOtherElements, boundTotalDigitsTooLong, boundSignedZero, idEmpty, errorConditionEmpty,
     errorEntityEmpty, computationOperationEmpty, typeDefinitionNameEmpty, elementNameEmpty,
     typeDefinitionReferenceEmpty, computedFieldEmpty, indexFieldNameEmpty, supportedLanguagesMissing,
-    supportedLanguagesDuplicate]
+    supportedLanguagesDuplicate, uniquenessCriterionNameMissing, uniquenessCriterionNoField,
+    uniquenessCriterionFieldNotFound, uniquenessCriterionFieldNotRequired,
+    uniquenessCriterionFieldRepeatable, uniquenessCriterionFieldTransient, uniquenessCriterionTextMissing,
+    uniquenessCriterionNameDuplicate, uniquenessCriterionParameterInvalid, uniquenessCriterionDollars]
 
 /-- The label the captures give the class. The two supported-language classes carry their Kernel code;
 every other class is codeless and named by itself. -/
@@ -203,6 +249,16 @@ def observedLabel : ModelConsistencyClass → String
   | indexFieldNameEmpty => "codeless:index-field-name-empty"
   | supportedLanguagesMissing => "MVK_SUPP_LANGUAGES_MISSING"
   | supportedLanguagesDuplicate => "MVK_SUPP_LANGUAGES_DUPLICATE"
+  | uniquenessCriterionNameMissing => "codeless:uniqueness-criterion-name-missing"
+  | uniquenessCriterionNoField => "codeless:uniqueness-criterion-no-field"
+  | uniquenessCriterionFieldNotFound => "codeless:uniqueness-criterion-field-not-found"
+  | uniquenessCriterionFieldNotRequired => "codeless:uniqueness-criterion-field-not-required"
+  | uniquenessCriterionFieldRepeatable => "codeless:uniqueness-criterion-field-repeatable"
+  | uniquenessCriterionFieldTransient => "codeless:uniqueness-criterion-field-transient"
+  | uniquenessCriterionTextMissing => "codeless:uniqueness-criterion-text-missing"
+  | uniquenessCriterionNameDuplicate => "codeless:uniqueness-criterion-name-duplicate"
+  | uniquenessCriterionParameterInvalid => "codeless:uniqueness-criterion-parameter-invalid"
+  | uniquenessCriterionDollars => KernelStaticDiagnostic.wrongNumberOfDollars.kernelCode
 
 end ModelConsistencyClass
 
@@ -292,6 +348,21 @@ def walk (parent : List String) : ConsistencyElement → List (List String × Co
 def walkAll (parent : List String) : List ConsistencyElement → List (List String × ConsistencyElement)
   | [] => []
   | element :: rest => walk parent element ++ walkAll parent rest
+end
+
+mutual
+/-- The fields at and below the element, each with its full path (the names from the root, each after a `/`)
+and whether a group on the way declares a repeatability above one. -/
+def placedFields (parent : List String) (repeatable : Bool) :
+    ConsistencyElement → List (String × ConsistencyField × Bool)
+  | group _ name count _ _ _ children => placedFieldsAll (parent ++ [name]) (repeatable || 1 < count) children
+  | field f => [(String.join ((parent ++ [f.name]).map ("/" ++ ·)), f, repeatable)]
+  | _ => []
+
+def placedFieldsAll (parent : List String) (repeatable : Bool) :
+    List ConsistencyElement → List (String × ConsistencyField × Bool)
+  | [] => []
+  | element :: rest => placedFields parent repeatable element ++ placedFieldsAll parent repeatable rest
 end
 
 end ConsistencyElement
@@ -450,6 +521,65 @@ def multiSelectGroupNotifications (model : ConsistencyModel) : List ModelConsist
         multiSelectNotifications path repeatability indexFieldName children
     | _ => []
 
+/-- The requiredness mode of a field a uniqueness criterion may name. -/
+private def criterionRequiredMode : String := "absoluteOrRelativeToNextRepAncestor"
+
+/-- The refusals of one criterion field, named by its path as written: no field of that full path, which
+a group, a rule and a relative path all fail, or, for a field, the requiredness, repeatability and
+transience refusals, in that order (each measured alone; their order is unmeasured). -/
+private def criterionFieldNotifications (placed : List (String × ConsistencyField × Bool))
+    (path : List String) (fullName : String) : List ModelConsistencyNotification :=
+  match placed.find? (·.1 == fullName) with
+  | none => [notification path .uniquenessCriterionFieldNotFound]
+  | some (_, field, repeatable) =>
+      raiseIf (field.requirednessMode != some criterionRequiredMode) path .uniquenessCriterionFieldNotRequired ++
+        raiseIf repeatable path .uniquenessCriterionFieldRepeatable ++
+        raiseIf field.transient path .uniquenessCriterionFieldTransient
+
+/-- The segments of a `$`-delimited text that sit between a pair of dollars, which are its parameters. -/
+private def textParameters : List String → List String
+  | _ :: parameter :: rest => parameter :: textParameters rest
+  | _ => []
+
+/-- The refusals of one criterion's error text for one declared locale: no entry for the locale (the first
+entry of a locale is read when several are written, unmeasured), an unterminated `$`, which stops the
+parameters being read, or a parameter that is neither a field path of the criterion nor that path with a
+`.value` suffix. A text the shared message-text gates refuse for a line break, a control character or no
+characters at all is outside the measured profile, since no row measures it for a criterion; an empty
+parameter pair is read as a parameter naming no field, unmeasured. -/
+private def criterionTextNotifications (path : List String) (criterion : ConsistencyUniquenessCriterion)
+    (locale : ParsedLocale) : Except String (List ModelConsistencyNotification) :=
+  match criterion.errorTexts.find? (·.1 == locale.key) with
+  | none => pure [notification path .uniquenessCriterionTextMissing]
+  | some (_, text) =>
+      match validateMessageTemplateSource text with
+      | .error .oddDollarCount => pure [notification path .uniquenessCriterionDollars]
+      | .error _ => throw s!"error text of uniqueness criterion {criterion.name} fails a gate unmeasured for criteria"
+      | .ok segments =>
+          let named (parameter : String) :=
+            criterion.fieldPaths.any fun fullName => parameter == fullName || parameter == fullName ++ ".value"
+          pure (raiseIf ((textParameters segments).any (!named ·)) path .uniquenessCriterionParameterInvalid)
+
+/-- The notifications of one criterion: an empty name, a name another criterion carries, no field, each
+field's refusals in the written order, then each declared locale's text. The path is the criterion's name,
+derived, as is the order among these. -/
+private def criterionNotifications (model : ConsistencyModel) (criterion : ConsistencyUniquenessCriterion) :
+    Except String (List ModelConsistencyNotification) := do
+  let path := [criterion.name]
+  let placed := ConsistencyElement.placedFieldsAll [] false model.rootGroups
+  let sharesName := 1 < (model.uniquenessCriteria.filter (·.name == criterion.name)).length
+  let texts ← model.declaredLocales.flatMapM (criterionTextNotifications path criterion)
+  pure (raiseIf criterion.name.isEmpty path .uniquenessCriterionNameMissing ++
+    raiseIf sharesName path .uniquenessCriterionNameDuplicate ++
+    raiseIf criterion.fieldPaths.isEmpty path .uniquenessCriterionNoField ++
+    criterion.fieldPaths.flatMap (criterionFieldNotifications placed path) ++ texts)
+
+/-- The document uniqueness criteria check (spec/01 §1.5), each criterion in authored order. The empty name
+is judged for duplicates like any other, unmeasured. -/
+def uniquenessCriterionNotifications (model : ConsistencyModel) :
+    Except String (List ModelConsistencyNotification) :=
+  model.uniquenessCriteria.flatMapM (criterionNotifications model)
+
 /-- The formal-check class of a printed bound: more digits than a stored Number may hold, otherwise a
 negative zero. The digit count leaves out the sign and the decimal point. -/
 def boundFormalClass? (printed : String) : Option ModelConsistencyClass :=
@@ -514,16 +644,18 @@ def supportedLanguageNotifications (model : ConsistencyModel) : List ModelConsis
     { path := [], kind := .supportedLanguagesDuplicate }
 
 /-- The Kernel's consistency check of a read model. An error means the model reaches a case the
-captures do not measure: attachment rule texts under another condition language, or a bound outside
-the normal double range. -/
+captures do not measure: attachment rule texts under another condition language, a bound outside
+the normal double range, or a criterion's error text that fails a message-text gate other than the dollar
+count. -/
 def check (model : ConsistencyModel) : Except String ModelConsistencyOutcome :=
   match firstBuildFailure? model with
   | some (path, failure) => pure (.notBuilt path failure)
   | none => do
       let attachment ← attachmentGroupNotifications model
+      let uniqueness ← uniquenessCriterionNotifications model
       let boundFormal ← boundFormalNotifications model
       pure (.checked (supportedLanguageNotifications model ++ idUniquenessNotifications model ++
-        attachment ++ multiSelectGroupNotifications model ++ boundFormal ++
+        attachment ++ multiSelectGroupNotifications model ++ uniqueness ++ boundFormal ++
         emptinessNotifications model))
 
 end ModelConsistency
