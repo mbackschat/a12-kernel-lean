@@ -230,7 +230,7 @@ def lowerProductAggregate (model : FlatModel) (group : GroupPath) (arguments : L
          rightKey := ← rightIndex.mapM (fun key => (·.key) <$> lowerKeyedExtent model group rightPath key) }
 
 /-- `SumOfTerms(G*, term)` retains the entity's authored stars, its optional filter and the term, which
-the set-expression reader takes over the filter body's atoms. The entity's own read finishes before
+is modelled as a set expression over the filter body's atoms. The entity's own read finishes before
 the term is read, and the filter takes the deferred typed admission rather than the raw reference walk
 (`lowerAdmittedHaving` is field-bound). -/
 def lowerSumOfTerms (model : FlatModel) (group : GroupPath) (arguments : List Argument)

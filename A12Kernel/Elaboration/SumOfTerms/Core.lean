@@ -7,8 +7,10 @@ import A12Kernel.Elaboration.StaticDiagnostic
 
 `SumOfTerms(G*, t)` evaluates the Number term `t` once at each in-capacity row of the starred
 repeatable group `G*`, optionally filtered by `Having`, and adds the results
-([spec/07 §3.10](../../../spec/07-repetition-and-iteration.md#310-sumofterms)). The Kernel reads the
-term with the set-expression parser, so the term is an ordinary numeric expression over the filter
+([spec/07 §3.10](../../../spec/07-repetition-and-iteration.md#310-sumofterms)). The term is modelled
+as a set expression because kernel 31.1.1 refuses it with the set-expression classes (a12-dmkits
+`SumOfTermsTermLawsTest` at `1124b523f`, KF670); that the Kernel shares one parser for both is a source
+reading this project does not adopt. So the term is an ordinary numeric expression over the filter
 body's atom family, resolved in the same candidate and captured environments and refused by the same
 environment gates, and the iteration entity is a starred group with the filter a starred field takes.
 Neither is a new representation: a term is `AuthoredNumericExpr HavingNumericAtom` and the entity's
@@ -156,8 +158,8 @@ def referencesErrorField (checked : CheckedSumOfTerms model) (field : FieldId) :
     checked.filter.any (CorrelatedHaving.referencesMarkedEntityField model ·.condition field)
 
 /-- Whether partial validation can decide the term: it reads only Number fields of the entity's own
-group, or of a level the rule binds, the reads a12-dmkits `SumOfTermsRuntimeLawsTest` measures at
-`1124b523f`, kernel 31.1.1. Any other term atom, which would need group or aggregate reads from
+group, the reads a12-dmkits `SumOfTermsRuntimeLawsTest` measures at `1124b523f`, kernel 31.1.1, or of a
+level the rule binds, a derived extension no row measures. Any other term atom, which would need group or aggregate reads from
 the partial slice, stays structurally unsupported. A filtered entity is skipped rule-wide before this
 question is asked. -/
 def supportsPartial (checked : CheckedSumOfTerms model) : Bool :=

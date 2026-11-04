@@ -5,8 +5,8 @@ import A12Kernel.Elaboration.FieldEntityAdmission
 /-! # The candidate-environment gate of unmarked filter reads
 
 An unmarked read inside a filter is resolved in the candidate environment, and the Kernel asks
-whether that environment holds its repeatable level only after the whole body has resolved. A
-numeric expression read by the same set-expression parser, `SumOfTerms`' term, asks the same question
+whether that environment holds its repeatable level only after the whole body has resolved. `SumOfTerms`'
+term, modelled as a set expression because it draws the set-expression classes, asks the same question
 of each of its atoms, so the numeric-atom case is its own function.
 -/
 

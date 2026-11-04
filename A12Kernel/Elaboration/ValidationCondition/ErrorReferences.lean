@@ -253,8 +253,11 @@ private def orderedNumericAtomReferenceAt? (field : FieldId) (query : ReferenceQ
       (source.left.field.id == field && query.binds source.left.source.bindingScope) ||
       (source.right.field.id == field && query.binds source.right.source.bindingScope))
   -- The group the entity names is referenced at its lowest level and nothing above it, so the
-  -- binding scope is the entity's own, as a starred field operand's is.
-  | .sumOfTerms source => some (query.binds source.bindingScope)
+  -- binding scope is the entity's own, as a starred field operand's is; its filter's marked reads are
+  -- judged as a starred field's filter is.
+  | .sumOfTerms source => some (
+      ((model.groupSubtreeFields source.source.group.path).any (·.id == field) && query.binds source.bindingScope) ||
+        source.filter.any (fun filter => markedReferenceAt model field query filter.condition))
   | .filledGroupCountMixed operands => some (operands.any fun operand =>
       operand.referencesField model field && query.atPath operand.groupPath operand.bindingScope operand.isRoot)
   | .ordinary source => ordinaryNumericAtomReferenceAt? model field query source

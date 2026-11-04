@@ -6,8 +6,8 @@ import A12Kernel.Reference.Dm.FilterReferenceInventory
 
 The ordered walk in [`HavingAdmission`](HavingAdmission.lean) reads the entity and the term of
 `SumOfTerms(G*, t)` itself; the gates that follow those reads are here. The entity must be a
-repeatable group whose lowest level carries the star, and the term is a Number operation the Kernel
-reads as a set expression, so it is walked as a filter body is, with the entity's lowest level as the
+repeatable group whose lowest level carries the star, and the term is a Number operation that draws the
+set-expression classes, so it is walked as a filter body is, with the entity's lowest level as the
 one it must iterate ([spec/07 §3.10](../../../spec/07-repetition-and-iteration.md#310-sumofterms)).
 -/
 

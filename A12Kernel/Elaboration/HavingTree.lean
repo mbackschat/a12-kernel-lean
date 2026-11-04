@@ -82,7 +82,7 @@ def HavingLeafResolvers.resolveNumericAtom (resolvers : HavingLeafResolvers)
     (fun unit left right _ _ => resolvers.temporalDifference unit left right)
     (fun part source _ => resolvers.temporalExpressionPart part source)
 
-/-- Resolve every atom of one authored numeric expression read by the set-expression parser, keeping
+/-- Resolve every atom of one authored numeric expression modelled as a set expression, keeping
 its shape; admission of the whole operation belongs to the consumer. -/
 def elaborateHavingNumericTermWith (resolvers : HavingLeafResolvers)
     (term : AuthoredNumericExpr SurfaceHavingNumericAtom) :

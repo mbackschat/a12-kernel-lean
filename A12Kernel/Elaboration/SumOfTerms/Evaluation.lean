@@ -17,7 +17,9 @@ entity is instantiated, passes the filter and has a term value, and each row's o
 into it. A row without a term value, an uninstantiated or filtered-out row, leaves it fillable in both
 directions. A formally invalid cell the term reads makes the sum unavailable.
 
-**Computation** projects the same reads to the computation result: a row without a value adds nothing,
+**Computation** projects the same reads to the computation result: a row whose division is by zero adds
+nothing, as it does in validation, which no computation row measures (spec/09's general rule would
+make it poison),
 and a formally invalid cell the term reads, or a filter verdict that poisons, is poison for the whole
 sum, which the scan reports at the first row that reaches it.
 

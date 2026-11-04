@@ -584,11 +584,6 @@ def CheckedPathHaving.condition (checked : CheckedPathHaving model path bindingG
     CorrelatedHaving :=
   checked.authored
 
-def CheckedStarHaving.condition
-    (checked : CheckedStarHaving model source declaringGroup) :
-    CorrelatedHaving :=
-  checked.authored
-
 /-- Resolve the shared numeric leaves at explicit candidate and captured scopes. Ordinary
 consumers use one scope and reject capture origins before accepting the resulting atom. -/
 def FlatModel.havingNumericResolvers (model : FlatModel) (declaringGroup : GroupPath)

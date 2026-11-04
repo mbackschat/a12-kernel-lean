@@ -70,14 +70,12 @@ private def policy (claims : List Claim) (total threshold zip : String := "") (v
      else [("Vehicles", .arr (vehicles.map (fun value => Json.mkObj [("Value", .str value)])).toArray)]) ++
     (if claims.isEmpty then [] else [("Claims", .arr (claims.map claimJson).toArray)])))]
 
-/-- The checked document of a JSON one, `adjust` reshaping the read data first. -/
-private def checkedWith (adjust : DocumentData → DocumentData) (json : Lean.Json) := do
+/-- The checked document of a JSON one. -/
+private def checked (json : Lean.Json) := do
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let data ← (readDocument dm json).toOption
-  let document ← (checkDocument prepared "en_US" (adjust data.data)).toOption
+  let document ← (checkDocument prepared "en_US" data.data).toOption
   pure (prepared, document)
-
-private def checked (json : Lean.Json) := checkedWith id json
 
 /-- The rule set a table runs: code, error field path and condition, all at the policy root. -/
 private abbrev Rules := List (String × String × String)
@@ -317,9 +315,9 @@ private def relevant (path : List String) (reps : List Nat) : RelevantEntityPatt
   { path := "Policy" :: path, indices := reps.map fun n => if n == 0 then .all else .concrete n }
 
 /-- The rules that fire in a partial call over `coverage`, as `code|type`, sorted. -/
-private def partialFired (rules : Rules) (coverage : List RelevantEntityPattern) (json : Lean.Json)
-    (adjust : DocumentData → DocumentData := id) : List String :=
-  match checkedWith adjust json with
+private def partialFired (rules : Rules) (coverage : List RelevantEntityPattern) (json : Lean.Json) :
+    List String :=
+  match checked json with
   | none => ["no document"]
   | some (_, document) => (rules.flatMap fun (code, errorPath, condition) =>
     match checkValidationRule dm .english (dmRule code errorPath condition) world with
