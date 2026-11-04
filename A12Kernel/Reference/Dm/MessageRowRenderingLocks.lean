@@ -50,6 +50,7 @@ private def model : FlatModel := {
     enumeration 10 "Grade" ["Kp", "GB"] [30], number 11 "GVal2" ["Kp", "GB"] [30],
     number 12 "Num" ["Kp", "NRows"] [40], string 13 "V" ["Kp", "NRows"] [40],
     number 14 "RA" ["Kp", "Rows"] [10], number 15 "RT" ["Kp", "Rows"] [10],
+    { string 18 "Code" ["Kp"] [] with stringPatternSource := some "[0-9]+" },
     enumeration 16 "Key" ["Kp", "ERows"] [50] [{ name := "Band", tokens := ["Hi", "Lo"] }],
     number 17 "X" ["Kp", "ERows"] [50]]
   repeatableGroups := [
@@ -71,9 +72,10 @@ private def row (cells : List (String × String)) (members : List (String × Jso
 /-- The capture's documents, without the groups no rule here reads, with the computation capture's
 `RA` and `RT` values merged into its `Rows`, which no other rule here reads. The two documents differ
 only in their first `Rows` row: `doc3.json`'s lacks `Base` and holds the other `Status`. -/
-private def documentJson (firstRowEmpty : Bool) (pick : String := "k0") : Json :=
-  .mkObj [("Kp", .mkObj [
-    ("Anchor", .str "a"), ("Pick", .str pick),
+private def documentJson (firstRowEmpty : Bool) (pick : Option String := some "k0") (code : Option String := none) : Json :=
+  .mkObj [("Kp", .mkObj <| [
+    ("Anchor", .str "a")] ++ (pick.map fun text => [("Pick", Json.str text)]).getD [] ++
+    (code.map fun text => [("Code", Json.str text)]).getD [] ++ [
     ("Rows", .arr #[
       if firstRowEmpty then row [("Key", "k0"), ("Status", "B"), ("RA", "2"), ("RT", "4")]
       else row [("Key", "k0"), ("Base", "b0"), ("Status", "A"), ("RA", "2"), ("RT", "4")],
@@ -104,9 +106,10 @@ private def outcome : Except ValidationMessageRenderingError (List String) →
   | .error error => .inl error
 
 /-- Every firing's rendered text, in evaluation order, or the first rendering error. -/
-private def rendered (definition : DmRule) (template : String) (firstRowEmpty := false) (pick := "k0") :
+private def rendered (definition : DmRule) (template : String) (firstRowEmpty := false)
+    (pick : Option String := some "k0") (code : Option String := none) :
     Option (Sum ValidationMessageRenderingError (List String)) := do
-  let input ← (readDocument dm (documentJson firstRowEmpty pick)).toOption
+  let input ← (readDocument dm (documentJson firstRowEmpty pick code)).toOption
   if !input.refusals.isEmpty then none
   let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
   let checked ← (checkDocument prepared "en_US" input.data).toOption
@@ -187,8 +190,8 @@ example : rendered (rule ["Kp", "ERows"] "REnum" "../Key" "FieldFilled(Key) And 
 
 /-- A key selecting no row fires the rule. On kernel 31.1.1 a value parameter renders the empty text
 beside its neighbours, a name renders the name and a category renders empty. Locked: a12-dmkits
-`MessageParameterRowDiffTest` at `1124b523f` (KF668), both strategies, whose rows measured the value
-and name forms; the category row is unmeasured on 31.1.1. -/
+`MessageParameterRowDiffTest` at `1124b523f` (KF668), both strategies, whose rows measured the value,
+name and category forms. -/
 example : rendered (rule ["Kp"] "RMiss" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For \"k9\")")
       "m=[$/Kp/Rows/Base.value For \"k9\"$] mk=[$/Kp/Rows/Key.value For \"k9\"$] mn=[$/Kp/Rows/Base For \"k9\"$] a=[$Anchor.value$]" =
       some (.inr ["m=[] mk=[] mn=[Base] a=[a]"]) ∧
@@ -199,13 +202,20 @@ example : rendered (rule ["Kp"] "RMiss" "../Anchor" "FieldFilled(Anchor) And Fie
     rendered (rule ["Kp"] "RMissC" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Status For \"k9\")")
       "mc=[$/Kp/Rows/Status->Band For \"k9\"$]" = some (.inr ["mc=[]"]) := by native_decide
 
-/-- A field key that is empty, or names no row, selects none: its value renders empty while the
-label still renders (locked as above for the empty key; the unmatched key is unmeasured on 31.1.1). -/
+/-- A field key that selects no row renders its value empty while the label still renders. Locked as
+above: an absent key, and a key that names a row but fails its own `[0-9]+` pattern, which `RFk`'s
+valid field key `k0` controls. Unmeasured on
+31.1.1: a present-empty key and an unmatched one. -/
 example : rendered (rule ["Kp"] "RFkE" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For Pick)")
-      "f=[$/Kp/Rows/Base.value For Pick$] fn=[$/Kp/Rows/Base For Pick$]" (pick := "") =
+      "f=[$/Kp/Rows/Base.value For Pick$] fn=[$/Kp/Rows/Base For Pick$]" (pick := none) =
+      some (.inr ["f=[] fn=[Base]"]) ∧
+    rendered (rule ["Kp"] "RCode" "../Anchor" "FieldFilled(Anchor) Or FieldFilled(/Kp/Rows/Base For Code)")
+      "i=[$/Kp/Rows/Base.value For Code$]" (code := some "k1") = some (.inr ["i=[]"]) ∧
+    rendered (rule ["Kp"] "RFkE" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For Pick)")
+      "f=[$/Kp/Rows/Base.value For Pick$] fn=[$/Kp/Rows/Base For Pick$]" (pick := some "") =
       some (.inr ["f=[] fn=[Base]"]) ∧
     rendered (rule ["Kp"] "RFkE" "../Anchor" "FieldFilled(Anchor) And FieldNotFilled(/Kp/Rows/Base For Pick)")
-      "f=[$/Kp/Rows/Base.value For Pick$] fn=[$/Kp/Rows/Base For Pick$]" (pick := "k9") =
+      "f=[$/Kp/Rows/Base.value For Pick$] fn=[$/Kp/Rows/Base For Pick$]" (pick := some "k9") =
       some (.inr ["f=[] fn=[Base]"]) := by native_decide
 
 /-- A rule iterating the keyed group reports its own message at every row it fires on, the unselected

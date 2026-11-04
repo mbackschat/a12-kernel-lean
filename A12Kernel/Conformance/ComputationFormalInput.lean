@@ -268,7 +268,7 @@ private def reportRun (code : String) (same : Bool) : Option Bool := do
     (fun _ _ => operation.evaluateOutcome prepared.patterns input)
   pure result.toOption.isSome
 
-/- Locked: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1. A rejected index cell keeps its rejection as its one formal-input finding even where validation also reports `uniqueIndex`, so result assembly completes with and without equal keys, under `testIDNummer` exactly as under an ordinary code. -/
+/- Locked at `1124b523f`, kernel 31.1.1: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` for `testIDNummer` with equal and distinct keys, `CustomTestRangeLawsTest` (`aRejectionBesideADuplicateIndexReportsBothOnEveryRow`) for the ordinary code's equal keys. A rejected index cell keeps its rejection as its one formal-input finding even where validation also reports `uniqueIndex`, so result assembly completes with and without equal keys, under `testIDNummer` exactly as under an ordinary code. -/
 example : ["testIDNummer", "CODE_BAD"].all (fun code =>
     reportRun code true == some true && reportRun code false == some true) = true := by
   native_decide

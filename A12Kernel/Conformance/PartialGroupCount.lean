@@ -344,4 +344,19 @@ example : counts 2 .withoutCodeRow2 laterPartialCoverage =
 example : counts 2 .withoutCodeRow2 (everyField.map every) =
     some [decided 2, decided 2, decided 2] := by native_decide
 
+/-- The `Batches*` extent gate alone, for the coverage-only boundaries below. -/
+private def batchesExtent (model : FlatModel) (entities : List RelevantEntityPattern) : Bool :=
+  (ValidationRelevanceScope.partialSet entities).coversGroupCountExtent model ["Item", "Batches"] [] [10] []
+
+/- Unmeasured on 31.1.1, both following the kernel source read for the wholly-relevant account: every
+   field named at the only row of a capacity-one `Batches` does not fold into its wildcard, against the
+   capacity-two control naming both rows; and a declared empty fixed group below `Batches` is a member
+   no selection can make wholly relevant, so the batch never is, against the same selection without it. -/
+example : !batchesExtent (model 1) (batchFields.flatMap (atRows · [1])) ∧
+    batchesExtent (model 2) (batchFields.flatMap (atRows · [1, 2])) ∧
+    !batchesExtent { model 2 with emptyNonrepeatableGroups := [["Item", "Batches", "Box"]] }
+      (every ["Item", "Batches"] :: batchFields.map every) ∧
+    batchesExtent (model 2) (every ["Item", "Batches"] :: batchFields.map every) := by
+  native_decide
+
 end A12Kernel.Conformance.PartialGroupCount

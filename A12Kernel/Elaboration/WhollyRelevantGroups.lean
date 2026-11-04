@@ -12,10 +12,12 @@ judgment runs bottom-up from the deepest groups, and three rules shape it:
 - A repeatable sub-group contributes to its parent only through instances wildcarded at its own level;
   a fixed sub-group always contributes.
 - Concrete instances of a repeatable group naming every declared slot under one parent fold into that
-  level's wildcard. An unbounded level never folds.
+  level's wildcard when the capacity is at least two. A capacity-one or unbounded level never folds.
 
-A selection naming a group stands for every field below it. A group with no field below it is never
-wholly relevant, an assumption no measurement covers.
+A selection naming a group stands for every field below it. A group with no field below it, declared
+empty, is a member of its parent but never wholly relevant itself, so its parent never is either; that
+and the capacity-one boundary follow the kernel source read for this account and no measurement
+covers them.
 -/
 
 namespace A12Kernel
@@ -45,17 +47,18 @@ open RelevantEntityPattern
 
 /-- The direct members of a group: its own fields and its immediate sub-groups, by path. -/
 private def directMembers (model : FlatModel) (groupPath : GroupPath) : List (List String) :=
-  let groups := (model.fields.map (·.groupPath) ++ model.repeatableGroups.map (·.path)).filterMap
+  let groups := (model.fields.map (·.groupPath) ++ model.repeatableGroups.map (·.path) ++
+      model.emptyNonrepeatableGroups).filterMap
     fun path => if groupPath.isPrefixOf path && path.length > groupPath.length then
       some (path.take (groupPath.length + 1)) else none
   ((model.fields.filter (·.groupPath == groupPath)).map (·.path) ++ groups).eraseDups
 
 /-- Fold the concrete instances of a repeatable group that name every declared slot under one parent
-    into that level's wildcard; drop a coordinate past the capacity. -/
+    into that level's wildcard when the capacity is at least two; drop a coordinate past the capacity. -/
 private def foldDeclaredRows (model : FlatModel) (groupPath : GroupPath)
     (instances : List RelevantEntityPattern) : List RelevantEntityPattern :=
   match model.repeatableGroups.find? (·.path == groupPath) |>.bind (·.repeatability) with
-  | none => instances
+  | none | some 0 | some 1 => instances
   | some capacity =>
       let parent (entity : RelevantEntityPattern) := entity.indices.dropLast
       let concrete := instances.filterMap fun entity => match entity.indices.getLast? with

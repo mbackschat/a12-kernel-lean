@@ -111,7 +111,7 @@ example : twinCodes.all (fun code =>
     (summary (.rejected code)).map (·.result.toOption) == some (some (rejectedResult code)) &&
     readerChanges (summary (.rejected code)) == some clearedCopies) = true := by native_decide
 
-/- Locked: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1. Equal rejected index cells keep the rejection as their one formal-input finding (validation still reports `uniqueIndex` beside it, locked in `MessageCacheOrder`), so result assembly completes with the same result as distinct keys; the ordinary code behaves identically. -/
+/- Locked at `1124b523f`, kernel 31.1.1: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` for `testIDNummer`, `CustomTestRangeLawsTest` (`aRejectionBesideADuplicateIndexReportsBothOnEveryRow`) for the ordinary code. Equal rejected index cells keep the rejection as their one formal-input finding (validation still reports `uniqueIndex` beside it, locked in `MessageCacheOrder`), so result assembly completes with the same result as distinct keys; the ordinary code behaves identically. -/
 example : twinCodes.all (fun code =>
     (summary (.rejected code) true).map (·.result.toOption) == some (some (rejectedResult code)) &&
     readerChanges (summary (.rejected code) true) == some clearedCopies) = true := by native_decide

@@ -134,7 +134,7 @@ private def rejectedInput? (rejectionCode : String) : Option (CheckedDocument re
       { address := { field := ordinary.id, path := [] }, stored := "bad",
         raw := .rejected .malformed }] }).toOption
 
-/- Letter-B, stored source read by a computation (a12-dmkits `CustomTestRangeLawsTest` at `1124b523f`, kernel 31.1.1): the computation reads a `testIDNummer` source as poison, and the formal-input inventory lists it before the other rejected operand, exactly as for an ordinary code. -/
+/- Locked: a12-dmkits `CustomTestRangeLawsTest` at `1124b523f`, kernel 31.1.1: the computation reads a `testIDNummer` source as poison exactly as for an ordinary code. Unmeasured on 31.1.1: the malformed `ordinary` operand beside it and the inventory order that lists the rejection first. -/
 example : twinCodes.all (fun rejectionCode => (do
     let input ← rejectedInput? rejectionCode
     let plan ← (checkComputationFormalInputPlan rejectedModel [code.id, ordinary.id] []).toOption

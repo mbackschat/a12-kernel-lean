@@ -145,7 +145,7 @@ private def results? (code : String) (same : Bool) : Option (Bool × Bool × Nat
     scalarResult.toOption.map fun view => view.scalar.number.withoutErrors.map fun entry =>
       (entry.targetField, entry.value.unscaled, entry.value.scale))
 
-/- Locked: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1. With equal or distinct keys, both rejected index rows contribute only the custom finding to the computation inventory and assembly completes in both routes, for `testIDNummer` exactly as for an ordinary code. -/
+/- Locked at `1124b523f`, kernel 31.1.1: a12-dmkits `ComputationDiagnosticAssemblyLawsTest` for `testIDNummer`, `CustomTestRangeLawsTest` (`aRejectionBesideADuplicateIndexReportsBothOnEveryRow`) for the ordinary code's equal keys. With equal or distinct keys, both rejected index rows contribute only the custom finding to the computation inventory and assembly completes in both routes, for `testIDNummer` exactly as for an ordinary code. -/
 example : ["testIDNummer", "CODE_BAD"].all (fun code => [false, true].all fun same =>
     results? code same == some (false, false, 2,
       some [(91, 1, 0)], some [(91, 1, 0)])) = true := by native_decide

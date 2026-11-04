@@ -273,7 +273,8 @@ private partial def readInstance (model : DmModel) (group : GroupPath) (path : L
 non-object element: kernel 31.1.1 then reads no document at all, whatever the model declares at that
 key (spec/01 §2.3). The walk enters a row of a repeatable key and an object at a declared group key, and
 never an object at a field or undeclared key. The document object holding the root groups is walked
-like a group instance, an assumption no measurement covers. -/
+like a group instance: an `id` member there holding `[null]` refuses too (a12-dmkits
+`A12JsonIngressDiffTest` at `ae67703`). -/
 private partial def arrayDefect? (model : DmModel) (group : GroupPath) (members : List (String × Json)) :
     Option (List String) :=
   members.findSome? fun (name, value) =>
@@ -299,6 +300,12 @@ def readDocument (model : DmModel) (json : Json) : Except String DmDocument := d
   let .obj roots := json | throw "document is no object"
   if let some path := arrayDefect? model [] roots.toList then
     throw s!"array holding a non-object element at {"/".intercalate path}"
+  -- The document's own `id` beside the root groups refuses the document as a Boolean or `null`
+  -- (same lock); an object or array of objects there is dropped, and its text is no evaluated cell.
+  if roots.toList.any fun (name, value) => name == "id" && match value with
+      | .null | .bool _ => true
+      | _ => false then
+    throw "document id of a Boolean or null kind"
   let ((), state) := (readInstance model [] [] roots.toList).run {}
   pure { data := { instantiatedRows := state.rows.toList, cells := state.cells.toList,
                     groupOccurrences := state.groups.toList }

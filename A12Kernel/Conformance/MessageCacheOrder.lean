@@ -521,7 +521,7 @@ example : ["testIDNummer", "cacheProbe.reject"].all (fun code =>
     customIndexResult ["TEST"] code == unavailableIndexResult 1 code) = true := by
   native_decide
 
-/- Locked: a12-dmkits `CustomTestRangeLawsTest` (`aRejectionBesideADuplicateIndexReportsBothOnEveryRow`) at `1124b523f`, kernel 31.1.1. Two equal rejected index cells still meet the uniqueness check by their stored text, so validation reports `uniqueIndex` beside the rejection, under `testIDNummer` exactly as under an ordinary code; the cell itself stays unavailable and keyless. -/
+/- Locked: a12-dmkits `CustomTestRangeLawsTest` (`aRejectionBesideADuplicateIndexReportsBothOnEveryRow`) at `1124b523f`, kernel 31.1.1. Two equal rejected index cells still meet the uniqueness check by their stored text, so validation reports `uniqueIndex` beside the rejection on both rows, under `testIDNummer` exactly as under an ordinary code. The test compares messages only: the cell's population count, absent message key and phase observations are this account's, unmeasured on 31.1.1. -/
 example : ["testIDNummer", "cacheProbe.reject"].all (fun code =>
     customIndexResult ["TEST", "TEST"] code ==
       (unavailableIndexResult 2 code).map fun (head, observed, findings) =>

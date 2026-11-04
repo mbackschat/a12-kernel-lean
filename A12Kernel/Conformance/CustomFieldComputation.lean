@@ -58,7 +58,7 @@ private def cascadeConsumer (code : String) : Option (Option StringTargetOutcome
   (cascadeOutcome (some { projectCode := code })).map
     (fun result => result.toOption.map (·.consumer.outcome))
 
-/- Letter-B (a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1): a computed target rejected with `testIDNummer` poisons its dependent exactly as the ordinary code does. -/
+/- Locked: a12-dmkits `CustomTestRangeLawsTest` at `1124b523f` (`publicInterpreterSeparatesStoredAdmissionFromComputedTargetErrors`), kernel 31.1.1: a computed target rejected with `testIDNummer` poisons its dependent exactly as the ordinary code does. -/
 example : cascadeConsumer "testIDNummer" = cascadeConsumer "ordinary-reject" ∧
     cascadeConsumer "testIDNummer" = some (some (.poison .computedDependency)) := by native_decide
 
@@ -166,7 +166,7 @@ example : priorStates.all (fun prior => checkedRunOutcome none prior == some ([
       .presentValue ⟨"ABCD", by decide⟩, .presentValue ⟨"ABCD", by decide⟩,
       .presentValue ⟨"free", by decide⟩])) = true := by native_decide
 
-/- Letter-B (a12-dmkits `ComputationDiagnosticAssemblyLawsTest` at `1124b523f`, kernel 31.1.1): a computed CUSTOM target rejected with `testIDNummer` is errored and poisons its dependent exactly as an ordinary code does. The sweep over prior target states, and their clearing, is unmeasured on 31.1.1 beyond the ordinary-code twin. -/
+/- Locked: a12-dmkits `CustomTestRangeLawsTest` at `1124b523f` (`publicInterpreterSeparatesStoredAdmissionFromComputedTargetErrors`, `computedAdmissionDoesNotDependOnTheTargetsStoredValue`), kernel 31.1.1: a computed CUSTOM target rejected with `testIDNummer` is errored and poisons its dependent exactly as an ordinary code does, whatever the target held before; the peer swept `null`, empty and a stale text, and the `ABCD` prior state here is unmeasured on 31.1.1. -/
 example : ["ordinary-reject", "testIDNummer"].all
     (fun projectCode => priorStates.all fun prior =>
       checkedRunOutcome (some { projectCode }) prior == some ([

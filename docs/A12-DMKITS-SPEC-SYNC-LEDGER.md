@@ -37,6 +37,17 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-04-01"></a>
+### SPEC-2026-11-04-01 — The wholly relevant group extent never folds a capacity-one level, and a declared empty sub-group keeps its parent from being wholly relevant
+
+- `status`: pending
+- `canonical`: [spec/10 §5.6](../spec/10-validation-and-polarity.md#56-group-presence-and-group-counts), step 1 of `NumberOfFilledGroups`.
+- `delta`: Narrows KF667's fold to repeatable levels of capacity at least two, so every field named at the only row of a capacity-one group leaves a count over it UNKNOWN; and counts a declared fixed sub-group with no field below it as a member that is never wholly relevant, so its parent never is.
+- `basis`: kernel source read at `a12-kernel` `eec9134` (`ValidationCommand.compress` returns a capacity-one set unchanged; the contained elements a group must cover include its sub-groups), kernel 31.1.1; no runtime measurement.
+- `acceptance`: Reconcile a12-dmkits' fully-relevant account with both boundaries, or measure either one on kernel 31.1.1 against the stated outcome. Whether a starred capacity-one operand can be authored has no witness known as of `1124b523f`; the rule is stated whatever the answer.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+
 <a id="spec-2026-10-31-01"></a>
 ### SPEC-2026-10-31-01 — A String and a Custom join key of one text match, while two temporal keys of different kinds under the measured formats never matched
 

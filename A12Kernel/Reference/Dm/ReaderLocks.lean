@@ -240,12 +240,24 @@ private def note (text : String) : Json := Json.mkObj [("Note", .str text)]
 example : [("Lines", Json.arr #[.null]), ("Lines", .arr #[note "a", .null]), ("Lines", .arr #[toJson (7 : Nat)]),
       ("Lines", .arr #[.str "x"]), ("Lines", .arr #[.arr #[]]),
       ("Amount", .arr #[.null]), ("Sibling", .arr #[.null]), ("Unexpected", .arr #[.null]),
-      ("id", .arr #[.null]), ("Lines", .arr #[Json.mkObj [("Note", .arr #[.null])]])].all parcelUnread ∧
+      ("Lines", .arr #[Json.mkObj [("Note", .arr #[.null])]])].all parcelUnread ∧
     [("Lines", toJson (7 : Nat)), ("Lines", .null), ("Lines", .arr #[]), ("Amount", Json.mkObj []),
       ("Amount", .arr #[]), ("Amount", .arr #[Json.mkObj []]), ("Unexpected", toJson (7 : Nat)),
       ("Unexpected", Json.mkObj []), ("Unexpected", .arr #[]), ("Unexpected", .arr #[Json.mkObj []]),
       ("Unexpected", .arr #[Json.mkObj [("Tiers", .arr #[.null])]]),
       ("Amount", Json.mkObj [("Tiers", .arr #[.null])])].all parcelReads := by native_decide
+
+/-- The document object beside `Parcel`, where the document's own `id` stands. -/
+private def besideParcel (member : String × Json) : Except String DmDocument :=
+  readDocument parcelModel (Json.mkObj [member, ("Parcel", Json.mkObj [("Sibling", "kept")])])
+
+/- The same lock walks the document object too: an `id` holding `[null]`, `true` or `null` refuses the
+   document, while `{}`, `[]`, `[{}]` and text are read beside the root group. -/
+example : [Json.arr #[.null], .bool true, .null].all (fun value => !(besideParcel ("id", value)).isOk) ∧
+    [Json.mkObj [], .arr #[], .arr #[Json.mkObj []], .str "P-1"].all fun value =>
+      match besideParcel ("id", value) with
+      | .ok read => read.refusals.isEmpty && read.data.cells.map (·.address) == [{ field := 1, path := [] }]
+      | .error _ => false := by native_decide
 
 /- The positive control: rows of objects read in order. -/
 example : (parcel ("Lines", .arr #[note "a", Json.mkObj [], note "b"])).toOption.map
