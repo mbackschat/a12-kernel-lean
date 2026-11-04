@@ -30,9 +30,13 @@ cd "$repository_root"
 export LC_ALL=C
 
 kernel_root="../a12-kernel"
-# The frozen bundle the population replay and the observed corpus read. A later kernel's bundle is a
-# new root, never a rewrite of this one (docs/KERNEL-UPGRADE-PLAYBOOK.md).
-evidence_root="evidence/kernel-30.8.1"
+# The current kernel's re-capture of the frozen requests, which the population replay reads. Git ignores
+# it, so scripts/recapture-kernel-evidence.py must have run first (docs/KERNEL-UPGRADE-PLAYBOOK.md).
+evidence_root="evidence/kernel-31.1.1/local"
+if [ ! -d "$evidence_root/captures" ]; then
+  echo "no $evidence_root/captures: run scripts/recapture-kernel-evidence.py first" >&2
+  exit 1
+fi
 report="docs/CONFORMANCE-COVERAGE.md"
 mode="update"
 
@@ -304,7 +308,7 @@ unclassified="$(comm -23 "$work/all-lean" "$work/classified" | count /dev/stdin)
 # ---------------------------------------------------------------------------
 # Axis 5 — retained empirical backbone.
 # ---------------------------------------------------------------------------
-capture_dirs="$(find evidence -mindepth 3 -maxdepth 3 -type d | count /dev/stdin)"
+capture_dirs="$(find evidence -mindepth 3 -maxdepth 3 -type d -not -path 'evidence/*/local/*' -not -path 'evidence/*/local' | count /dev/stdin)"
 observation_rows="$(find evidence -type f \
   \( -name '*-obs.json' -o -name 'semantic-observations.json' \) -print0 \
   | LC_ALL=C xargs -0 grep -oh '"inputHash"' 2>/dev/null | count /dev/stdin)"

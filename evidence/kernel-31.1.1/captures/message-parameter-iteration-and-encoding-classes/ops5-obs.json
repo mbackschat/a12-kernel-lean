@@ -1,0 +1,66 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "f6c04bf604814b958fd9196acd4d7d9ceca74f0619349b030384f46addf52535",
+  "observations" : [ {
+    "id" : "U00-agg-parallel-plain",
+    "inputHash" : "b1ed05abc467a74ef4582c3327e86dc027acaed45720866e71a2a17e9d927936",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALIDN" ]
+  }, {
+    "id" : "U01-agg-parallel-group-index",
+    "inputHash" : "363948094f73024814f60eb5a129f846537e3cf20530853230233b710a0d72ed",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALIDN" ]
+  }, {
+    "id" : "U02-agg-parallel-own-group",
+    "inputHash" : "c7dd0771f2bd9c81a14b400ff3d59d4851af1884c4f5df2f93ff02533612ceda",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALIDN" ]
+  }, {
+    "id" : "U03-agg-or-group-index",
+    "inputHash" : "1f7e436379430d9c665133206fddaf7c073f56f3804366e1189237c2d0ed0597",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALIDN" ]
+  }, {
+    "id" : "V00-keyed-plain",
+    "inputHash" : "a67ae94796a1dd6769cf1f58fe1ada1cd48bae8c587795d92e9e1125a73673db",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "V01-keyed-group-index",
+    "inputHash" : "c3257ce5f2dc2ea83b501434a87770553b37f5b663d2382dffcef31de39440ef",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "V02-keyed-wrong-key",
+    "inputHash" : "d8da379209772135ceff72e9098eaec2eea8747012416f1a1a779536c69ba667",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "V03-keyed-unkeyed-param",
+    "inputHash" : "2220559de6942d865cc65b3e1ecdece8cb2078ef6a315e09095ecac92be1cf19",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "V04-keyed-own-group",
+    "inputHash" : "f870a8950aaec2000096c87f23340502a6cab1eebab12676905ca9a123586db1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  } ]
+}

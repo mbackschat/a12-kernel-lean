@@ -213,16 +213,16 @@ def captures : List (String × String × String) := [
   ("captures/below-star-group-runtime/obs-admission.json", "captures/starred-group-value-count-classes/ProbeN_DM.json", "captures/below-star-group-runtime/ops-admission.json"),
   ("captures/computation-star-binding-gate/obs.json", "captures/computation-star-binding-gate/StarBinding_DM.json", "captures/computation-star-binding-gate/ops.json"),
   ("captures/computation-star-binding-gate/obs10.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops10.json"),
-  ("captures/computation-star-binding-gate/obs12-StarBinding3_DM.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/obs12-StarBinding3_DM.json"),
-  ("captures/computation-star-binding-gate/obs12-StarBinding4_DM.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/obs12-StarBinding4_DM.json"),
+  ("captures/computation-star-binding-gate/obs12-StarBinding3_DM.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops12.json"),
+  ("captures/computation-star-binding-gate/obs12-StarBinding4_DM.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/ops12.json"),
   ("captures/computation-star-binding-gate/obs2.json", "captures/computation-star-binding-gate/StarBinding2_DM.json", "captures/computation-star-binding-gate/ops2.json"),
   ("captures/computation-star-binding-gate/obs3.json", "captures/computation-star-binding-gate/StarBinding2_DM.json", "captures/computation-star-binding-gate/ops3.json"),
   ("captures/computation-star-binding-gate/obs4.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops4.json"),
   ("captures/computation-star-binding-gate/obs5.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops5.json"),
   ("captures/computation-star-binding-gate/obs6.json", "captures/computation-star-binding-gate/StarBinding3_DM.json", "captures/computation-star-binding-gate/ops6.json"),
   ("captures/computation-star-binding-gate/obs7.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/ops7.json"),
-  ("captures/computation-star-binding-gate/obs8-StarBinding4_DM.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/obs8-StarBinding4_DM.json"),
-  ("captures/computation-star-binding-gate/obs8-StarBinding5_DM.json", "captures/computation-star-binding-gate/StarBinding5_DM.json", "captures/computation-star-binding-gate/obs8-StarBinding5_DM.json"),
+  ("captures/computation-star-binding-gate/obs8-StarBinding4_DM.json", "captures/computation-star-binding-gate/StarBinding4_DM.json", "captures/computation-star-binding-gate/ops8.json"),
+  ("captures/computation-star-binding-gate/obs8-StarBinding5_DM.json", "captures/computation-star-binding-gate/StarBinding5_DM.json", "captures/computation-star-binding-gate/ops8.json"),
   ("captures/computation-star-binding-gate/obs9.json", "captures/group-count-list-extent/CompGate_DM.json", "captures/computation-star-binding-gate/ops9.json"),
   ("captures/cross-kind-format-runtime-parser/obs-reverse.json", "captures/cross-kind-format-runtime-parser/Rev_DM.json", "captures/cross-kind-format-runtime-parser/ops-reverse.json"),
   ("captures/cross-kind-format-runtime-parser/obs.json", "captures/cross-kind-format-runtime-parser/Kind_DM.json", "captures/cross-kind-format-runtime-parser/ops.json"),
@@ -238,7 +238,7 @@ def captures : List (String × String × String) := [
   ("captures/equal-set-spelling-families-carrier-split/obs-baseyear.json", "captures/equal-set-spelling-families-carrier-split/XFmt2_BaseYear_DM.json", "captures/equal-set-spelling-families-carrier-split/ops-baseyear.json"),
   ("captures/equal-set-spelling-families-carrier-split/obs.json", "captures/equal-set-spelling-families-carrier-split/XFmt2_DM.json", "captures/equal-set-spelling-families-carrier-split/ops.json"),
   ("captures/extrema-component-omitting-fold/obs.json", "captures/extrema-component-omitting-fold/Ext_DM.json", "captures/extrema-component-omitting-fold/ops.json"),
-  ("captures/extrema-operand-kind-grid/obs-grid.json", "captures/extrema-operand-kind-grid/Rng_DM.json", "captures/extrema-operand-kind-grid/obs-grid.json"),
+  ("captures/extrema-operand-kind-grid/obs-grid.json", "captures/extrema-operand-kind-grid/Rng_DM.json", "captures/extrema-operand-kind-grid/ops-all.json"),
   ("captures/field-value-read-predictions/observations-grid4.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid4.json"),
   ("captures/field-value-read-predictions/observations-grid5.json", "captures/field-value-read-predictions/Grid25i_DM.json", "captures/field-value-read-predictions/ops-grid5.json"),
   ("captures/filter-reference-two-levels-above/obs-field-positions.json", "captures/filter-reference-two-levels-above/Rep_DM.json", "captures/filter-reference-two-levels-above/ops-field-positions.json"),
@@ -299,48 +299,12 @@ def deferred : List (String × String) :=
     "pattern-and-key-resolver-classes/obs-locus.json#pm-rowlocus-abs",
     "pattern-and-key-resolver-classes/obs-review.json#pv-unique",
     "pattern-and-key-resolver-classes/obs-review.json#pv-rowlocus"].map (·, "host pattern compiler, SG7")) ++
-  -- Kernel 30.8.1 rows whose class was the display-label comparison kernel 31.1.1 retired (Letter B §5d,
-  -- `docs/sources/inbound-handbacks.md`): Lean answers with what the comparison no longer withholds.
-  (["condition-class-projection-2026-10-01/obs-pairs.json#FNotexLabelled",
-    "condition-class-projection-2026-10-01/obs-pairs.json#FPlainxLabelled",
-    "condition-class-projection-2026-10-01/obs-pairs.json#FLabelledxNote",
-    "condition-class-projection-2026-10-01/obs-pairs.json#FLabelledxPlain",
-    "condition-class-projection-2026-10-01/obs.json#O12",
-    "k22-static-s4-2026-10-24/obs.json#va5",
-    "k22-static-s4-2026-10-24/obs.json#va6",
-    "k22-static-s4-2026-10-24/obs.json#va7",
-    "k22-static-s4-2026-10-24/obs.json#va9",
-    "k22-static-s4-2026-10-24/obs.json#va12",
-    "k22-static-s4-2026-10-24/obs.json#va18",
-    "parser-index-and-iteration-classes/obs4.json#D17",
-    "parser-index-and-iteration-classes/obsc.json#F04"].map (·, "kernel 31.1.1 display-label retirement")) ++
-  -- Kernel 30.8.1 rows of the two iteration changes of kernel 31.1.1 (Letter B §5e): a negative refuses wherever
-  -- the rule iterates, a marked filter's bound row included, and a filtered group's kind is asked after its walk.
-  (["having-iteration-guards-2026-10-09/observations.json#vNoFieldFilledmarked",
-    "having-iteration-guards-2026-10-09/observations.json#vNotAllFieldsFilledmarked",
-    "having-iteration-guards-2026-10-09/observations.json#vNotExactlyOneFieldFilledmarked"].map
-      (·, "kernel 31.1.1 negative-iteration guard")) ++
-  [("filtered-star-leading-kind/obs3.json#ctl-filtered-group-unstarred", "kernel 31.1.1 filtered-group kind after the walk")] ++
-  -- Kernel 30.8.1 rows of three message-parameter changes of kernel 31.1.1 (Letter B §5g and §5i): `Vordruckname`
-  -- is an ordinary name, an empty category name is asked before membership, and the rule-group terminal as a
-  -- key meets the ordinary key gate. `P00` is unmeasured on 31.1.1: Lean derives its class from the grammar.
-  (["message-name-position-carriers-2026-10-01/obs.json#P2",
-    "message-parameter-iteration-and-encoding-classes/ops-obs.json#F05-vordruckname",
-    "message-parameter-iteration-and-encoding-classes/ops2-obs.json#J03-repeatable-vordruckname",
-    "message-parameter-iteration-and-encoding-classes/ops3-obs.json#O03-unreferenced-vordruckname",
-    "message-parameter-iteration-and-encoding-classes/ops3-obs.json#P00-rulegroup-vordruckname",
-    "parser-index-and-iteration-classes/obs5.json#E03"].map (·, "kernel 31.1.1 retired form-name terminal")) ++
-  (["message-category-gate-order/observations.json#empty-unreferenced",
-    "message-category-gate-order/observations.json#doubled-empty-unreferenced",
-    "message-category-gate-order/observations.json#keyed-empty-unreferenced",
-    "message-category-gate-order/observations.json#keyed-empty-referenced",
-    "message-category-gate-order/observations.json#empty-absolute-unreferenced",
-    "message-parameter-refusal-classes/ops-obs.json#H12-category-empty"].map
-      (·, "kernel 31.1.1 empty category name before membership")) ++
-  (["message-decoder-matrix-2026-10-01/obs-flat-review.json#F5g",
-    "message-decoder-matrix-2026-10-01/obs-flat.json#R02",
-    "message-decoder-matrix-2026-10-01/obs-review.json#F5g",
-    "message-decoder-matrix-2026-10-01/obs.json#R02"].map (·, "kernel 31.1.1 rule-group key"))
+  -- On kernel 31.1.1 the empty-token model's own rules compare against `""`, which is no literal there, so
+  -- every row of that batch carries their classes; this projection checks only the requested rule, whose
+  -- own refusal of `""` rows s01, s02 and s05 compare.
+  (["empty-enumeration-token-2026-10-14/obs.json#s03",
+    "empty-enumeration-token-2026-10-14/obs.json#s06",
+    "empty-enumeration-token-2026-10-14/obs.json#s07"].map (·, "the model's own rules, which the projection does not check"))
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -471,22 +435,9 @@ private def Outcome.ofDetail? : Option String → Outcome
   | some detail => .diverges detail
   | none => .agrees
 
-/-- A retained kernel 30.8.1 code under the name kernel 31.1.1 gives it. These four codes were renamed with
-their trigger kept on every row a12-dmkits locks (Letter B §5e, `docs/sources/inbound-handbacks.md`); the
-retained lowest-level code was drawn only by `SumOfProducts`, whose class 31.1.1 renamed, while the old name
-now belongs to `SumOfTerms`. -/
-private def kernel31Code : String → String
-  | "MVK_DISALLOWED_CONSTRUCT_IN_FILTER_CONDITION" => "MVK_DISALLOWED_CONSTRUCT_IN_SET_EXPRESSION"
-  | "MVK_INVALID_ITERATION_IN_FILTER_CONDITION" => "MVK_INVALID_ITERATION_IN_SET_EXPRESSION"
-  | "MVK_PARALLEL_ITERATION_FOR_FILTERED_ENTITY_NOT_ALLOWED" =>
-      "MVK_PARALLEL_ITERATION_FOR_PATH_WITH_ASTERISKS_NOT_ALLOWED"
-  | "MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED" => "MVK_WILDCARD_AT_LOWEST_REPEATABLE_LEVEL_REQUIRED"
-  | code => code
-
-/-- The Kernel's codes on one row, without the instrument's own `RK_` refusals, under their 31.1.1 names. -/
+/-- The Kernel's codes on one row, without the instrument's own `RK_` refusals. -/
 private def kernelCodes (observation : Json) : List String :=
   ((observation.getObjValAs? (Array String) "codes").toOption.getD #[]).toList.filter (!·.startsWith "RK_")
-    |>.map kernel31Code
 
 /-- The Kernel's verdict on one row, `none` when the instrument stopped before the Kernel answered.
 A row's `valid` decides; a computation preview reports only `ok` for an admitted spec, and a failed
@@ -595,8 +546,10 @@ private def loadModel (path : System.FilePath) (added : List (String × Json) :=
   | .ok locales => pure (dm, locales.map (·.key))
   | .error message => throw (IO.userError s!"{path}: {message}")
 
-/-- Replay every batch and return the agreeing and skipped row counts. -/
-def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
+/-- Replay every batch and return the agreeing and skipped row counts. Models and requests are read under
+"inputs", observations under "observed": a later kernel's re-capture runs the frozen requests unchanged. -/
+def checkArtifacts (inputs observed : System.FilePath) : IO (Nat × Nat) := do
+  let root := inputs
   let mut agreeing := 0
   let mut skipped := 0
   let mut failures : Array String := #[]
@@ -606,7 +559,7 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
     let requestDir := (root / requests).parent.getD root
     -- A dry-run batch retains only each row's verdict and Kernel codes, keyed by row id, since the
     -- instrument's envelope renders the Kernel's messages.
-    let retained ← readJson (root / observations)
+    let retained ← readJson (observed / observations)
     let batch := match retained.getObjValAs? (Array Json) "observations", retained.getObjVal? "rows" with
       | .ok rows, _ => rows
       | .error _, .ok (.obj rows) =>

@@ -16,7 +16,8 @@ An observed notification whose element is null matches a reported one of the sam
 the Kernel names no element for a name holding a `/`, whose path it cannot form.
 
 A row the Kernel's DM-JSON binding refused, recorded with `admitted` null, agrees when the reader
-refuses it too. A row of `deferred` is skipped and counted. Both the capture and the base model load
+refuses it too. The observations are kernel 31.1.1's re-capture of the frozen rows, each codeless sentence
+classed by the label the frozen capture gives it. Both the capture and the base model load
 through `parseModelJson`, which keeps a lone surrogate visible.
 -/
 
@@ -26,25 +27,6 @@ open Lean A12Kernel A12Kernel.Dm
 
 /-- The capture, under the evidence root. -/
 def captureDirectory : System.FilePath := "captures/field-declaration-notifications-2026-10-13"
-
-/-- Rows the reader disagrees with for a reason outside the laws, each with the reason. A row stays out
-only when it disagrees for that reason alone; no other row disagrees. -/
-def deferred : List (String × String) :=
-  ["pp-time", "pp-datetime", "pp-datetime-twin", "pp-fragment", "pp-range"].map (fun id =>
-    (id, "kernel 30.8.1's binding refused a member its type does not declare, which kernel 31.1.1 reads past (spec/01 §1.1)")) ++
-  ["u-1", "u-body", "u-two", "u-nested", "u-td2", "u-td0", "u-cond", "u-cond2", "u-cond3", "u-cond4",
-    "pa-desc-content", "pa-f-content", "rid-co", "ps-61-content", "mt-co", "o-1", "o-1r", "o-3", "o-4"].map (fun id =>
-    (id, "the row's model carries an UnspecifiedType, which kernel 31.1.1 no longer reads (spec/01 §1.1)")) ++
-  ["tb-time-nobody", "tb-dt-nobody", "tb-frag-nobody"].map (fun id =>
-    (id, "kernel 30.8.1 refused a temporal type without its body, which kernel 31.1.1 reads as an empty body (spec/01 §1.1)")) ++
-  [("fc-nv-null", "kernel 30.8.1 read a null boolean member as false, which kernel 31.1.1 refuses (spec/01 §1.1)")] ++
-  ["ec-undecl", "ed-undecl", "ed-tab-undecl"].map (fun id =>
-    (id, "kernel 30.8.1 counted a label only in a declared locale, while kernel 31.1.1 counts one in any locale (spec/01 §1.3)")) ++
-  ["r-filtered", "nv-filtered", "pi-filtered", "lb1-filtered", "mm-n-filtered", "p-only", "h-only",
-    "ml-only", "ar-only", "mv-only", "ec-only", "ed-only", "dd-only", "ev-tab-only", "nl-only",
-    "sv-only", "u-only", "cn-only", "od-only", "pa-f-only", "pa-g-only", "dg-only", "xf-only", "dc-only",
-    "tb-frag-only", "tb-range-only"].map fun id =>
-    (id, "kernel 30.8.1 deleted the declaration by its variant filter, which kernel 31.1.1 reads past (spec/01 §1.4)")
 
 private def readJson (path : System.FilePath) : IO Json := do
   match parseModelJson (← IO.FS.readFile path) with
@@ -115,21 +97,19 @@ private def agrees (expected : List (String × Option String)) (reported : List 
   | some [] => true
   | _ => false
 
-/-- Replay every row and return the agreeing and the deferred row counts. -/
-def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
-  let directory := root / captureDirectory
+/-- Replay every row and return the agreeing row count. The base model and the rows are read under
+"inputs", the observations under "observedRoot": a later kernel's re-capture checks the frozen rows unchanged. -/
+def checkArtifacts (inputs observedRoot : System.FilePath) : IO Nat := do
+  let directory := inputs / captureDirectory
   let base ← readJson (directory / "Wh_DM.json")
   let rows := ((← readJson (directory / "rows.json")).getArr?.toOption.getD #[]).toList
-  let observations := ((← readJson (directory / "observations.json")).getArr?.toOption.getD #[]).toList
+  let observations :=
+    ((← readJson (observedRoot / captureDirectory / "observations.json")).getArr?.toOption.getD #[]).toList
   if rows.isEmpty then throw (IO.userError s!"{captureDirectory}: no rows")
   let mut agreeing := 0
-  let mut skipped := 0
   let mut failures : Array String := #[]
   for row in rows do
     let id := (row.getObjValAs? String "id").toOption.getD "?"
-    if deferred.any (·.1 == id) then
-      skipped := skipped + 1
-      continue
     let some observation := observations.find? fun candidate =>
         (candidate.getObjValAs? String "case").toOption == some id
       | failures := failures.push s!"{id}: no observation"; continue
@@ -149,6 +129,6 @@ def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
           failures := failures.push s!"{id}: expected {sorted (expected.map fun (code, at_) => entry code (at_.getD "-"))} but the laws report {sorted (reported.map fun (label, at_) => entry label at_)}"
   if !failures.isEmpty then
     throw (IO.userError s!"field-declaration notifications diverge:\n{"\n".intercalate failures.toList}")
-  pure (agreeing, skipped)
+  pure agreeing
 
 end A12Kernel.Evidence.DeclarationNotificationProjection

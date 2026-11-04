@@ -34,21 +34,22 @@ def localeKey (spelling : String) : Except String String := do
     | some locale => locale.key
     | none => spelling
 
-private def localizedTextEntry (entry : Json) : Except String (String × String) := do
+private def localizedTextEntry (admitTagged : Bool) (entry : Json) : Except String (String × String) := do
   let .ok (.str locale) := entry.getObjVal? "locale"
     | throw s!"localized text {entry.compress} has no string locale"
   let .ok (.str text) := entry.getObjVal? "text"
     | throw s!"localized text {entry.compress} has no string text"
-  let some parsed ← parseLocale? locale | throw s!"locale {locale} does not parse"
+  let some parsed ← parseLocale? locale admitTagged | throw s!"locale {locale} does not parse"
   pure (parsed.key, text)
 
 /-- The entries of a localized-text member's value, as `(locale, text)` pairs, each locale its parsed
-`ParsedLocale.key`. -/
-def localizedTextValue (value : Json) : Except String (List (String × String)) :=
+`ParsedLocale.key`. A label admits the locales the JDK tags specially, which `jdkTaggedLabel?` then
+reports as leaving no model. -/
+def localizedTextValue (value : Json) (admitTagged : Bool := false) : Except String (List (String × String)) :=
   match value with
   | .null => throw "a localized-text member is null"
-  | .arr entries => entries.toList.mapM localizedTextEntry
-  | .obj entries => entries.toList.mapM (localizedTextEntry ·.2)
+  | .arr entries => entries.toList.mapM (localizedTextEntry admitTagged)
+  | .obj entries => entries.toList.mapM (localizedTextEntry admitTagged ·.2)
   | _ => pure []
 
 /-- The localized-text member `key` of `json`; an absent member, or a `json` that is no object, has no
@@ -56,7 +57,7 @@ entries. -/
 def localizedTextMember (json : Json) (key : String) : Except String (List (String × String)) :=
   match json.getObjVal? key with
   | .error _ => pure []
-  | .ok value => localizedTextValue value
+  | .ok value => localizedTextValue value (admitTagged := key == "label")
 
 private def bindMembers (json : Json) (keys : List String) : Except String Unit :=
   keys.forM fun key => discard <| localizedTextMember json key
@@ -92,6 +93,27 @@ private partial def bindElement (element : Json) : Except String Unit := do
       bindMembers body ["errorMessage"]
   | _ => pure ()
 
+/-- The label locales of an element and the elements below it: a field's, each Enumeration value's and a
+group's, the carriers `bindElement` binds a label on. -/
+private partial def labelLocales (element : Json) : List String :=
+  let keys (json : Json) := ((localizedTextMember json "label").toOption.getD []).map (·.1)
+  match (element.getObjValAs? String "type").toOption with
+  | some "Field" =>
+      let body := member element "Field"
+      let fieldType := member body "fieldType"
+      let values := ((member fieldType "EnumerationType").getObjValAs? (Array Json) "values").toOption.getD #[]
+      keys body ++ values.toList.flatMap keys
+  | some "Group" =>
+      let body := member element "Group"
+      keys body ++ ((body.getObjValAs? (Array Json) "elements").toOption.getD #[]).toList.flatMap labelLocales
+  | _ => []
+
+/-- A label locale the JDK tags specially, which leaves no model on kernel 31.1.1 (spec/01 §1.1, a12-dmkits
+`CheckerLocaleSpellingAgreementTest` at 1124b523f, measured on a label entry's "ja_JP_JP" and "th_TH_TH"). -/
+def jdkTaggedLabel? (content : Json) : Option String :=
+  let roots := ((member content "modelRoot").getObjValAs? (Array Json) "rootGroups").toOption.getD #[]
+  (roots.toList.flatMap labelLocales).find? ParsedLocale.jdkTaggedKeys.contains
+
 /-- Bind every localized-text member of a model's `content` the Kernel's reader binds, failing on the
 first that cannot bind: each element's under every root group, and each type definition's description. -/
 def bindLocalizedTextMembers (content : Json) : Except String Unit := do
@@ -125,7 +147,7 @@ def headerLocales (json : Json) : Except String (List ParsedLocale) := do
       | .ok (.str code) => pure code
       | _ => throw s!"header locale {entry.compress} carries no string code, outside the represented profile"
   codes.mapM fun code => do
-    let some locale ← parseLocale? code | throw s!"header locale {code} does not parse"
+    let some locale ← parseLocale? code (admitTagged := true) | throw s!"header locale {code} does not parse"
     pure locale
 
 /-- The header's declared locales as the Kernel builds them: unreadable as `headerLocales` states, and
@@ -135,6 +157,7 @@ def builtHeaderLocales (json : Json) : Except String (List ParsedLocale) := do
   match declaredLocaleFailure? locales with
   | some (.languageEmpty key) => throw s!"header locale {key} has no language"
   | some (.repeated key) => throw s!"header locale {key} is declared twice"
+  | some (.jdkTagged key) => throw s!"header locale {key} is tagged specially and leaves no model"
   | none => pure locales
 
 end A12Kernel.Dm

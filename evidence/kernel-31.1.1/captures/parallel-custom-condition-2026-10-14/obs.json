@@ -1,0 +1,48 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "8743a0552437249a19e9618afba70c0907c6c7b20afc4e39e9a76638d58f6f1b",
+  "observations" : [ {
+    "id" : "pc-control",
+    "inputHash" : "6f9e6815b46563cca1aad2eb5800eaadd4496018def7fa5bc39401bd8c0fac31",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "pc-and",
+    "inputHash" : "dc55b486c9ecf45d932fadf973aea7683a5fdaff188e7dc940aa5c8120b5c37b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "pc-and-rev",
+    "inputHash" : "4b2b3fe2814a62331605d42992a9ddd4e53b9813a6118efac74a5947f7e42d30",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "pc-or",
+    "inputHash" : "be0faed56a0c03e1f6a46368d38a4bb9b45de5da3e684e61e2b65fc185f85b68",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARALLEL_ITERATION_INVALID" ]
+  }, {
+    "id" : "pc-fill-presence",
+    "inputHash" : "918d41a06c97480783acb63a0dd03557a8790f804de1a24f6d7d4fe9f9043326",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "pc-two-negative",
+    "inputHash" : "34371fc4728bd003d78b6c0f85b0ba09f286cbc1338c49ae49bc062de45825da",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARALLEL_ITERATION_INVALID" ]
+  } ]
+}

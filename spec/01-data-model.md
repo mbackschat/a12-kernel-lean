@@ -208,7 +208,7 @@ Sources: [header locale codes](../docs/sources/model-structure-and-declaration-p
 | two hint-list entries for one locale, `en_US` beside `en-US` included (an entry with no values beside a filled one is admitted) | build fails | 30.8.1 |
 | an absolute, root-climbing or group-landing index or sort spelling, or an empty sort name ([§1.3](#index-and-sort-nomination-admission)) | no model | 31.1.1 |
 | a Date `format` written `""` or `" "` in the model as checked; a Java-blank `format` on a DateTime or Time, inside a type definition too (an omitted one is the default; a no-break space is an ordinary invalid format) | build fails | 31.1.1 for the Date; 30.8.1 for the others |
-| an empty DateFragment `formatOfFragment` | build fails | 31.1.1 |
+| an empty or absent DateFragment `formatOfFragment`, a `DateFragmentType` without its body included | build fails | 31.1.1 |
 | an unreadable rule error-code member | no declaration verdict | 30.8.1 |
 
 Further load and build refusals are stated with their construct: the one measured model declaring a supplementary charset range ([§1.3](#enumeration-declarations)), an empty `interpretationOfYear` token ([§6](05-dates-and-time.md)), and an unknown `roundingMode` ([§11 §6](09-computations.md#6-the-implicit-validation-rule-precisely)). A notification's absence of a class key therefore cannot by itself distinguish a build failure from a codeless verdict. A host that expands a model before checking it copies an empty declaration member as an absent one: there the Date `format` `""` is admitted, while `" "` still fails the build.

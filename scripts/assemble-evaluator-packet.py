@@ -1,7 +1,10 @@
 """Assemble an evaluator packet (U01, U02) from one committed revision of a12-kernel-lean.
 
 Usage: python3 -I scripts/assemble-evaluator-packet.py <repo> <revision> <version> <out-dir> [<changes>]
-Every file is read from the revision with `git show`, never from the working tree.
+Every file is read from the revision with `git show`, never from the working tree, except the kernel
+31.1.1 runtime artifacts: Git ignores them (docs/KERNEL-UPGRADE-PLAYBOOK.md), so each is read from the local
+re-capture and must match its digest in the revision's evidence/kernel-31.1.1/RECAPTURE.sha256. Requests,
+models and documents are the frozen inputs under evidence/kernel-30.8.1/captures/ that the re-capture ran.
 """
 import hashlib, json, os, re, subprocess, sys
 
@@ -54,6 +57,18 @@ def patterns(x):
             yield from patterns(v)
 
 root = "evidence/kernel-30.8.1/captures/"
+packet_root = "evidence/kernel-31.1.1/captures/"
+local_root = os.path.join(repo, "evidence/kernel-31.1.1/local/captures")
+digests = {line[66:]: line[:64] for line in show("evidence/kernel-31.1.1/RECAPTURE.sha256").decode().splitlines() if line}
+
+def observed(rel):
+    """The local 31.1.1 artifact at rel (relative to the captures root), checked against its digest."""
+    if rel not in digests:
+        return None
+    data = open(os.path.join(local_root, rel), "rb").read()
+    if hashlib.sha256(data).hexdigest() != digests[rel]:
+        sys.exit(f"{rel}: the local artifact differs from RECAPTURE.sha256; re-run the re-capture")
+    return data
 counts = {"requests": 0, "rows": 0, "engines-disagree": 0, "kernel-fault": 0, "host-feature": 0, "pattern": 0, "candidate": 0}
 for p in sorted(t for t in tree if t.startswith(root) and t.endswith(".json")):
     base = os.path.basename(p)
@@ -61,7 +76,8 @@ for p in sorted(t for t in tree if t.startswith(root) and t.endswith(".json")):
     if suffix is None:
         continue
     artifact = os.path.join(os.path.dirname(p), "artifact" + suffix)
-    if artifact not in tree:
+    artifact_data = observed(artifact[len(root):])
+    if artifact_data is None:
         continue
     try:
         request = json.loads(show(p))
@@ -71,22 +87,25 @@ for p in sorted(t for t in tree if t.startswith(root) and t.endswith(".json")):
         continue
     directory = os.path.dirname(p)
     model_path = os.path.normpath(os.path.join(directory, request["model"]))
-    files = {p, artifact, model_path} | {os.path.normpath(os.path.join(directory, r["document"])) for r in request["rows"] if "document" in r}
+    files = {p, model_path} | {os.path.normpath(os.path.join(directory, r["document"])) for r in request["rows"] if "document" in r}
     missing = [f for f in files if f not in tree]
     if missing:
         sys.exit(f"{p}: not in the revision: {missing}")
     for f in files:
-        put(f, show(f))
+        put(packet_root + f[len(root):], show(f))
+    # The local artifact keeps the Kernel's message text, which never leaves this repository's tree.
+    put(packet_root + artifact[len(root):], re.sub(rb'("(?:message|summary)"\s*:\s*)"(?:[^"\\]|\\.)*"',
+        lambda m: m.group(1) + b'"[redacted: Kernel message text, EUPL localisation resource]"', artifact_data))
     counts["requests"] += 1
     try:
         model = json.loads(show(model_path))
     except json.JSONDecodeError as e:
         sys.exit(f"{model_path}: {e}")
-    observed = {r["name"]: r for r in json.loads(show(artifact))["rows"]}
+    rows_seen = {r["name"]: r for r in json.loads(artifact_data)["rows"]}
     host = "customConditions" in request or "customFieldTypes" in request
     bad_pattern = any(v not in TRIO for v in patterns(model))
     for row in request["rows"]:
-        o = observed.get(row["name"])
+        o = rows_seen.get(row["name"])
         if o is None:
             continue
         counts["rows"] += 1
@@ -103,7 +122,7 @@ put("PACKET.md", f"""# Evaluator packet {version}
 {change_line}- `spec/`: {len(spec)} files, the semantics map and the numbered chapters.
 - `docs/IMPLEMENTER-GUIDE.md`: the host-input contract section only.
 - `docs/sources/`: {len(sources)} provenance files the spec's `Sources:` lines cite; the spec text stays normative on its own.
-- `evidence/kernel-30.8.1/captures/`: {counts['requests']} artifact-backed requests with their models and document files.
+- `evidence/kernel-31.1.1/captures/`: {counts['requests']} requests with their kernel 31.1.1 artifacts, models and document files.
 
 Artifact rows by the kit's classification, cases 1 to 4 and the remainder (case 5, the clock exclusion, and the evaluator's own refusals are decided by the evaluator):
 

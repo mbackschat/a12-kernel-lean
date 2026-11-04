@@ -141,6 +141,7 @@ def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
     declaredLocales := ← headerLocales json
     uniquenessCriteria := ← readUniquenessCriteria content
     frameCheckFailure? := frame.checkFailure?
+    jdkTaggedLabel? := jdkTaggedLabel? content
     validationModelUnbuilt := (convertModel frame).unbuilt
     expands := !frame.modelReferences.isEmpty ||
       (← rootGroups.anyM (mountsBelow (frame.content.compress.length + 1))) }

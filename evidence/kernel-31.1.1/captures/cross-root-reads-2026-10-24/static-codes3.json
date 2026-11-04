@@ -1,0 +1,47 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "c22776405ac64da4002ee107076d173078f650939511dbf3ed5665a42b5f6f10",
+  "observations" : [ {
+    "id" : "s18",
+    "inputHash" : "36ac7aecddc65d70850a9fafb2915e6fa0807c74eead615591a2e4c784ebe09d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARD" ]
+  }, {
+    "id" : "s19",
+    "inputHash" : "a00bc72a2374eceb0bfcff9c7897e50bfff83f86f73888b16d47170cfb904ace",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_WILDCARD" ]
+  }, {
+    "id" : "s20",
+    "inputHash" : "20cfb4e5776f35da4313d6df2dbf0e1b928ddf1cde78955cd0abf3c7649b9740",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s21",
+    "inputHash" : "7bfe5719187d5c244524e4548fc895a1e11119314b43c5bf35f2546b85d53704",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "ERROR_TEXT_FIELDNAME_NOT_UNIQUE" ]
+  }, {
+    "id" : "s22",
+    "inputHash" : "6d0bc504ff4347bfb6450ee27f994180ce870791670e7b817001b61702d234be",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "s23",
+    "inputHash" : "056212937e65a743f4d7fccba13c84b36b901d46b914846e2efc0557a7c491ba",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_FIELDNAME_NOT_UNIQUE" ]
+  } ]
+}

@@ -1,0 +1,84 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "2f39558d9f87befc183a22d9ce75893745ac98685df7e1f100e8bee089e25abf",
+  "observations" : [ {
+    "id" : "date_literal",
+    "inputHash" : "3684de3d32e1575fea998a16b47b180df61884aa4eb5a5ca8c28f1cadfca2e89",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "time_literal",
+    "inputHash" : "8308d7341951d6114cbbc5ba890c6f6f473586b52af34d775b91a6437c75c454",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "year_literal",
+    "inputHash" : "73a1f5e485f27ef40edf1c8c8f48ab6e37c345d31a01630dd21c838a1934d7c2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_CONST" ]
+  }, {
+    "id" : "hour_literal",
+    "inputHash" : "9f823e6840a177d37a341c32c73780d1017c37852d294754b52127061d43c4cd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_CONST" ]
+  }, {
+    "id" : "date_incomplete",
+    "inputHash" : "a5042ec99a7b8215dc4ef123e23478ab994117de97c7ffc723c29d81e4d848fe",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "time_incomplete",
+    "inputHash" : "290d8ed13e508c4f3a3861e91c2b230b620b41f9f567cbcac8fdde93267bfb67",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "date_invalid",
+    "inputHash" : "434b4234325ee38d29496772fba93dfcca8e4c2a1428ff51fadee79e74ecaea2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_STRING" ]
+  }, {
+    "id" : "time_invalid",
+    "inputHash" : "04a5758181776ef5d98fd471db545f7bcc44fbb66dbc181a60d8d6ad6501747e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_STRING" ]
+  }, {
+    "id" : "year_invalid",
+    "inputHash" : "78d8772d4527c258a9a799785d781c56b989beee5272b89702e4e1c3dd7b3ac2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_STRING" ]
+  }, {
+    "id" : "hour_invalid",
+    "inputHash" : "e33ef5ed1f8b8e3967f7dd1b2545bb54bdc22edf851cc396b257013f603eaa4e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DATE_STRING" ]
+  }, {
+    "id" : "date_now",
+    "inputHash" : "c0d4634e96cf1039d62b501db46ba5ab70c48148ce5e994ade54737ebde39c9d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "time_now",
+    "inputHash" : "12ff49c16326ec62045bf34f130c7c6cfebb83e1b88c694873efe26ce873fce1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

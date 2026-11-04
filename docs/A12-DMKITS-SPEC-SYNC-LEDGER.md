@@ -37,6 +37,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-04-03"></a>
+### SPEC-2026-11-04-03 — The rule-group terminal takes no dotted continuation and is refused as a group in the form-pointer position, and a DateFragment without its format leaves no model
+
+- `status`: pending
+- `canonical`: [spec/11 §A.8](../spec/11-messages-and-custom.md#a8-form-pointers-the-rule-group-terminal-and-the-base-year), the rule-group terminal paragraph; [spec/01 §1.2](../spec/01-data-model.md#defects-that-leave-no-model), the DateFragment row.
+- `delta`: Replaces "unmeasured on kernel 31.1.1" with `INVALID_FIELD_IN_PARAMETER` for `$RuleGroup.Vordruckzeile$`, from a root-group rule and two levels down; adds `MVK_UNEXPECTED_TOKEN` for `$RuleGroup.Vordruckname$`, as for `$RuleGroup/Anchor$`; widens the fragment row from an empty `formatOfFragment` to an absent one, a bodiless `DateFragmentType` included.
+- `basis`: the re-capture of the retained rule-check and declaration batches at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, kernel 31.1.1 ([checkpoint](sources/kernel-31-calibration-probes.md#src-kernel-31-recapture)), rows `I01`, `P01`, `P00` and `tb-frag-nobody`.
+- `acceptance`: a12-dmkits' checker gives the three message classes and refuses to build the bodiless fragment model, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-11-04-02"></a>
 ### SPEC-2026-11-04-02 — A `SumOfTerms` computation's row that divides by zero adds nothing and does not poison the sum
 

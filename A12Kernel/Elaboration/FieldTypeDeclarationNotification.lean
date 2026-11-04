@@ -524,8 +524,8 @@ private def temporalNotifications (declaration : TemporalTypeDeclaration) :
   raiseIf (formatRefused declaration.format) .dateFormatInvalid
 
 /-- A DateFragment's format gate, then the Date's pre-1900 law over its components. Its precision is
-not read: no row measures one on a fragment (`tb-frag-1900`, `tb-frag-1900-ok`). An absent format is
-the runtime reader's refusal and raises nothing here. -/
+not read: no row measures one on a fragment (`tb-frag-1900`, `tb-frag-1900-ok`). `judge` answers an
+absent or empty format before this runs. -/
 private def dateFragmentNotifications (declaration : DateFragmentTypeDeclaration) :
     List FieldTypeNotification :=
   if formatRefused declaration.format then [.declared .dateFormatInvalid]
@@ -588,6 +588,23 @@ private def displayClassFor (locale : String) (value : EnumerationValueDeclarati
   | some _ => carriesLabel value && (texts.isEmpty || texts.any ExecutableDeclaration.blank)
   | none => texts.any (!ExecutableDeclaration.blank ·)
 
+/-- The label classes kernel 31.1.1 draws over an Enumeration's value entries for the model's declared
+locales: the count class per declared locale when some entry carries a label in any locale and another carries
+none, the display class, the missing-token class and each declared locale's duplicate texts. The model reader
+refuses a field with any of them, so it answers as the declaration walk does (spec/01 §1.3). -/
+def enumerationLabelNotifications (locales : List String) (values : List EnumerationValueDeclaration) :
+    List FieldTypeNotification :=
+  let coded := fun (texts : List String) => (texts.filter (!hasSupplementaryScalar ·)).map javaTrim
+  (if values.any carriesLabel && values.any (!carriesLabel ·) then
+      locales.map fun locale => .declared .countOfValuesInvalid [locale]
+    else []) ++
+    raiseIf (values.any fun value => locales.any (displayClassFor · value)) .internalValuesAndDisplayValues ++
+    raiseIf (values.any fun value => value.token.isNone && carriesLabel value) .internalValueMissing ++
+    locales.flatMap fun locale =>
+      let perValue := values.flatMap fun value => (coded (labelTexts value locale)).eraseDups
+      (perValue.eraseDups.filter fun text => 1 < perValue.count text).map
+        (.declared .displayValuesDuplicate [locale, ·])
+
 /-- The text classes read each text after Java's `trim`, and none names a text holding a supplementary
 scalar, which draws the repertoire notification instead ([October 21 letter](../../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21),
 §2.3, §2.4): a trailing tab or line break is no defect, `Tier` beside `Tier ` is a duplicate. The count,
@@ -613,15 +630,7 @@ private def enumerationNotifications (context : FieldTypeContext)
     categories := declaration.categories
     defaultStoredToken := declaration.sValue }
   (blockOwner.notifications context.charset).map .enumerationBlock ++
-    (if values.any carriesLabel && values.any (!carriesLabel ·) then
-      locales.map fun locale => .declared .countOfValuesInvalid [locale]
-    else []) ++
-    raiseIf (values.any fun value => locales.any (displayClassFor · value)) .internalValuesAndDisplayValues ++
-    raiseIf (values.any fun value => value.token.isNone && carriesLabel value) .internalValueMissing ++
-    locales.flatMap (fun locale =>
-      let perValue := values.flatMap fun value => (coded (labelTexts value locale)).eraseDups
-      (perValue.eraseDups.filter fun text => 1 < perValue.count text).map
-        (.declared .displayValuesDuplicate [locale, ·])) ++
+    enumerationLabelNotifications locales values ++
     ((coded tokens).filter hasSeparator).map (.declared .internalValueInvalid [·]) ++
     ((coded countedTexts).filter hasSeparator).map (.declared .displayValueInvalid [·]) ++
     ((coded categoryTokens).filter hasSeparator).map (.declared .categoryValueInvalid [·]) ++
@@ -644,8 +653,10 @@ def FieldTypeDeclaration.judge (compilePattern : StringPatternCompiler) (context
       else .notifications (stringNotifications compilePattern context declaration).eraseDups
   | .number declaration => .notifications (numberNotifications declaration).eraseDups
   | .custom declaration => .notifications (customNotifications declaration).eraseDups
-  -- A Java-blank format fails the Date constructor the three kinds share, and an empty fragment format
-  -- fails the build too; a blank but nonempty fragment format is unmeasured (2026-10-21 §2.12).
+  -- A Java-blank format fails the Date constructor the three kinds share, and an empty or absent fragment
+  -- format fails the build too: kernel 31.1.1's model copy drops an empty member, and the fragment's format
+  -- is required (the retained 31.1.1 row `tb-frag-nobody`, a bodiless fragment; peer KF494's body without
+  -- the member). A blank but nonempty fragment format is unmeasured (2026-10-21 §2.12).
   | .date declaration =>
       if declaration.format.any ExecutableDeclaration.blank then .modelNotBuilt
       else .notifications (dateNotifications declaration).eraseDups
@@ -653,7 +664,7 @@ def FieldTypeDeclaration.judge (compilePattern : StringPatternCompiler) (context
       if declaration.format.any ExecutableDeclaration.blank then .modelNotBuilt
       else .notifications (temporalNotifications declaration).eraseDups
   | .dateFragment declaration =>
-      if declaration.format == some "" then .modelNotBuilt
+      if declaration.format.getD "" == "" then .modelNotBuilt
       else .notifications (dateFragmentNotifications declaration).eraseDups
   | .dateRange declaration => .notifications (dateRangeNotifications declaration).eraseDups
   | .enumeration declaration =>

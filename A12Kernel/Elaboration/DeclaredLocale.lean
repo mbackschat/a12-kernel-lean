@@ -40,7 +40,8 @@ digits is left out, the variant subtags up to the first that is not 5–8 ASCII 
 opening with a digit, are kept, and that one and those after it follow as a private-use `lvariant`
 sequence ending before the first subtag that is not 1–8 ASCII letters or digits. A locale with no country
 and no kept subtag but such a sequence is tagged with no language. The locales the JDK tags specially,
-such as "ja_JP_JP", lie outside the represented profile. -/
+"ja_JP_JP" and "th_TH_TH", never reach it: kernel 31.1.1 builds no model declaring one, so `jdkTagged`
+refuses them first. -/
 def languageTag (locale : ParsedLocale) : String :=
   let languageWellFormed := (2 ≤ locale.language.length && locale.language.length ≤ 8) && asciiLetters locale.language
   let country :=
@@ -62,12 +63,24 @@ def languageTag (locale : ParsedLocale) : String :=
   let privateTail := if privateUse.isEmpty then [] else "x" :: "lvariant" :: privateUse
   "-".intercalate (language.toList ++ country.toList ++ variants ++ privateTail)
 
+/-- The keys of the locales the JDK's constructor tags specially. -/
+def jdkTaggedKeys : List String := ["ja_JP_JP", "th_TH_TH"]
+
+/-- Whether the JDK's locale constructor extends the locale with a calendar or numbering extension, which
+kernel 31.1.1's copy of a model cannot write as a language tag (spec/01 §1.1; the cause is a12-dmkits'
+source reading). -/
+def jdkTagged (locale : ParsedLocale) : Bool :=
+  jdkTaggedKeys.contains locale.key
+
 end ParsedLocale
 
 /-- Why a header's declared locales leave no model. -/
 inductive DeclaredLocaleFailure where
   | languageEmpty (key : String)
   | repeated (key : String)
+  /-- A locale the JDK tags specially (kernel 31.1.1, a12-dmkits `CheckerLocaleSpellingAgreementTest` at
+  1124b523f; kernel 30.8.1 built it). -/
+  | jdkTagged (key : String)
   deriving Repr, DecidableEq
 
 /-- The first declared locale, in declaration order, that fails the build: one with an empty language, or
@@ -80,6 +93,7 @@ where
     | [], _ => none
     | locale :: rest, seen =>
         if locale.language.isEmpty then some (.languageEmpty locale.key)
+        else if locale.jdkTagged then some (.jdkTagged locale.key)
         else if seen.contains locale.key then some (.repeated locale.key)
         else go rest (locale.key :: seen)
 

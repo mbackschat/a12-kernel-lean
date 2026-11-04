@@ -1,0 +1,300 @@
+[
+ {
+  "id": "W0",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Deeper/V",
+  "group": "/Probe/Store/Deep/Deeper",
+  "condition": "FieldFilled(V)",
+  "message": "Check.",
+  "valid": true,
+  "codes": [
+   "RK_INVERTED_REQUIREDNESS"
+  ]
+ },
+ {
+  "id": "W1",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Deeper/V",
+  "group": "/Probe/Store/Deep/Deeper",
+  "condition": "FieldFilled(V)",
+  "message": "Check $#..$.",
+  "valid": true,
+  "codes": [
+   "RK_INVERTED_REQUIREDNESS"
+  ]
+ },
+ {
+  "id": "W2",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#../$.",
+  "valid": false,
+  "codes": [
+   "MVK_INCOMPLETE_INPUT"
+  ]
+ },
+ {
+  "id": "W3",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#../$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "W4",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "W5",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Deeper/V",
+  "group": "/Probe/Store/Deep/Deeper",
+  "condition": "FieldFilled(V)",
+  "message": "Check $#../../$.",
+  "valid": false,
+  "codes": [
+   "MVK_EXPECTED_TOKEN_NOT_FOUND"
+  ]
+ },
+ {
+  "id": "W6",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Deeper/V",
+  "group": "/Probe/Store/Deep/Deeper",
+  "condition": "FieldFilled(V)",
+  "message": "Check $#../../RuleGroup$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "W7",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../Nope$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "W8",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../Store$.",
+  "valid": true,
+  "codes": [
+   "RK_INVERTED_REQUIREDNESS"
+  ]
+ },
+ {
+  "id": "W9",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../..//$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "W10",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Deeper/V",
+  "group": "/Probe/Store/Deep/Deeper",
+  "condition": "FieldFilled(V)",
+  "message": "Check $#../..//$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "W11",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Y",
+  "group": "/Probe/Store/Deep",
+  "condition": "FieldFilled(Y)",
+  "message": "Check $#../../%$.",
+  "valid": false,
+  "codes": [
+   "MVK_LEXER_STANDARD_ERROR"
+  ]
+ },
+ {
+  "id": "W12",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/Deep/Deeper/V",
+  "group": "/Probe/Store/Deep/Deeper",
+  "condition": "FieldFilled(V)",
+  "message": "Check $#../../../RuleGroup$.",
+  "valid": false,
+  "codes": [
+   "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS"
+  ]
+ },
+ {
+  "id": "W13",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Store/X",
+  "group": "/Probe/Store",
+  "condition": "FieldFilled(X)",
+  "message": "Check $#..Probe.x$.",
+  "valid": true,
+  "codes": [
+   "RK_INVERTED_REQUIREDNESS"
+  ]
+ },
+ {
+  "id": "D0",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check.",
+  "valid": true,
+  "codes": []
+ },
+ {
+  "id": "D1",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.X$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D2",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.x/Deep$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D3",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.1$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "D4",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ },
+ {
+  "id": "D5",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#RootGroup.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D6",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Zeile.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D7",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#'RootGroup'.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D8",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.x.y$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D9",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.value.x$.",
+  "valid": false,
+  "codes": [
+   "INVALID_GROUP"
+  ]
+ },
+ {
+  "id": "D10",
+  "model": "GroupWalk_DM.json",
+  "field": "/Probe/Top",
+  "group": "/Probe",
+  "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+  "message": "Check $#Store.value$.",
+  "valid": false,
+  "codes": [
+   "MVK_UNEXPECTED_TOKEN"
+  ]
+ }
+]

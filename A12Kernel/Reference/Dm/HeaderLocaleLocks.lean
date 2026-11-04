@@ -75,10 +75,26 @@ example :
     verdict (bare ["en_US", "de_CH", "de-CH"]) = some .notBuilt := by
   native_decide
 
-/-- A bare uppercase pair and a non-ASCII code are outside the represented profile, as "ja_JP_JP" is; the
-Kernel fails the build on `US` and `CH` and admits `ée`. -/
+/-- A bare uppercase pair and a non-ASCII code are outside the represented profile; the Kernel fails the build
+on `US` and `CH` and admits `ée`. -/
 example :
-    [["US"], ["CH"], ["ée"], ["ja_JP_JP"]].all (fun codes => verdict (declaring codes) == some .outsideProfile) := by
+    [["US"], ["CH"], ["ée"]].all (fun codes => verdict (declaring codes) == some .outsideProfile) := by
+  native_decide
+
+/-- A field labelled in `locale`. -/
+private def labelledField (locale : String) : Json :=
+  Json.mkObj [("type", "Field"), ("id", "/P/L"), ("name", "L"), ("Field", Json.mkObj [
+    ("label", Json.arr #[Json.mkObj [("locale", Json.str locale), ("text", "L")]]),
+    ("fieldType", Json.mkObj [("type", "StringType"), ("StringType", Json.mkObj [])])])]
+
+/-- Locked: a12-dmkits `CheckerLocaleSpellingAgreementTest` at 1124b523f, kernel 31.1.1. The two locales the
+JDK tags specially leave no model as a header code, in either separator, and as a label's locale, while a
+lowercase variant and the plain pair build; kernel 30.8.1 built all of them. -/
+example :
+    [["ja_JP_JP"], ["ja-JP-JP"], ["th_TH_TH"]].all (fun codes => verdict (declaring codes) == some .notBuilt) ∧
+    [["ja_JP"], ["ja_JP_jp"]].all (fun codes => verdict (declaring codes) == some .builds) ∧
+    ["ja_JP_JP", "th_TH_TH"].all (fun locale => verdict (declaring [] [labelledField locale]) == some .notBuilt) ∧
+    verdict (declaring [] [labelledField "ja_JP"]) = some .builds := by
   native_decide
 
 /-- The model-level classes the consistency check draws beside a built model. -/

@@ -21,8 +21,9 @@ cases depend on tables this account does not carry and are refused as outside th
 a bare two-letter uppercase spelling, which parses exactly when the JDK lists it as an ISO country
 (`US` parses and `EN` does not), and a non-ASCII character, whose case and digit classes are Unicode's.
 "ja_JP_JP" and "th_TH_TH", which the JDK's constructor extends with a calendar or numbering extension,
-are outside it too. -/
-def parseLocale? (spelling : String) : Except String (Option ParsedLocale) := do
+are outside it too, except where `admitTagged` holds: a header's code and a label's locale, on which kernel
+31.1.1 builds no model for them (spec/01 §1.1), so their readers parse them and fail the build. -/
+def parseLocale? (spelling : String) (admitTagged : Bool := false) : Except String (Option ParsedLocale) := do
   let chars := spelling.toList
   if chars.any (·.val ≥ 128) then
     throw s!"locale {spelling} carries a non-ASCII character, outside the represented profile"
@@ -33,7 +34,7 @@ def parseLocale? (spelling : String) : Except String (Option ParsedLocale) := do
     let language := match (String.ofList language).toLower with
       | "iw" => "he" | "ji" => "yi" | "in" => "id" | other => other
     let locale : ParsedLocale := { language, country := String.ofList country, variant := String.ofList variant }
-    if locale.key == "ja_JP_JP" || locale.key == "th_TH_TH" then
+    if locale.jdkTagged && !admitTagged then
       throw s!"locale {spelling} carries a JDK extension, outside the represented profile"
     return some locale
   match chars with

@@ -1,0 +1,138 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "cd2d7b60600889ceb26e4f872f5706adaf5c176bb0293803658bcde06dce1d1b",
+  "observations" : [ {
+    "id" : "comp-two-above-sole",
+    "inputHash" : "8c1b03c2088ecdff6f7b1b8671a89ed593ed3d0c014cd23a431daa6753b92bb7",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-two-above-sole",
+    "inputHash" : "8e87b2fac859777db48a9991a1b58c1ead98cc9aae9acf236633277a0de726cd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-two-above-with-conjunct",
+    "inputHash" : "afc5440902d77ac2175daec5400c9ea1422c13628e4c5ae2758912eafdbdec97",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-two-above-with-conjunct",
+    "inputHash" : "155fd724c22c65cd337ff08dd9ba4d8e1a8bb2ca7e067ca654bf73826a74f1d1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-two-above-marked-conjunct",
+    "inputHash" : "e2d93075a902de29346253b65646e1b71e7077c772633f1f567476f71d9e9a4a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-two-above-marked-conjunct",
+    "inputHash" : "97292388dcc237993ab768cb58a8bff865adbfdaf0e32f93fb9ad053e4b0c8f3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-one-above-with-conjunct",
+    "inputHash" : "884ad5daf58faa683af3008dbbe59235ad0051fb4c6ddeca88af4f8701cf535f",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-one-above-with-conjunct",
+    "inputHash" : "5d9068209083b88eae71c8a54f9d33abd670c96737cf5c04e5c9eba976a8d3e7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-grp-two-above-sole",
+    "inputHash" : "5281c669fad5686bd4f2dccc758cf55483cbe1909bb58538ab0f84a2bec89439",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-grp-two-above-sole",
+    "inputHash" : "88e7226177e70863abbbdb9d54b7c46a4369218c7fbfb22a1a881c2fbb00fb42",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-grp-two-above-with-conjunct",
+    "inputHash" : "08b1d8269d3b8204bb03831051869ac1c8b54465eb5ecb53b63b1e9096a0992a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-grp-two-above-with-conjunct",
+    "inputHash" : "626a4211bc4195c5cb8329c88da2ced0ff3749cba06e6f86d7855a980ec802bc",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-grp-rootlevel-sole",
+    "inputHash" : "a45a41ccd9ddcb30c883315861ea65c4440d81ba3faeac18da1b8da9689bf8ab",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "rule-grp-rootlevel-sole",
+    "inputHash" : "39ee1c5bf93d3ba224339e385d9c00f52864c41168c79c3d45827025ea0f5f47",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_ITERATION_FOR_WILDCARD" ]
+  }, {
+    "id" : "comp-grp-rootlevel-with-conjunct",
+    "inputHash" : "a7a56a9cabd099b15a6ae42e95ef7fe41c67374788c754a08ab35dbcf60f7c3d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-grp-rootlevel-with-conjunct",
+    "inputHash" : "3e518220347e247ce568f37ae74d5717ea4878020ebd20882b8cf6e6148cdaca",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "comp-grp-offpath-repeatable-sole",
+    "inputHash" : "ea14157a979d73c17dbca998d560fb7d703e84ce1491a5a1502bd987efbb4355",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_SET_EXPRESSION" ]
+  }, {
+    "id" : "rule-grp-offpath-repeatable-sole",
+    "inputHash" : "c4516567b7e144e5349b9dc897456edb3e4d037931efae878acc5f0c0cfd7dbb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_SET_EXPRESSION" ]
+  }, {
+    "id" : "comp-grp-offpath-repeatable-conj",
+    "inputHash" : "e67786ce0ab1779c30c0d91287af11d197f332a3fc29884efb690f3d8cc677f7",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_SET_EXPRESSION" ]
+  }, {
+    "id" : "rule-grp-offpath-repeatable-conj",
+    "inputHash" : "7abb0fc802220fcf2b7737f3ded472f942dea7a12cd0c7c0f2f9fe5485479a41",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ITERATION_IN_SET_EXPRESSION" ]
+  }, {
+    "id" : "comp-in-scope-only",
+    "inputHash" : "7444a886041b394db767db24430fd2b5cf7c75af9361b3e4f72d76c44f21d293",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "rule-in-scope-only",
+    "inputHash" : "15497277812717f698c1c19ada2536bf6874f59c51d9e1b162c66e6e20fd4ab6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

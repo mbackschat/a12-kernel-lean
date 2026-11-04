@@ -534,6 +534,10 @@ where
           match after with
           | [] => { events := [.resolve entity], form := some (.formPointer entity) }
           | _ => refusedName (continuationFault keywords after)
+        -- The rule-group keyword names no field, so no dotted name continues it: kernel 31.1.1 refuses
+        -- `$RuleGroup.Vordruckname$` as an unexpected token, as `$RuleGroup/Anchor$` (retained 31.1.1
+        -- rows `P00` and `G02`), where a field's dotted continuation stays part of its name.
+        else if entity == .ruleGroup then refusedName .unexpected
         else refusedName (continuationFault keywords (.dot :: .name word false :: after))
     | .openParenthesis :: after =>
         if entity == .path { base := .relative 0, groups := [], field := { text := "index" } } then

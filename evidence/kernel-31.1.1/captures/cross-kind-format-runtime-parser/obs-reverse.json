@@ -1,0 +1,24 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "1c55bf4a230970141e15dbb96b42390dd5fa35cb3c55d732922d0f659fd7d24e",
+  "observations" : [ {
+    "id" : "1-time-declared-date-beside-date",
+    "inputHash" : "faccf57793945e75c5d0468df44553a06df69edc9e97e85cc96c0b02adb55d92",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-datetime-declared-date-beside-date",
+    "inputHash" : "65674034822810d8604691b5e7f94af06cbb890346821a517bbfe96bb3682ff0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

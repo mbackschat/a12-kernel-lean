@@ -257,9 +257,9 @@ the reader refuses all the same: a stored token the entry does not declare has n
 (the runtime meaning of such an entry is unmeasured), so `EnumerationDeclaration.validate` leaves no checked
 declaration for it.
 
-The label rows assert the model reader too, except the two where it parts from the Kernel: it reads labels as the
-declaration validator does, blind to the model's declared locales, so it keeps a model whose every label is for an
-undeclared locale and refuses one whose label repeats only there. -/
+The label rows assert the model reader too: it refuses a field with any of the walk's label classes over the
+declared locales and judges the rest of the declaration by the declared locales' labels, so it drops a field
+whose every label is for an undeclared locale and keeps one whose label repeats only there. -/
 
 private def valuesMissing : String := "MVK_INTERNAL_VALUES_MISSING"
 private def valueMissing : String := "MVK_INTERNAL_VALUE_MISSING"
@@ -340,12 +340,12 @@ private def labelRows : List (String × Json × List String × Option Bool) :=
     entriesModel [labelled "BASIC" [("en_US", "Basic"), ("fr_FR", "Base")], labelled "PLUS" [("fr_FR", "Plus")]],
     [displayValues], some false),
    ("every value labelled for an undeclared locale only",
-    entriesModel [labelled "BASIC" [("fr_FR", "Base")], labelled "PLUS" [("fr_FR", "Plus")]], [displayValues], none),
+    entriesModel [labelled "BASIC" [("fr_FR", "Base")], labelled "PLUS" [("fr_FR", "Plus")]], [displayValues], some false),
    ("one value labelled for the declared locale, the control",
     entriesModel [labelled "BASIC" [("en_US", "Basic")], plus], [countOfValues], some false),
    ("a label repeated only in an undeclared locale",
     entriesModel [labelled "BASIC" [("en_US", "Basic"), ("fr_FR", "Same")],
-      labelled "PLUS" [("en_US", "Plus"), ("fr_FR", "Same")]], [], none),
+      labelled "PLUS" [("en_US", "Plus"), ("fr_FR", "Same")]], [], some true),
    ("a label repeated in the declared locale, the control",
     entriesModel [labelled "BASIC" [("en_US", "Same"), ("fr_FR", "Base")],
       labelled "PLUS" [("en_US", "Same"), ("fr_FR", "Plus")]], [displayDuplicate], some false)]
@@ -565,11 +565,14 @@ example :
 private def temporal (kind member : String) (format : Option String) : List String :=
   labelsOf (typedBody kind (Json.mkObj (format.toList.map fun text => (member, Json.str text))))
 
+/-- A Date, Time or DateTime without a format takes its kind's default, while a fragment's format is required,
+so an absent one leaves no model as an empty one does (the retained kernel 31.1.1 row `tb-frag-nobody`). -/
 example :
     (["DateType", "TimeType", "DateTimeType"].all fun kind =>
       temporal kind "format" none == [] &&
       ["", " ", "\t", "\u2003"].all fun format => temporal kind "format" (some format) == [modelNotBuiltLabel]) ∧
-    temporal "DateFragmentType" "formatOfFragment" (some "") = [modelNotBuiltLabel] := by
+    temporal "DateFragmentType" "formatOfFragment" (some "") = [modelNotBuiltLabel] ∧
+    temporal "DateFragmentType" "formatOfFragment" none = [modelNotBuiltLabel] := by
   native_decide
 
 /-! ## A Number bound judged by no magnitude

@@ -1,0 +1,248 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.14.0",
+    "kernel" : {
+      "builtAgainst" : "31.1.1",
+      "runtime" : "31.1.1"
+    },
+    "source" : {
+      "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K16N_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "e01",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/P0",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/P0"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/P0",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/P0"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "e02",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/P2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/P2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/P2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/P2"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "e04",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/LzS0",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/LzS0"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/LzS0",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/LzS0"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "e07",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/Big",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/Big"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/Big",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/Big"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "e08",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/Big",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/Big"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/Big",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/Big"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "e10",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/Big",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/Big"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "K16/Big",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "K16/Big"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

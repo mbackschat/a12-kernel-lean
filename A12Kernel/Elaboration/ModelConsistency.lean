@@ -141,6 +141,8 @@ structure ConsistencyModel where
   declaredLocales : List ParsedLocale := []
   /-- The check-only frame shape the model is written with, if any. -/
   frameCheckFailure? : Option FrameCheckFailure := none
+  /-- A label locale the JDK tags specially, which leaves no model. -/
+  jdkTaggedLabel? : Option String := none
   /-- Whether the validation-model converter builds no model from the authored one. -/
   validationModelUnbuilt : Bool := false
   /-- Whether the model has something to expand before its check: a header entry naming a model to import, or
@@ -277,6 +279,8 @@ inductive ModelBuildFailure where
   | typeDefinitionIdRepeated
   /-- A declared locale with an empty language, or two codes naming one locale. -/
   | declaredLocale (failure : DeclaredLocaleFailure)
+  /-- A label locale the JDK tags specially (kernel 31.1.1, spec/01 §1.1). -/
+  | labelLocaleTagged (key : String)
   | frameCheck (failure : FrameCheckFailure)
   deriving Repr, DecidableEq
 
@@ -415,6 +419,7 @@ label. -/
 def firstBuildFailure? (model : ConsistencyModel) : Option (List String × ModelBuildFailure) :=
   if let some failure := model.frameCheckFailure? then some ([], .frameCheck failure)
   else if let some failure := declaredLocaleFailure? model.declaredLocales then some ([], .declaredLocale failure)
+  else if let some key := model.jdkTaggedLabel? then some ([], .labelLocaleTagged key)
   else match repeatedTypeDefinitionId? (model.typeDefinitions.map (·.id)) with
   | some id => some ([id], .typeDefinitionIdRepeated)
   | none =>

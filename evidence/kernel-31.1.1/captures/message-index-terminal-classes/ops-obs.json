@@ -1,0 +1,306 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "236bbcd59fe8da93d7edf38215ce67ac378ea8c6da3cd96bc8f6a64a2ff933cb",
+  "observations" : [ {
+    "id" : "A1-ffv-sole-direct",
+    "inputHash" : "59879c15f81df1ca0252baba68022bf7a004942d170c4df55b60032436792799",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALIDN" ]
+  }, {
+    "id" : "A2-ffv-two-direct-control",
+    "inputHash" : "d7b89b883fabc493a02cc3b3a8a611924bf31938a4bce0e8281907c4183e4511",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "A3-ffv-sole-star",
+    "inputHash" : "2dc873ef2cc2273dcc51977f2526e5ffea01ed6a04a96c04b33ddd3647df04ee",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "A4-ffv-sole-starred-group",
+    "inputHash" : "b514fbb70b7a046f1a542eb74d9577e28117ebf08eada6216530628680a6ff03",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "A5-ffv-sole-fixed-group",
+    "inputHash" : "f93d71c18780a0e7129521c8305a88d7f6adb0f352338e7061d03cc68fd11276",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "B1-vl-entity-sole-both",
+    "inputHash" : "174bf6aac6d37447e2823343f7242fa5c2430166e685371f5dc6e8c7dbac9f5a",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "B2-vl-entity-two-fields",
+    "inputHash" : "0814f95bc37b89a48b39c7efae66c389b5fc4bbcc22fda59ec95972356c3ee04",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "B3-vl-literal-sole-control",
+    "inputHash" : "5baff4b10dead9214d60e078ab70784a5bd6fa76145da2e160e331494c5ab23b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "B4-vl-entity-sole-two-values",
+    "inputHash" : "bcb7fb28514e4f9c6d801bd66e4b51364589516574a0d185a15ad82fb9a71d11",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "C0-msg-control-no-param",
+    "inputHash" : "032c2080c1ce068b4708a6564f61d2d551890af79f23b373d03818a1edd6d596",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "C1-index-enum-value",
+    "inputHash" : "87525d2bc3fb4577b6b9ec5636e7ee6124b1873055b435f04baaea246d778026",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "C2-index-enum-category",
+    "inputHash" : "d408e1510db9b8ed3754c566e67fab9b7a0b5e4ec842a52469a0e1f7374d67b3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "C3-index-enum-unknown-category",
+    "inputHash" : "7838db715bcd40d9521056f3b077cf07ef4c99a67ba450d38b68342b42236749",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CATEGORY" ]
+  }, {
+    "id" : "C4-index-string-category-control",
+    "inputHash" : "b24f948b15d4dd59b911ef19be80bae700945b8937feb13fd78c8ba8db402ab8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "FIELD_NO_ENUM" ]
+  }, {
+    "id" : "C5-index-string-value-control",
+    "inputHash" : "4363d0a5f2f57a1231d9da7a692dfb4c2c598fde5c0c26a6df5d44b0bb003e31",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "C6-index-enum-no-suffix",
+    "inputHash" : "62b7dce99f6577df8e72ff7906bc0fb5c0af4334a2165a9e0d823fa29a657eaa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_PARAMETER" ]
+  }, {
+    "id" : "A6-ffv-sole-homogeneous-group",
+    "inputHash" : "ce9f05a118ba62cbdd3198e7518c79582be11935193eb310a61b6d96c7b58276",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "A7-ffv-sole-nonrep-group",
+    "inputHash" : "91279ef67112311e84b8f937414d367bdd6707002ea7fafe614be199f9dad374",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "B5-vl-entity-duplicate-diagonal",
+    "inputHash" : "b6d8bac451e00f46bf1a78c17435c734a4390acd716684f37a04f4f21767240b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  }, {
+    "id" : "B6-vl-entity-crosskind-diagonal",
+    "inputHash" : "4096601c0aee41c43e19df1be32159d5c2806ff0831d2d9f43cb514b016c5dd0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "D1-index-ambiguous",
+    "inputHash" : "03812c86d4f71c8b605ac46804f64c432ad26a2ea95a9ddeb998999b662a7784",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_AMBIGUOUS" ]
+  }, {
+    "id" : "D2-index-unambiguous-control",
+    "inputHash" : "3aac60a511247dd3a67686a2193d12bb5f82749b97376927a6b429cac7ed3340",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "D3-index-outer-only-errorfield",
+    "inputHash" : "5aaba68ff27cbac747a35027e24265a1ea98bf4a026f157c9a90f44c94c65acd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "D4-index-plain-control",
+    "inputHash" : "e9b6d58cd25df3bfa67d6ada0d0e2aa170b785352fae34c3112c81f2706b2501",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "E1-keyed-condition-plus-index",
+    "inputHash" : "4208585197084ba70d0d994d2fd6aeceffb47d87b38ba56fb6f54178d6c62ef5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  }, {
+    "id" : "E2-keyed-condition-control",
+    "inputHash" : "af78c8ff11afcdfc3be8ecbf44cdbb6341b31e56477c930d5753489d05d6e33f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "E3-keyed-enum-index-plus-value",
+    "inputHash" : "db849430e5371792563c785f456c69a6d238587a0b96e1efabde15cfa0317933",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  }, {
+    "id" : "E4-keyed-enum-index-plus-category",
+    "inputHash" : "857e10dd71cfb13bcfb2fa8de3641b3a43c9594e8bbe93205de4f2ee889b0254",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  }, {
+    "id" : "E5-keyed-enum-condition-control",
+    "inputHash" : "a511e75bc420deae1f9fe5666f8b07e8839ef77cbaf2606f886a9039a5594d39",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "F0-iter-cond-control",
+    "inputHash" : "5d7318548dc8936f3dede3ebf2face2919afdebbec57825ccfe9ed5833e75aed",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "F1-iter-both-index-fields",
+    "inputHash" : "a404c6e36da5b48a99946ba0c8d13c33afe2bf09461c70b4e797266fafa5bb44",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "F2-iter-both-category",
+    "inputHash" : "cb2562f530f70ed39b960fbf067b3cf2a07735f5146cca427f12e3f7f0c6deeb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "F3-iter-own-index-only",
+    "inputHash" : "af6668fbd9c604bc80e39a1200efdff5804de53d69ebab99608a6e998bd4def7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "F4-iter-own-index-category",
+    "inputHash" : "83f298323711e9071974e1d13f00d3f62c3317fcdf25d9f893302a359393a443",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "F5-plain-index-cond-nostar",
+    "inputHash" : "e7a304d0658980442f8246acfe3ed4fc990376cba357af437f5dd1236133b39b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "F6-plain-index-cond-control",
+    "inputHash" : "bd2637ad9aa8651336092010398e41907eea404b59f00548b37194d50e838ae3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "F7-string-index-iterated",
+    "inputHash" : "63a990b5a7af0de24fee56bfb036412fb43b2496dbc405db1ce038b832a41760",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "F8-two-string-index-iterated",
+    "inputHash" : "73df789607a5f8c449487464a594d262d3e16d9480cac75e4941e536698dc491",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "F9-mixed-enum-string-index",
+    "inputHash" : "9fdf20480880323a3f16d4a7bfacec68ac19271bfa0a26713fcc4d6c10eb84cd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_WILDCARDS_ALLOWED" ]
+  }, {
+    "id" : "G0-sibling-iter-control",
+    "inputHash" : "d4675d677ec4608157dd551cb1ba45f862f449964872fbbd459eab770f8a8f35",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "G1-sibling-iter-value",
+    "inputHash" : "871680c622f9905dfd6f76ad134bf2286763fc4856db39647a5a4862d505ed47",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  }, {
+    "id" : "G2-sibling-iter-category",
+    "inputHash" : "afbfba7c18540fc55e8f624d9b78bb582fda76595af8144f6979865990403e81",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  }, {
+    "id" : "G3-own-iter-value",
+    "inputHash" : "1056913d218b63dab95ee6be6e46801836a5392ea13ea4e42f38a82b2e7098b4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  }, {
+    "id" : "G4-own-iter-control",
+    "inputHash" : "4c9a3f7801aaaf7ccce51724591c329200118c538cc9fe8c69870c2c2a433bcb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "G5-mixed-enum-string",
+    "inputHash" : "78ac00a55006d86a5cc7e4273a5e12842cfbb7e1a0b7da7a1a1242cfe8d151cb",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "G6-string-index-iterated",
+    "inputHash" : "a0273661e93158e9a677ec006a1b497490f84ea87781c9abe4136e62b767f568",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  }, {
+    "id" : "G7-string-index-other-group",
+    "inputHash" : "feb61089b718d8aa54330734a2592fd4fd0111017cec1d170b0b40a86fb44480",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "G8-nonindex-name-suffix",
+    "inputHash" : "2b4cc48c9938e08e54937718e64e883507364823575f402b55619e858faacb7d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "G9-index-value-then-category",
+    "inputHash" : "87c14d36bc7847411e1c9e7e5a27c42c7213fe3ffe9d17085bde0b7a6c84a504",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  } ]
+}

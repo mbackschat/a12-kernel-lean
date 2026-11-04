@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "f6c04bf604814b958fd9196acd4d7d9ceca74f0619349b030384f46addf52535",
+  "observations" : [ {
+    "id" : "plain",
+    "inputHash" : "b5f66e2a6e5e13f914d856cfc7168e21b7984f9d45b925f223717f9419fb846e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "valid-param",
+    "inputHash" : "8cfd1c5310c4770eecbcf5eb3a56f8dd174d53af89bed863266ede4c5c31d74d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "repertoire-only",
+    "inputHash" : "bda6536cf6d21aeebc1394509db1d79d51003889528f1715950160e2b46483cb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ ]
+  }, {
+    "id" : "repertoire-valid-param",
+    "inputHash" : "027da138aec425769eded357c90d36aca8bac56046f0823b4bd6441fb83533cf",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ ]
+  }, {
+    "id" : "repertoire-unknown",
+    "inputHash" : "92b39fa3fbeb64856ac29fc364b3684f1f91b206407fc2571d238a0bf264d67b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "repertoire-parity",
+    "inputHash" : "355eb964a4e6d0714805979c58a06578f0fdb268ab50261318f9116ebcbd1332",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "WRONG_NUMBER_OF_DOLLARS" ]
+  }, {
+    "id" : "repertoire-param-lexer",
+    "inputHash" : "36740dcd878289171c78bd704b3d85ed32a6a4e1fa5b20cfd83edb77a5856b38",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_LEXER_STANDARD_ERROR" ]
+  }, {
+    "id" : "unknown-only",
+    "inputHash" : "4015799065638bff3f28329e6871f4bd1c1059349a0c51fc89310c39bd7950ff",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  } ]
+}

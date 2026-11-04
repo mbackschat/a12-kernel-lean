@@ -2,6 +2,7 @@ import Lean.Data.Json
 import A12Kernel.Elaboration.Flat.Types
 import A12Kernel.Elaboration.Enumeration
 import A12Kernel.Elaboration.EnumerationDeclarationNotification
+import A12Kernel.Elaboration.FieldTypeDeclarationNotification
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Elaboration.LegalCharset
 import A12Kernel.Elaboration.IndexAndSortDeclaration
@@ -197,7 +198,14 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
   let categories := (← boundCategories body).map fun category =>
     { category with tokens := category.tokens.take entries.length ++
         (category.tokens.drop entries.length).filter fun token => !ExecutableDeclaration.blank token }
-  pure { storedTokens := tokens.filterMap id, tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf tokens,
+  -- Kernel 31.1.1's model copy reads a declared `""` as no token, so it is no condition literal, while a
+  -- stored `""` stays the empty cell (a12-dmkits KF566 as corrected at `fe4d26e14`, KF658; the retained
+  -- 31.1.1 `empty-enumeration-token` rows). It keeps no place in the stored domain; beside categories,
+  -- whose tokens are positional, its account is unmeasured.
+  if tokens.contains (some "") && !categories.isEmpty then
+    throw "an empty Enumeration token beside categories is outside the represented profile"
+  pure { storedTokens := tokens.filterMap id |>.filter (!·.isEmpty),
+         tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf tokens,
          displayFacts := displayFacts.flatten, categories, defaultStoredToken }
 
 /-- The notifications the Kernel raises for a field's ordinary Enumeration declaration, empty for any other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
@@ -213,6 +221,41 @@ private def fieldEnumerationNotifications (charset : LegalCharset) (fieldJson : 
           | .ok declaration => declaration.notifications charset
           | .error _ => []
       | _ => []
+
+/-- Kernel 31.1.1's label classes over a field's Enumeration and the model's declared locales, empty for any
+other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
+private def enumerationLabelClasses (declaredLocales : List String) (fieldJson : Json) : List String :=
+  let values : Except String (List EnumerationValueDeclaration) := do
+    let fieldType ← fieldJson.getObjVal? "fieldType"
+    unless (fieldType.getObjValAs? String "type").toOption == some "EnumerationType" do return []
+    let body := (fieldType.getObjVal? "EnumerationType").toOption.getD (Json.mkObj [])
+    let entries := (body.getObjValAs? (Array Json) "values").toOption.getD #[]
+    entries.toList.mapM fun entry => do
+      pure { token := ← valueEntryToken entry
+             labels := (← localizedTextMember entry "label").map fun (locale, text) => { locale, text } }
+  ((enumerationLabelNotifications declaredLocales (values.toOption.getD [])).map (·.label)).eraseDups
+
+/-- The field with every Enumeration label of an undeclared locale removed: kernel 31.1.1 judges labels by the
+declared locales only beyond the label classes above, so the locale-blind declaration checks read the declared
+locales' labels (a12-dmkits `CheckerDeclarationAdmissionAgreementTest` at 1124b523f). -/
+private def declaredLocaleLabels (declaredLocales : List String) (fieldJson : Json) : Json :=
+  let keep (label : Json) : Bool := match label.getObjValAs? String "locale" with
+    | .ok locale => declaredLocales.contains locale
+    | .error _ => true
+  match fieldJson.getObjVal? "fieldType" with
+  | .error _ => fieldJson
+  | .ok fieldType =>
+      match fieldType.getObjVal? "EnumerationType", (fieldType.getObjValAs? String "type").toOption with
+      | .ok body, some "EnumerationType" =>
+          match body.getObjValAs? (Array Json) "values" with
+          | .ok entries =>
+              let filtered := entries.map fun entry => match entry.getObjValAs? (Array Json) "label" with
+                | .ok labels => entry.setObjVal! "label" (.arr (labels.filter keep))
+                | .error _ => entry
+              fieldJson.setObjVal! "fieldType"
+                (fieldType.setObjVal! "EnumerationType" (body.setObjVal! "values" (.arr filtered)))
+          | .error _ => fieldJson
+      | _, _ => fieldJson
 
 /-- The defect of a field's Enumeration that leaves no model, read on the field after its type definition is
 resolved as the declaration walk reads it: no value to enumerate, or two categories keyed by one name (kernel
@@ -368,6 +411,8 @@ private structure ReadState where
   nonrepeatableIndexFields : Array (GroupPath × String) := #[]
   /-- The model's supported characters, read before the walk because an Enumeration declaration's notifications depend on them. -/
   legalCharset : LegalCharset := .defaultBmp
+  /-- The model's declared locales, read before the walk because an Enumeration's label classes depend on them. -/
+  declaredLocales : List String := []
   enumerationNotifications : Array (List String × List EnumerationDeclarationNotification) := #[]
   /-- The model's inline type definitions, by id. -/
   typeDefinitions : List (String × Json) := []
@@ -475,8 +520,13 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
       let failure ← StateT.lift (enumerationBuildFailure? body)
       if let some reason := failure then throw reason
       let id := state.fields.size
+      let labelClasses := enumerationLabelClasses state.declaredLocales body
+      let body := declaredLocaleLabels state.declaredLocales body
       let notifications := fieldEnumerationNotifications state.legalCharset body
-      if notifications.isEmpty then
+      if !labelClasses.isEmpty then
+        let refusal := (path ++ [name], s!"EnumerationType notifications {String.intercalate ", " labelClasses}")
+        modify fun state => { state with refusals := state.refusals.push refusal }
+      else if notifications.isEmpty then
         match readFieldType id path name scope body with
         | .ok declaration => modify fun state => { state with fields := state.fields.push declaration }
         | .error reason => modify fun state => { state with refusals := state.refusals.push (path ++ [name], reason) }
@@ -571,6 +621,8 @@ private def readModelCore (json : Json)
   bindLocalizedTextMembers content
   bindModelMembers frame
   let declaredLocales := (← builtHeaderLocales json).map (·.key)
+  if let some key := jdkTaggedLabel? content then
+    throw s!"label locale {key} is tagged specially and leaves no model"
   -- A check-only frame shape builds a model whose check fails, and the runtime route refuses such a
   -- model before evaluating it (model frame check route checkpoint, 2026-10-29; for an unsupported
   -- condition language, the peer letter of 2026-10-30a).
@@ -586,7 +638,7 @@ private def readModelCore (json : Json)
   -- The Kernel refuses a repeated type-definition id while expanding the definitions (peer KF647).
   if let some id := ModelConsistency.repeatedTypeDefinitionId? (typeDefinitions.map (·.1)) then
     throw s!"type definition id {id} is repeated"
-  let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions }
+  let ((), state) ← (roots.toList.forM (readElement [] [])).run { legalCharset, typeDefinitions, declaredLocales }
   -- Kernel 31.1.1's code generation reads an undeclared locale's message text after the check has passed
   -- (a12-dmkits `ErrorTextLocaleScopeLawsTest` at `1124b523f`, KF659), so such a text can leave no model.
   if (state.rules.toList.map (·.messages) ++ state.computations.toList.map (·.messages)).any

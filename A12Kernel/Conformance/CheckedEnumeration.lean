@@ -65,8 +65,9 @@ private def emptyTokenChecked : CheckedEnumerationDeclaration :=
 private def storedDiffersFromEmpty : Option CheckedEnumerationLiteralComparison :=
   (checkEnumerationLiteralComparison emptyTokenChecked .stored .notEqual "").toOption
 
-/-- A declared empty token is an admitted literal, and `!= ""` stays silent on a filled `B` and on a
-stored `""`, which is empty (empty-token capture `rNe0`, 2026-10-14). The direct-String account would
+/-- A declaration holding an empty token admits it as a literal, and `!= ""` stays silent on a filled `B`
+and on a stored `""`, which is empty (empty-token capture `rNe0`, kernel 30.8.1, 2026-10-14). Kernel 31.1.1's
+DM reader never builds such a declaration, so this locks the checked comparison, not a model's admission. The direct-String account would
 also stay silent; the separating wrong account is the plain token inequality, which fires on `B`. -/
 example : storedDiffersFromEmpty.map (fun comparison =>
       (comparison.evalRaw (.parsed (.enum "B")), comparison.evalRaw (.parsed (.enum "")))) =

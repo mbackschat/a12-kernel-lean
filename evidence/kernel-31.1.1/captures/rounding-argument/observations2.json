@@ -1,0 +1,108 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "2f39558d9f87befc183a22d9ce75893745ac98685df7e1f100e8bee089e25abf",
+  "observations" : [ {
+    "id" : "RoundUp-upper",
+    "inputHash" : "4a68c7d912dfc8468b16f6156581aa2b107da8b5f2763d1249154ff00202ae03",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "RoundUp-over",
+    "inputHash" : "2798cfbd5a044c0ae8522b70eb5e2548a0ffd7d9a3b33b6ea9b456bd2b7a871f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DIGIT_FOR_ROUNDING" ]
+  }, {
+    "id" : "RoundUp-long-over",
+    "inputHash" : "54e985dc61770e044b36cc2da25d34db8a71b84eae5917da2b737fff64a3fd53",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INTERNAL_ERROR" ]
+  }, {
+    "id" : "RoundAccounting-upper",
+    "inputHash" : "500ded8a324bb9de3b925dcf30e087c02d408959396a4897bf4f331663c3c45f",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "RoundAccounting-over",
+    "inputHash" : "f87b8154aa53196f6ea0138b85d989eba0ad5e15ada37ea6835665b0dbe89e75",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DIGIT_FOR_ROUNDING" ]
+  }, {
+    "id" : "RoundAccounting-long-over",
+    "inputHash" : "af18c37299afe93be7a552f6a4485b398626e836a04067e072d88f5d9848b165",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INTERNAL_ERROR" ]
+  }, {
+    "id" : "RoundDownValue-upper",
+    "inputHash" : "49e078b67c90877231a80ab170b0104adedbcc1cf083d508c16eb0e99c7675c4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "RoundDownValue-over",
+    "inputHash" : "9f813253cfa9faf0edf769bbe5b14570cdfa939be8f19edcd32c2c6bc604ac89",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DIGIT_FOR_ROUNDING" ]
+  }, {
+    "id" : "RoundDownValue-long-over",
+    "inputHash" : "113738f424193bce673c10954f5ff2f0e29b59bc94c55a23b0e061e31c6fcc3e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INTERNAL_ERROR" ]
+  }, {
+    "id" : "RoundAccountingValue-upper",
+    "inputHash" : "f16b326a7a393a9016d56f69ab287b6cc4ab14bc26aed1a9a5afac3a45194a2c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "RoundAccountingValue-over",
+    "inputHash" : "4ad4f9c7e06d2b1e518ecfaba42d068258e138d333c840620b211ec458a0e2b0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_DIGIT_FOR_ROUNDING" ]
+  }, {
+    "id" : "RoundAccountingValue-long-over",
+    "inputHash" : "685305d813b8f15b1286b7b2864c584992d82be392d7102c5b9954e9143fb169",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INTERNAL_ERROR" ]
+  }, {
+    "id" : "literal-first",
+    "inputHash" : "fa93ed99839b0a8fd0d67071a77c9d29ffa3513e6b7b5fb6bee19a3a8a3b88cd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_CONST" ]
+  }, {
+    "id" : "string-first",
+    "inputHash" : "15e2709f336882cd9980a395b9d0fee7b47cdc73c0c0a8cde9bea6721548df58",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "field-string-first",
+    "inputHash" : "f23c5255c1d17eb282b058c367266f54e317b68f94f492a66c16b51feb46a3c2",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "second-overflow",
+    "inputHash" : "7ee5dc757c33fcdac2df625a2015157b7890940a43aed7ae44cb6d05d1481069",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INTERNAL_ERROR" ]
+  } ]
+}

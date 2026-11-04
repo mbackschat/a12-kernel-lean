@@ -378,7 +378,8 @@ def fieldTypeDeclarationNotifications (json : Json) (compilePattern : StringPatt
   -- A check-only frame shape, a failing declared locale or a repeated type-definition id leaves no
   -- class, after the walk's read errors, since the Kernel reads a model before it builds or checks one
   -- (spec/01 §1.2; header locale codes checkpoint, peers KF647 and KF650).
-  if frame.checkFailure?.isSome || (declaredLocaleFailure? locales).isSome || converted.unbuilt ||
+  if frame.checkFailure?.isSome || (declaredLocaleFailure? locales).isSome ||
+      (jdkTaggedLabel? frame.content).isSome || converted.unbuilt ||
       (ModelConsistency.repeatedTypeDefinitionId? (environment.definitions.map (·.1))).isSome then
     return [(modelNotBuiltLabel, "")]
   -- The index and sort checks run only after an entity walk that refused nothing (2026-10-21 §2.16).

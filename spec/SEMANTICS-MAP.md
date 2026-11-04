@@ -16,7 +16,7 @@ This is the entry point to a standalone, language-neutral description of how the
 - **Where provenance lives.** Source routes, the Kernel revision and reviewed a12-dmkits provenance are in [`docs/SOURCES.md`](../docs/SOURCES.md); outbound reconciliation state is in [`docs/A12-DMKITS-SPEC-SYNC-LEDGER.md`](../docs/A12-DMKITS-SPEC-SYNC-LEDGER.md).
 - **Clean-room posture.** The chapters describe observable behaviour — what the engine does for given inputs, established by experiment and by reading its specification and source — not a transcription of engine source. Read them to learn the exact behaviour, then write original code and lock it against the behaviour with tests: copy the *mechanism*, never the *expression*.
 
-**The chapters bound their claims with a fixed vocabulary.** A rule stated without a qualifier is the chapter's account of Kernel 31.1.1. Where a clause does not name the kernel version of a measurement it cites, its source checkpoint in [`docs/SOURCES.md`](../docs/SOURCES.md) records it; a clause the 31.1.1 migration did not revisit rests on Kernel 30.8.1 evidence, carried forward. These terms narrow it:
+**The chapters bound their claims with a fixed vocabulary.** A rule stated without a qualifier is the chapter's account of Kernel 31.1.1. Where a clause does not name the kernel version of a measurement it cites, its source checkpoint in [`docs/SOURCES.md`](../docs/SOURCES.md) records it; the retained evidence was re-captured unchanged on Kernel 31.1.1, so a clause the migration did not otherwise revisit rests on that re-capture where a retained input reaches it and on Kernel 30.8.1 evidence, carried forward, where none does. These terms narrow it:
 
 | Term | What it binds |
 |---|---|

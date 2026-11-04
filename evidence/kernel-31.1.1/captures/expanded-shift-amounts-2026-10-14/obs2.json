@@ -1,0 +1,18 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "878e4e3e2783349515213ac5897a90dfe92ef55a7403ded23c3fc87fab70a393",
+  "observations" : [ {
+    "id" : "crm",
+    "inputHash" : "cd7be098a76f364f4e2ab75d4f2ce6e33936e5ef96e85ce635a3117ddd5fd329",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE_RANGE" ]
+  } ]
+}

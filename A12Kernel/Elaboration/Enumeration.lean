@@ -116,7 +116,7 @@ private def invalidCategory? (expectedArity : Nat) :
         | some tokenIndex => some (.emptyCategoryToken category.name tokenIndex)
         | none => invalidCategory? expectedArity remaining (index + 1)
 
-/-- Validate the shared ordinary closed declaration invariants in deterministic source order. Identity displays are legal, and category tokens may repeat because category projection is many-to-one. An empty stored token is legal: the Kernel loads it and admits it as a value-list literal, while a stored empty cell stays empty, so no cell ever holds it (empty-token capture, 2026-10-14). A value entry with no token is refused after every other check: a token-less entry has no checked account, because the Kernel's runtime reading of one is unmeasured. -/
+/-- Validate the shared ordinary closed declaration invariants in deterministic source order. Identity displays are legal, and category tokens may repeat because category projection is many-to-one. An empty stored token is legal here, and a stored empty cell stays empty, so no cell ever holds it (empty-token capture, 2026-10-14); the kernel 31.1.1 DM reader never builds one, because the Kernel's model copy reads a declared `""` as no token, so it is no literal. A value entry with no token is refused after every other check: a token-less entry has no checked account, because the Kernel's runtime reading of one is unmeasured. -/
 def EnumerationDeclaration.validate (declaration : EnumerationDeclaration) :
     Except EnumerationDeclarationError Unit :=
   if declaration.storedTokens.isEmpty then

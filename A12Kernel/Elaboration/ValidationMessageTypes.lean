@@ -107,9 +107,9 @@ inductive ValidationMessageTemplateError where
   /-- The rule-group terminal as a field, with or without a suffix or key, refused `INVALID_PARAMETER`
   by the field's own check before any other gate. -/
   | ruleGroupParameter (parameter : String)
-  /-- The rule-group terminal as a form pointer's entity, where the Kernel's check expects a resolved
-  entity. The Kernel fails there with `MVK_INTERNAL_ERROR`, a defect this fragment refuses on its own arm
-  and does not model. As a field's key it is no longer such a fault: kernel 31.1.1 resolves it as a key
+  /-- The rule-group terminal as a form pointer's entity. Kernel 31.1.1 refuses it with
+  `INVALID_FIELD_IN_PARAMETER`, as a group named there, from a root-group rule and from one two levels down
+  (retained 31.1.1 rows `I01` and `P01`), where 30.8.1 failed internally. As a field's key it is no longer such a fault: kernel 31.1.1 resolves it as a key
   like any entity, which `keyNotInCondition` and `invalidGroupParameter` carry
   ([KF663](../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf663)). -/
   | ruleGroupUnresolved (parameter : String)

@@ -63,19 +63,21 @@ private def kernelCodes (engine : Json) : List String :=
 private def profileRefusal : String := "exceeds the represented decimal conversion profile"
 
 /-- Replay every row against each engine's observation and return the agreeing observation count and
-the number of field codes they compared, faulted observations contributing none. -/
-def checkArtifacts (root : System.FilePath) : IO (Nat × Nat) := do
+the number of field codes they compared, faulted observations contributing none. Requests, models and
+documents are read under "inputs", artifacts under "observed": a later kernel's re-capture runs the frozen
+requests unchanged. -/
+def checkArtifacts (inputs observed : System.FilePath) : IO (Nat × Nat) := do
   let mut agreeing := 0
   let mut compared := 0
   let mut failures : Array String := #[]
   for (requestPath, artifactPath) in captures do
-    let request ← readJson (root / requestPath)
-    let directory := (root / requestPath).parent.getD root
+    let request ← readJson (inputs / requestPath)
+    let directory := (inputs / requestPath).parent.getD inputs
     let some modelName := (request.getObjValAs? String "model").toOption
       | throw (IO.userError s!"{requestPath}: no model")
     let some model := ((parseModelJson (← IO.FS.readFile (directory / modelName))).bind (readModel ·)).toOption
       | throw (IO.userError s!"{requestPath}: unreadable model")
-    let observed := ((← readJson (root / artifactPath)).getObjValAs? (Array Json) "rows").toOption.getD #[]
+    let observed := ((← readJson (observed / artifactPath)).getObjValAs? (Array Json) "rows").toOption.getD #[]
     let rows := (request.getObjValAs? (Array Json) "rows").toOption.getD #[]
     if rows.isEmpty then failures := failures.push s!"{requestPath}: no rows"
     for row in rows do

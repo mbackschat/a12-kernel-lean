@@ -1,0 +1,66 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "427663bece64928ac22c330701764664ab2b78d184c94e8b74542e40ff10b163",
+  "observations" : [ {
+    "id" : "E01",
+    "inputHash" : "be0b01b75fd686490e86c0cf78d5795bf72b29a722a7fab437121f7d5836445e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_LEXER_STANDARD_ERROR" ]
+  }, {
+    "id" : "E02",
+    "inputHash" : "9e555c40d07775138738e85585b67124874aa9a78f089a0bd60ccab0e2436689",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_FIELD_IN_PARAMETER" ]
+  }, {
+    "id" : "E03",
+    "inputHash" : "01dcd7df877840f27fba8988d7ede3376f1ef2a6e81c0c3f08a2dac404b10fd6",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "E04",
+    "inputHash" : "ebc458d6992dc39f648b87e60659390aeb31663d921acde93460d6826f702c07",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INCOMPLETE_INPUT" ]
+  }, {
+    "id" : "E05",
+    "inputHash" : "13bf7f3a56fdacd871ee41013325717da44ba5887899fea920aad0876dd23568",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_FIELD_NOT_REFERENCED" ]
+  }, {
+    "id" : "E06",
+    "inputHash" : "6cfc25b778a8eb42098abcf66f38bee9a6aeea837625503c01c3bf0f1c6b1d1b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "E07",
+    "inputHash" : "ba1519c488fd777e41a466bdacc83d375a5fc42a304f46f0e6f4d664fcf8371e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "WRONG_NUMBER_OF_DOLLARS" ]
+  }, {
+    "id" : "E08",
+    "inputHash" : "b5f1ca1880e834bad1981ee75cf25f931994d66ce26336c038d6ed26ae4272ba",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "E09",
+    "inputHash" : "4c708486dd834e18630c30f795bbd07421c500bc8f3515cbdde1e375bd6d3b4d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  } ]
+}
