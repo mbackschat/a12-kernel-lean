@@ -23,7 +23,7 @@ class and the field messages there, and a field carrying a path class of its own
 The result is a list of `(label, element path)` pairs, headed by the converter's sentences, which the
 Kernel states for each declaration it drops and which make that declaration's own defects, and the rules
 beneath a dropped group, draw nothing. A model the Kernel cannot build, by a conversion that builds no
-validation model, a repeated hint-list locale, an Enumeration declaring no values, a repeated
+validation model, a repeated hint-list locale, an Enumeration declaring no values or an empty token with an empty label text, a repeated
 type-definition id, a declared locale with no language or declared twice, a row-key nomination whose spelling
 leaves no model (`NominationFailure`, a sort name written empty included), or a frame shape that costs only the check (`FrameCheckFailure`), yields the one unbuilt-model
 label and no path. The report is a multiset, so the walk order is not an observation.
@@ -48,12 +48,6 @@ private def optionalString (json : Json) (key : String) : Except String (Option 
   | .ok (.str value) => pure (some value)
   | .ok other => throw s!"{key} {other.compress}"
 
-/-- The members of an array-valued key; an absent or `null` key is empty. -/
-private def arrayMembers (json : Json) (key : String) : Except String (List Json) :=
-  match json.getObjVal? key with
-  | .error _ | .ok .null => pure []
-  | .ok value => (value.getArr?).map Array.toList
-
 private def readMessages (json : Json) : Except String (List FieldMessageEntry) := do
   pure ((← localizedTextMember json "errorMessage").map fun (locale, text) => { locale, text })
 
@@ -64,9 +58,9 @@ private def readString (body : Json) : Except String StringTypeDeclaration := do
     noValueValidation := ← booleanMember? body "noValueValidation"
     lineBreaksPermitted := ← booleanMember? body "lineBreaksPermitted"
     pattern := ← optionalString body "pattern"
-    hintList := ← (← arrayMembers body "hintList").mapM fun entry => do
+    hintList := ← (← frameMembers body "hintList").mapM fun entry => do
       pure { locale := ← localeKey (← entry.getObjValAs? String "locale")
-             values := ← (← arrayMembers entry "values").mapM Json.getStr? }
+             values := ← (← frameMembers entry "values").mapM Json.getStr? }
     messages := ← readMessages body }
 
 private def readNumber (body : Json) : Except String NumberTypeDeclaration := do
@@ -184,7 +178,7 @@ private def hasSupplementaryText (json : Json) (keys : List String) : Bool :=
 /-- Whether an element-level annotation, `[{name, value}]` beside the element's body, holds a
 supplementary scalar in its name or value. -/
 private def annotationsRepertoire (element : Json) : Except String Bool := do
-  pure ((← arrayMembers element "annotations").any (hasSupplementaryText · ["name", "value"]))
+  pure ((← frameMembers element "annotations").any (hasSupplementaryText · ["name", "value"]))
 
 private def repertoireIf (condition : Bool) : List String :=
   if condition then [ElementNameKind.supplementaryCharacter.label] else []
@@ -254,7 +248,7 @@ validation refuses is not judged, as in the model reader, and refuses the report
 private def rowKeyReports (environment : WalkEnvironment) (path : List String) (body : Json) :
     Except String (List ElementReport) := do
   let index ← frameText body "indexFieldName"
-  let sorts ← (← arrayMembers body "sortFields").mapM fun entry => do pure ((← frameText entry "name").getD "")
+  let sorts ← (← frameMembers body "sortFields").mapM fun entry => do pure ((← frameText entry "name").getD "")
   let nominations := (index.toList.map (RowFieldRole.indexField, ·)) ++ sorts.map (RowFieldRole.sortField, ·)
   if nominations.isEmpty then return []
   let model ← bindingModel environment
@@ -309,7 +303,7 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
       if repeatability.any (2147483647 < ·) then
         throw s!"group {name} declares a repeatability the Kernel does not read"
       let children ← groupElements body
-      let sorts ← arrayMembers body "sortFields"
+      let sorts ← frameMembers body "sortFields"
       let counted := groupCountKinds repeatability
       let own := ((judgement.reported above ++ groupDeclarationKinds isRoot repeatability sorts.length ++
           (if above.countInvalid then [ElementNameKind.maxValuesInvalid] else []) ++ counted).eraseDups).map (·.label)

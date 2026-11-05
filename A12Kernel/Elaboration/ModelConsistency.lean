@@ -336,7 +336,8 @@ def asField? : ConsistencyElement → Option ConsistencyField
 
 /-- The declaration defect that stops the Kernel building the model: an Enumeration declaring two categories
 of one name, judged on the declared type, so a type definition's own categories are outside it, or no value at
-all, judged on the type the field resolves to as the declaration walk judges it. -/
+all or an empty token carrying an empty label text, judged on the type the field resolves to as the declaration
+walk judges it. -/
 def conversionFailure? : ConsistencyElement → Option ModelBuildFailure
   | .field f =>
       let repeatedCategoryName := match f.declared with
@@ -345,7 +346,7 @@ def conversionFailure? : ConsistencyElement → Option ModelBuildFailure
       if repeatedCategoryName then some .enumerationCategoryNameDuplicated
       else match f.effective with
         | some (.enumeration _ false _) => some .enumerationValuesMissing
-        | some (.enumeration _ true true) => some .enumerationEmptyTokenTextless
+        | some (.enumeration _ _ true) => some .enumerationEmptyTokenTextless
         | _ => none
   | _ => none
 

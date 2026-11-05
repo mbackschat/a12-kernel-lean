@@ -32,12 +32,6 @@ open Lean
 private def text (json : Json) (key : String) : String :=
   (json.getObjValAs? String key).toOption.getD ""
 
-/-- The members of an array-valued key; an absent or `null` key is empty. -/
-private def members (json : Json) (key : String) : Except String (List Json) :=
-  match json.getObjVal? key with
-  | .error _ | .ok .null => pure []
-  | .ok value => (value.getArr?).map Array.toList
-
 /-- A fractional-digit count, a primitive `int` member: absent reads as zero. -/
 private def whole (json : Json) (key : String) : Except String Int := do
   pure ((← primitiveIntMember? json key).getD 0)
@@ -53,7 +47,7 @@ private def readConsistencyFieldType (fieldType : Json) : Except String Consiste
   | "StringType" => pure (.string (← booleanMember? body "noValueValidation") (← booleanMember? body "lineBreaksPermitted"))
   | "EnumerationType" =>
       pure (.enumeration ((← boundCategories body).map (·.name)) (!enumerationDeclaresNoValues body)
-        (((enumerationValueEntries body).toOption.getD []).any (·.emptyTokenTextless)))
+        (enumerationEmptyTokenTextless body))
   | "TypeDefType" => pure (.typeDefinition (text body "typeDefinitionId"))
   | other => pure (.other other)
 
@@ -85,7 +79,7 @@ private partial def readElement (definitions : List (String × Json))
         | some count => if 0 ≤ count then count.toNat else 1
         | none => 1
       -- An index or sort name binds as its text whatever scalar is written, an array or object leaving no model.
-      let sortNames ← (← members body "sortFields").mapM fun entry => do pure ((← frameText entry "name").getD "")
+      let sortNames ← (← frameMembers body "sortFields").mapM fun entry => do pure ((← frameText entry "name").getD "")
       pure (.group id name count
         (body.getObjValAs? String "usageType").toOption
         (← frameText body "indexFieldName")
@@ -95,7 +89,7 @@ private partial def readElement (definitions : List (String × Json))
   | "Rule" => pure (.rule id name (text body "errorCondition") (text body "errorEntityRelPath"))
   | "Computation" =>
       pure (.computation id name (text body "computedFieldRelPath")
-        ((← members body "computationAlternatives").map (text · "operation")))
+        ((← frameMembers body "computationAlternatives").map (text · "operation")))
   | other => throw s!"element {other}"
 
 /-- Whether any group at or below `element` carries an `includeConfig` that is not `null`, a mount the host

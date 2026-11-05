@@ -178,7 +178,7 @@ private def subGroup (name member : String) : Json :=
 
 /-- The measured carrier: the capture's model with a nonrepeatable `Demand/Detail` holding a String `Memo`,
 and for the peer's group-list row a second one, `Demand/Pack` holding `Label`. -/
-private def detail : List Json := [subGroup "Detail" "Memo", subGroup "Pack" "Label"]
+private def demandSubGroups : List Json := [subGroup "Detail" "Memo", subGroup "Pack" "Label"]
 
 /-- The class of a rule reporting on `Demand/Head` under `condition` with the message `Check {token}.`, declared
 in `/Form`, or in `/Form/Demand` when `inDemand`; `none` when admitted. -/
@@ -188,7 +188,7 @@ private def tokenClass (condition token : String) (inDemand : Bool) : Option Str
     ("errorEntityRelPath", .str (if inDemand then "../Head" else "../Demand/Head")), ("errorCode", "R"),
     ("severity", "ERROR"), ("errorCondition", .str condition),
     ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", .str s!"Check {token}.")]])])]
-  let demandExtra := if inDemand then detail ++ [definition] else detail
+  let demandExtra := if inDemand then demandSubGroups ++ [definition] else demandSubGroups
   match readModel (modelJson (if inDemand then [] else [definition]) demandExtra) with
   | .error _ => some "no model"
   | .ok dm => match dm.rules with
@@ -202,6 +202,8 @@ private def tokenClass (condition token : String) (inDemand : Bool) : Option Str
           | .ok _ => none
           | .error error => some ((error.namedRuleDiagnostic?.map (·.kernelCode)).getD "unclassed")
     | _ => some "not one rule"
+
+private def r12 := "FieldNotFilled(Demand/Head) And AtLeastOneGroupFilled(Demand/Detail, Demand/Pack) And FieldFilled(Supply/Head)"
 
 /-- Each row of the [residual capture](../../../evidence/kernel-31.1.1/captures/joined-row-proof-2026-11-05/):
 its id, condition, token, whether the rule sits in `Demand`, and the Kernel's class, `none` when admitted. -/
@@ -247,8 +249,8 @@ private def residualRows : List (String × String × String × Bool × Option St
   ("k3ka", "AllFieldsFilled(Demand/Head For \"a\", Demand/Note For \"a\")", "$#Demand For \"a\"$", false, none),
   ("k4ka", "FieldNotFilled(Demand/Head For \"a\")", "$#Demand For \"a\"$", false, some "INVALID_USE_OF_SEMANTIC_INDEX"),
   -- Peer row R12, measured on its shop carrier ([Letter I](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-05d)).
-  ("r12td", "FieldNotFilled(Demand/Head) And AtLeastOneGroupFilled(Demand/Detail, Demand/Pack) And FieldFilled(Supply/Head)", "$#/Form/Demand$", false, none),
-  ("r12ts", "FieldNotFilled(Demand/Head) And AtLeastOneGroupFilled(Demand/Detail, Demand/Pack) And FieldFilled(Supply/Head)", "$#/Form/Supply$", false, none),
+  ("r12td", r12, "$#/Form/Demand$", false, none),
+  ("r12ts", r12, "$#/Form/Supply$", false, none),
   -- Two peer rows of the KF546 correction (Letter I §4), re-expressed on this carrier: the keyed
   -- `FieldNotFilled`, which guards nothing (`k4ka`), stands in for the peer's unkeyed conjunct so that no conjunct
   -- iterates `Demand`, and the outside operand is the root field `Plan`, outside `Demand` as the peer's is outside
@@ -258,7 +260,7 @@ private def residualRows : List (String × String × String × Bool × Option St
 
 /-- The rule check's class for `condition` on the measured carrier, `none` when admitted. -/
 private def ruleClass (condition : String) : Option String :=
-  match readModel (modelJson [rule "R" "Head" "x" (some condition)] detail) with
+  match readModel (modelJson [rule "R" "Head" "x" (some condition)] demandSubGroups) with
   | .error _ => some "no model"
   | .ok dm => match dm.rules with
     | [rule] => match checkValidationRule dm .english rule with
@@ -272,9 +274,9 @@ two-operand ones do, a deeper presence proves, a literal comparison, a mixed `Mo
 `$#RuleGroup$` spellings are gated alike, `AllGroupsFilled` and `AtLeastOneGroupFilled` over the joined groups
 are admitted as the conjunction and disjunction of their presences, as are the peer's `AtLeastOneGroupFilled` over
 two groups inside one joined group (`r12`), and a keyed token beside `AtLeastOneFieldFilled`,
-or `AtLeastOneGroupFilled` over operands under its own key is admitted, a field outside the keyed group
-refusing it (`k5`, `k7`). A negative
-three-operand quantifier across the join guards no iteration, as the rule check measured on row `n3x`. -/
+`MoreThanOneFieldFilled`, `AllFieldsFilled` or `AtLeastOneGroupFilled` over operands under its own key is
+admitted, a field outside the keyed group refusing it (`k1`-`k3`, `k5`, `k7`). A negative three-operand
+quantifier across the join guards no iteration, as the rule check measured on row `n3x`. -/
 example :
     (residualRows.filter fun (_, condition, token, inDemand, kernel) =>
       tokenClass condition token inDemand != kernel).map (·.1) = [] ∧

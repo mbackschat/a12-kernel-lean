@@ -173,11 +173,14 @@ example : payloads "duplicate-unmapped-then-mapped" = some [
     .internalValuesDuplicate "BB", .repeatedValue "BB"] := by
   native_decide
 
-/-- The repeated values of `values` declared and then declared again in reverse, with `extra` after, in the order
-the model reader states them. -/
-private def repeatedOrder (values : List String) (extra : List String := []) : Option (List String) :=
-  (recorded { values := values ++ values.reverse ++ extra, expected := [] }).map fun notifications =>
+/-- The repeated values among the declared `values`, in the order the model reader states them. -/
+private def repeatedOf (values : List String) : Option (List String) :=
+  (recorded { values, expected := [] }).map fun notifications =>
     notifications.filterMap fun | .repeatedValue value => some value | _ => none
+
+/-- The repeated values of `values` declared and then declared again in reverse, with `extra` after. -/
+private def repeatedOrder (values : List String) (extra : List String := []) : Option (List String) :=
+  repeatedOf (values ++ values.reverse ++ extra)
 
 private def lines : List String :=
   ["LIFE", "HOME", "AUTO", "TRAVEL", "HEALTH", "PET", "BOAT", "FARM", "CYBER", "LEGAL", "DENTAL", "FLOOD", "THEFT"]
@@ -204,11 +207,9 @@ private def plans : List String :=
 the table and splits the bucket by the fifth spread bit (a12-dmkits
 `CheckerBasicSentenceOrderAgreementTest.anEighthKeyInOneBucketResizesTheMap` at `65bf78eab`, kernel 31.1.1). -/
 example :
-    (recorded { values := plans.take 7 ++ plans.take 7, expected := [] }).map (·.filterMap
-      fun | .repeatedValue value => some value | _ => none) =
+    repeatedOf (plans.take 7 ++ plans.take 7) =
       some ["PLAN_U4", "PLAN_C2", "PLAN_T3", "PLAN_B1", "PLAN_S2", "PLAN_A0", "PLAN_R1"] ∧
-    (recorded { values := plans ++ plans, expected := [] }).map (·.filterMap
-      fun | .repeatedValue value => some value | _ => none) =
+    repeatedOf (plans ++ plans) =
       some ["PLAN_U4", "PLAN_T3", "PLAN_S2", "PLAN_R1", "PLAN_D3", "PLAN_C2", "PLAN_B1", "PLAN_A0"] := by
   native_decide
 

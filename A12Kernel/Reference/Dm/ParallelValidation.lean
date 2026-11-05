@@ -91,6 +91,12 @@ private partial def Expr.starredReadPrefixes : Expr → List Path
   | .logic _ parts => parts.flatMap Expr.starredReadPrefixes
   | .number _ | .string _ | .constant _ | .custom _ _ => []
 
+/-- A presence leaf of a resolved group beside the join, its repeatable scope read off its path. -/
+private def joinedGroupPresence (model : FlatModel) (op : GroupPresenceOperator)
+    (reference : ResolvedGroupReference) : ConditionTree PairSyntaxLeaf :=
+  .leaf (.pair (.groupPresence op { reference with
+    boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }))
+
 private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr →
     Lowering (ConditionTree PairSyntaxLeaf)
   | .parens body => pairSyntax model group body
@@ -130,9 +136,7 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
         -- A keyed group read selects a row of a group the join does not bind, so it stays an
         -- ordinary leaf (keyed-membership capture, rows p00-p02, 2026-10-13).
         let some reference := field.groupReference? | ordinary (.call name [.mk field none] none none)
-        let resolved ← elaborated "ParallelRule" (reference.resolveAgainst group)
-        pure (.leaf (.pair (.groupPresence op { resolved with
-          boundRepeatableScope := model.repeatableScopeForGroupPath resolved.path })))
+        pure (joinedGroupPresence model op (← elaborated "ParallelRule" (reference.resolveAgainst group)))
       else
        -- A keyed, filtered or starred operand reads no single joined row: an ordinary leaf.
        match name, field.fieldEntity?.isSome with
@@ -154,14 +158,14 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
           | "AllGroupsFilled" => some true
           | "AtLeastOneGroupFilled" => some false
           | _ => none) then
-        let presence := fun (reference : ResolvedGroupReference) => ConditionTree.leaf (PairSyntaxLeaf.pair
-          (.groupPresence .filled { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }))
+        let presence := joinedGroupPresence model .filled
+        let join : ConditionTree PairSyntaxLeaf → ConditionTree PairSyntaxLeaf → ConditionTree PairSyntaxLeaf :=
+          if conjunctive then .and else .or
         match arguments.mapM (fun
             | .mk operand none => operand.groupReference?.bind (·.resolveAgainst group |>.toOption)
             | _ => none) with
         | some (first :: rest@(_ :: _)) =>
-            pure (rest.foldl (fun tree reference =>
-              if conjunctive then .and tree (presence reference) else .or tree (presence reference)) (presence first))
+            pure (rest.foldl (fun tree reference => join tree (presence reference)) (presence first))
         | _ => ordinary expression
       else
       let some op := fieldFillOp? name | ordinary expression

@@ -94,6 +94,12 @@ def frameList (parent : Json) (key : String) (nonNull : Bool := false) : Except 
   | .ok (.arr entries) => pure (some entries)
   | .ok _ => throw s!"model member {key} is no list"
 
+/-- A list member's entries: an absent or `null` member is empty, any other non-list refused. -/
+def frameMembers (parent : Json) (key : String) : Except String (List Json) :=
+  match parent.getObjVal? key with
+  | .error _ | .ok .null => pure []
+  | .ok value => (value.getArr?).map Array.toList
+
 /-- An object member: `none` when absent; `null` and every other kind leave no model. -/
 def frameObject (parent : Json) (key : String) : Except String (Option Json) :=
   match parent.getObjVal? key with

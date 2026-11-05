@@ -225,18 +225,20 @@ private def fieldEnumerationNotifications (charset : LegalCharset) (fieldJson : 
 /-- An `EnumerationType` body's value entries with their tokens and labels, an absent or `null` `values` read
 as none and any other non-list refused. -/
 def enumerationValueEntries (body : Json) : Except String (List EnumerationValueDeclaration) := do
-  let entries ← match body.getObjVal? "values" with
-    | .error _ | .ok .null => pure []
-    | .ok value => (value.getArr?).map Array.toList
-  entries.mapM fun entry => do
+  (← frameMembers body "values").mapM fun entry => do
     pure { token := ← valueEntryToken entry
            labels := (← localizedTextMember entry "label").map fun (locale, text) => { locale, text } }
+
+/-- Whether an `EnumerationType` body's empty token carries a label with an empty text, which leaves no model;
+an unreadable `values` is left to the reader that refuses it. -/
+def enumerationEmptyTokenTextless (body : Json) : Bool :=
+  ((enumerationValueEntries body).toOption.getD []).any (·.emptyTokenTextless)
 
 /-- Kernel 31.1.1's label classes over a field's Enumeration and the model's declared locales, empty for any
 other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
 private def enumerationLabelClasses (declaredLocales : List String) (fieldJson : Json) : List String :=
-  let values := ((enumerationBody? fieldJson).map enumerationValueEntries).getD (pure [])
-  ((enumerationLabelNotifications declaredLocales (values.toOption.getD [])).map (·.label)).eraseDups
+  let values := ((enumerationBody? fieldJson).bind (enumerationValueEntries · |>.toOption)).getD []
+  ((enumerationLabelNotifications declaredLocales values).map (·.label)).eraseDups
 
 /-- The field with every Enumeration label of an undeclared locale removed: kernel 31.1.1 judges labels by the
 declared locales only beyond the label classes above, so the locale-blind declaration checks read the declared
@@ -262,14 +264,15 @@ private def declaredLocaleLabels (declaredLocales : List String) (fieldJson : Js
 
 /-- The defect of a field's Enumeration that leaves no model, read on the field after its type definition is
 resolved as the declaration walk reads it: no value to enumerate, or two categories keyed by one name (kernel
-31.1.1, a12-dmkits `EnumDeclarationShapeLawsTest` and `CheckerEmptyMemberAgreementTest` at `1124b523f`). -/
+31.1.1, a12-dmkits `EnumDeclarationShapeLawsTest` and `CheckerEmptyMemberAgreementTest` at `1124b523f`), or an
+empty token carrying an empty label text (KF321, a12-dmkits `EnumValueAndLabelLawsTest` at `65bf78eab`). -/
 private def enumerationBuildFailure? (fieldJson : Json) : Except String (Option String) := do
   let some body := enumerationBody? fieldJson | pure none
   if enumerationDeclaresNoValues body then
     return some "an Enumeration declaring no values leaves no model"
   if categoryNamesCollide (← boundCategories body) then
     return some "an Enumeration whose categories share a name leaves no model"
-  if ((enumerationValueEntries body).toOption.getD []).any (·.emptyTokenTextless) then
+  if enumerationEmptyTokenTextless body then
     return some "an Enumeration whose empty token carries an empty label text leaves no model"
   pure none
 

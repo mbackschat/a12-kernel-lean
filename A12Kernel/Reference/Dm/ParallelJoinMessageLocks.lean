@@ -56,17 +56,20 @@ private def side (name : String) (extra : List Json) : Json :=
     ("repeatability", toJson 3), ("indexFieldName", "Sku"), ("elements", Json.arr (#[
       field name "Sku" string, field name "Qty" number] ++ extra.toArray ++ #[field name "Note" string]))])]
 
+/-- An en_US model whose root group `root` holds `elements`. -/
+private def envelope (root : String) (elements : Array Json) : Json :=
+  Json.mkObj [
+    ("header", Json.mkObj [("id", .str s!"{root}_DM"), ("modelType", "document"), ("modelVersion", "29.4.0"),
+      ("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
+    ("content", Json.mkObj [("modelInfo", Json.mkObj [("name", .str root)]),
+      ("modelConfig", Json.mkObj [("timeZone", "UTC"), ("conditionLanguage", Json.mkObj [("code", "en_US")])]),
+      ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"), ("id", .str s!"/{root}"),
+        ("name", .str root), ("Group", Json.mkObj [("elements", Json.arr elements)])]])])])]
+
 /-- The shop with `Ordered` and `Received` both keyed by their String `Sku`, `ordered` and `shop` holding the
 elements declared in `Ordered` and in `Shop`. -/
 private def shop (ordered shop : List Json) : Json :=
-  Json.mkObj [
-    ("header", Json.mkObj [("id", "Shop_DM"), ("modelType", "document"), ("modelVersion", "29.4.0"),
-      ("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
-    ("content", Json.mkObj [("modelInfo", Json.mkObj [("name", "Shop")]),
-      ("modelConfig", Json.mkObj [("timeZone", "UTC"), ("conditionLanguage", Json.mkObj [("code", "en_US")])]),
-      ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"), ("id", "/Shop"),
-        ("name", "Shop"), ("Group", Json.mkObj [("elements", Json.arr (#[
-          side "Ordered" ([field "Ordered" "Gap" number] ++ ordered), side "Received" []] ++ shop.toArray))])]])])])]
+  envelope "Shop" (#[side "Ordered" ([field "Ordered" "Gap" number] ++ ordered), side "Received" []] ++ shop.toArray)
 
 /-- The named class of the message of a checked rule, `none` when admitted. -/
 private def messageClass (dm : DmModel) (rule : DmRule) : Option String :=
@@ -163,19 +166,12 @@ private def orderClass (condition parameter : String) (picksIndex := "LineNo") :
   let definition := Json.mkObj [("type", "Rule"), ("id", "/Order/KeyRead"), ("name", "KeyRead"), ("Rule", Json.mkObj [
     ("errorEntityRelPath", "../Lines/Sku"), ("errorCode", "KEY"), ("severity", "ERROR"),
     ("errorCondition", .str condition), ("errorMessage", message parameter)])]
-  let model := Json.mkObj [
-    ("header", Json.mkObj [("id", "Order_DM"), ("modelType", "document"), ("modelVersion", "29.4.0"),
-      ("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
-    ("content", Json.mkObj [("modelInfo", Json.mkObj [("name", "Order")]),
-      ("modelConfig", Json.mkObj [("timeZone", "UTC"), ("conditionLanguage", Json.mkObj [("code", "en_US")])]),
-      ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [("type", "Group"), ("id", "/Order"),
-        ("name", "Order"), ("Group", Json.mkObj [("elements", Json.arr #[
-          orderGroup "Lines" "LineNo" ["Sku"] 5, orderGroup "Picks" picksIndex ["Ref"] 5,
-          orderGroup "Gifts" "GiftNo" ["Note"] 2, definition])])]])])])]
-  classOf model
+  classOf (envelope "Order" #[orderGroup "Lines" "LineNo" ["Sku"] 5, orderGroup "Picks" picksIndex ["Ref"] 5,
+    orderGroup "Gifts" "GiftNo" ["Note"] 2, definition])
 
 private def keyedJoin (index : String) := s!"FieldFilled(Lines/Sku) And FieldFilled(Gifts/Note For Picks/{index})"
 private def unkeyedJoin := "FieldFilled(Lines/Sku) And FieldFilled(Picks/Ref)"
+private def lineNoParameters := ["$/Order/Lines/LineNo.value$", "$/Order/Picks/LineNo.value$", "$#/Order/Picks$"]
 
 /-- The key `Picks/LineNo` joins `Lines` and `Picks` as the unkeyed control does: `Lines/LineNo` is a member,
 which a reading in which the key marks nothing would refuse; `Picks/LineNo` is one already as the key's own
@@ -186,10 +182,8 @@ refuses each condition with the join's index-name class before any parameter is 
 controls on this carrier, not measured on it: a field the condition does not read is no member, and without the
 join neither is `Lines/LineNo`, as the shop's measured `FieldFilled(Ordered/Qty)` row is. -/
 example :
-    ["$/Order/Lines/LineNo.value$", "$/Order/Picks/LineNo.value$", "$#/Order/Picks$"].map
-        (orderClass (keyedJoin "LineNo")) = [none, none, refused] ∧
-    ["$/Order/Lines/LineNo.value$", "$/Order/Picks/LineNo.value$", "$#/Order/Picks$"].map
-        (orderClass unkeyedJoin) = [none, none, none] ∧
+    lineNoParameters.map (orderClass (keyedJoin "LineNo")) = [none, none, refused] ∧
+    lineNoParameters.map (orderClass unkeyedJoin) = [none, none, none] ∧
     ([keyedJoin "Code", unkeyedJoin].all fun condition =>
       ["$/Order/Lines/LineNo.value$", "$/Order/Picks/Code.value$", "$#/Order/Picks$"].all fun parameter =>
         orderClass condition parameter (picksIndex := "Code") == some "rule: MVK_ERROR_FIELD_INVALID_INDEX") ∧
