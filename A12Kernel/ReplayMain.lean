@@ -43,6 +43,7 @@ import A12Kernel.Reference.Dm.ParallelGroupRuleLocks
 import A12Kernel.Reference.Dm.PartialParallelRuleLocks
 import A12Kernel.Reference.Dm.ParallelCustomConditionLocks
 import A12Kernel.Reference.Dm.ParallelInstanceViewLocks
+import A12Kernel.Reference.Dm.ParallelJoinMessageLocks
 import A12Kernel.Reference.Dm.ParallelJoinedGuardLocks
 import A12Kernel.Reference.Dm.ScalarVerdictLocks
 import A12Kernel.Reference.Dm.ParallelChildReadLocks

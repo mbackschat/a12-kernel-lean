@@ -40,12 +40,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-11-05-03"></a>
 ### SPEC-2026-11-05-03 — An unmatched parallel side renders as an absent cell in every form, the join's index fields are members, and a joined group's row index is refused beside a condition that fires unmatched
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/11 A.11](../spec/11-messages-and-custom.md#a11-rendering-a-rule-owned-message), the unmatched-side bullet; the membership list's parallel-join bullet; the `$#RootGroup$` paragraph's parallel row.
 - `delta`: Beside KF672's value rows: an unmatched side's String index field renders empty, an Enumeration's value and category render empty and a name renders the name. Both sides' index fields are members although the condition text names neither. Beside `FieldsNotCollectivelyFilled` over a field of each joined side, the absolute spelling of either joined group draws `INVALID_USE_OF_ITERATION_PARAM`; the earlier admission beside `FieldFilled` of a field of each side, on another route and model, does not isolate the gate, and which further conditions draw it is stated unmeasured.
 - `basis`: the [unmatched-side checkpoint](sources/message-parameter-rendering-probes.md#src-unmatched-parallel-side), `:adapter:kernelProbe` at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, both strategies agreeing, kernel 31.1.1.
 - `acceptance`: a12-dmkits' interpreter renders the checkpoint's `pg` and `pk` rows and its checker admits the `Dept` parameters and gives the two row-index parameters the class, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `c7afca597e812de26b0f758653643107b1e072f8`.
+- `disposition`: Reconciled in substance on the peer's own carriers: the peer reports reproducing the capture's rows and classes on its kernel probe and its interpreter and checker on `P31_DM`, while its committed locks render the analogues of `pg` and `pk` on a staffing carrier (`UnmatchedParallelValueMessageDiffTest`) and admit the join's index fields and refuse the unproved row tokens on a shop carrier (`CheckerParallelJoinMessageAgreementTest`), its checker reporting no finding on an admitted row with its verdict inconclusive. Its KF675 rows measure the further conditions this entry left unmeasured, and spec/11's [joined-row proof](../spec/11-messages-and-custom.md#the-joined-row-proof) now states them, Lean's template check agreeing on each row it reads. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-05c).
 
 <a id="spec-2026-11-05-02"></a>
 ### SPEC-2026-11-05-02 — A parallel join over an index nomination naming no field of its group draws the index-name class

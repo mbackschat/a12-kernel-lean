@@ -1088,6 +1088,17 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: §4's release-log mapping is the peer's disposition record and changes no clause; §5's two source readings are hypotheses. The peer's account of why a dividing row adds nothing is not adopted as a mechanism.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them. `SPEC-2026-11-04-02` is accepted at that revision.
 
+<a id="src-inbound-2026-11-05c"></a>
+## Reviewed Letter H of 2026-11-05: SPEC-2026-11-05-03 reconciled, and a joined level's row token needs a proved row
+
+- `source`: Peer-session letter of 2026-11-05, `a12-kernel-lean-spec-corrections-2026-11-05c.md` (Letter H of the [kernel 31.1.1 migration](../PLAN.md#kernel-31-migration)), SHA-256 `906eaec92aacf6358b4c1ab2d4f10a69cb7ae0e645de8746511f25cf1947a5d6`, 7402 bytes, read from the user's exchange directory. It answers `SPEC-2026-11-05-03`.
+- `revision`: a12-dmkits `c7afca597e812de26b0f758653643107b1e072f8`, read with `git` only; `CheckerParallelJoinMessageAgreementTest`, `UnmatchedParallelValueMessageDiffTest` and `KF675` exist there.
+- `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`) through those locks; reported by the peer, not run here. The peer's replay of the [unmatched-side capture](message-parameter-rendering-probes.md#src-unmatched-parallel-side) reproduces its artifact's rows and its three models' classes.
+- `review`: A HIGH reconciliation on 2026-11-05 read each KF675 row against the lock's own condition and ran it through Lean's reader, rule check and template check on the peer's carrier, red before the change on every refused row-token row.
+- `adopted`: spec/11's membership bullet gains the computation's generated rule, the rule declared in a joined group and the starred control, where Lean already agreed; spec/11's [joined-row proof](../../spec/11-messages-and-custom.md#the-joined-row-proof), where Lean admitted every row token and now refuses an unproved one ([locks](../../A12Kernel/Reference/Dm/ParallelJoinMessageLocks.lean)).
+- `not-adopted`: §5's mechanisms are hypotheses. The letter's reading that `AtLeastOneFieldFilled` and `MoreThanOneFieldFilled` prove nothing for a keyed token rests on KF546's rows `key-any-fields`, `key-many-fields` and `key-any-groups`, the first two pairing the keyed field with a field outside the keyed group and the third the keyed group with another group, so it does not separate "never" from "only when every operand lies in the group", which spec/11's keyed guard states; that guard is unchanged. `AllGroupsFilled` beside a join stays [SG25](../gaps/strings-and-messages.md#gap-sg25)'s.
+- `sync`: inbound additions from a committed peer revision; no ledger entry is created for them. `SPEC-2026-11-05-03` is accepted at the revision above.
+
 <a id="src-inbound-2026-11-05b"></a>
 ## Reviewed Letter G of 2026-11-05: three ledger entries reconciled, the string slots' containers and executables named as references
 

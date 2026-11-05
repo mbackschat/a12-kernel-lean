@@ -169,6 +169,39 @@ def keyedGroupGuarded (condition : ValidationMessageCondition model)
       | _ => false
   | .rule checkedRule => checkedRule.condition.core.keyedMessageGroupGuarded group key
 
+/-- Whether a leaf beside a parallel join proves that `group`'s joined row exists: a positive presence of a
+field or a group inside it, `AllFieldsFilled` with an operand inside it, or `AtLeastOneFieldFilled` and
+`MoreThanOneFieldFilled` with both operands inside it. A comparison, a negative presence and every other
+quantifier prove nothing ([inbound record](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-05c)).
+The measured calls have two operands. A flat or ordinary leaf, which is where a starred, keyed or filtered read
+and a fill quantifier over three or more operands sit, is taken to prove nothing, as is a `MoreThanOneFieldFilled`
+over a field of each group; those readings are unmeasured
+([SG25](../../docs/gaps/strings-and-messages.md#gap-sg25)). -/
+def ParallelFieldLeaf.provesJoinedRow (pair : CheckedParallelFieldPair model) (group : GroupPath)
+    (leaf : ParallelFieldLeaf model) : Bool :=
+  let inside := fun operand => group.isPrefixOf (pair.declaration operand).groupPath
+  match leaf with
+  | .presence operand .filled => inside operand
+  | .groupPresence .filled reference => group.isPrefixOf reference.path
+  | .fill .allFieldsFilled first second => inside first || inside second
+  | .fill .atLeastOneFieldFilled first second | .fill .moreThanOneFieldFilled first second =>
+      inside first && inside second
+  | _ => false
+
+/-- Whether an unkeyed row token naming `group` passes the join's proof gate. A token for either joined level
+needs the condition to prove that level's row, one AND arm or every OR arm carrying the proof, on the guard
+algebra the keyed token shares; a rule declared in a joined group is gated alike. Another group, and a condition
+joining nothing, is not gated here (Kernel 31.1.1, a12-dmkits `CheckerParallelJoinMessageAgreementTest` at
+`c7afca597`). -/
+def joinedRowProved (condition : ValidationMessageCondition model) (group : GroupPath) : Bool :=
+  match condition with
+  | .parallel parallelRule _ =>
+      let groups := parallelRule.pair.groups
+      if group == groups.leftGroup.path || group == groups.rightGroup.path then
+        parallelRule.condition.iterationGuarded (ParallelFieldLeaf.provesJoinedRow parallelRule.pair group)
+      else true
+  | .flat _ | .rule _ => true
+
 /-- Whether a keyed message parameter may name `declaration` under `key`. The key belongs to the
 field's nearest indexed group, and the condition must select that group by the same key: either
 selecting this field, through a keyed field or a keyed group read containing it, or, for the group's

@@ -240,9 +240,13 @@ private def checkMessageGroupMode (condition : ValidationMessageCondition model)
             | some true => pure ()
             | some false => throw (.groupReferenceMode parameter .iterParamWithStarReference)
             | none => throw (.groupReferenceMetadataRequired parameter)
-          if let some key := key then
-            if !condition.keyedGroupGuarded group key then
-              throw (.groupReferenceMode parameter .invalidUseOfSemanticIndex)
+          match key with
+          | some key =>
+              if !condition.keyedGroupGuarded group key then
+                throw (.groupReferenceMode parameter .invalidUseOfSemanticIndex)
+          | none =>
+              if !condition.joinedRowProved group then
+                throw (.groupReferenceMode parameter .invalidUseOfIterationParam)
 
 /-- Whether a path names a declared group or field. -/
 def FlatModel.declaresEntityPath (model : FlatModel) (path : GroupPath) : Bool :=

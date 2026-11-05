@@ -154,4 +154,15 @@ example :
     templateRefusal (rule "pg" "Head" "kd=[$/Form/Demand/Dept.value$] ks=[$/Form/Supply/Dept.value$]") = none := by
   native_decide
 
+/-- Either joined group's row token is refused beside `FieldsNotCollectivelyFilled`, as the capture's twin of
+`pg` is on both sides, so no unmatched firing renders a token its level has no row for. The admitted twin beside
+a positive presence on each side is the peer's row on its own carrier
+([KF675 lock](ParallelJoinMessageLocks.lean)), restated here on the capture's model. -/
+example :
+    ["$#/Form/Demand$", "$#/Form/Supply$"].all (fun token =>
+      (templateRefusal (rule "pg" "Head" token)).map (·.namedRuleDiagnostic?) ==
+          some (some .invalidUseOfIterationParam) &&
+        (templateRefusal (rule "pg" "Head" token (some "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)"))).isNone) :=
+  by native_decide
+
 end A12Kernel.Dm.UnmatchedParallelMessageLocks
