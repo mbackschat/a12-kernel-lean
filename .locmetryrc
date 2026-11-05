@@ -271,6 +271,14 @@ purpose = "production"
 category = "probe-tooling"
 
 [[rules]]
+id = "recapture-tooling"
+match = ["scripts/recapture-kernel-evidence.py"]
+kind = ["source"]
+purpose = "production"
+category = "probe-tooling"
+reason = "Re-runs the retained Kernel evidence on a new kernel through the pinned measurement checkout"
+
+[[rules]]
 id = "report-tooling"
 match = ["scripts/report-conformance-coverage.sh"]
 kind = ["source"]
@@ -435,7 +443,7 @@ category = "consumer-contract"
 
 [[rules]]
 id = "methodology"
-match = ["docs/TESTING*.md", "docs/PRODUCTION-RELEASE.md"]
+match = ["docs/TESTING*.md", "docs/PRODUCTION-RELEASE.md", "docs/KERNEL-UPGRADE-PLAYBOOK.md"]
 kind = ["documentation"]
 purpose = "production"
 category = "methodology"
