@@ -330,9 +330,12 @@ example : entryFailures tokenlessRows = [] := by native_decide
 
 /-- An empty token is admitted unlabelled and reads as a missing token once its enumeration is labelled; with
 its own empty text the model is not built (a12-dmkits `EnumValueAndLabelLawsTest` at `65bf78eab`, KF321, kernel
-31.1.1). -/
+31.1.1). Two empty tokens repeat the absent token as two token-less entries do, Lean's own account, unmeasured
+([SG8](../../../docs/gaps/strings-and-messages.md#gap-sg8)). -/
 example :
-    entryFailures [("an empty token, labelled",
+    entryFailures [("two empty tokens, unlabelled",
+      entriesModel [entryText (some ""), entryText (some ""), entryText (some "PLUS")], [repeatedValue], some false),
+      ("an empty token, labelled",
       entriesModel [entryText (some "") [("en_US", "None")], entryText (some "PLUS") [("en_US", "Plus")]],
       [valueMissing, displayValues], some false)] = [] ∧
     (verdictOf (entriesModel [entryText (some ""), entryText (some "PLUS")]) == admitted &&

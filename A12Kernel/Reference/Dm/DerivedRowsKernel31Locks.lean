@@ -88,4 +88,12 @@ example :
     refusalNames r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{"label":[{"locale":"en_US","text":"Beta"}]}]}}"# "MVK_INTERNAL_VALUE_MISSING" := by
   native_decide
 
+/-- An unlabelled empty token is a token-less entry: it keeps its place and the declaration holds no token for it,
+as the declaration walk reads it (a12-dmkits KF566, KF321). -/
+example :
+    ((read r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":""},{"value":"C"}]}}"#).toOption.bind
+      (·.enumeration)).map (fun declaration => (declaration.storedTokens, declaration.tokenlessPositions)) =
+      some (["C"], [0]) := by
+  native_decide
+
 end A12Kernel.Dm.DerivedRowsKernel31Locks

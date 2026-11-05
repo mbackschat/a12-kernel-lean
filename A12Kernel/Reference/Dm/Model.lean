@@ -176,6 +176,11 @@ def valueEntryToken (entry : Json) : Except String (Option String) := do
   | .error _ => pure none
   | .ok token => some <$> token.getStr?
 
+/-- One `values` entry's token and labels. -/
+def enumerationValueEntry (entry : Json) : Except String EnumerationValueDeclaration := do
+  pure { token := ← valueEntryToken entry
+         labels := (← localizedTextMember entry "label").map fun (locale, text) => { locale, text } }
+
 /-- The ordinary Enumeration declaration of a DM `EnumerationType` body. It decides whether the body is
 readable for the field's declaration, its notification pass and the declaration-generation reader, which
 reads the members this declaration does not keep only from a body this parse admits. -/
@@ -185,15 +190,10 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
     | some (.str value) => pure (if value.isEmpty then none else some value)
     | some _ => throw "EnumerationType sValue must be a string"
   let entries := (← body.getObjValAs? (Array Json) "values").toList
-  let tokens ← entries.mapM valueEntryToken
   -- Labels stay attached to their stored token: messages render them and the declaration checks read
   -- them, although no comparison, copy or concatenation does (kernel 31.1.1). The labels of an entry with
   -- no token have no stored token to attach to; the declaration walk reads them from the entry itself.
-  let displayFacts ← entries.mapM fun entry => do
-    let some stored ← valueEntryToken entry
-      | pure []
-    pure ((← localizedTextMember entry "label").map fun (locale, display) =>
-      ({ stored, locale, display } : EnumerationDisplayFact))
+  let values ← entries.mapM enumerationValueEntry
   -- A blank token past the entries is no token (peer KF660), so it never counts toward the arity the
   -- declaration is validated for; one inside the entries is the notification's to report.
   let categories := (← boundCategories body).map fun category =>
@@ -201,13 +201,11 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
         (category.tokens.drop entries.length).filter fun token => !ExecutableDeclaration.blank token }
   -- Kernel 31.1.1's model copy reads a declared `""` as no token, so it is no condition literal, while a
   -- stored `""` stays the empty cell (a12-dmkits KF566 as corrected at `fe4d26e14`, KF658; the retained
-  -- 31.1.1 `empty-enumeration-token` rows). It keeps no place in the stored domain; beside categories,
-  -- whose tokens are positional, its account is unmeasured.
-  if tokens.contains (some "") && !categories.isEmpty then
+  -- 31.1.1 `empty-enumeration-token` rows). It keeps no place in the stored domain, only its entry's
+  -- position; beside categories, whose tokens are positional, its account is unmeasured.
+  if values.any (·.token == some "") && !categories.isEmpty then
     throw "an empty Enumeration token beside categories is outside the represented profile"
-  pure { storedTokens := tokens.filterMap id |>.filter (!·.isEmpty),
-         tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf tokens,
-         displayFacts := displayFacts.flatten, categories, defaultStoredToken }
+  pure (EnumerationDeclaration.ofValues values categories defaultStoredToken)
 
 /-- A field's `EnumerationType` body when its type is an Enumeration, an absent body read as empty. -/
 private def enumerationBody? (fieldJson : Json) : Option Json := do
@@ -225,9 +223,7 @@ private def fieldEnumerationNotifications (charset : LegalCharset) (fieldJson : 
 /-- An `EnumerationType` body's value entries with their tokens and labels, an absent or `null` `values` read
 as none and any other non-list refused. -/
 def enumerationValueEntries (body : Json) : Except String (List EnumerationValueDeclaration) := do
-  (← frameMembers body "values").mapM fun entry => do
-    pure { token := ← valueEntryToken entry
-           labels := (← localizedTextMember entry "label").map fun (locale, text) => { locale, text } }
+  (← frameMembers body "values").mapM enumerationValueEntry
 
 /-- Whether an `EnumerationType` body's empty token carries a label with an empty text, which leaves no model;
 an unreadable `values` is left to the reader that refuses it. -/

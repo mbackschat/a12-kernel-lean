@@ -205,18 +205,30 @@ structure EnumerationValueDeclaration where
   labels : List EnumerationLabel := []
   deriving Repr, DecidableEq
 
-/-- The token the entry stores. An empty token stores none on an entry that carries a label. That is this
-project's account of two measured outcomes, an unlabelled empty token admitted and a labelled one drawing the
-missing-token and display classes (a12-dmkits `EnumValueAndLabelLawsTest` at `65bf78eab`, KF321); the rows do not
-separate it from an empty token always storing none, and its consequences for the value blocks, the duplicate
-and repeated-value classes and category positions are unmeasured
+/-- The token the entry stores: an empty token stores none, so the entry is a token-less one. Kernel 31.1.1's
+model copy reads a declared `""` as no token (a12-dmkits KF566 as corrected at `fe4d26e14`), and both measured
+empty-token rows draw what a token-less entry draws, nothing when unlabelled and the missing-token and display
+classes when labelled (a12-dmkits `EnumValueAndLabelLawsTest` at `65bf78eab`, KF321, beside the token-less rows
+of `DeclarationShapeLocks`). Its consequences for the repeated-value class of two empty tokens are unmeasured
 ([SG8](../../docs/gaps/strings-and-messages.md#gap-sg8)). -/
 def EnumerationValueDeclaration.storedToken? (value : EnumerationValueDeclaration) : Option String :=
-  value.token.filter fun token => !token.isEmpty || value.labels.isEmpty
+  value.token.filter (!·.isEmpty)
 
 /-- Whether the entry's empty token carries an empty label text, which leaves no model (the same row). -/
 def EnumerationValueDeclaration.emptyTokenTextless (value : EnumerationValueDeclaration) : Bool :=
   value.token == some "" && value.labels.any (·.text.isEmpty)
+
+/-- The executable declaration of an Enumeration's value entries: each entry storing no token keeps its position
+as a hole, and each label attaches to its entry's stored token. -/
+def EnumerationDeclaration.ofValues (values : List EnumerationValueDeclaration)
+    (categories : List EnumerationCategoryDeclaration) (defaultStoredToken : Option String) :
+    EnumerationDeclaration :=
+  let tokens := values.map (·.storedToken?)
+  { storedTokens := tokens.filterMap id
+    tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf tokens
+    displayFacts := values.flatMap fun value => (value.storedToken?.map fun stored =>
+      value.labels.map fun label => { stored, locale := label.locale, display := label.text }).getD []
+    categories, defaultStoredToken }
 
 /-- A Time or DateTime body as authored, whose one member is the format. -/
 structure TemporalTypeDeclaration where
@@ -635,13 +647,7 @@ private def enumerationNotifications (context : FieldTypeContext)
   let countedTexts := values.flatMap fun value =>
     (value.labels.filter fun label => locales.contains label.locale).map (·.text)
   let categoryTokens := declaration.categories.flatMap (·.tokens)
-  let blockOwner : EnumerationDeclaration := {
-    storedTokens := tokens
-    tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf (values.map (·.storedToken?))
-    displayFacts := values.flatMap fun value => (value.storedToken?.map fun stored =>
-      value.labels.map fun label => { stored, locale := label.locale, display := label.text }).getD []
-    categories := declaration.categories
-    defaultStoredToken := declaration.sValue }
+  let blockOwner := EnumerationDeclaration.ofValues values declaration.categories declaration.sValue
   (blockOwner.notifications context.charset).map .enumerationBlock ++
     enumerationLabelNotifications locales values ++
     ((coded tokens).filter hasSeparator).map (.declared .internalValueInvalid [·]) ++
