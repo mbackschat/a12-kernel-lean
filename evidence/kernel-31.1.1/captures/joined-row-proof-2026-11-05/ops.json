@@ -1,0 +1,202 @@
+[
+ {
+  "id": "c01td",
+  "verb": "rule",
+  "args": ["check", "--code", "c01td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "MoreThanOneFieldFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c01ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c01ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "MoreThanOneFieldFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c02td",
+  "verb": "rule",
+  "args": ["check", "--code", "c02td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AllFieldsFilled(Demand/Head, Demand/Note, Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c02ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c02ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AllFieldsFilled(Demand/Head, Demand/Note, Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c03td",
+  "verb": "rule",
+  "args": ["check", "--code", "c03td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AtLeastOneFieldFilled(Demand/Head, Demand/Note, Demand/Rate) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c03ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c03ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AtLeastOneFieldFilled(Demand/Head, Demand/Note, Demand/Rate) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c04td",
+  "verb": "rule",
+  "args": ["check", "--code", "c04td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "MoreThanOneFieldFilled(Demand/Head, Demand/Note, Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c04ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c04ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "MoreThanOneFieldFilled(Demand/Head, Demand/Note, Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c05td",
+  "verb": "rule",
+  "args": ["check", "--code", "c05td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "[Demand/Head] > 0 And [Supply/Head] > 0", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c05ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c05ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "[Demand/Head] > 0 And [Supply/Head] > 0", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c06td",
+  "verb": "rule",
+  "args": ["check", "--code", "c06td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "GroupNotFilled(Demand) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c06ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c06ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "GroupNotFilled(Demand) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c07td",
+  "verb": "rule",
+  "args": ["check", "--code", "c07td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "(FieldFilled(Demand/Head) And FieldFilled(Supply/Head)) Or AllFieldsFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c07ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c07ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "(FieldFilled(Demand/Head) And FieldFilled(Supply/Head)) Or AllFieldsFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c08td",
+  "verb": "rule",
+  "args": ["check", "--code", "c08td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldNotFilled(Demand/Head) And FieldFilled(Demand/Detail/Memo) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c08ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c08ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldNotFilled(Demand/Head) And FieldFilled(Demand/Detail/Memo) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c09td",
+  "verb": "rule",
+  "args": ["check", "--code", "c09td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldNotFilled(Demand/Head) And AtLeastOneFieldFilled(Demand*/Note) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c09ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c09ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldNotFilled(Demand/Head) And AtLeastOneFieldFilled(Demand*/Note) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c10td",
+  "verb": "rule",
+  "args": ["check", "--code", "c10td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AtLeastOneGroupFilled(Demand, Supply)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c10ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c10ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AtLeastOneGroupFilled(Demand, Supply)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c11td",
+  "verb": "rule",
+  "args": ["check", "--code", "c11td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c11ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c11ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c12td",
+  "verb": "rule",
+  "args": ["check", "--code", "c12td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c12ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c12ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c13td",
+  "verb": "rule",
+  "args": ["check", "--code", "c13td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AllGroupsFilled(Demand, Supply)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "c13ts",
+  "verb": "rule",
+  "args": ["check", "--code", "c13ts", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AllGroupsFilled(Demand, Supply)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "c11rd",
+  "verb": "rule",
+  "args": ["check", "--code", "c11rd", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#Demand$."]
+ },
+ {
+  "id": "c11rs",
+  "verb": "rule",
+  "args": ["check", "--code", "c11rs", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check $#Supply$."]
+ },
+ {
+  "id": "c12rd",
+  "verb": "rule",
+  "args": ["check", "--code", "c12rd", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#Demand$."]
+ },
+ {
+  "id": "c12rs",
+  "verb": "rule",
+  "args": ["check", "--code", "c12rs", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "--message", "en_US=Check $#Supply$."]
+ },
+ {
+  "id": "g11rg",
+  "verb": "rule",
+  "args": ["check", "--code", "g11rg", "--field", "/Form/Demand/Head", "--group", "/Form/Demand", "--condition", "FieldsNotCollectivelyFilled(Head, ../Supply/Head)", "--message", "en_US=Check $#RuleGroup$."]
+ },
+ {
+  "id": "g11td",
+  "verb": "rule",
+  "args": ["check", "--code", "g11td", "--field", "/Form/Demand/Head", "--group", "/Form/Demand", "--condition", "FieldsNotCollectivelyFilled(Head, ../Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "g11ts",
+  "verb": "rule",
+  "args": ["check", "--code", "g11ts", "--field", "/Form/Demand/Head", "--group", "/Form/Demand", "--condition", "FieldsNotCollectivelyFilled(Head, ../Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "g12rg",
+  "verb": "rule",
+  "args": ["check", "--code", "g12rg", "--field", "/Form/Demand/Head", "--group", "/Form/Demand", "--condition", "FieldFilled(Head) And FieldFilled(../Supply/Head)", "--message", "en_US=Check $#RuleGroup$."]
+ },
+ {
+  "id": "g12td",
+  "verb": "rule",
+  "args": ["check", "--code", "g12td", "--field", "/Form/Demand/Head", "--group", "/Form/Demand", "--condition", "FieldFilled(Head) And FieldFilled(../Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "g12ts",
+  "verb": "rule",
+  "args": ["check", "--code", "g12ts", "--field", "/Form/Demand/Head", "--group", "/Form/Demand", "--condition", "FieldFilled(Head) And FieldFilled(../Supply/Head)", "--message", "en_US=Check $#/Form/Supply$."]
+ },
+ {
+  "id": "k1ka",
+  "verb": "rule",
+  "args": ["check", "--code", "k1ka", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AtLeastOneFieldFilled(Demand/Head For \"a\", Demand/Note For \"a\")", "--message", "en_US=Check $#Demand For \"a\"$."]
+ },
+ {
+  "id": "k2ka",
+  "verb": "rule",
+  "args": ["check", "--code", "k2ka", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "MoreThanOneFieldFilled(Demand/Head For \"a\", Demand/Note For \"a\")", "--message", "en_US=Check $#Demand For \"a\"$."]
+ },
+ {
+  "id": "k3ka",
+  "verb": "rule",
+  "args": ["check", "--code", "k3ka", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "AllFieldsFilled(Demand/Head For \"a\", Demand/Note For \"a\")", "--message", "en_US=Check $#Demand For \"a\"$."]
+ },
+ {
+  "id": "k4ka",
+  "verb": "rule",
+  "args": ["check", "--code", "k4ka", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "FieldNotFilled(Demand/Head For \"a\")", "--message", "en_US=Check $#Demand For \"a\"$."]
+ }
+]

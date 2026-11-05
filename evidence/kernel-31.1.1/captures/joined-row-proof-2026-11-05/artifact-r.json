@@ -1,0 +1,574 @@
+{
+  "schemaVersion": 1,
+  "producer": {
+    "dmtoolVersion": "0.14.0",
+    "kernel": {
+      "builtAgainst": "31.1.1",
+      "runtime": "31.1.1"
+    },
+    "source": {
+      "revision": "e62c2059d78f896a0b6304891c76c113966cd069",
+      "state": "CLEAN"
+    }
+  },
+  "request": {
+    "model": "J31R_DM.json",
+    "locale": "en_US"
+  },
+  "rows": [
+    {
+      "name": "mixed",
+      "enginesAgree": true,
+      "engines": [
+        {
+          "engine": "kernel-groovy-dynamic",
+          "messages": [
+            {
+              "code": "fa",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fa fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Note",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "/Form[1]/Demand[-5]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "/Form[1]/Demand[-5]/Note",
+                "Form/Supply[3]/Dept",
+                "Form/Supply[3]/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Note",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "Form/Demand[2]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head",
+                "Form/Demand[2]/Note",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "Form/Demand[3]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[3]/Dept",
+                "Form/Demand[3]/Head",
+                "Form/Demand[3]/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fm",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fm fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Note",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fm",
+              "field": "Form/Demand[3]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fm fired",
+              "referenced": [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[3]/Dept",
+                "Form/Demand[3]/Head",
+                "Form/Demand[3]/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ga",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "ga fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Kind",
+                "Form/Demand/Note",
+                "Form/Demand/Rate",
+                "Form/Supply/Dept",
+                "Form/Supply/Head",
+                "Form/Supply/Kind",
+                "Form/Supply/Note",
+                "Form/Supply/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ga",
+              "field": "Form/Demand[2]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "ga fired",
+              "referenced": [
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head",
+                "Form/Demand[2]/Kind",
+                "Form/Demand[2]/Note",
+                "Form/Demand[2]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head",
+                "Form/Supply[2]/Kind",
+                "Form/Supply[2]/Note",
+                "Form/Supply[2]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "/Form[1]/Demand[-5]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "/Form[1]/Demand[-5]/Kind",
+                "/Form[1]/Demand[-5]/Note",
+                "/Form[1]/Demand[-5]/Rate",
+                "Form/Supply[3]/Dept",
+                "Form/Supply[3]/Head",
+                "Form/Supply[3]/Kind",
+                "Form/Supply[3]/Note",
+                "Form/Supply[3]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Kind",
+                "Form/Demand/Note",
+                "Form/Demand/Rate",
+                "Form/Supply/Dept",
+                "Form/Supply/Head",
+                "Form/Supply/Kind",
+                "Form/Supply/Note",
+                "Form/Supply/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "Form/Demand[2]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head",
+                "Form/Demand[2]/Kind",
+                "Form/Demand[2]/Note",
+                "Form/Demand[2]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head",
+                "Form/Supply[2]/Kind",
+                "Form/Supply[2]/Note",
+                "Form/Supply[2]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "Form/Demand[3]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "/Form[1]/Supply[-5]/Kind",
+                "/Form[1]/Supply[-5]/Note",
+                "/Form[1]/Supply[-5]/Rate",
+                "Form/Demand[3]/Dept",
+                "Form/Demand[3]/Head",
+                "Form/Demand[3]/Kind",
+                "Form/Demand[3]/Note",
+                "Form/Demand[3]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/Demand[4]/Dept",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseKontextnummer",
+              "referenced": [
+                "Form/Demand[4]/Dept"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/Supply[4]/Dept",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseKontextnummer",
+              "referenced": [
+                "Form/Supply[4]/Dept"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/Demand[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseZeile",
+              "referenced": [
+                "Form/Demand[4]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/Supply[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseZeile",
+              "referenced": [
+                "Form/Supply[4]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        },
+        {
+          "engine": "kernel-java-static",
+          "messages": [
+            {
+              "code": "fa",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fa fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Note",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "/Form[1]/Demand[-5]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "/Form[1]/Demand[-5]/Note",
+                "Form/Supply[3]/Dept",
+                "Form/Supply[3]/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Note",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "Form/Demand[2]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head",
+                "Form/Demand[2]/Note",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fl",
+              "field": "Form/Demand[3]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fl fired",
+              "referenced": [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[3]/Dept",
+                "Form/Demand[3]/Head",
+                "Form/Demand[3]/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fm",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fm fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Note",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "fm",
+              "field": "Form/Demand[3]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "fm fired",
+              "referenced": [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[3]/Dept",
+                "Form/Demand[3]/Head",
+                "Form/Demand[3]/Note"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ga",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "ga fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Kind",
+                "Form/Demand/Note",
+                "Form/Demand/Rate",
+                "Form/Supply/Dept",
+                "Form/Supply/Head",
+                "Form/Supply/Kind",
+                "Form/Supply/Note",
+                "Form/Supply/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "ga",
+              "field": "Form/Demand[2]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "ga fired",
+              "referenced": [
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head",
+                "Form/Demand[2]/Kind",
+                "Form/Demand[2]/Note",
+                "Form/Demand[2]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head",
+                "Form/Supply[2]/Kind",
+                "Form/Supply[2]/Note",
+                "Form/Supply[2]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "/Form[1]/Demand[-5]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "/Form[1]/Demand[-5]/Kind",
+                "/Form[1]/Demand[-5]/Note",
+                "/Form[1]/Demand[-5]/Rate",
+                "Form/Supply[3]/Dept",
+                "Form/Supply[3]/Head",
+                "Form/Supply[3]/Kind",
+                "Form/Supply[3]/Note",
+                "Form/Supply[3]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "Form/Demand/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Demand/Kind",
+                "Form/Demand/Note",
+                "Form/Demand/Rate",
+                "Form/Supply/Dept",
+                "Form/Supply/Head",
+                "Form/Supply/Kind",
+                "Form/Supply/Note",
+                "Form/Supply/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "Form/Demand[2]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head",
+                "Form/Demand[2]/Kind",
+                "Form/Demand[2]/Note",
+                "Form/Demand[2]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head",
+                "Form/Supply[2]/Kind",
+                "Form/Supply[2]/Note",
+                "Form/Supply[2]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "gl",
+              "field": "Form/Demand[3]/Head",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "gl fired",
+              "referenced": [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "/Form[1]/Supply[-5]/Kind",
+                "/Form[1]/Supply[-5]/Note",
+                "/Form[1]/Supply[-5]/Rate",
+                "Form/Demand[3]/Dept",
+                "Form/Demand[3]/Head",
+                "Form/Demand[3]/Kind",
+                "Form/Demand[3]/Note",
+                "Form/Demand[3]/Rate"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/Demand[4]/Dept",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseKontextnummer",
+              "referenced": [
+                "Form/Demand[4]/Dept"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseKontextnummer",
+              "field": "Form/Supply[4]/Dept",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseKontextnummer",
+              "referenced": [
+                "Form/Supply[4]/Dept"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/Demand[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseZeile",
+              "referenced": [
+                "Form/Demand[4]"
+              ],
+              "fillToFix": []
+            },
+            {
+              "code": "zuGrosseZeile",
+              "field": "Form/Supply[4]",
+              "severity": "ERROR",
+              "type": "VALUE_ERROR",
+              "message": "zuGrosseZeile",
+              "referenced": [
+                "Form/Supply[4]"
+              ],
+              "fillToFix": []
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

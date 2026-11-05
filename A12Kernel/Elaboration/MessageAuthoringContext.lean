@@ -170,22 +170,21 @@ def keyedGroupGuarded (condition : ValidationMessageCondition model)
   | .rule checkedRule => checkedRule.condition.core.keyedMessageGroupGuarded group key
 
 /-- Whether a leaf beside a parallel join proves that `group`'s joined row exists: a positive presence of a
-field or a group inside it, `AllFieldsFilled` with an operand inside it, or `AtLeastOneFieldFilled` and
-`MoreThanOneFieldFilled` with both operands inside it. A comparison, a negative presence and every other
-quantifier prove nothing ([inbound record](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-05c)).
-The measured calls have two operands. A flat or ordinary leaf, which is where a starred, keyed or filtered read
-and a fill quantifier over three or more operands sit, is taken to prove nothing, as is a `MoreThanOneFieldFilled`
-over a field of each group; those readings are unmeasured
-([SG25](../../docs/gaps/strings-and-messages.md#gap-sg25)). -/
+field or a group inside it, a deeper one included, `AllFieldsFilled` with an operand inside it, or
+`AtLeastOneFieldFilled` and `MoreThanOneFieldFilled` with every operand inside it, over two operands or more.
+A comparison, a literal one included, a negative presence, a starred operand and every other quantifier prove
+nothing ([KF675 rows](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-05c) and the
+[residual rows](../../docs/sources/message-parameter-rendering-probes.md#src-joined-row-proof-residuals)). A
+starred, keyed or filtered operand keeps its call an ordinary leaf, which proves nothing; the keyed and filtered
+readings are unmeasured. -/
 def ParallelFieldLeaf.provesJoinedRow (pair : CheckedParallelFieldPair model) (group : GroupPath)
     (leaf : ParallelFieldLeaf model) : Bool :=
   let inside := fun operand => group.isPrefixOf (pair.declaration operand).groupPath
   match leaf with
   | .presence operand .filled => inside operand
   | .groupPresence .filled reference => group.isPrefixOf reference.path
-  | .fill .allFieldsFilled first second => inside first || inside second
-  | .fill .atLeastOneFieldFilled first second | .fill .moreThanOneFieldFilled first second =>
-      inside first && inside second
+  | .fill .allFieldsFilled operands => operands.any inside
+  | .fill .atLeastOneFieldFilled operands | .fill .moreThanOneFieldFilled operands => operands.all inside
   | _ => false
 
 /-- Whether an unkeyed row token naming `group` passes the join's proof gate. A token for either joined level

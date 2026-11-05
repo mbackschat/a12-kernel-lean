@@ -82,8 +82,8 @@ def reads (pair : CheckedParallelFieldPair model) (document : CheckedDocument mo
   | .numeric _ lhs rhs =>
       let both := [lhs, rhs].map (.joined ∘ pair.declaration)
       pure ⟨both, pure both⟩
-  | .fill op lhs rhs =>
-      let both := [lhs, rhs].map (.joined ∘ pair.declaration)
+  | .fill op operands =>
+      let both := operands.map (.joined ∘ pair.declaration)
       match op with
       | .allFieldsFilled | .atLeastOneFieldFilled | .moreThanOneFieldFilled => pure ⟨both, pure []⟩
       | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled

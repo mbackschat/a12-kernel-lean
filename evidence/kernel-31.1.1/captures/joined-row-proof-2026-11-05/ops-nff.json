@@ -1,0 +1,17 @@
+[
+ {
+  "id": "n3td",
+  "verb": "rule",
+  "args": ["check", "--code", "n3td", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "NoFieldFilled(Demand/Head, Demand/Note, Supply/Head)", "--message", "en_US=Check $#/Form/Demand$."]
+ },
+ {
+  "id": "n3x",
+  "verb": "rule",
+  "args": ["check", "--code", "n3x", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "NoFieldFilled(Demand/Head, Demand/Note, Supply/Head)", "--message", "en_US=Check."]
+ },
+ {
+  "id": "n2x",
+  "verb": "rule",
+  "args": ["check", "--code", "n2x", "--field", "/Form/Demand/Head", "--group", "/Form", "--condition", "NoFieldFilled(Demand/Head, Supply/Head)", "--message", "en_US=Check."]
+ }
+]

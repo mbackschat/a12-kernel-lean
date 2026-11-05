@@ -697,7 +697,7 @@ private def pairNumeric {owner : FlatModel} (op : NumericComparisonOp) : Paralle
   .leaf (.numeric op .left .right)
 
 private def pairFill {owner : FlatModel} (op : FieldFillQuantifier) : ParallelFieldCondition owner :=
-  .leaf (.fill op .left .right)
+  .leaf (.fill op [.left, .right])
 
 private def pairPositive : ParallelFieldCondition model :=
   .or (.leaf (.presence .left .filled)) (.leaf (.presence .right .filled))

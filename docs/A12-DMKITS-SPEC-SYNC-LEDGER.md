@@ -37,6 +37,18 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-05-04"></a>
+### SPEC-2026-11-05-04 — The joined-row proof judges three operands as two, proves through a nonrepeatable sub-group and a group list's connective, and refuses a literal comparison, `GroupNotFilled`, a starred operand and a mixed `MoreThanOneFieldFilled`
+
+- `status`: pending
+- `canonical`: [spec/11's joined-row proof](../spec/11-messages-and-custom.md#the-joined-row-proof) and the keyed guard's measured scope; [spec/07 §2.4](../spec/07-repetition-and-iteration.md#24-reading-the-joined-row)'s measured members and group presence.
+- `delta`: Settles most of the joined-row proof's unmeasured list: three-operand fill quantifiers prove as two-operand ones, a presence in a nonrepeatable group below a joined group proves, `AllGroupsFilled` proves and `AtLeastOneGroupFilled` does not, an `Or` whose every disjunct proves admits, a literal comparison, `GroupNotFilled`, a starred `AtLeastOneFieldFilled` and `MoreThanOneFieldFilled` over both groups prove nothing, and the relative and `$#RuleGroup$` spellings follow the absolute one. A keyed token is admitted beside `AtLeastOneFieldFilled` and `MoreThanOneFieldFilled` over fields under its own key. At runtime the three-operand quantifiers and the group lists read the joined row as fixed groups.
+- `basis`: the [residual-rows checkpoint](sources/message-parameter-rendering-probes.md#src-joined-row-proof-residuals), static rule check and `:adapter:kernelProbe` at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, both strategies agreeing, kernel 31.1.1.
+- `acceptance`: a12-dmkits' checker gives each static row of the checkpoint its class or admission and its interpreter fires the runtime rules on the checkpoint's rows, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: none yet.
+- `disposition`: none yet.
+
 <a id="spec-2026-11-05-03"></a>
 ### SPEC-2026-11-05-03 — An unmatched parallel side renders as an absent cell in every form, the join's index fields are members, and a joined group's row index is refused beside a condition that fires unmatched
 

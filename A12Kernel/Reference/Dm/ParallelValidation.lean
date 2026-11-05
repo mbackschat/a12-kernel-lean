@@ -144,10 +144,31 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr �
         | ordinary expression
       if paths.length < 2 then ordinary expression else
       pure (.leaf (.pair (.valuesNotUnique (← paths.mapM (pairPath model group)))))
-  | expression@(.call name [.mk left none, .mk right none] none none) => do
+  | expression@(.call name arguments none none) => do
+      -- `AllGroupsFilled` and `AtLeastOneGroupFilled` over repeatable groups read each group on its joined
+      -- row, an unmatched side's included, so they are the conjunction and the disjunction of that row's group
+      -- presences, firing, referencing and proving a row token as those do (joined-row residual capture, runtime
+      -- rows `ga` and `gl` and static rows `c10` and `c13`, 2026-11-05).
+      if let some conjunctive := (match name with
+          | "AllGroupsFilled" => some true
+          | "AtLeastOneGroupFilled" => some false
+          | _ => none) then
+        let presence := fun (reference : ResolvedGroupReference) => ConditionTree.leaf (PairSyntaxLeaf.pair
+          (.groupPresence .filled { reference with boundRepeatableScope := model.repeatableScopeForGroupPath reference.path }))
+        match arguments.mapM (fun
+            | .mk operand none => operand.groupReference?.bind (·.resolveAgainst group |>.toOption)
+            | _ => none) with
+        | some (first :: rest@(_ :: _)) =>
+            if (first :: rest).all (fun reference => model.repeatableGroups.any (·.path == reference.path)) then
+              pure (rest.foldl (fun tree reference =>
+                if conjunctive then .and tree (presence reference) else .or tree (presence reference)) (presence first))
+            else ordinary expression
+        | _ => ordinary expression
+      else
       let some op := fieldFillOp? name | ordinary expression
-      if left.fieldEntity?.isNone || right.fieldEntity?.isNone then ordinary expression else
-      pure (.leaf (.pair (.fill op (← pairField model group false left) (← pairField model group false right))))
+      let some operands := arguments.mapM (fun | .mk operand none => some operand | _ => none) | ordinary expression
+      if operands.length < 2 || operands.any (·.fieldEntity?.isNone) then ordinary expression else
+      pure (.leaf (.pair (.fill op (← operands.mapM (pairField model group false)))))
   | .custom name quoted => do
       let spelling := if quoted then CustomConditionNameSpelling.quoted name else .unquoted name
       let some checkedName := checkCustomConditionName (fun _ => false) spelling
@@ -167,7 +188,8 @@ where
 private def pairReferences : ConditionTree PairSyntaxLeaf → List FieldId
   | .leaf (.pair (.groupPresence _ _)) => []
   | .leaf (.pair (.presence field _)) => [field]
-  | .leaf (.pair (.numeric _ left right)) | .leaf (.pair (.fill _ left right)) => [left, right]
+  | .leaf (.pair (.numeric _ left right)) => [left, right]
+  | .leaf (.pair (.fill _ operands)) => operands
   | .leaf (.pair (.comparison value)) => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .leaf (.pair (.customCondition _)) | .leaf (.pair (.ordinary _)) => []
   | .leaf (.pair (.valuesNotUnique operands)) => operands
@@ -295,7 +317,7 @@ where
     | .groupPresence op reference => pure (.groupPresence op reference)
     | .presence field op => pure (.presence (← operand field) op)
     | .numeric op a b => pure (.numeric op (← operand a) (← operand b))
-    | .fill op a b => pure (.fill op (← operand a) (← operand b))
+    | .fill op operands => pure (.fill op (← operands.mapM operand))
     | .comparison value => pure (.comparison { value with
         left := ← value.left.mapM (·.mapM operand atomLeaf), right := ← value.right.mapM (·.mapM operand atomLeaf) })
     | .customCondition name => pure (.customCondition name)

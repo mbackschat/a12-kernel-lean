@@ -36,11 +36,13 @@ private def kind : Json :=
     ("values", Json.arr #[Json.mkObj [("value", "A")], Json.mkObj [("value", "B")]]),
     ("categories", Json.arr #[Json.mkObj [("name", "Band"), ("values", Json.arr #["Hi", "Lo"])]])])]
 
-private def side (name : String) : Json :=
+/-- A joined side, `extra` appended to its elements. -/
+private def side (name : String) (extra : List Json := []) : Json :=
   Json.mkObj [("type", "Group"), ("id", .str s!"/Form/{name}"), ("name", .str name), ("Group", Json.mkObj [
-    ("repeatability", toJson 3), ("indexFieldName", "Dept"), ("elements", Json.arr #[
+    ("repeatability", toJson 3), ("indexFieldName", "Dept"), ("elements", Json.arr (#[
       field s!"{name}/" "Dept" string, field s!"{name}/" "Head" (number 0),
-      field s!"{name}/" "Rate" (number 2), field s!"{name}/" "Note" string, field s!"{name}/" "Kind" kind])])]
+      field s!"{name}/" "Rate" (number 2), field s!"{name}/" "Note" string, field s!"{name}/" "Kind" kind] ++
+      extra.toArray))])]
 
 /-- `FieldsNotCollectivelyFilled` over one field of each side, or the condition given, reported on the
 `Demand` field. -/
@@ -50,7 +52,8 @@ private def rule (code fieldName text : String) (condition : Option String := no
     ("errorCondition", .str (condition.getD s!"FieldsNotCollectivelyFilled(Demand/{fieldName}, Supply/{fieldName})")),
     ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", .str text)]])])]
 
-private def modelJson (rules : List Json) : Json :=
+/-- The capture's model with `rules`, its `Demand` holding `demandExtra` too. -/
+private def modelJson (rules : List Json) (demandExtra : List Json := []) : Json :=
   Json.mkObj [
     ("header", Json.mkObj [("id", "P31_DM"), ("modelType", "document"), ("modelVersion", "29.4.0"),
       ("locales", Json.arr #[Json.mkObj [("code", "en_US")]])]),
@@ -59,7 +62,7 @@ private def modelJson (rules : List Json) : Json :=
       ("modelRoot", Json.mkObj [("rootGroups", Json.arr #[Json.mkObj [
         ("type", "Group"), ("id", "/Form"), ("name", "Form"), ("Group", Json.mkObj [
           ("repeatability", toJson 1),
-          ("elements", Json.arr (#[field "" "Plan" string, side "Demand", side "Supply"] ++ rules.toArray))])]])])])]
+          ("elements", Json.arr (#[field "" "Plan" string, side "Demand" demandExtra, side "Supply"] ++ rules.toArray))])]])])])]
 
 private def row (dept head rate note kind : String) : Json :=
   Json.mkObj [("Dept", .str dept), ("Head", .str head), ("Rate", .str rate), ("Note", .str note), ("Kind", .str kind)]
@@ -164,5 +167,103 @@ example :
           some (some .invalidUseOfIterationParam) &&
         (templateRefusal (rule "pg" "Head" token (some "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)"))).isNone) :=
   by native_decide
+
+
+/-! ## The joined-row proof's residual rows -/
+
+/-- The measured carrier: the capture's model with a nonrepeatable `Demand/Detail` holding a String `Memo`. -/
+private def detail : Json :=
+  Json.mkObj [("type", "Group"), ("id", "/Form/Demand/Detail"), ("name", "Detail"), ("Group", Json.mkObj [
+    ("elements", Json.arr #[field "Demand/Detail/" "Memo" string])])]
+
+/-- The class of a rule reporting on `Demand/Head` under `condition` with the message `Check {token}.`, declared
+in `/Form`, or in `/Form/Demand` when `inDemand`; `none` when admitted. -/
+private def tokenClass (condition token : String) (inDemand : Bool) : Option String :=
+  let parent := if inDemand then "/Form/Demand" else "/Form"
+  let definition := Json.mkObj [("type", "Rule"), ("id", .str s!"{parent}/R"), ("name", "R"), ("Rule", Json.mkObj [
+    ("errorEntityRelPath", .str (if inDemand then "../Head" else "../Demand/Head")), ("errorCode", "R"),
+    ("severity", "ERROR"), ("errorCondition", .str condition),
+    ("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", .str s!"Check {token}.")]])])]
+  let demandExtra := if inDemand then [detail, definition] else [detail]
+  match readModel (modelJson (if inDemand then [] else [definition]) demandExtra) with
+  | .error _ => some "no model"
+  | .ok dm => match dm.rules with
+    | [rule] => match checkValidationRule dm .english rule with
+      | .error _ => some "rule refused"
+      | .ok checked =>
+          let condition : ValidationMessageCondition dm.flat := match checked with
+            | .ordinary checked => .rule checked
+            | .parallel checked => .parallel checked rule.group
+          match elaborateValidationMessageTemplate dm.flat .english condition (rule.messages.headD ("", "")).2 with
+          | .ok _ => none
+          | .error error => some ((error.namedRuleDiagnostic?.map (·.kernelCode)).getD "unclassed")
+    | _ => some "not one rule"
+
+/-- Each row of the [residual capture](../../../evidence/kernel-31.1.1/captures/joined-row-proof-2026-11-05/):
+its id, condition, token, whether the rule sits in `Demand`, and the Kernel's class, `none` when admitted. -/
+private def residualRows : List (String × String × String × Bool × Option String) := [
+  ("c01td", "MoreThanOneFieldFilled(Demand/Head, Supply/Head)", "$#/Form/Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c01ts", "MoreThanOneFieldFilled(Demand/Head, Supply/Head)", "$#/Form/Supply$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c02td", "AllFieldsFilled(Demand/Head, Demand/Note, Supply/Head)", "$#/Form/Demand$", false, none),
+  ("c02ts", "AllFieldsFilled(Demand/Head, Demand/Note, Supply/Head)", "$#/Form/Supply$", false, none),
+  ("c03td", "AtLeastOneFieldFilled(Demand/Head, Demand/Note, Demand/Rate) And FieldFilled(Supply/Head)", "$#/Form/Demand$", false, none),
+  ("c03ts", "AtLeastOneFieldFilled(Demand/Head, Demand/Note, Demand/Rate) And FieldFilled(Supply/Head)", "$#/Form/Supply$", false, none),
+  ("c04td", "MoreThanOneFieldFilled(Demand/Head, Demand/Note, Supply/Head)", "$#/Form/Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c04ts", "MoreThanOneFieldFilled(Demand/Head, Demand/Note, Supply/Head)", "$#/Form/Supply$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c05td", "[Demand/Head] > 0 And [Supply/Head] > 0", "$#/Form/Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c05ts", "[Demand/Head] > 0 And [Supply/Head] > 0", "$#/Form/Supply$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c06td", "GroupNotFilled(Demand) And FieldFilled(Supply/Head)", "$#/Form/Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c06ts", "GroupNotFilled(Demand) And FieldFilled(Supply/Head)", "$#/Form/Supply$", false, none),
+  ("c07td", "(FieldFilled(Demand/Head) And FieldFilled(Supply/Head)) Or AllFieldsFilled(Demand/Head, Supply/Head)", "$#/Form/Demand$", false, none),
+  ("c07ts", "(FieldFilled(Demand/Head) And FieldFilled(Supply/Head)) Or AllFieldsFilled(Demand/Head, Supply/Head)", "$#/Form/Supply$", false, none),
+  ("c08td", "FieldNotFilled(Demand/Head) And FieldFilled(Demand/Detail/Memo) And FieldFilled(Supply/Head)", "$#/Form/Demand$", false, none),
+  ("c08ts", "FieldNotFilled(Demand/Head) And FieldFilled(Demand/Detail/Memo) And FieldFilled(Supply/Head)", "$#/Form/Supply$", false, none),
+  ("c09td", "FieldNotFilled(Demand/Head) And AtLeastOneFieldFilled(Demand*/Note) And FieldFilled(Supply/Head)", "$#/Form/Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c09ts", "FieldNotFilled(Demand/Head) And AtLeastOneFieldFilled(Demand*/Note) And FieldFilled(Supply/Head)", "$#/Form/Supply$", false, none),
+  ("c10td", "AtLeastOneGroupFilled(Demand, Supply)", "$#/Form/Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c10ts", "AtLeastOneGroupFilled(Demand, Supply)", "$#/Form/Supply$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c11td", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "$#/Form/Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c11ts", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "$#/Form/Supply$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c12td", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "$#/Form/Demand$", false, none),
+  ("c12ts", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "$#/Form/Supply$", false, none),
+  ("c13td", "AllGroupsFilled(Demand, Supply)", "$#/Form/Demand$", false, none),
+  ("c13ts", "AllGroupsFilled(Demand, Supply)", "$#/Form/Supply$", false, none),
+  ("c11rd", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "$#Demand$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c11rs", "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)", "$#Supply$", false, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("c12rd", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "$#Demand$", false, none),
+  ("c12rs", "FieldFilled(Demand/Head) And FieldFilled(Supply/Head)", "$#Supply$", false, none),
+  ("g11rg", "FieldsNotCollectivelyFilled(Head, ../Supply/Head)", "$#RuleGroup$", true, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("g11td", "FieldsNotCollectivelyFilled(Head, ../Supply/Head)", "$#/Form/Demand$", true, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("g11ts", "FieldsNotCollectivelyFilled(Head, ../Supply/Head)", "$#/Form/Supply$", true, some "INVALID_USE_OF_ITERATION_PARAM"),
+  ("g12rg", "FieldFilled(Head) And FieldFilled(../Supply/Head)", "$#RuleGroup$", true, none),
+  ("g12td", "FieldFilled(Head) And FieldFilled(../Supply/Head)", "$#/Form/Demand$", true, none),
+  ("g12ts", "FieldFilled(Head) And FieldFilled(../Supply/Head)", "$#/Form/Supply$", true, none),
+  ("k1ka", "AtLeastOneFieldFilled(Demand/Head For \"a\", Demand/Note For \"a\")", "$#Demand For \"a\"$", false, none),
+  ("k2ka", "MoreThanOneFieldFilled(Demand/Head For \"a\", Demand/Note For \"a\")", "$#Demand For \"a\"$", false, none),
+  ("k3ka", "AllFieldsFilled(Demand/Head For \"a\", Demand/Note For \"a\")", "$#Demand For \"a\"$", false, none),
+  ("k4ka", "FieldNotFilled(Demand/Head For \"a\")", "$#Demand For \"a\"$", false, some "INVALID_USE_OF_SEMANTIC_INDEX")]
+
+/-- The rule check's class for `condition` on the measured carrier, `none` when admitted. -/
+private def ruleClass (condition : String) : Option String :=
+  match readModel (modelJson [rule "R" "Head" "x" (some condition)] [detail]) with
+  | .error _ => some "no model"
+  | .ok dm => match dm.rules with
+    | [rule] => match checkValidationRule dm .english rule with
+      | .ok _ => none
+      | .error refusal => some (refusal.kernelClass?.getD "unclassed")
+    | _ => some "not one rule"
+
+/-- Every residual row agrees with the Kernel: three-operand calls across both sides or inside one prove as
+two-operand ones do, a deeper presence proves, a literal comparison, a mixed `MoreThanOneFieldFilled`,
+`GroupNotFilled` and a starred operand do not, an `Or` whose every arm proves admits, the relative and
+`$#RuleGroup$` spellings are gated alike, `AllGroupsFilled` and `AtLeastOneGroupFilled` over the joined groups
+are admitted as the conjunction and disjunction of their presences, and a keyed token beside
+`AtLeastOneFieldFilled` or `MoreThanOneFieldFilled` over operands under its own key is admitted. A negative
+three-operand quantifier across the join guards no iteration, as the rule check measured on row `n3x`. -/
+example :
+    (residualRows.filter fun (_, condition, token, inDemand, kernel) =>
+      tokenClass condition token inDemand != kernel).map (·.1) = [] ∧
+    ruleClass "NoFieldFilled(Demand/Head, Demand/Note, Supply/Head)" = some "MVK_PARALLEL_ITERATION_INVALID" := by
+  native_decide
 
 end A12Kernel.Dm.UnmatchedParallelMessageLocks

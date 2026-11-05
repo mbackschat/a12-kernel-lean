@@ -1,0 +1,52 @@
+{
+ "model": "J31R_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "mixed",
+   "documentInline": {
+    "Form": {
+     "Plan": "Q3",
+     "Demand": [
+      {
+       "Dept": "Sales",
+       "Head": "5",
+       "Note": "dn1"
+      },
+      {
+       "Dept": "Mkt",
+       "Head": "1"
+      },
+      {
+       "Dept": "Eng",
+       "Head": "3",
+       "Note": "dn2"
+      },
+      {
+       "Dept": "Fin"
+      }
+     ],
+     "Supply": [
+      {
+       "Dept": "Sales",
+       "Head": "5"
+      },
+      {
+       "Dept": "Mkt"
+      },
+      {
+       "Dept": "Ops",
+       "Head": "2"
+      },
+      {
+       "Dept": "Fin"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

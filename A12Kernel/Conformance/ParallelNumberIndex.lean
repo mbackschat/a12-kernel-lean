@@ -66,7 +66,7 @@ private def run (data : DocumentData := source) (rightMinimum : Nat := 2)
     (scale : Nat := 2) : Option (List ParallelRuleRowOutcome) := do
   let view ← preliminary (model rightMinimum scale) data
   let rule ← (checkParallelFieldRule (model rightMinimum scale) 2 4 errorField
-    (.leaf (.fill op .left .right)) "MATCH" .error { parts := [] }).toOption
+    (.leaf (.fill op [.left, .right])) "MATCH" .error { parts := [] }).toOption
   (rule.evalFull view).toOption
 
 private def firedAt (field : Nat) (coordinates : List MessageRepetitionCoordinate)

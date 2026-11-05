@@ -1,0 +1,254 @@
+{
+ "header": {
+  "id": "J31_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "P31_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Plan",
+        "name": "Plan",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Demand",
+        "name": "Demand",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Head",
+           "name": "Head",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Rate",
+           "name": "Rate",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2,
+              "minFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Group",
+           "id": "/Form/Demand/Detail",
+           "name": "Detail",
+           "Group": {
+            "elements": [
+             {
+              "type": "Field",
+              "id": "/Form/Demand/Detail/Memo",
+              "name": "Memo",
+              "Field": {
+               "fieldType": {
+                "type": "StringType",
+                "StringType": {}
+               }
+              }
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Supply",
+        "name": "Supply",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Head",
+           "name": "Head",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Rate",
+           "name": "Rate",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2,
+              "minFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -63,7 +63,9 @@ inductive ParallelFieldLeafOf (Field Ordinary Atom : Type) where
   | groupPresence (op : GroupPresenceOperator) (reference : ResolvedGroupReference)
   | presence (side : Field) (op : RepeatableFieldPresenceOperator)
   | numeric (op : NumericComparisonOp) (left right : Field)
-  | fill (op : FieldFillQuantifier) (left right : Field)
+  /-- A field-fill quantifier over two or more fields, each read on its joined row (joined-row residual
+  capture, runtime rows `fa`, `fm` and `fl`, 2026-11-05). -/
+  | fill (op : FieldFillQuantifier) (operands : List Field)
   | comparison (value : NumericComparisonOf (ParallelNumericAtomOf Field Atom))
   | customCondition (name : CheckedCustomConditionName)
   /-- `FieldValuesNotUnique` over two or more direct String or Enumeration fields of the joined row
@@ -284,7 +286,8 @@ def atomLeaves : ParallelFieldLeaf model → List (ValidationConditionLeaf model
 def fields : ParallelFieldLeaf model → List ParallelFieldOperand
   | .groupPresence _ _ => []
   | .presence field _ => [field]
-  | .numeric _ lhs rhs | .fill _ lhs rhs => [lhs, rhs]
+  | .numeric _ lhs rhs => [lhs, rhs]
+  | .fill _ operands => operands
   | .comparison value => (value.left.atoms ++ value.right.atoms).flatMap (·.operands)
   | .customCondition _ => []
   | .valuesNotUnique operands => operands
@@ -333,7 +336,7 @@ def admitted (pair : CheckedParallelFieldPair model) (suppress : Bool)
          -- An error group's own presence reads each of its rows inside the joined row (`t8`).
          pair.errorGroup == some reference.path)
   | .presence _ _ => true
-  | .fill _ lhs rhs => (pair.declaration lhs).id != (pair.declaration rhs).id
+  | .fill _ operands => (operands.map (pair.declaration · |>.id)).eraseDups.length == operands.length
   | .comparison value =>
       { value with suppressExactScaleWarning := suppress }.admittedWith
         (·.admitted pair) (·.scaleSummary pair)
@@ -387,12 +390,12 @@ private def numericGuard (participates : ParallelFieldOperand → Bool)
 /-- Presence quantifiers share one participation rule for ordinary and parallel iteration.
 The two mixed-sensitive operators require every operand to iterate (spec/07 §2; IterationNotValidVisitor). -/
 private def fillGuard (participates : ParallelFieldOperand → Bool)
-    (op : FieldFillQuantifier) (lhs rhs : ParallelFieldOperand) : IterationGuardStatus :=
-  if !(participates lhs || participates rhs) then .noReference else
+    (op : FieldFillQuantifier) (operands : List ParallelFieldOperand) : IterationGuardStatus :=
+  if !operands.any participates then .noReference else
     match op with
     | .noFieldFilled | .notAllFieldsFilled | .notExactlyOneFieldFilled => .unguarded
     | .atLeastOneFieldFilled | .fieldsNotCollectivelyFilled =>
-        if participates lhs && participates rhs then .guarded else .unguarded
+        if operands.all participates then .guarded else .unguarded
     | .allFieldsFilled | .moreThanOneFieldFilled => .guarded
 
 /-- For direct fields on the joined pair, the parallel guard follows the source operator's iteration test, not its runtime empty verdict (Kernel `IterationNotValidVisitor`). -/
@@ -405,9 +408,9 @@ def guards (pair : CheckedParallelFieldPair model) : ParallelFieldLeaf model →
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
       pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) value = .guarded)
   | .presence _ .notFilled => false
-  | .fill op lhs rhs => decide (fillGuard (fun field =>
+  | .fill op operands => decide (fillGuard (fun field =>
       pair.groups.leftGroup.path.isPrefixOf (pair.declaration field).groupPath ||
-      pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op lhs rhs = .guarded)
+      pair.groups.rightGroup.path.isPrefixOf (pair.declaration field).groupPath) op operands = .guarded)
   | .customCondition _ | .ordinary _ | .valuesNotUnique _ => false
   | .flat condition reads => decide (condition.iterationGuard (fun field =>
       reads.any fun operand => (pair.declaration operand).id == field &&
@@ -422,8 +425,8 @@ def guardAt (pair : CheckedParallelFieldPair model) (level : RepeatableLevel)
   | .groupPresence op reference =>
       if !reference.boundRepeatableScope.contains level then .noReference
       else if op.canFireOnEmpty then .unguarded else .guarded
-  | .fill op lhs rhs => fillGuard
-      (fun field => (pair.declaration field).repeatableScope.contains level) op lhs rhs
+  | .fill op operands => fillGuard
+      (fun field => (pair.declaration field).repeatableScope.contains level) op operands
   | .presence field op =>
       if !(pair.declaration field).repeatableScope.contains level then .noReference
       else match op with | .filled => .guarded | .notFilled => .unguarded
@@ -500,12 +503,11 @@ def evalWith (pair : CheckedParallelFieldPair model)
       let left ← value.left.mapM (·.resolveValidation pair read readAtom)
       let right ← value.right.mapM (·.resolveValidation pair read readAtom)
       pure ({ value with left, right }.evalWith id)
-  | .fill op lhs rhs => do
+  | .fill op operands => do
       let unknown : ValidationFillTally := { filled := 0, empty := 0, unknown := 1, uninstantiated := 0 }
-      let left ← read lhs
-      let right ← read rhs
-      pure ((op.evalValidation ((left.map (·.asValidationFillTally) |>.getD unknown).combine
-        (right.map (·.asValidationFillTally) |>.getD unknown))).asConservativeVerdict)
+      let tally ← operands.foldlM (init := { filled := 0, empty := 0, unknown := 0, uninstantiated := 0 })
+        fun tally operand => do pure (tally.combine ((← read operand).map (·.asValidationFillTally) |>.getD unknown))
+      pure (op.evalValidation tally).asConservativeVerdict
   | .customCondition name => do
       pure (customConditionVerdict (← (custom name.value).mapError .customCondition))
   | .valuesNotUnique operands => do
@@ -758,7 +760,7 @@ def ParallelFieldLeaf.requiresClassificationPass : ParallelFieldLeaf model → B
   | .groupPresence op reference => !reference.isRoot || op == .notFilled
   | .presence _ op => op == .notFilled
   | .numeric .. | .comparison _ => true
-  | .fill op _ _ => match op with
+  | .fill op _ => match op with
     | .allFieldsFilled | .moreThanOneFieldFilled => false
     | _ => true
   | .customCondition _ | .valuesNotUnique _ => false
