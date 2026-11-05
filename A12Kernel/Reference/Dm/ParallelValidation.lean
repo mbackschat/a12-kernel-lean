@@ -479,7 +479,9 @@ private def orderedAdmissionClass? (model : DmModel) (language : Language) (rule
 /-- Whether a relative path holds only names, so that its lexical reading names a child of the rule
 element, which no declaration is: from a rule in `/Order`, `Code` names nothing although `/Order/Code`
 exists ([spec/01 §3.1](../../../spec/01-data-model.md#31-rules-validation)). A segment opening with `..`, such
-as the turning point `..Policy`, keeps the ordinary reading; that spelling is unmeasured. -/
+as the turning point `..Policy`, keeps the ordinary reading; that spelling is unmeasured. The path is split by
+segment and never parsed, as `lexicalErrorPath` reads it: a name may hold a `-`, a `.` or a space, which the
+path grammar refuses, so a parsed reading would leave `Fee-Rate` unclassed instead of absent. -/
 private def namesBelowRuleElement (path : String) : Bool :=
   !path.isEmpty && !path.startsWith "/" &&
     (path.splitOn "/").all fun segment => !segment.isEmpty && !segment.startsWith ".."

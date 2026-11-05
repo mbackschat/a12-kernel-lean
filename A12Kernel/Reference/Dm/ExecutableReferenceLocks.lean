@@ -83,6 +83,9 @@ example :
     ruleClass "../Nothing" "FieldFilled(Note)" = missing ∧
     ruleClass "../Nothing" "FieldFilled(Nowhere" = missing ∧
     ruleClass "Note" "FieldFilled(Note)" = missing ∧ ruleClass "Note" "FieldFilled(Nowhere" = missing ∧
+    -- A name the path grammar refuses still names nothing below the rule element: Lean's segment reading,
+    -- unmeasured on the Kernel, separating it from a parsed reading that would leave the target unclassed.
+    ruleClass "Fee-Rate" "FieldFilled(Note)" = missing ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(Holder)" = none ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(HolderRequired)" = some "MVK_INVALID_ENTITY" ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(/Policy/HolderRequired)" = some "MVK_INVALID_ENTITY" ∧
