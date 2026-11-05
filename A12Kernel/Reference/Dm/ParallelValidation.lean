@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.ParseDefectClass
+import A12Kernel.Elaboration.ErrorTargetDeclaration
 import A12Kernel.Elaboration.PartialParallelFieldRule
 import A12Kernel.Elaboration.CheckedMessageCache
 import A12Kernel.Elaboration.ParallelFieldReference
@@ -450,8 +451,29 @@ private def orderedAdmissionClass? (model : DmModel) (language : Language) (rule
   | .ok facts => facts.beforeIterationRefusal?.map (·.kernelCode)
   | .error refusal => refusal.kernelClass?
 
+/-- Whether the rule's error-target path names no declared entity, the Kernel's absent error field: an
+empty path, a `..` path whose lexical reading names neither a field nor a group, or a path whose field
+resolution misses with nothing else named. A path naming a rule or a computation names nothing (peer
+KF674). -/
+def errorTargetAbsent (language : Language) (model : FlatModel) (rule : DmRule) : Bool :=
+  match errorEntityOf language model rule with
+  | .ok _ => false
+  | .error refusal =>
+      rule.errorEntityRelPath.isEmpty || (lexicalErrorPath rule.group rule.errorEntityRelPath).isSome ||
+        refusal.kernelClass? == some KernelStaticDiagnostic.invalidEntity.kernelCode
+
+/-- The rule check of a read model. An absent error field is refused first, with the pair of classes the
+declaration gate reports, and its condition is never parsed: the Kernel checks the target before the grammar
+and withholds every class the condition would draw
+([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-declaration-report-withholding-k14);
+kernel 31.1.1 rows of a12-dmkits `CheckerExecutableAsReferenceAgreementTest` and
+`CheckerConverterSentenceAgreementTest`). -/
 def checkValidationRule (model : DmModel) (language : Language) (rule : DmRule)
     (world : World := { now := { epochMillis := 0 } }) : Lowering (CheckedDmValidationRule model.flat) :=
+  if errorTargetAbsent language model.flat rule then
+    .error { construct := "ErrorTarget"
+             detail := " ".intercalate ((targetClasses false .absent).map (·.kernelCode) ++ [rule.errorEntityRelPath]) }
+  else
   match checkRule model language rule world with
   | .ok checked => .ok (.ordinary checked)
   | .error refusal => match checkParallelRule model language rule with

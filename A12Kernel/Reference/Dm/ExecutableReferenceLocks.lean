@@ -7,9 +7,8 @@ Kernel 31.1.1 answers a path naming a rule or a computation as one naming nothin
 computation's target, a rule's error target, a condition operand and a message parameter, each control naming a
 field being admitted (a12-dmkits `CheckerExecutableAsReferenceAgreementTest` at `35a09951f`, KF674;
 [inbound record](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-05b)). The rows below hold Lean's
-answer for each executable path equal to its answer for a path naming nothing. For the error target that answer
-is the DM rule check's unresolved-entity refusal, not the Kernel's error-target pair
-([SG9](../../../docs/gaps/paths-and-groups.md#gap-sg9)).
+answer for each executable path equal to its answer for a path naming nothing, and for the error target that
+answer is the Kernel's pair, the declaration gate's absent error field.
 -/
 
 namespace A12Kernel.Dm.ExecutableReferenceLocks
@@ -46,14 +45,14 @@ private def probeRule (errorPath condition : String) : DmRule :=
   { group := ["Policy"], name := "R", severity := "ERROR", errorCode := "R", condition
     errorEntityRelPath := errorPath }
 
-/-- The rule's admission: `none` when admitted, else its class. -/
+/-- The rule's admission: `none` when admitted, else its classes. -/
 private def ruleClass (errorPath condition : String) : Option String :=
   match readModel policy with
   | .error _ => some "no model"
   | .ok dm =>
       match checkValidationRule dm .english (probeRule errorPath condition) with
       | .ok _ => none
-      | .error refusal => some (refusal.kernelClass?.getD "unclassed")
+      | .error refusal => some (" ".intercalate refusal.kernelClasses)
 
 /-- The named class of a message beside a rule reading `Note`, `none` when admitted. -/
 private def messageClass (text : String) : Option String := do
@@ -70,15 +69,19 @@ private def targetRefusals (target : String) : Option (List String) :=
 
 private def notFound : Option (List String) := some ["codeless:computed-field-not-found"]
 
+/-- The declaration gate's pair for an absent error field. -/
+private def missing : Option String := some "MVK_ERROR_FIELD_MISSING MVK_MISSING_ERROR_FIELD"
+
 /-- Each slot answers an executable's path as it answers a path naming nothing, beside an admitted control. -/
 example :
     targetRefusals "../Note" = some [] ∧
     targetRefusals "../HolderRequired" = notFound ∧ targetRefusals "../Fee" = notFound ∧
     targetRefusals "../Nothing" = notFound ∧
     ruleClass "../Note" "FieldFilled(Note)" = none ∧
-    ruleClass "../HolderRequired" "FieldFilled(Note)" = some "MVK_INVALID_ENTITY" ∧
-    ruleClass "../Fee" "FieldFilled(Note)" = some "MVK_INVALID_ENTITY" ∧
-    ruleClass "../Nothing" "FieldFilled(Note)" = some "MVK_INVALID_ENTITY" ∧
+    ruleClass "../HolderRequired" "FieldFilled(Note)" = missing ∧
+    ruleClass "../Fee" "FieldFilled(Note)" = missing ∧
+    ruleClass "../Nothing" "FieldFilled(Note)" = missing ∧
+    ruleClass "../Nothing" "FieldFilled(Nowhere" = missing ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(Holder)" = none ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(HolderRequired)" = some "MVK_INVALID_ENTITY" ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(/Policy/HolderRequired)" = some "MVK_INVALID_ENTITY" ∧

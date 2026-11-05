@@ -178,9 +178,9 @@ private def consistencyClass : String → String
 
 /-- The classes of a refused rule or computation. A refusal with no class shows as such. -/
 private def refusalClasses (refusal : Refusal) : List String :=
-  match refusal.kernelClass? with
-  | some class_ => [class_]
-  | none => [s!"unclassed {refusal.construct}"]
+  match refusal.kernelClasses with
+  | [] => [s!"unclassed {refusal.construct}"]
+  | classes => classes
 
 /-- Whether the computations of the model form a calculation cycle, by the plan the Kernel sorts first. -/
 private def cycle (model : DmModel) : Bool :=
@@ -359,19 +359,9 @@ private def disagreeing : List String :=
   rows.filterMap fun (label, json, expected) =>
     if classes json == expected && (sentences json).1 == (sentences json).2 then none else some label
 
-private def errorFieldRow : String := "a rule whose error field is named with a space"
-
-/- Every row of the oracle agrees but one: a rule reporting at a field the converter dropped. The oracle's
-   Kernel draws the pair `MVK_ERROR_FIELD_MISSING` and `MVK_MISSING_ERROR_FIELD`, while the model reader's
-   rule check refuses the error path `../ ` without a class, as a path that does not parse, and refuses an
-   error path naming a field that exists nowhere with `MVK_INVALID_ENTITY`. The error-target declaration
-   gate that draws the pair is not wired into the rule check of a read model, so this account does not
-   produce the oracle's classes and the row stays a recorded deviation, not a law; the gap is SG9 in
-   `docs/gaps/paths-and-groups.md`. -/
-example : disagreeing = [errorFieldRow] := by native_decide
-
-example : (rows.filter (·.1 == errorFieldRow)).map (fun (_, json, _) => classes json) =
-    [["RK_ELEMENT_NAME_MISSING", "unclassed ErrorEntity"]] := by native_decide
+/-- Every row of the oracle agrees, the rule reporting at a field the converter dropped included: its error
+target names nothing, so the declaration gate draws the pair and withholds the condition. -/
+example : disagreeing = [] := by native_decide
 
 /- The basic check reports the converter's unbuilt model as its one build failure, ahead of every element's. -/
 example : (rows.filter (·.1 == "a root group with an empty name, beside its rule")).map
