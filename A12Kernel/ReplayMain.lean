@@ -268,12 +268,18 @@ private def clockMillis? (text : String) : Option Int := do
   pure ((days * 86400 + (← hour.toInt?) * 3600 + (← minute.toInt?) * 60 + (← second.toInt?)) * 1000 +
     (← millis.toNat?))
 
-/-- The artifact a request produced: its name with `req` or `request` replaced by `artifact`, the
-suffix after the first `-` or `.` kept. -/
+/-- The artifact a request produced: its name with its first whole word `req` or `request`, words
+separated by `-`, `_` or `.`, replaced by `artifact`, so a prefixed `rel-request-24` pairs with
+`rel-artifact-24` as the re-capture script names it. A name with no such word, `request2`, keeps its
+suffix after the leading letters. -/
 private def artifactPath (requestPath : System.FilePath) : System.FilePath :=
   let stem := requestPath.fileStem.getD ""
-  let suffix := (stem.dropWhile Char.isAlpha).toString
-  (requestPath.parent.getD ".") / s!"artifact{suffix}.json"
+  let isSep (c : Char) := c == '-' || c == '_' || c == '.'
+  let words := (stem.toList.splitBy fun a b => isSep a == isSep b).map String.ofList
+  let name := match words.findIdx? (fun word => word == "request" || word == "req") with
+    | some index => String.join (words.set index "artifact")
+    | none => s!"artifact{(stem.dropWhile Char.isAlpha).toString}"
+  (requestPath.parent.getD ".") / s!"{name}.json"
 
 /-- The computation outcomes a capture retained as a table rather than an artifact, by row name:
 every `.tsv` beside the request headed `# row field outcome value`, or `# run row field outcome value`

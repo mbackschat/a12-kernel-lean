@@ -323,7 +323,9 @@ if ! lake build a12-kernel-replay >/dev/null; then
   echo "failed to build the population replay" >&2
   exit 1
 fi
-find "$evidence_root/captures" -type f \( -name 'req*.json' -o -name 'request*.json' \) -print \
+# A request is named `req*` or `request*`, or carries a prefix before that word, as `rel-request-24.json`.
+find "$evidence_root/captures" -type f -name '*req*.json' -print \
+  | grep -E '/(req[^/]*|[^/]*[-_.](request|req)([-_.][^/]*)?)\.json$' \
   | sort | while read -r request; do
     if grep -q '"rows"' "$request"; then echo "$request"; fi
   done > "$work/replay-requests"

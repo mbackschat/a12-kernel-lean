@@ -31,21 +31,28 @@ def root(version, *parts):
     return os.path.join(REPO, "evidence", f"kernel-{version}", *parts)
 
 
-def suffix_of(name):
-    """The suffix pairing request<suffix>.json with artifact<suffix>.json, or None for another file."""
+REQUEST_WORD = re.compile(r"(?:^|(?<=[-_.]))(request|req)(?=[-_.]|\.json$)")
+
+
+def artifact_name(name):
+    """The artifact a request writes: its name with the first `request` or `req` word replaced by `artifact`,
+    as the frozen captures name them (`request-b.json`, `rel-request-24.json`, `rt-req.json`), or else, for a
+    name starting `req` (`request2.json`), `artifact` and what follows its leading letters; None for any other
+    file. The population replay pairs requests by the same rule. Matching only a leading word missed nine
+    frozen requests (2026-11-05)."""
     if not name.endswith(".json"):
         return None
-    for prefix in ("request", "req"):
-        if name.startswith(prefix):
-            return name[len(prefix):]
-    return None
+    match = REQUEST_WORD.search(name)
+    if match is not None:
+        return name[:match.start()] + "artifact" + name[match.end():]
+    return "artifact" + re.sub(r"^[A-Za-z]*", "", name) if name.startswith("req") else None
 
 
 def runtime_requests(base):
     """Every kernelProbe request under base: a JSON object naming a model and rows."""
     for dirpath, _, files in os.walk(base):
         for name in sorted(files):
-            if suffix_of(name) is None:
+            if artifact_name(name) is None:
                 continue
             path = os.path.join(dirpath, name)
             try:
@@ -71,18 +78,38 @@ def copy(source, target, stamp=None):
     return count == 1
 
 
+# Four frozen requests name a model or document by the file name it had before it was retained; the
+# mapping is the one docs/sources/inbound-handbacks.md#src-inbound-2026-11-03c pins by hash.
+RETAINED_AS = {
+    ("base-year-yearless-store/compact-request.json", "Compact_DM.json"): "base-year-yearless-store/compact-Compact_DM.json",
+    ("base-year-yearless-store/compact-request.json", "d-empty.json"): "base-year-yearless-store/compact-d-empty.json",
+    ("starred-operand-message-polarity/capacity-request.json", "StarPolarity_DM.json"): "starred-operand-message-polarity/witness-model.dm.json",
+    ("starred-operand-message-polarity/witness-request.json", "StarPolarity_DM.json"): "starred-operand-message-polarity/witness-model.dm.json",
+    ("starred-operand-message-polarity/allfilled-request.json", "StarCount_DM.json"): "starred-group-count-computation/model.dm.json",
+}
+
+
+def retained(source, request_rel, name):
+    """The retained file a request names: `name` beside it, or the file RETAINED_AS maps it to."""
+    mapped = RETAINED_AS.get((request_rel, name))
+    return os.path.join(source, mapped) if mapped else os.path.join(source, os.path.dirname(request_rel), name)
+
+
 def prepare(args):
     source, target = root(args.source, "captures"), root(args.to, "local", "captures")
     count = 0
     for path, request in runtime_requests(source):
         directory = os.path.dirname(path)
         rel = os.path.relpath(directory, source)
-        copy(path, os.path.join(target, rel, os.path.basename(path)))
-        if not copy(os.path.join(directory, request["model"]), os.path.join(target, rel, request["model"]), args.stamp):
-            print(f"no {args.stamp.split(':')[0]} stamp: {os.path.join(rel, request['model'])}", file=sys.stderr)
+        request_name = os.path.basename(path)
+        copy(path, os.path.join(target, rel, request_name))
+        request_rel = os.path.relpath(path, source)
+        model = retained(source, request_rel, request["model"])
+        if not copy(model, os.path.join(target, rel, request["model"]), args.stamp):
+            print(f"no {args.stamp.split(':')[0]} stamp: {os.path.relpath(model, source)}", file=sys.stderr)
         for row in request["rows"]:
             if "document" in row:
-                copy(os.path.join(directory, row["document"]), os.path.join(target, rel, row["document"]))
+                copy(retained(source, request_rel, row["document"]), os.path.join(target, rel, row["document"]))
         count += 1
     print(f"prepared {count} requests under {os.path.relpath(target, REPO)}")
 
@@ -110,7 +137,7 @@ def runtime(args):
     checkout = os.path.abspath(args.checkout)
     pending = []
     for path, _ in runtime_requests(root(args.to, "local", "captures")):
-        artifact = os.path.join(os.path.dirname(path), "artifact" + suffix_of(os.path.basename(path)))
+        artifact = os.path.join(os.path.dirname(path), artifact_name(os.path.basename(path)))
         if not os.path.exists(artifact):
             pending.append((path, artifact))
     if not pending:
