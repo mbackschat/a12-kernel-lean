@@ -249,10 +249,12 @@ private def residualRows : List (String × String × String × Bool × Option St
   -- Peer row R12, measured on its shop carrier ([Letter I](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-05d)).
   ("r12td", "FieldNotFilled(Demand/Head) And AtLeastOneGroupFilled(Demand/Detail, Demand/Pack) And FieldFilled(Supply/Head)", "$#/Form/Demand$", false, none),
   ("r12ts", "FieldNotFilled(Demand/Head) And AtLeastOneGroupFilled(Demand/Detail, Demand/Pack) And FieldFilled(Supply/Head)", "$#/Form/Supply$", false, none),
-  -- Peer rows of the KF546 correction, re-expressed from its `Bins` carrier (Letter I §4).
-  ("k5ka", "FieldFilled(Demand/Head) And AtLeastOneGroupFilled(Demand/Detail For \"a\", Demand/Pack For \"a\")", "$#Demand For \"a\"$", false, none),
-  ("k6ka", "FieldFilled(Demand/Head) And AtLeastOneGroupFilled(Demand For \"a\", Demand/Detail)", "$#Demand For \"a\"$", false, some "INVALID_USE_OF_SEMANTIC_INDEX"),
-  ("k7ka", "FieldFilled(Demand/Head) And AtLeastOneFieldFilled(Demand/Head For \"a\", Demand/Note)", "$#Demand For \"a\"$", false, some "INVALID_USE_OF_SEMANTIC_INDEX")]
+  -- Two peer rows of the KF546 correction (Letter I §4), re-expressed on this carrier: the keyed
+  -- `FieldNotFilled`, which guards nothing (`k4ka`), stands in for the peer's unkeyed conjunct so that no conjunct
+  -- iterates `Demand`, and the outside operand is the root field `Plan`, outside `Demand` as the peer's is outside
+  -- `Bins`. That stand-in is an assumption; the peer's outside-operand group-list row has no counterpart here.
+  ("k5ka", "FieldNotFilled(Demand/Head For \"a\") And AtLeastOneGroupFilled(Demand/Detail For \"a\", Demand/Pack For \"a\")", "$#Demand For \"a\"$", false, none),
+  ("k7ka", "FieldNotFilled(Demand/Head For \"a\") And AtLeastOneFieldFilled(Demand/Head For \"a\", Plan)", "$#Demand For \"a\"$", false, some "INVALID_USE_OF_SEMANTIC_INDEX")]
 
 /-- The rule check's class for `condition` on the measured carrier, `none` when admitted. -/
 private def ruleClass (condition : String) : Option String :=
@@ -270,8 +272,8 @@ two-operand ones do, a deeper presence proves, a literal comparison, a mixed `Mo
 `$#RuleGroup$` spellings are gated alike, `AllGroupsFilled` and `AtLeastOneGroupFilled` over the joined groups
 are admitted as the conjunction and disjunction of their presences, as are the peer's `AtLeastOneGroupFilled` over
 two groups inside one joined group (`r12`), and a keyed token beside `AtLeastOneFieldFilled`,
-`MoreThanOneFieldFilled` or `AtLeastOneGroupFilled` over operands under its own key is admitted, one operand
-outside the key refusing it (`k5`–`k7`). A negative
+or `AtLeastOneGroupFilled` over operands under its own key is admitted, a field outside the keyed group
+refusing it (`k5`, `k7`). A negative
 three-operand quantifier across the join guards no iteration, as the rule check measured on row `n3x`. -/
 example :
     (residualRows.filter fun (_, condition, token, inDemand, kernel) =>

@@ -205,10 +205,12 @@ structure EnumerationValueDeclaration where
   labels : List EnumerationLabel := []
   deriving Repr, DecidableEq
 
-/-- The token the entry stores. An empty token stores none on an entry that carries a label: kernel 31.1.1
-admits an empty token only while it is unlabelled and reads a labelled one as a missing token (a12-dmkits
-`EnumValueAndLabelLawsTest` at `65bf78eab`, KF321). Whether a label on another entry has the same effect is
-unmeasured. -/
+/-- The token the entry stores. An empty token stores none on an entry that carries a label. That is this
+project's account of two measured outcomes, an unlabelled empty token admitted and a labelled one drawing the
+missing-token and display classes (a12-dmkits `EnumValueAndLabelLawsTest` at `65bf78eab`, KF321); the rows do not
+separate it from an empty token always storing none, and its consequences for the value blocks, the duplicate
+and repeated-value classes and category positions are unmeasured
+([SG8](../../docs/gaps/strings-and-messages.md#gap-sg8)). -/
 def EnumerationValueDeclaration.storedToken? (value : EnumerationValueDeclaration) : Option String :=
   value.token.filter fun token => !token.isEmpty || value.labels.isEmpty
 
