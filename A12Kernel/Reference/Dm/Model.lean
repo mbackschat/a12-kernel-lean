@@ -342,11 +342,6 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
   | "EnumerationType" =>
       let enumeration ← readEnumerationDeclaration body
       let _ ← enumeration.validate.mapError (fun error => s!"EnumerationType {repr error}")
-      -- The Kernel's check refuses a labelled entry without a token (spec/01 §1.3), so no evaluated model
-      -- holds one; the declaration walk still reads it to state the check's classes.
-      for entry in (← body.getObjValAs? (Array Json) "values") do
-        if (← valueEntryToken entry).isNone && !(← localizedTextMember entry "label").isEmpty then
-          throw "an Enumeration entry without a token carries a label"
       pure { base with
         policy := { kind := .enumeration }
         enumeration := some enumeration }

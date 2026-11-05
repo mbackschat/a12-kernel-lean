@@ -252,10 +252,9 @@ example : failures nameRows = [] := by native_decide
 Locked: a12-dmkits `CheckerReaderBindingAgreementTest`, `CheckerDeclarationAdmissionAgreementTest` and
 `EnumCategoryWireShapeLawsTest` at 1124b523f, kernel 31.1.1 (peer KF654, KF655). A row asserts every class the
 declaration walk and the basic check draw together, sorted and codeless ones included, and for a token-less
-body whether the model reader keeps the field. The peer compares class sets, so each row's multiplicity is derived, unmeasured on 31.1.1: once per field for `MVK_INTERNAL_VALUE_MISSING` and the codeless repeated-value class. The one row the Kernel admits with a token-less entry is a model
-the reader refuses all the same: a stored token the entry does not declare has no account in a document
-(the runtime meaning of such an entry is unmeasured), so `EnumerationDeclaration.validate` leaves no checked
-declaration for it.
+body whether the model reader keeps the field. The peer compares class sets, so each row's multiplicity is derived, unmeasured on 31.1.1: once per field for `MVK_INTERNAL_VALUE_MISSING` and the codeless repeated-value class. The one row the Kernel admits with a token-less entry, unlabelled
+beside a token and with no category, the model reader keeps too, reading the entry as no stored value
+(derived-row capture of 2026-11-04, `E31_DM`).
 
 The label rows assert the model reader too: it refuses a field with any of the walk's label classes over the
 declared locales and judges the rest of the declaration by the declared locales' labels, so it drops a field
@@ -447,8 +446,7 @@ example : listingFailures idRows = [] := by native_decide
 /- A rule whose error field `Ref` its condition `FieldFilled(Note)` does not read, beside two fields sharing
    one id: `dmtool model check` on kernel 31.1.1 states the two id sentences and `MVK_ERROR_FIELD_NOT_REFERENCED`,
    with the shared id written `x` or as a path (derived-row capture of 2026-11-04, `mc-efnr-dupx` and
-   `mc-efnr-dup`). The peer's checker states the id sentences alone on its carrier (a12-dmkits
-   `CheckerDuplicateIdAgreementTest`), a route difference SG9 in `docs/gaps/paths-and-groups.md` records. -/
+   `mc-efnr-dup`). -/
 example :
     listingOf (policy [("Code", "x"), ("Note", "x")] (rule := "FieldFilled(Note)")) =
       listing [(shared, "/Policy/Code"), (shared, "/Policy/Note"),

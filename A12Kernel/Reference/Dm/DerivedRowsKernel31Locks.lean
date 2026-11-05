@@ -12,8 +12,8 @@ Kernel built and evaluated each one on both strategies:
 * a `format` written `""` on a Date, Time or DateTime, which reads as the kind's default (`date-empty`,
   `dt-empty`, `time-empty`): the expand copy drops an empty member (peer KF658), while a blank `" "` still
   leaves no model (`mc-dt-space`, `mc-time-blank`);
-* an unlabelled Enumeration entry without a token, beside tokens and with no category, which adds no stored
-  value (`E31_DM`: "A" and "C" are values, "Beta" and "X" draw the domain finding, `""` is absent).
+* an unlabelled Enumeration entry without a token, beside tokens and with no category, which the Kernel builds
+  (`E31_DM`: "A" and "C" are values, "Beta" and "X" draw the domain finding, `""` is absent).
 
 The rows below read each declaration through the evaluation reader and state the policy it builds. The
 runtime outcomes are compared row by row against the retained artifacts by the population replay.
@@ -65,16 +65,27 @@ example :
     refused r#"{"type":"DateFragmentType","DateFragmentType":{"formatOfFragment":""}}"# := by
   native_decide
 
-/-- An unlabelled entry without a token keeps its place and adds no stored value. Beside a category, beside a
-second such entry or carrying a label it stays refused: the first pairing is unmeasured at runtime, and the Kernel's
-check refuses the other two (spec/01 §1.3). -/
+/-- The refusal the model reader records for the field, `none` when it keeps the field or reads no model. -/
+private def refusal (fieldType : String) : Option String :=
+  match modelWith fieldType >>= readModel with
+  | .ok model => (model.refusals.find? (·.1.getLast? == some "T1")).map (·.2)
+  | .error _ => none
+
+private def refusalNames (fieldType fragment : String) : Bool :=
+  match refusal fieldType with
+  | some reason => (reason.splitOn fragment).length > 1
+  | none => false
+
+/-- An unlabelled entry without a token keeps its place and the declaration holds no token for it. A second such entry draws the
+repeated-value notification, one beside a category the missing-token notification, and a labelled one the label
+classes, each before the declaration is validated (spec/01 §1.3). -/
 example :
     ((read r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{},{"value":"C"}]}}"#).toOption.bind
       (·.enumeration)).map (fun declaration => (declaration.storedTokens, declaration.tokenlessPositions)) =
       some (["A", "C"], [1]) ∧
-    refused r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{},{"value":"C"}],"categories":[{"name":"Band","values":["x","y","z"]}]}}"# ∧
-    refused r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{},{},{"value":"C"}]}}"# ∧
-    refused r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{"label":[{"locale":"en_US","text":"Beta"}]}]}}"# := by
+    refusalNames r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{},{"value":"C"}],"categories":[{"name":"Band","values":["x","y","z"]}]}}"# "MISSING_INTERNAL" ∧
+    refusalNames r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{},{},{"value":"C"}]}}"# "repeated" ∧
+    refusalNames r#"{"type":"EnumerationType","EnumerationType":{"values":[{"value":"A"},{"label":[{"locale":"en_US","text":"Beta"}]}]}}"# "MVK_INTERNAL_VALUE_MISSING" := by
   native_decide
 
 end A12Kernel.Dm.DerivedRowsKernel31Locks

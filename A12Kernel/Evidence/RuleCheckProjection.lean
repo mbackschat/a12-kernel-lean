@@ -18,7 +18,8 @@ A row with no Kernel verdict, which the instrument stopped first, is skipped. A 
 is compared through [`checkComputation`](../Reference/Dm/ComputationCheck.lean) the same way, an
 admitted computation's generated rule standing as its rule row.
 
-`deferred` names each row whose divergence another obligation owns. A deferred row that agrees fails,
+`deferred` names each row whose divergence another obligation or a stated projection limit owns. A deferred row
+that agrees fails,
 so the list cannot outlive its cause.
 -/
 

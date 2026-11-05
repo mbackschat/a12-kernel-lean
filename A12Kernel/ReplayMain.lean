@@ -247,11 +247,16 @@ private def readJson (path : System.FilePath) : IO Json := do
   | .ok json => pure json
   | .error message => throw (IO.userError s!"{path}: {message}")
 
-/-- `2026-10-02T00:00:00Z` as epoch milliseconds; any other spelling is not a clock. -/
+/-- `2026-10-02T00:00:00Z`, or with a three-digit fraction `2026-10-02T00:00:00.700Z`, as epoch milliseconds; any
+other spelling is not a clock. -/
 private def clockMillis? (text : String) : Option Int := do
   let [date, time] := text.splitOn "T" | none
   let [year, month, day] := date.splitOn "-" | none
-  let [hour, minute, second] := (time.dropEndWhile (· == 'Z')).toString.splitOn ":" | none
+  let [hour, minute, secondText] := (time.dropEndWhile (· == 'Z')).toString.splitOn ":" | none
+  let (second, millis) ← match secondText.splitOn "." with
+    | [second] => pure (second, "000")
+    | [second, fraction] => if fraction.length == 3 then pure (second, fraction) else none
+    | _ => none
   let (y, m, d) := (← year.toInt?, ← month.toInt?, ← day.toInt?)
   -- Days from the civil date by the proleptic Gregorian era formula.
   let y' := if m ≤ 2 then y - 1 else y
@@ -260,7 +265,8 @@ private def clockMillis? (text : String) : Option Int := do
   let doy := (153 * (if m > 2 then m - 3 else m + 9) + 2) / 5 + d - 1
   let doe := yoe * 365 + yoe / 4 - yoe / 100 + doy
   let days := era * 146097 + doe - 719468
-  pure ((days * 86400 + (← hour.toInt?) * 3600 + (← minute.toInt?) * 60 + (← second.toInt?)) * 1000)
+  pure ((days * 86400 + (← hour.toInt?) * 3600 + (← minute.toInt?) * 60 + (← second.toInt?)) * 1000 +
+    (← millis.toNat?))
 
 /-- The artifact a request produced: its name with `req` or `request` replaced by `artifact`, the
 suffix after the first `-` or `.` kept. -/

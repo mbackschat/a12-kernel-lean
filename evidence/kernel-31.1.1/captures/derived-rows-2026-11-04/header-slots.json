@@ -1,0 +1,89 @@
+{
+ "route": "dmtool -m <model> model check, and :adapter:kernelProbe on the same model; each outcome projected to its class",
+ "producer": {
+  "dmtool": "0.14.0",
+  "source": "e62c2059d78f896a0b6304891c76c113966cd069 (clean)",
+  "kernel": "31.1.1 built and runtime"
+ },
+ "base": "S31_DM.json at DM 29.4.0 with one header slot edited",
+ "rows": [
+  {
+   "id": "h-modelVersion-null",
+   "slot": "modelVersion",
+   "shape": "null",
+   "dmtool": {
+    "valid": false,
+    "verification": "KERNEL_CONFIRMED",
+    "codes": [
+     "codeless:model-not-built"
+    ]
+   },
+   "probe": "model-not-built"
+  },
+  {
+   "id": "h-modelVersion-absent",
+   "slot": "modelVersion",
+   "shape": "absent",
+   "dmtool": {
+    "valid": false,
+    "verification": "KERNEL_CONFIRMED",
+    "codes": [
+     "codeless:model-not-built"
+    ]
+   },
+   "probe": "model-not-built"
+  },
+  {
+   "id": "h-locales-null",
+   "slot": "locales",
+   "shape": "null",
+   "dmtool": {
+    "valid": false,
+    "verification": "KERNEL_CONFIRMED",
+    "codes": [
+     "codeless:model-not-built"
+    ]
+   },
+   "probe": "model-not-built"
+  },
+  {
+   "id": "h-locales-absent",
+   "slot": "locales",
+   "shape": "absent",
+   "dmtool": {
+    "valid": false,
+    "verification": "KERNEL_CONFIRMED",
+    "codes": [
+     "codeless:model-not-built"
+    ]
+   },
+   "probe": "model-not-built"
+  },
+  {
+   "id": "h-id-null",
+   "slot": "id",
+   "shape": "null",
+   "dmtool": {
+    "valid": false,
+    "verification": "KERNEL_CONFIRMED",
+    "codes": [
+     "codeless:model-not-built"
+    ]
+   },
+   "probe": "model-not-built"
+  },
+  {
+   "id": "h-id-absent",
+   "slot": "id",
+   "shape": "absent",
+   "dmtool": {
+    "valid": false,
+    "verification": "KERNEL_CONFIRMED",
+    "codes": [
+     "codeless:model-not-built"
+    ]
+   },
+   "probe": "model-not-built"
+  }
+ ]
+}

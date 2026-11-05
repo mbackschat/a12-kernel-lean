@@ -18,14 +18,14 @@ checkpoint). A member it cannot bind leaves no model, a read failure here:
 Three shapes cost only the entry's consistency check: no `modelInfo`, a `null` supported character, and
 a condition language naming a parsed locale other than the two supported, measured for the codes
 `supportedConditionLanguages` lists. The model builds and its check fails without a class, so they are a
-`FrameCheckFailure`, never a read failure. A `modelVersion` or `locales` written `null` leaves no model on
-kernel 31.1.1 (derived-row capture of 2026-11-04, rows `mc-ver-null` and `mc-loc-null`), where 30.8.1
-built it to fail its check.
+`FrameCheckFailure`, never a read failure.
 
-Kernel 31.1.1 reads a header with no `id`, no `modelVersion` or no `locales`, and one whose `id` is
-`null`, into a model it then cannot build (peer KF654, a12-dmkits `1124b523f`, `ModelHeaderSlotLawsTest`
-and `WorkspaceBlankTextDiffTest`, 2026-11-02): each leaves no model here. Kernel 30.8.1 admitted the
-`id` absent or `null` and built the other two to fail their check.
+Kernel 31.1.1 reads a header whose `id`, `modelVersion` or `locales` is absent or `null` into a model it then
+cannot build, on the dmtool and the probe route alike (derived-row capture of 2026-11-04, `header-slots.json`;
+peer KF654, a12-dmkits `1124b523f`, `ModelHeaderSlotLawsTest` and `WorkspaceBlankTextDiffTest`). Each leaves no
+model here as a read failure, as every member KF654 lists does in these readers, so they do not separate a model
+the Kernel cannot read from one it reads and cannot build (SG9). Kernel 30.8.1 admitted the `id` absent or `null`
+and built the other shapes to fail their check.
 
 An integer number binds as its value's decimal text, measured for `5`; a token with a fraction or an
 exponent is outside the represented profile, since the Kernel keeps the token as written and Lean's

@@ -35,7 +35,7 @@ A useful first 0.x release could contain:
 
 - a Lean-built command-line reference evaluator for the explicitly supported fragment;
 - a stable JSON input/output protocol for each explicitly supported operation's normalized models, rules, runtime inputs, observable outcomes, and diagnostics, extended to documents, worlds, messages, and computation deltas only as those semantic stages land;
-- the retained A12 kernel 31.1.1 evidence bundle and a conformance runner that replays its supported projection;
+- the retained evidence, re-captured on A12 kernel 31.1.1 except the three compact bundles that stay kernel 30.8.1 evidence, and a conformance runner that replays its supported projection;
 - a machine-readable supported-fragment manifest that fails closed rather than guessing outside the implemented theory;
 - a machine-readable descriptor and conformance suite for every released capability, reproducibly projected from its retained typed evidence where that evidence is the claim source;
 - a theorem and checked-counterexample index with a report of trusted roots, dependencies, and exclusions;
@@ -66,7 +66,7 @@ expanded A12 model + resolved rule + document + world
                          |
               comparison in consumer CI
                          |
-       retained kernel 31.1.1 evidence replay
+       retained evidence replay (31.1.1 re-capture)
 ```
 
 The diagram is a target integration shape, not a claim that all adapters already exist. The kernel remains outside this repository and outside the released process. Existing a12-dmkits corpus and differential facilities in the sibling `a12-rulekit/` checkout may execute focused kernel probes externally when their observation shape fits; otherwise a concrete semantic family must justify the smallest purpose-specific upstream handback. This repository consumes only retained clean-room evidence and never assumes a standing generic exporter. The a12-dmkits interpreter remains a useful independent peer for triangulation and disagreement discovery, never the behavioral oracle.

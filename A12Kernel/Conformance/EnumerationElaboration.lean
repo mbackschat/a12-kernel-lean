@@ -152,6 +152,7 @@ example :
     (withTokenless [] [0, 1]).valueEntries = [none, none] ∧
     isAccepted (withTokenless ["A", "C"] [1]) ∧
     rejectsWith (withTokenless ["A", "B"] [1] [category "Band" ["x", "y"]]) (.tokenlessEntry 1) ∧
+    rejectsWith (withTokenless ["A", "C"] [1, 2]) (.tokenlessEntry 1) ∧
     rejectsWith (withTokenless [] [0, 1]) .emptyStoredDomain := by
   native_decide
 

@@ -9,7 +9,7 @@ import A12Kernel.Reference.Dm.EntryFrameFixture
 Each expectation is a Kernel row of the
 [header locale codes](../../../docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes)
 probe (`dmtool model check`, Kernel 30.8.1, 2026-10-29), declared beside "en_US" as the probe declares
-it, or of peer KF290's message rows. -/
+it, or of peer KF290's message rows, except the `null` member, a kernel 31.1.1 row. -/
 
 namespace A12Kernel.Dm.HeaderLocaleLocks
 
@@ -115,8 +115,9 @@ example :
   native_decide
 
 /-- A `locales` member that is no list or is `null` leaves no model, while an entry with no string code is
-outside the represented profile. Kernel 30.8.1 built a `null` one and failed its check (peer KF650); kernel 31.1.1
-builds none (the derived-row capture's `mc-loc-null`). -/
+outside the represented profile. The `null` row is the readers' read failure for a model kernel 31.1.1 reads and
+then cannot build (the derived-row capture's `header-slots.json` and `mc-loc-null`), a stage these readers do not
+separate (`bindModelFrame`, SG9); kernel 30.8.1 built it and failed its check (peer KF650). -/
 example :
     verdict (model (Json.str "en_US")) = some .unreadable ∧
     verdict (model (Json.arr #[Json.mkObj [("code", toJson (5 : Nat))]])) = some .outsideProfile ∧
