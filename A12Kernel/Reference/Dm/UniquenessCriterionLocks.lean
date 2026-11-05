@@ -152,6 +152,18 @@ example : (checkModelConsistency (modelWith (some
       { path := ["PolicyKey"], kind := .uniquenessCriterionNameDuplicate }]) := by
   native_decide
 
+/-- Two names shared twice, interleaved: `ProductKey` is authored first, and the shared names still come in the
+iteration order of the map the Kernel groups the criteria into, `PolicyKey` first (a12-dmkits
+`CheckerUniquenessCriterionAgreementTest` at `c7afca597`, kernel 31.1.1). -/
+example : ((checkModelConsistency (modelWith (some [criterion "ProductKey" ["/Policy/Product"] (some "Taken"),
+      criterion "PolicyKey" ["/Policy/PolicyNo"] (some "Taken"), criterion "ProductKey" ["/Policy/PolicyNo"] (some "Taken"),
+      criterion "PolicyKey" ["/Policy/Product"] (some "Taken")]))).toOption.map fun
+        | .checked notifications => notifications.filterMap fun notification =>
+            if notification.kind == .uniquenessCriterionNameDuplicate then notification.path.head? else none
+        | _ => []) =
+    some ["PolicyKey", "PolicyKey", "ProductKey", "ProductKey"] := by
+  native_decide
+
 /-! ## Reach and order -/
 
 /-- A criterion whose fields and texts are written as the model stores them. -/

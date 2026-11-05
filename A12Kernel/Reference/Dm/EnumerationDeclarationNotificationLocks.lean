@@ -173,4 +173,28 @@ example : payloads "duplicate-unmapped-then-mapped" = some [
     .internalValuesDuplicate "BB", .repeatedValue "BB"] := by
   native_decide
 
+/-- The repeated values of `values` declared and then declared again in reverse, with `extra` after, in the order
+the model reader states them. -/
+private def repeatedOrder (values : List String) (extra : List String := []) : Option (List String) :=
+  (recorded { values := values ++ values.reverse ++ extra, expected := [] }).map fun notifications =>
+    notifications.filterMap fun | .repeatedValue value => some value | _ => none
+
+private def lines : List String :=
+  ["LIFE", "HOME", "AUTO", "TRAVEL", "HEALTH", "PET", "BOAT", "FARM", "CYBER", "LEGAL", "DENTAL", "FLOOD", "THEFT"]
+
+/-- The repeated values come in the iteration order of the map the Kernel fills once per later occurrence
+(a12-dmkits `CheckerBasicSentenceOrderAgreementTest` at `c7afca597`, measured on kernel 30.8.1 and asserted
+against 31.1.1). `Status` separates that order from declaration and second-occurrence order, `QUARTERLY` and
+`ONCE` share a bucket with the newer key first, and `Line`'s thirteen keys pass the resize threshold, which a
+third occurrence of `LIFE` acts on. -/
+example :
+    repeatedOrder ["OPEN", "CLOSED", "PENDING"] = some ["CLOSED", "PENDING", "OPEN"] ∧
+    repeatedOrder ["MONTHLY", "QUARTERLY", "ANNUAL", "WEEKLY", "ONCE"] =
+      some ["WEEKLY", "QUARTERLY", "ONCE", "ANNUAL", "MONTHLY"] ∧
+    repeatedOrder lines = some ["CYBER", "FLOOD", "AUTO", "TRAVEL", "FARM", "LEGAL", "DENTAL", "HEALTH", "HOME",
+      "PET", "THEFT", "LIFE", "BOAT"] ∧
+    repeatedOrder lines ["LIFE"] = some ["CYBER", "FLOOD", "TRAVEL", "DENTAL", "AUTO", "FARM", "LEGAL", "HEALTH",
+      "HOME", "PET", "THEFT", "LIFE", "BOAT"] := by
+  native_decide
+
 end A12Kernel.Dm.EnumerationDeclarationNotificationLocks

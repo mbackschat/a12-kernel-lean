@@ -1088,6 +1088,16 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: §4's release-log mapping is the peer's disposition record and changes no clause; §5's two source readings are hypotheses. The peer's account of why a dividing row adds nothing is not adopted as a mechanism.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them. `SPEC-2026-11-04-02` is accepted at that revision.
 
+<a id="src-hash-map-order-adoption"></a>
+## Adopted the Java hash-map order of repeated Enumeration values and shared criterion names from a12-dmkits locks
+
+- `source`: a12-dmkits locks `CheckerBasicSentenceOrderAgreementTest` (peer `KF647`) and `CheckerUniquenessCriterionAgreementTest` (peer `KF671`) at `c7afca597e812de26b0f758653643107b1e072f8`, read with `git` only; the first's rows were measured on kernel 30.8.1 and are asserted against kernel 31.1.1 at that revision, the second's on kernel 31.1.1.
+- `oracle`: kernel 31.1.1 through those locks; reported by the peer, not run here. The two collectors, a grouping of the criteria by name and a duplicate collector called once per later occurrence, were read in kernel source at `eec9134` to learn which map each fills and in what sequence; the map's order is the JDK's documented `HashMap` behaviour, restated in original Lean.
+- `review`: A HIGH adoption on 2026-11-05 ran the five rows, `Status`, `Frequency`, `Line`, `Line` with a third occurrence and the interleaved `ProductKey`/`PolicyKey` pair, through one Lean model of the map before wiring it in; all five agreed, the bucket-head and deferred-resize rows separating it from simpler orders.
+- `adopted`: spec/01's [hash-map order](../../spec/01-data-model.md#hash-map-order) for block 6 and §1.5's shared names, one owner for both ([`JavaHashMapOrder`](../../A12Kernel/Elaboration/JavaHashMapOrder.lean)), with [Enumeration](../../A12Kernel/Reference/Dm/EnumerationDeclarationNotificationLocks.lean) and [criterion](../../A12Kernel/Reference/Dm/UniquenessCriterionLocks.lean) locks. Lean had stated both in first-occurrence order.
+- `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
+- `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
+
 <a id="src-inbound-2026-11-05c"></a>
 ## Reviewed Letter H of 2026-11-05: SPEC-2026-11-05-03 reconciled, and a joined level's row token needs a proved row
 

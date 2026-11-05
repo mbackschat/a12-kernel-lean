@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.CharsetSpec
 import A12Kernel.Elaboration.DeclaredLocale
 import A12Kernel.Elaboration.IndexAndSortDeclaration
+import A12Kernel.Elaboration.JavaHashMapOrder
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Elaboration.ValidationMessageTypes
 import A12Kernel.Semantics.NumberBound
@@ -595,14 +596,15 @@ private def criterionNotifications (model : ConsistencyModel) (criterion : Consi
 
 /-- The document uniqueness criteria check (spec/01 §1.5): first every name two criteria share, once for each
 criterion carrying it, then each criterion's own refusals in authored order (a12-dmkits
-`CheckerUniquenessCriterionAgreementTest` at `da388eeac`, kernel 31.1.1, KF671). This account states several
-distinct shared names in the order their first criterion is authored, which the one measured pair already
-contradicts ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)). The empty name is judged for duplicates like
-any other, unmeasured. -/
+`CheckerUniquenessCriterionAgreementTest` at `da388eeac`, kernel 31.1.1, KF671). The shared names come in the
+iteration order of the map the Kernel groups the criteria into, one call per criterion, which places
+`PolicyKey` before an earlier-authored `ProductKey` on the measured pair. The empty name is judged for
+duplicates like any other, unmeasured. -/
 def uniquenessCriterionNotifications (model : ConsistencyModel) :
     Except String (List ModelConsistencyNotification) := do
   let names := model.uniquenessCriteria.map (·.name)
-  let shared := names.eraseDups.filter fun name => 1 < names.count name
+  let shared := (JavaHashMap.iterationOrder (names.map some)).filterMap id |>.filter fun name =>
+    1 < names.count name
   let duplicates := shared.flatMap fun name =>
     (names.filter (· == name)).map fun _ => notification [name] .uniquenessCriterionNameDuplicate
   pure (duplicates ++ (← model.uniquenessCriteria.flatMapM (criterionNotifications model)))

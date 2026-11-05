@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.DeclarationAdmission
 import A12Kernel.Elaboration.Enumeration
+import A12Kernel.Elaboration.JavaHashMapOrder
 import A12Kernel.Elaboration.StaticDiagnostic
 import A12Kernel.Semantics.LegalCharset
 
@@ -161,14 +162,20 @@ def internalDuplicateNotifications (declaration : EnumerationDeclaration) :
   (declaration.duplicatedTrimmedTokens.filter fun value => !hasSupplementaryScalar value).map
     .internalValuesDuplicate
 
-/-- Block 7, one per repeated stored value in first-occurrence order. The order is this account's
-choice, not a claim: the Kernel's order matches neither declaration nor second-occurrence order on the
-five rows measured, and alphabetical order on only one (peer KF647 and a local probe of 2026-10-29,
-`docs/sources/inbound-handbacks.md#src-inbound-2026-10-29`). -/
+/-- Block 7, one per repeated value, the absent token included, in the iteration order of the map the
+Kernel fills with one call per occurrence after the first, as written (a12-dmkits
+`CheckerBasicSentenceOrderAgreementTest` at `c7afca597`: five rows, a shared bucket and a resize on a third
+occurrence among them). Where the absent token falls among the stored values is the map's, unmeasured. -/
 def repeatedValueNotifications (declaration : EnumerationDeclaration) :
     List EnumerationDeclarationNotification :=
-  declaration.duplicatedStoredTokens.map .repeatedValue ++
-    (if 2 ≤ declaration.tokenlessPositions.length then [.repeatedTokenless] else [])
+  -- The map receives no call when no value repeats; the guard states that through the two repeat counts the
+  -- valid-declaration law already holds.
+  if declaration.duplicatedStoredTokens.isEmpty && declaration.tokenlessPositions.length < 2 then [] else
+  let entries := declaration.valueEntries
+  let later := (entries.zipIdx.filter fun (entry, index) => (entries.take index).contains entry).map (·.1)
+  (JavaHashMap.iterationOrder later).map fun
+    | some value => .repeatedValue value
+    | none => .repeatedTokenless
 
 /-- Block 8. -/
 def valuesMissingNotifications (declaration : EnumerationDeclaration) :

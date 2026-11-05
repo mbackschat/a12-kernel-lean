@@ -192,6 +192,7 @@ import A12Kernel.Elaboration.CustomValidationInvocation
 import A12Kernel.Elaboration.ValidationRule
 import A12Kernel.Elaboration.ValidationRuleGroupOperand
 import A12Kernel.Elaboration.JavaOtherCategory
+import A12Kernel.Elaboration.JavaHashMapOrder
 import A12Kernel.Elaboration.MessageParameterSyntax
 import A12Kernel.Elaboration.MessageGroupArgument
 import A12Kernel.Elaboration.ValidationMessageAuthoring
