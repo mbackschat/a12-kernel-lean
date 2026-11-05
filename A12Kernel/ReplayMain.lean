@@ -162,6 +162,8 @@ import A12Kernel.Reference.Dm.NumberLengthLocks
 import A12Kernel.Reference.Dm.IndexMessageLocks
 import A12Kernel.Reference.Dm.MessageRowRenderingLocks
 import A12Kernel.Reference.Dm.UnmatchedParallelMessageLocks
+import A12Kernel.Reference.Dm.StringSlotContainerLocks
+import A12Kernel.Reference.Dm.ExecutableReferenceLocks
 import A12Kernel.Reference.Dm.MessageText31Locks
 import A12Kernel.Reference.Dm.IndexedBooleanCountLocks
 import A12Kernel.Reference.Dm.IndexedComparisonLocks

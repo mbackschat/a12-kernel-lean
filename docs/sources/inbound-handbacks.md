@@ -1088,6 +1088,17 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: §4's release-log mapping is the peer's disposition record and changes no clause; §5's two source readings are hypotheses. The peer's account of why a dividing row adds nothing is not adopted as a mechanism.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them. `SPEC-2026-11-04-02` is accepted at that revision.
 
+<a id="src-inbound-2026-11-05b"></a>
+## Reviewed Letter G of 2026-11-05: three ledger entries reconciled, the string slots' containers and executables named as references
+
+- `source`: Peer-session letter of 2026-11-05, `a12-kernel-lean-spec-corrections-2026-11-05b.md` (Letter G of the [kernel 31.1.1 migration](../PLAN.md#kernel-31-migration)), SHA-256 `cc70a8b55379135c9a78db0c8cead2e52083c566a7262b00161dc385b352eae7`, 8840 bytes, read from the user's exchange directory. It answers `SPEC-2026-11-04-03`, `SPEC-2026-11-05-01` and `SPEC-2026-11-05-02`, and not `SPEC-2026-11-05-03`.
+- `revision`: a12-dmkits `3f7f6887830a08665e12895db2fb268e96420e80` for its §1 and §2 and `35a09951fcb0812e7dbfac2292f915e51ad2674e`, a descendant, for its §3 and §4, read with `git` only; `CheckerUnresolvedParallelIndexAgreementTest`, `CheckerRuleGroupFormLineAgreementTest` and `CheckerBasicSentenceAgreementTest` exist at the first, `CheckerClockShiftAgreementTest`, `StringSlotContainerLawsTest`, `StringSlotBindingTest` and `CheckerExecutableAsReferenceAgreementTest` and `KF674` at the second.
+- `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`) through those locks; reported by the peer, not run here.
+- `review`: A HIGH reconciliation on 2026-11-05 read each row against the lock and finding named for it and ran Lean's reader and rule check on every row, red before each change.
+- `adopted`: spec/07 §2.2's two groups nominating one undeclared name, where Lean already agreed; spec/01 §1.1's container in six string slots (KF304, its `errorCode` row new on 31.1.1), where Lean's reader read a container in a rule's `errorEntityRelPath` and `errorCondition` and in an alternative's `precondition` as an empty text and now leaves no model ([locks](../../A12Kernel/Reference/Dm/StringSlotContainerLocks.lean)); spec/01 §3.1's path naming a rule or a computation, which names nothing (KF674), where Lean already agreed in every slot but the error target, whose refusal stays [SG9](../gaps/paths-and-groups.md#gap-sg9)'s ([locks](../../A12Kernel/Reference/Dm/ExecutableReferenceLocks.lean)).
+- `not-adopted`: §5's mechanisms are hypotheses. The peer checker's under-report on a model without a text `header.id` is its own design choice and changes no clause.
+- `sync`: inbound additions from committed peer revisions; no ledger entry is created for them. The three answered entries are accepted at the revisions above.
+
 <a id="src-m7-runtime-values-adoption"></a>
 ## Adopted kernel 31.1.1 runtime values from a12-dmkits locks (batch M7)
 

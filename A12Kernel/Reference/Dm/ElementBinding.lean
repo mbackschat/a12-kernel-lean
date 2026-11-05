@@ -22,6 +22,8 @@ recursively, and binds:
   `errorCondition`, a computation's `computedFieldRelPath` and a sort field's `name` leave no model when
   absent or `null`, and a hint entry's `locale` and `values` when absent; a rule's `severity` is absent
   or exactly one of three names;
+* a container, an object or an array, in a rule's `errorEntityRelPath` or `errorCondition` or in a computation
+  alternative's `precondition` leaves no model (`refuseContainer`);
 * an element's `name` as a text member: an object or an array leaves no model (a12-dmkits
   `CheckerConverterSentenceAgreementTest` at `1124b523f`, kernel 31.1.1), while an absent or `null` name
   and every string bind. A number or Boolean name binds as its text as the other text members of the model
@@ -157,6 +159,14 @@ private def bindSeverity (rule : Json) : Except String Unit :=
   | .error _ | .ok (.str "ERROR") | .ok (.str "WARNING") | .ok (.str "INFO") => pure ()
   | .ok other => throw s!"severity {other.compress} is no severity"
 
+/-- A string slot holding an object or an array leaves no model, every container shape alike (a12-dmkits
+`StringSlotContainerLawsTest` at `35a09951f`, kernel 31.1.1, KF304). Only containers are refused here: a
+scalar in these slots is unmeasured and keeps the readers' own reading. -/
+private def refuseContainer (body : Json) (key : String) : Except String Unit :=
+  match body.getObjVal? key with
+  | .ok (.obj _) | .ok (.arr _) => throw s!"model member {key} is a container"
+  | _ => pure ()
+
 /-- Bind one element and, below a group, every element under it. `fuel` bounds the nesting depth. -/
 private def bindElement : Nat → Json → Except String Unit
   | 0, _ => throw "model elements nest deeper than the model is long"
@@ -175,8 +185,12 @@ private def bindElement : Nat → Json → Except String Unit
           bindFieldType (← requireFieldType body)
       | "Rule" =>
           for key in ["errorCode", "errorEntityRelPath", "errorCondition"] do requireValue body key
+          for key in ["errorEntityRelPath", "errorCondition"] do refuseContainer body key
           bindSeverity body
-      | "Computation" => requireValue body "computedFieldRelPath"
+      | "Computation" =>
+          requireValue body "computedFieldRelPath"
+          if let .ok (.arr alternatives) := body.getObjVal? "computationAlternatives" then
+            for alternative in alternatives do refuseContainer alternative "precondition"
       | _ => pure ()
 
 /-- Bind every member of a framed model that a DM reader reads before it judges anything, failing on the

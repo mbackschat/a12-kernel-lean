@@ -50,32 +50,38 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-11-05-02"></a>
 ### SPEC-2026-11-05-02 — A parallel join over an index nomination naming no field of its group draws the index-name class
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §2.2](../spec/07-repetition-and-iteration.md#22-static-gates), the gate table and the paragraph after it.
 - `delta`: Adds the level gate `MVK_INDEX_FIELD_INVALID` for an index nomination naming none of its group's children, on either side of the join and on a presence or a value read, where the same rule with the name resolved is admitted; kernel 31.1.1 builds such a model, drawing the nomination's `MVK_INVALID_INDEX_FIELD` beside it. The nomination's effect on the table's other rows and the class's order against the other gates are stated unmeasured.
 - `basis`: the [verdict-file pass](sources/kernel-31-calibration-probes.md#src-kernel-31-recapture-verdicts), rows `u1`–`u5`, at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, kernel 31.1.1.
 - `acceptance`: a12-dmkits' checker gives `u1`, `u4` and `u5` the class and admits `u2`, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `3f7f6887830a08665e12895db2fb268e96420e80`.
+- `disposition`: Reconciled: the peer reports reproducing `u1`–`u5` on its kernel probe from this project's capture, and `CheckerUnresolvedParallelIndexAgreementTest` locks the law in its own domain, its checker now giving the class on the join rows. Two new rows, both groups nominating one undeclared name, on a join and on `RepetitionNotUnique`, separate the name's existence from a disagreement between the names; spec/07 §2.2 states them and Lean's rule check gives both. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-05b).
 
 <a id="spec-2026-11-05-01"></a>
 ### SPEC-2026-11-05-01 — Kernel 31.1.1 settles the rows still derived for it: month and year shifts refuse a clock, gap and overlap landings, the no-instant constant in validation, the version law, null header members, temporal members a body does not declare, empty-pair rendering and further partial skips
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/05](../spec/05-dates-and-time.md) §2.3, §2.4, §2.7, §4.1, §4.2 and §5; [spec/01](../spec/01-data-model.md) §1.1, §1.2 (the version law, the three check-only shapes, the computation target on a rule), §1.3 (the token-less entry) and the no-model table; [spec/07 §3.10](../spec/07-repetition-and-iteration.md#310-sumofterms) and the `Having` failure paragraph; [spec/09](../spec/09-computations.md) the DateTime-constant paragraph; [spec/10 §5.2](../spec/10-validation-and-polarity.md#5-full-vs-partial-validation) step 2; [spec/11](../spec/11-messages-and-custom.md) the empty category name and both empty-pair rules.
 - `delta`: Replaces "unmeasured on 31.1.1" with measured rows: `AddMonths` and `AddYears` over `Now` or a DateTime draw `MVK_WRONG_DATE_FORMAT_FOR_OP`; a month or year landing and a stored Date in a gap move forward by the gap; the 1947 overlap takes the earlier offset; a gap date-time constant in validation is the instant one gap later; a no-instant Date or date-time constant fails the rule with VALUE whatever the other operand holds, and clears a seeded computation target; a completed-period count across Berlin's repeated 1916 midnight counts instants (`DifferenceInYears` 0, `DifferenceInMonths` 5 and 1); the DM version law is major 29 with bound `4.0`; the header's `id`, `modelVersion` or `locales`, absent or `null`, fails the build; a computation target on a rule draws the unresolved-target sentence; a root-climbing or `/`-leading target, an `errorMessage` or `modelInfo.name` written as an object, `errorMessage` written `null` and an unreadable error code leave no model on 31.1.1; `datePrecision` and `youngerThan1900Check` beside a kind that does not declare them are passed over; an empty `format` read through the expand route is the default; an empty pair inside a field-owned text renders verbatim; spec/11's rule-group paragraph now records that `$RuleGroup.Vordruckname$` drew `MVK_INTERNAL_ERROR` on 30.8.1 too; an empty category name on a group draws `NO_CATEGORY`; a filtered `MaxValue` and `FieldValuesNotUnique` are skipped in partial validation; a two-star `SumOfTerms` entity and a non-repeatable divisor; a single unlabelled token-less Enumeration entry adds no stored value. Moves the Date message-key, header-locale, group-target and error-target rows of spec/01 and spec/05 to 31.1.1 and deletes the `datePrecision` no-model row.
 - `basis`: the [derived-row capture](sources/kernel-31-calibration-probes.md#src-kernel-31-derived-rows) at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, kernel 31.1.1, and the [31.1.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-31-recapture) for the message keys and the temporal members of the declaration batch.
 - `acceptance`: a12-dmkits' corpus or checker gives each listed row, `MVK_ERROR_FIELD_NOT_REFERENCED` beside two duplicate ids included, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `35a09951fcb0812e7dbfac2292f915e51ad2674e`.
+- `disposition`: Reconciled: the peer reports reproducing every row on kernel 31.1.1 from this project's capture, the six runtime artifacts equal with message texts masked, `probeDifferential` `ok` on all 22 comparisons and every rule, model and header-slot row giving the stated class. Its checker now gives `am-now`, `ay-now`, `mc-ct-rule` and `mc-code-bind`, and declines the identity rows as inconclusive by design (its KF654); on the other rows its checker agrees on the verdict only, refusing where A12 refuses and leaving an admitted model inconclusive, so the listed classes, `MVK_ERROR_FIELD_NOT_REFERENCED` beside two duplicate ids included, are met by the peer's kernel reproduction. The `mc-ct-rule` row opened its KF674, and `mc-code-bind` its KF304's `errorCode` row, both adopted inbound. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-05b).
 
 <a id="spec-2026-11-04-03"></a>
 ### SPEC-2026-11-04-03 — The rule-group terminal takes no dotted continuation and is refused as a group in the form-pointer position, and a DateFragment without its format leaves no model
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/11 §A.8](../spec/11-messages-and-custom.md#a8-form-pointers-the-rule-group-terminal-and-the-base-year), the rule-group terminal paragraph; [spec/01 §1.2](../spec/01-data-model.md#defects-that-leave-no-model), the DateFragment row.
 - `delta`: Replaces "unmeasured on kernel 31.1.1" with `INVALID_FIELD_IN_PARAMETER` for `$RuleGroup.Vordruckzeile$`, from a root-group rule and two levels down; adds `MVK_UNEXPECTED_TOKEN` for `$RuleGroup.Vordruckname$`, as for `$RuleGroup/Anchor$`; widens the fragment row from an empty `formatOfFragment` to an absent one, a bodiless `DateFragmentType` included.
 - `basis`: the re-capture of the retained rule-check and declaration batches at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, kernel 31.1.1 ([checkpoint](sources/kernel-31-calibration-probes.md#src-kernel-31-recapture)), rows `I01`, `P01`, `P00` and `tb-frag-nobody`.
 - `acceptance`: a12-dmkits' checker gives the three message classes and refuses to build the bodiless fragment model, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `3f7f6887830a08665e12895db2fb268e96420e80`.
+- `disposition`: Reconciled: `CheckerRuleGroupFormLineAgreementTest` and two rows of `CheckerBasicSentenceAgreementTest` reproduce every row on kernel 31.1.1, the peer's checker correcting `$RuleGroup.Vordruckzeile$` from `INVALID_PARAMETER` to `INVALID_FIELD_IN_PARAMETER`; the other rows already agreed. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-05b).
 
 <a id="spec-2026-11-04-02"></a>
 ### SPEC-2026-11-04-02 — A `SumOfTerms` computation's row that divides by zero adds nothing and does not poison the sum
