@@ -82,6 +82,7 @@ example :
     ruleClass "../Fee" "FieldFilled(Note)" = missing ∧
     ruleClass "../Nothing" "FieldFilled(Note)" = missing ∧
     ruleClass "../Nothing" "FieldFilled(Nowhere" = missing ∧
+    ruleClass "Note" "FieldFilled(Note)" = missing ∧ ruleClass "Note" "FieldFilled(Nowhere" = missing ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(Holder)" = none ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(HolderRequired)" = some "MVK_INVALID_ENTITY" ∧
     ruleClass "../Note" "FieldFilled(Note) And FieldFilled(/Policy/HolderRequired)" = some "MVK_INVALID_ENTITY" ∧

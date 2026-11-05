@@ -170,7 +170,7 @@ def keyedGroupGuarded (condition : ValidationMessageCondition model)
   | .rule checkedRule => checkedRule.condition.core.keyedMessageGroupGuarded group key
 
 /-- Whether a leaf beside a parallel join proves that `group`'s joined row exists: a positive presence of a
-field or a group inside it, a deeper one included, `AllFieldsFilled` with an operand inside it, or
+field or a group inside it, at any depth, though only a field of a nonrepeatable group below it is measured, `AllFieldsFilled` with an operand inside it, or
 `AtLeastOneFieldFilled` and `MoreThanOneFieldFilled` with every operand inside it, over two operands or more.
 A comparison, a literal one included, a negative presence, a starred operand and every other quantifier prove
 nothing ([KF675 rows](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-05c) and the

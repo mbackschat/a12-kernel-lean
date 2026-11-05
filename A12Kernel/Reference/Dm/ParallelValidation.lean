@@ -473,11 +473,20 @@ private def orderedAdmissionClass? (model : DmModel) (language : Language) (rule
   | .ok facts => facts.beforeIterationRefusal?.map (·.kernelCode)
   | .error refusal => refusal.kernelClass?
 
+/-- Whether a relative path holds only names, so that its lexical reading names a child of the rule
+element, which no declaration is: from a rule in `/Order`, `Code` names nothing although `/Order/Code`
+exists ([spec/01 §3.1](../../../spec/01-data-model.md#31-rules-validation)). A segment opening with `..`, such
+as the turning point `..Policy`, keeps the ordinary reading; that spelling is unmeasured. -/
+private def namesBelowRuleElement (path : String) : Bool :=
+  !path.isEmpty && !path.startsWith "/" &&
+    (path.splitOn "/").all fun segment => !segment.isEmpty && !segment.startsWith ".."
+
 /-- Whether the rule's error-target path names no declared entity, the Kernel's absent error field: an
-empty path, a `..` path whose lexical reading names neither a field nor a group, or a path whose field
-resolution misses with nothing else named. A path naming a rule or a computation names nothing (peer
-KF674). -/
+empty path, a path of names only, a `..` path whose lexical reading names neither a field nor a group, or
+a path whose field resolution misses with nothing else named. A path naming a rule or a computation names
+nothing (peer KF674). -/
 def errorTargetAbsent (language : Language) (model : FlatModel) (rule : DmRule) : Bool :=
+  namesBelowRuleElement rule.errorEntityRelPath ||
   match errorEntityOf language model rule with
   | .ok _ => false
   | .error refusal =>

@@ -2788,7 +2788,7 @@ Lean treatment: [`CheckedIndexPreliminary.lean`](../A12Kernel/Elaboration/Checke
 
 The Kernel collects an Enumeration's repeated values into a `java.util.HashMap`, and an emulation of that map from its documented sizing and hashing, filled with `put` semantics, reproduced the peer's three-value row but mispredicted the 13-value row and the hash-collision row it was run on ([checkpoint](sources/model-structure-and-declaration-probes.md#src-basic-sentence-order)). The Kernel fills it through `computeIfAbsent`, which checks for a resize before inserting rather than after and places a new entry at the head of its bucket, so 13 entries stay in a 16-bucket table and colliding keys come out in reverse insertion order. The real map filled the same way reproduced every row.
 
-Lean treatment: none. The owner chose to state no order for these notifications, and Lean keeps first-occurrence order as its own choice ([`EnumerationDeclarationNotification.lean`](../A12Kernel/Elaboration/EnumerationDeclarationNotification.lean), block 6).
+Lean treatment: superseded on 2026-11-05, when the peer's measured rows settled the order as a Java `HashMap`'s; [`JavaHashMapOrder`](../A12Kernel/Elaboration/JavaHashMapOrder.lean) states it for [`EnumerationDeclarationNotification.lean`](../A12Kernel/Elaboration/EnumerationDeclarationNotification.lean) ([adoption](sources/inbound-handbacks.md#src-hash-map-order-adoption)).
 
 **Before emulating a host collection's order, run the real collection filled by the same call, and take the emulation's predictions from it rather than from the collection's documentation.** A collision row and a row just past a resize threshold separate the fill semantics.
 

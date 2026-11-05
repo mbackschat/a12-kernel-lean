@@ -164,7 +164,7 @@ def internalDuplicateNotifications (declaration : EnumerationDeclaration) :
 
 /-- Block 7, one per repeated value, the absent token included, in the iteration order of the map the
 Kernel fills with one call per occurrence after the first, as written (a12-dmkits
-`CheckerBasicSentenceOrderAgreementTest` at `c7afca597`: five rows, a shared bucket and a resize on a third
+`CheckerBasicSentenceOrderAgreementTest` at `c7afca597`: four Enumeration rows, a shared bucket and a resize on a third
 occurrence among them). Where the absent token falls among the stored values is the map's, unmeasured. -/
 def repeatedValueNotifications (declaration : EnumerationDeclaration) :
     List EnumerationDeclarationNotification :=
