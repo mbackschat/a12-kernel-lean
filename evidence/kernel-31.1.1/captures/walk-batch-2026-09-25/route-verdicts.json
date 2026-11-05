@@ -1,0 +1,28 @@
+{
+ "kernel": "31.1.1",
+ "producer": "e62c2059",
+ "route": "dmtool model check",
+ "model": "route-rules.json",
+ "valid": false,
+ "rules": {
+  "/Fulfilment/Invoices/Rn1a": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Invoices/Rn1b": [
+   "MVK_ERROR_FIELD_INVALID_INDEX"
+  ],
+  "/Fulfilment/Invoices/Rn3b": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3d": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3e": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3n": [
+   "MVK_ERROR_FIELD_INVALID_INDEX_TYPE"
+  ],
+  "/Fulfilment/Invoices/Rn3s": []
+ }
+}

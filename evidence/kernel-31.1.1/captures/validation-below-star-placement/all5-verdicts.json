@@ -1,0 +1,75 @@
+{
+ "kernel": "31.1.1",
+ "producer": "e62c2059",
+ "route": "dmtool model check",
+ "model": "all5.json",
+ "valid": false,
+ "rules": {
+  "/Fulfilment/Ledger/Raoffallledger": [],
+  "/Fulfilment/Ledger/Raoffbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Revsallledger": [],
+  "/Fulfilment/Ledger/Revsbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rffgallledger": [],
+  "/Fulfilment/Ledger/Rffgbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rnffhallledger": [],
+  "/Fulfilment/Ledger/Rnffhbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rsumhallledger": [],
+  "/Fulfilment/Ledger/Rsumhbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Ledger/Rsvsallledger": [],
+  "/Fulfilment/Ledger/Rsvsbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Raoffallship": [],
+  "/Fulfilment/Shipments/Raoffbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Revsallship": [],
+  "/Fulfilment/Shipments/Revsbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rffgallship": [],
+  "/Fulfilment/Shipments/Rffgbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rnffhallship": [],
+  "/Fulfilment/Shipments/Rnffhbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rsumhallship": [],
+  "/Fulfilment/Shipments/Rsumhbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Shipments/Rsvsallship": [],
+  "/Fulfilment/Shipments/Rsvsbelowship": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ],
+  "/Fulfilment/Summary/Raoffbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Revsbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rffgbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rnffhbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rsumhbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ],
+  "/Fulfilment/Summary/Rsvsbelowsummary": [
+   "MVK_NO_WILDCARD"
+  ]
+ }
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "c5e0d5d280e52d484f58eef40778aaa1ba9234a7b0f3f35a50bce7444aaf71a1",
+  "observations" : [ {
+    "id" : "701|addressed|clocksrc|rep-D-clockfmt",
+    "inputHash" : "1bb0da8a53004d037759ade5cf54d2c78fd066d4a66104cc47275e4aea284671",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "702|addressed|clocksrc-rootgroup|rep-D-clockfmt",
+    "inputHash" : "6b2d5aadbf5fc774a0633e0a802738f7b2a49f93f412def5164f4a5e06dd3828",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "703|addressed|clocksrc|rep-T-clockfmt",
+    "inputHash" : "9cd673581886e279245ce5f01d4991afdae5cb51710e43fb309ba206f70b9b6a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "704|addressed|clocksrc-rootgroup|rep-T-clockfmt",
+    "inputHash" : "9814502f1c664090443d63f1b520bf91b13832b724b95ac33aa9d43220ebbeae",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "705|addressed|clocksrc|rep-T-datefmt",
+    "inputHash" : "a4930411b6178b1b957abb41eb203cf55409561bfe54adf55a872466eccfc87b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "706|addressed|clocksrc-rootgroup|rep-T-datefmt",
+    "inputHash" : "1d26687638b708781182989e2f147ac91c4f5a9beba32cccb8867a6e4b803d50",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "707|addressed|clocksrc|rep-D-datefmt",
+    "inputHash" : "ca6c49626a1c69b3b1fdd0cd97f431df303e8b3b420c39baee537b3e7da9bc4d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "708|addressed|clocksrc-rootgroup|rep-D-datefmt",
+    "inputHash" : "fa8c0c8c58400c4674b80becafab2ce8f40fdfb2394d8fbd3058ffbcf4f9bce2",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  } ]
+}

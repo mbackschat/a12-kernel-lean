@@ -1,0 +1,41 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "observations" : [ {
+    "id" : "u1",
+    "inputHash" : "a75e81c5b07b602183455eaa3136283a9884d96dfad8facdf9858ff7dc1030f5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_INDEX_FIELD", "MVK_INDEX_FIELD_INVALID" ]
+  }, {
+    "id" : "u2",
+    "inputHash" : "9808e58155bdd00e2ba2a987e9f24b479b12d9d052b61447c1b69ba777b41e65",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "u3",
+    "inputHash" : "03fc63f0ff404bed905f6863bd9348fa165d62f41433db6b0d279dfe1643a8f5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "u4",
+    "inputHash" : "fe9920030eab21de13ce427cd2b8525a0c507706c92cc6adb3bb1a9c2d0e9dcd",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_INDEX_FIELD", "MVK_INDEX_FIELD_INVALID" ]
+  }, {
+    "id" : "u5",
+    "inputHash" : "9cfe5769f395a49865f8f98f296369f854112ec3d486429a1510ff0ccafe4500",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_INDEX_FIELD", "MVK_INDEX_FIELD_INVALID" ]
+  } ]
+}

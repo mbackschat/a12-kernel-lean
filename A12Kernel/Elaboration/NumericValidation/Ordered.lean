@@ -176,11 +176,17 @@ def admitted (atom : OrderedNumericValidationAtom model)
       | .sameGroupAddressed => true
       | .modelWideNonrepeatable => source.directFields?.isSome
       | .modelWideCheckedComputation => true
-  -- A direct list of fixed fields keeps its scalar owner. One naming a row field is admitted here and
-  -- its slots read at the rule's row (k22-runtime-r7-2026-10-24, `rD`; k22-runtime-r10-2026-10-25).
+  -- A direct list of fixed fields in the rule group keeps its scalar owner. One naming a row field is
+  -- admitted here and its slots read at the rule's row (k22-runtime-r7-2026-10-24, `rD`;
+  -- k22-runtime-r10-2026-10-25), and so is one naming a fixed field of another group, which the Kernel
+  -- admits from a fixed rule group wherever that group lies (direct-aggregate-fixed-groups-2026-11-05);
+  -- a rule group inside a repeatable one takes the same admission unmeasured.
   | .aggregate _ source => bound source.bindingScopes &&
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed) &&
-        (source.directAggregateFields?.isNone || source.bindingScopes.any (!·.isEmpty))
+        match source.directAggregateFields? with
+        | none => true
+        | some direct => source.bindingScopes.any (!·.isEmpty) ||
+            direct.fields.any (!model.admitsNumberInGroup rowGroup ·)
   | .sumOfProducts source => bound source.bindingScopes &&
       (scope == .modelWideCheckedComputation || scope == .sameGroupAddressed)
   | .sumOfTerms source => bound [source.bindingScope] &&

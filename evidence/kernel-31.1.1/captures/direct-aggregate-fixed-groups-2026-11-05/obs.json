@@ -1,0 +1,78 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "a665cd7f9a76da53bb9a38e16b9dc924f2006714c112f4407e2d772e6e5497c8",
+  "observations" : [ {
+    "id" : "d01",
+    "inputHash" : "eb7490a258aee8b506432aecee439dc729872a8d398ca8513d50a330177d8e84",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d02",
+    "inputHash" : "180f8a5253a5fd381b9f0f71062d41a4966a2102ce52f248f875e59d16079026",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d03",
+    "inputHash" : "054c02e9ef181ae5e5bd9d7f600b6d46edb8776704fe1d573778c46a831050b4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d04",
+    "inputHash" : "8dc2d16312caf696036ed50332bd4c1783d80b01cc112f4a99b33887d701c0c3",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d05",
+    "inputHash" : "0c66a7b631aa419997bb4b95b2097b9b96d6fdbe22595cbacf00dfa2a9829c09",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d06",
+    "inputHash" : "a679df6a6bfced9feb982698270a68e9723fb463212e6f4a6db64f8ed8b60b98",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d07",
+    "inputHash" : "80daf79d309dac2c099430e15d18ee14bc983bc4979cc4e14299c8329e0433c9",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d08",
+    "inputHash" : "34777e4b64ed47f8e80ebf78286544c1cf4b4e18b9ff186d618f719b62b56049",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "d09",
+    "inputHash" : "d3e419241a20bf81d3bffcb17ba17a664d5ab8444db46499a96cf23f01f938d1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  }, {
+    "id" : "d10",
+    "inputHash" : "10f4e59b33b686671a31569afd12ecf30e1b63fa29bb074f0188ea652149bb37",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALIDN" ]
+  }, {
+    "id" : "d11",
+    "inputHash" : "7a60a12f0a3f0c1421cd408189994f2913628daaa966bc4504f5d59cda75ae79",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

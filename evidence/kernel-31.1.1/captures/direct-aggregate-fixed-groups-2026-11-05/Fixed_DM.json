@@ -1,0 +1,129 @@
+{
+ "header": {
+  "id": "Fixed_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ]
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Fixed_DM"
+  },
+  "modelConfig": {
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   }
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/F",
+     "name": "F",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/F/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/F/Text",
+        "name": "Text",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/F/G1",
+        "name": "G1",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/F/G1/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/F/G1/T",
+           "name": "T",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/F/G2",
+        "name": "G2",
+        "Group": {
+         "repeatability": 1,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/F/G2/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -474,6 +474,10 @@ structure FlatModel where
 
 def FlatModel.hasBaseYear (model : FlatModel) : Bool := model.baseYear.isSome
 
+/-- Whether a repeatable group declares an index field, resolved or naming no field of the group. -/
+def FlatModel.declaresIndex (model : FlatModel) (group : RepeatableGroupDecl) : Bool :=
+  group.indexField.isSome || model.unresolvedIndexGroups.contains group.path
+
 /-- The model declares the group with this index: a repeatable group carrying it, or the root or a
 fixed group nominating it. -/
 def FlatModel.declaresSemanticIndexGroup (model : FlatModel) : SemanticIndexGroup → Bool
@@ -534,10 +538,19 @@ inductive ParallelIndexGate where
   /-- They share a name and a pair of kinds the type step pairs: a legal parallel iteration, which
       the Kernel admits. -/
   | legal
+  /-- Either side's group declares an index whose name resolves to no field of its group, which kernel
+      31.1.1 builds, the walk settles on and its name stage refuses (unresolved-parallel-index-2026-11-05,
+      `u1`, `u4`, `u5`). -/
+  | indexFieldInvalid
   /-- A shape no row measures: a keyed group both chains share, a second keyed group on the written
       path, or a pair of kinds `FieldKind.indexTypeGate` leaves unmeasured. -/
   | unmeasured
   deriving Repr, DecidableEq
+
+/-- The gate of a level pair whose index declarations do not both resolve: the index-name class when any of
+`groups` nominates an index naming no field of its group, and otherwise a shape no row measures. -/
+def FlatModel.unresolvedIndexGate (model : FlatModel) (groups : List RepeatableGroupDecl) : ParallelIndexGate :=
+  if groups.any (model.unresolvedIndexGroups.contains ·.path) then .indexFieldInvalid else .unmeasured
 
 /-- A repeatable level a read leaves for its evaluation to bind where the written field does not
     bind it
@@ -593,6 +606,7 @@ def UnboundOperandLevel.diagnostic? (unbound : UnboundOperandLevel) :
           | .multipleIndexFields => some .multipleIndexFields
           | .differentName => some .errorFieldInvalidIndex
           | .differentType => some .errorFieldInvalidIndexType
+          | .indexFieldInvalid => some .indexFieldInvalid
           | .notReached | .legal | .unmeasured => none
         else some .errorFieldNoIndex
       else some .noWildcard

@@ -272,7 +272,7 @@ def FieldKind.indexTypeGate (written operand : FieldKind) : ParallelIndexGate :=
 def FlatModel.parallelIndexGate (model : FlatModel) (writtenGroup : GroupPath)
     (group : RepeatableGroupDecl) : ParallelIndexGate :=
   let keyedAbove (path : GroupPath) := model.repeatableGroups.filter fun candidate =>
-    GroupPath.isPrefixOf candidate.path path && candidate.indexField.isSome
+    GroupPath.isPrefixOf candidate.path path && model.declaresIndex candidate
   let operandKeys := keyedAbove group.path
   let writtenKeys := keyedAbove writtenGroup
   let indexDeclaration? (keyed : RepeatableGroupDecl) : Option FlatFieldDecl :=
@@ -284,7 +284,7 @@ def FlatModel.parallelIndexGate (model : FlatModel) (writtenGroup : GroupPath)
     | some operandIndex, some writtenIndex =>
         if operandIndex.name != writtenIndex.name then .differentName
         else writtenIndex.policy.kind.indexTypeGate operandIndex.policy.kind
-    | _, _ => .unmeasured
+    | _, _ => model.unresolvedIndexGate (group :: writtenKeys)
 
 /-- The class facts of one level a read leaves unbound, for a construct declared in `declaringGroup`
     that writes a field of `writtenGroup`. -/
@@ -294,9 +294,9 @@ def FlatModel.unboundOperandLevel (model : FlatModel) (declaringGroup writtenGro
   let placement := WrittenFieldPlacement.of declaringGroup writtenGroup
   let holdsWritten := group?.any fun group => GroupPath.isPrefixOf group.path writtenGroup
   let parallel := !holdsWritten && !(group?.any fun group => GroupPath.isPrefixOf writtenGroup group.path)
-  let indexKeyed := group?.any (·.indexField.isSome)
+  let indexKeyed := group?.any model.declaresIndex
   let writtenPathKeyed := model.repeatableGroups.any fun group =>
-    GroupPath.isPrefixOf group.path writtenGroup && group.indexField.isSome
+    GroupPath.isPrefixOf group.path writtenGroup && model.declaresIndex group
   { level, placement, parallel, indexKeyed, writtenPathKeyed
     writtenBound := placement == .contained && holdsWritten
     parallelGate :=

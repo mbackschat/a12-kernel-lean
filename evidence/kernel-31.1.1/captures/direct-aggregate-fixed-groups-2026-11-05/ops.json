@@ -1,0 +1,145 @@
+[
+ {
+  "id": "d01",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And Sum(A, G1/X) > 10",
+   "--code",
+   "D01"
+  ]
+ },
+ {
+  "id": "d02",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And Sum(G1/X, A) > 10",
+   "--code",
+   "D02"
+  ]
+ },
+ {
+  "id": "d03",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/G1/T",
+   "--condition",
+   "FieldFilled(T) And Sum(X, /F/A) > 10",
+   "--code",
+   "D03"
+  ]
+ },
+ {
+  "id": "d04",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/G1/T",
+   "--condition",
+   "FieldFilled(T) And Sum(X, /F/G2/Y) > 10",
+   "--code",
+   "D04"
+  ]
+ },
+ {
+  "id": "d05",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And MinValue(G1/X, G2/Y) > 10",
+   "--code",
+   "D05"
+  ]
+ },
+ {
+  "id": "d06",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And NumberOfDifferentValues(A, G1/X) < 2",
+   "--code",
+   "D06"
+  ]
+ },
+ {
+  "id": "d07",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/G1/T",
+   "--condition",
+   "FieldFilled(T) And MaxValue(/F/A, /F/G2/Y) > 10",
+   "--code",
+   "D07"
+  ]
+ },
+ {
+  "id": "d08",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And Sum(A, B) > 10",
+   "--code",
+   "D08"
+  ]
+ },
+ {
+  "id": "d09",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And Sum(A, /F/A) > 10",
+   "--code",
+   "D09"
+  ]
+ },
+ {
+  "id": "d10",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And Sum(G1/X) > 10",
+   "--code",
+   "D10"
+  ]
+ },
+ {
+  "id": "d11",
+  "verb": "rule",
+  "args": [
+   "check",
+   "--field",
+   "/F/Text",
+   "--condition",
+   "FieldFilled(Text) And MaxValue(A, B, G1/X, G2/Y) > 10",
+   "--code",
+   "D11"
+  ]
+ }
+]

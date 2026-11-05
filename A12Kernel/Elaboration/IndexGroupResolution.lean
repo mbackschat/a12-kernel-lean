@@ -29,12 +29,14 @@ never about absence.
 a field two index-declaring groups deep drew it under a parallel-iterating condition, the same
 condition against a field only one index group deep is admitted, and the same field under a
 non-parallel condition is admitted because the walk never runs
-([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-group-resolution)). The other two have no witness
-through this project's carrier, for two different **measured** reasons: the A12 model format carries
-a single index-field *name* rather than a list, so a group declaring several fails DM-JSON
-deserialization; and a name that resolves to nothing makes the model fail to build before any
-condition is checked, so the walk is never reached. Neither is recorded as unreachable — both are
-stated as the total function the Kernel computes, with the carrier's limit named.
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-index-group-resolution)). The name class is measured
+on kernel 31.1.1, which builds a model whose nomination names none of its group's children and refuses a
+parallel join over it with this class
+([checkpoint](../../docs/sources/kernel-31-calibration-probes.md#src-kernel-31-recapture-verdicts), `unresolved`);
+on kernel 30.8.1 the directly dangling spelling left no model. The several-names class has no witness:
+the A12 model format carries a single index-field *name* rather than a list, so a group declaring several
+fails DM-JSON deserialization. It is stated as the total function the Kernel computes, with the carrier's
+limit named.
 
 This module carries no rendered message text, by the licensing boundary in [`CLAUDE.md`](../../CLAUDE.md).
 -/

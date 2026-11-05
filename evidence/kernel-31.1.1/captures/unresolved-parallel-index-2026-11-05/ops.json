@@ -1,0 +1,77 @@
+[
+ {
+  "id": "u1",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "U_DM.json",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+   "--code",
+   "U1"
+  ]
+ },
+ {
+  "id": "u2",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "K_DM.json",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note) And FieldFilled(/Et/Side/Val)",
+   "--code",
+   "U2"
+  ]
+ },
+ {
+  "id": "u3",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "U_DM.json",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "U3"
+  ]
+ },
+ {
+  "id": "u4",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "U_DM.json",
+   "--field",
+   "/Et/Side/Val",
+   "--condition",
+   "FieldFilled(/Et/Side/Val) And FieldFilled(/Et/Rows/Note)",
+   "--code",
+   "U4"
+  ]
+ },
+ {
+  "id": "u5",
+  "verb": "rule",
+  "args": [
+   "check",
+   "-m",
+   "U_DM.json",
+   "--field",
+   "/Et/Rows/Note",
+   "--condition",
+   "FieldFilled(/Et/Rows/Note) And [/Et/Side/Key] > 0",
+   "--code",
+   "U5"
+  ]
+ }
+]

@@ -1,0 +1,28 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "652995c2b6bbeacefda7917b0a3e096d609ad37590c8de8bbf146dd9682ca977",
+  "observations" : [ {
+    "id" : "plain-copy",
+    "inputHash" : "d075530939523b99ae5467e944f503c8d2814d333ea4cdd30249ca4dc1fa558d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "labelled-copy",
+    "inputHash" : "b4b48280b43421aa8f10039509b3a04db2c0a7fbef66d8efbb6976d43a8c45f7",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "string-to-enum",
+    "inputHash" : "ffeeef2d151b42502f593472fb054cc0c134582ce447ea23013d633fe087dffa",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_ERROR_INVALID_ENUM_CALCULATION" ]
+  } ]
+}

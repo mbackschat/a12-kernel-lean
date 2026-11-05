@@ -1,0 +1,42 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.14.0",
+  "kernelBuilt" : "31.1.1",
+  "kernelRuntime" : "31.1.1",
+  "source" : {
+    "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+    "state" : "CLEAN"
+  },
+  "model" : "53ea0c3e1896dacc9392b0c5ffd681cc98bdaf29294515826c74785111cf969f",
+  "observations" : [ {
+    "id" : "301|alo|plain-control",
+    "inputHash" : "09c738a9fac9d8a5ec187d7c66de3f633f6adaa9b22c634caa12a8c4d8b19c10",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON" ]
+  }, {
+    "id" : "302|alo|keyed-left",
+    "inputHash" : "5b392680333d37c0e8e42ee3c87f401b99c6b9b19030faed86695f5133127919",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "303|alo|keyed-right",
+    "inputHash" : "3942aefc367b4ad0a4f6592f9302528c901195ef9cca8b03f622aa40532050c8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_PARAMETER_FOR_DATE_RANGE_COMPARISON" ]
+  }, {
+    "id" : "304|alo|keyed-both",
+    "inputHash" : "0bc8bb9362cc0373eb71fbcdeaa831e1903bb1dabb336d8a80637ddf78cb52e4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "305|alo|keyed-both-same",
+    "inputHash" : "0978dc08291de02c7eb14b498553f379e617fb190a405f33a69bcd5f94a7a93d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DUPLICATE_PARAM1" ]
+  } ]
+}

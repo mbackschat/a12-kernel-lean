@@ -283,13 +283,42 @@ def captures : List (String × String × String) := [
   ("captures/starred-group-value-count-classes/obs.json", "captures/starred-group-value-count-classes/ProbeM_DM.json", "captures/starred-group-value-count-classes/ops.json"),
   ("captures/starred-path-segment-order/obs.json", "captures/starred-path-segment-order/ProbeI_DM.json", "captures/starred-path-segment-order/ops.json"),
   ("captures/typedef-resolves-to-base-kind/obs.json", "captures/typedef-resolves-to-base-kind/TdBase_DM.json", "captures/typedef-resolves-to-base-kind/ops.json"),
-  ("captures/value-list-base-type-cross-pairs/observations-basetype.json", "captures/pattern-comparison-left-kind-gate/Probe4_DM.json", "captures/value-list-base-type-cross-pairs/ops-basetype.json")]
+  ("captures/value-list-base-type-cross-pairs/observations-basetype.json", "captures/pattern-comparison-left-kind-gate/Probe4_DM.json", "captures/value-list-base-type-cross-pairs/ops-basetype.json"),
+  ("captures/temporal-target-gate-reads-format-not-kind/results-sg21.json", "captures/temporal-target-gate-reads-format-not-kind/Probe_SG21.json", "captures/temporal-target-gate-reads-format-not-kind/ops-sg21.json"),
+  ("captures/temporal-target-gate-reads-format-not-kind/results-sg21b.json", "captures/temporal-target-gate-reads-format-not-kind/Probe_SG21.json", "captures/temporal-target-gate-reads-format-not-kind/ops-sg21b.json"),
+  ("captures/temporal-target-gate-reads-format-not-kind/results-sg21c.json", "captures/temporal-target-gate-reads-format-not-kind/Probe_SG21c.json", "captures/temporal-target-gate-reads-format-not-kind/ops-sg21c.json"),
+  ("captures/temporal-target-gate-reads-format-not-kind/results-sg21d.json", "captures/temporal-target-gate-reads-format-not-kind/Probe_SG21c.json", "captures/temporal-target-gate-reads-format-not-kind/ops-sg21d.json"),
+  ("captures/temporal-target-gate-reads-format-not-kind/results-sg21e.json", "captures/temporal-target-gate-reads-format-not-kind/Probe_SG21e.json", "captures/temporal-target-gate-reads-format-not-kind/ops-sg21e.json"),
+  ("captures/first-filled-repeatable-target-admission/results-ct.json", "captures/first-filled-repeatable-target-admission/Probe_CT.json", "captures/first-filled-repeatable-target-admission/ops-ct.json"),
+  ("captures/first-filled-repeatable-target-admission/results-ctrl.json", "captures/first-filled-repeatable-target-admission/Probe_CT.json", "captures/first-filled-repeatable-target-admission/ops-ctrl.json"),
+  ("captures/fixed-repetition-having/static-obs.json", "captures/fixed-repetition-having/Fixed_DM.json", "captures/fixed-repetition-having/check-ops.json"),
+  ("captures/partial-date-precision-operand-gate/results-pk.json", "captures/partial-date-precision-operand-gate/Probe_PK2.json", "captures/partial-date-precision-operand-gate/ops-pk.json"),
+  ("captures/having-temporal-constants-2026-10-07/refusals.json", "captures/having-temporal-constants-2026-10-07/model.json", "captures/having-temporal-constants-2026-10-07/refusals-ops.json"),
+  ("captures/date-range-bound-component-scale-suppression/ops-obs.json", "captures/date-range-bound-component-scale-suppression/BoundScale_DM.json", "captures/date-range-bound-component-scale-suppression/ops.json"),
+  ("captures/keyed-date-range-overlap-both-sides/results-alo2.json", "captures/keyed-date-range-overlap-both-sides/Probe_SI.json", "captures/keyed-date-range-overlap-both-sides/ops-alo2.json"),
+  ("captures/keyed-date-range-overlap-both-sides/results-si.json", "captures/keyed-date-range-overlap-both-sides/Probe_SI.json", "captures/keyed-date-range-overlap-both-sides/ops-si.json"),
+  ("captures/temporal-difference-gates-read-the-format/ops-obs.json", "captures/temporal-difference-gates-read-the-format/Sg21_DM.json", "captures/temporal-difference-gates-read-the-format/ops.json"),
+  ("captures/temporal-difference-gates-read-the-format/ops2-obs.json", "captures/temporal-difference-gates-read-the-format/Sg21_DM.json", "captures/temporal-difference-gates-read-the-format/ops2.json"),
+  ("captures/suppress-warning-directive-scope/results-sw.json", "captures/suppress-warning-directive-scope/Probe_SW.json", "captures/suppress-warning-directive-scope/ops-sw.json"),
+  ("captures/daterange-endpoint-reads-the-format/ops-obs.json", "captures/daterange-endpoint-reads-the-format/Ep_DM.json", "captures/daterange-endpoint-reads-the-format/ops.json"),
+  ("captures/arithmetic-shape-gates/ops-obs.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/arithmetic-shape-gates/ops.json"),
+  ("captures/arithmetic-shape-gates/ops2-obs.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/arithmetic-shape-gates/ops2.json"),
+  ("captures/arithmetic-shape-gates/ops3-obs.json", "captures/arithmetic-shape-gates/Calc_DM.json", "captures/arithmetic-shape-gates/ops3.json"),
+  ("captures/field-fill-family-2026-10-04/static/semantic-observations.json", "captures/field-fill-family-2026-10-04/static/FieldFillFamily_DM.json", "captures/field-fill-family-2026-10-04/static/batch.json"),
+  ("captures/value-list-domain-union-and-filter-carrier-cross/results-a.json", "captures/value-list-domain-union-and-filter-carrier-cross/Probe_VL.json", "captures/value-list-domain-union-and-filter-carrier-cross/ops-a.json"),
+  ("captures/value-list-domain-union-and-filter-carrier-cross/results-b.json", "captures/value-list-domain-union-and-filter-carrier-cross/Probe_VL.json", "captures/value-list-domain-union-and-filter-carrier-cross/ops-b.json"),
+  ("captures/value-list-domain-union-and-filter-carrier-cross/results-c.json", "captures/value-list-domain-union-and-filter-carrier-cross/Probe_VL.json", "captures/value-list-domain-union-and-filter-carrier-cross/ops-c.json"),
+  ("captures/string-enumeration-crossings-2026-10-11/copy-observations.json", "captures/string-enumeration-crossings-2026-10-11/Domain_DM.json", "captures/string-enumeration-crossings-2026-10-11/copy-ops.json"),
+  ("captures/string-integer-source-scale-suppression/ops-obs.json", "captures/string-integer-source-scale-suppression/StringIntegerScale_DM.json", "captures/string-integer-source-scale-suppression/ops.json")]
 
 /-- Batches first measured on the later kernel, whose models and requests sit beside their observations under
 the observed root. -/
 def nativeCaptures : List (String × String × String) := [
   ("captures/derived-rows-2026-11-04/obs-rules.json", "captures/derived-rows-2026-11-04/S31_DM.json",
-    "captures/derived-rows-2026-11-04/ops-rules.json")]
+    "captures/derived-rows-2026-11-04/ops-rules.json"),
+  ("captures/direct-aggregate-fixed-groups-2026-11-05/obs.json",
+    "captures/direct-aggregate-fixed-groups-2026-11-05/Fixed_DM.json",
+    "captures/direct-aggregate-fixed-groups-2026-11-05/ops.json")]
 
 /-- Divergent rows and the obligation that owns each. -/
 def deferred : List (String × String) :=
@@ -311,7 +340,16 @@ def deferred : List (String × String) :=
   -- own refusal of `""` rows s01, s02 and s05 compare.
   (["empty-enumeration-token-2026-10-14/obs.json#s03",
     "empty-enumeration-token-2026-10-14/obs.json#s06",
-    "empty-enumeration-token-2026-10-14/obs.json#s07"].map (·, "the model's own rules, which the projection does not check"))
+    "empty-enumeration-token-2026-10-14/obs.json#s07"].map (·, "the model's own rules, which the projection does not check")) ++
+  -- Lean refuses each of these rows as the Kernel does but names no class for it.
+  (["temporal-target-gate-reads-format-not-kind/results-sg21b.json#403|shift|dtsrc-into-dt-format-target",
+    "temporal-target-gate-reads-format-not-kind/results-sg21b.json#405|shift|dtsrc-into-datetime-kind",
+    "temporal-target-gate-reads-format-not-kind/results-sg21c.json#509|clockcol|worldtime-clock|D-clockfmt",
+    "temporal-target-gate-reads-format-not-kind/results-sg21c.json#510|clockcol|worldtime-clock|T-clockfmt",
+    "temporal-target-gate-reads-format-not-kind/results-sg21c.json#511|clockcol|worldtime-clock|D-datefmt",
+    "temporal-target-gate-reads-format-not-kind/results-sg21c.json#512|clockcol|worldtime-clock|T-datefmt"].map
+      (·, "temporal computation classes, SG6")) ++
+  [("keyed-date-range-overlap-both-sides/results-si.json#007|si|atleastone-keyed-both", "keyed overlap operand class, SG9")]
 
 private def readJson (path : System.FilePath) : IO Json := do
   match Json.parse (← IO.FS.readFile path) with
@@ -320,6 +358,12 @@ private def readJson (path : System.FilePath) : IO Json := do
 
 /-- A JSON object's string member, `none` when it is absent or not a string. -/
 private def stringAt? (json : Json) (key : String) : Option String := (json.getObjValAs? String key).toOption
+
+/-- The spec file an `add` names: its first operand that is neither a flag nor the model a `-m` names. -/
+private def specFile? : List String → Option String
+  | "-m" :: _ :: rest | "--model" :: _ :: rest => specFile? rest
+  | arg :: rest => if arg.startsWith "-" then specFile? rest else some arg
+  | [] => none
 
 /-- The values of `flag`, written either as a separate argument or joined by `=`; the instrument
 reads both forms. -/
@@ -602,14 +646,26 @@ def checkArtifacts (inputs observed : System.FilePath) : IO (Nat × Nat) := do
         | [] => if added.isEmpty then pure (batchModel, batchLocales) else loadModel (root / modelPath) added
       -- A batch may interleave other verbs. A rule check is its rule's static verdict, a computation
       -- preview its computation's.
+      -- A batch may keep a row's spec inline, beside the file name its arguments give.
+      let specOf (file : String) : IO Json := match request.getObjVal? "spec" with
+        | .ok spec => pure spec
+        | .error _ => readJson (requestDir / file)
       let declaration ← match (stringAt? request "verb"), args with
         | some "rule", "check" :: _ => pure (some (Sum.inl (requestedRule args), messageEntries locales args))
-        | some "rule", "add" :: "--dry-run" :: file :: _ => do
-            let spec ← readJson (requestDir / file)
-            pure (some (Sum.inl (specRule spec), specEntries locales spec))
-        | some "computation", "add" :: "--dry-run" :: file :: _ | some "computation", "add" :: file :: _ => do
-            let spec ← readJson (requestDir / file)
-            pure (some (Sum.inr (requestedComputation spec), specEntries locales spec))
+        | some "rule", "add" :: rest =>
+            match specFile? rest with
+            | some file =>
+                if rest.contains "--dry-run" then do
+                  let spec ← specOf file
+                  pure (some (Sum.inl (specRule spec), specEntries locales spec))
+                else pure none
+            | none => pure none
+        | some "computation", "add" :: rest =>
+            match specFile? rest with
+            | some file => do
+                let spec ← specOf file
+                pure (some (Sum.inr (requestedComputation spec), specEntries locales spec))
+            | none => pure none
         | none, [] =>
           if let some ops := applyOps then
             pure ((ops.find? fun op => stringAt? op "target" == some "computation").map

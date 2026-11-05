@@ -1,0 +1,12 @@
+{
+ "kernel": "31.1.1",
+ "producer": "e62c2059",
+ "route": "dmtool model check",
+ "model": "single.json",
+ "valid": false,
+ "rules": {
+  "/Fulfilment/Ledger/Rffatlbelowledger": [
+   "MVK_ERROR_FIELD_NOT_IN_RULEGROUP"
+  ]
+ }
+}

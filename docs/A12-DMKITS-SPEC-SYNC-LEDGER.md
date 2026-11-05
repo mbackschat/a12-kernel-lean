@@ -37,6 +37,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-05-02"></a>
+### SPEC-2026-11-05-02 — A parallel join over an index nomination naming no field of its group draws the index-name class
+
+- `status`: pending
+- `canonical`: [spec/07 §2.2](../spec/07-repetition-and-iteration.md#22-static-gates), the gate table and the paragraph after it.
+- `delta`: Adds the level gate `MVK_INDEX_FIELD_INVALID` for an index nomination naming none of its group's children, on either side of the join and on a presence or a value read, where the same rule with the name resolved is admitted; kernel 31.1.1 builds such a model, drawing the nomination's `MVK_INVALID_INDEX_FIELD` beside it. The nomination's effect on the table's other rows and the class's order against the other gates are stated unmeasured.
+- `basis`: the [verdict-file pass](sources/kernel-31-calibration-probes.md#src-kernel-31-recapture-verdicts), rows `u1`–`u5`, at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, kernel 31.1.1.
+- `acceptance`: a12-dmkits' checker gives `u1`, `u4` and `u5` the class and admits `u2`, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-11-05-01"></a>
 ### SPEC-2026-11-05-01 — Kernel 31.1.1 settles the rows still derived for it: month and year shifts refuse a clock, gap and overlap landings, the no-instant constant in validation, the version law, null header members, temporal members a body does not declare, empty-pair rendering and further partial skips
 
