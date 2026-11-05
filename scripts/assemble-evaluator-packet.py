@@ -94,14 +94,19 @@ for p in sorted(t for t in tree if t.startswith(root) and t.endswith(".json")):
         continue
     if not isinstance(request, dict) or "rows" not in request:
         continue
-    directory = os.path.dirname(p)
-    model_path = os.path.normpath(os.path.join(directory, request["model"]))
-    files = {p, model_path} | {os.path.normpath(os.path.join(directory, r["document"])) for r in request["rows"] if "document" in r}
-    missing = [f for f in files if f not in tree]
+    # A request names its model and documents beside it; the re-capture's `retained` resolves the few stored
+    # under another name, and the packet ships each under the name the request uses.
+    request_rel = p[len(root):]
+    def named(name):
+        return (os.path.normpath(recapture.retained(root.rstrip("/"), request_rel, name)),
+                os.path.normpath(os.path.join(os.path.dirname(request_rel), name)))
+    model_path, _ = named(request["model"])
+    files = {(p, request_rel), named(request["model"])} | {named(r["document"]) for r in request["rows"] if "document" in r}
+    missing = [source for source, _ in files if source not in tree]
     if missing:
         sys.exit(f"{p}: not in the revision: {missing}")
-    for f in files:
-        put(packet_root + f[len(root):], show(f))
+    for source, target in files:
+        put(packet_root + target, show(source))
     # The local artifact keeps the Kernel's message text, which never leaves this repository's tree.
     put(packet_root + artifact[len(root):], re.sub(rb'("(?:message|summary)"\s*:\s*)"(?:[^"\\]|\\.)*"',
         lambda m: m.group(1) + b'"[redacted: Kernel message text, EUPL localisation resource]"', artifact_data))
