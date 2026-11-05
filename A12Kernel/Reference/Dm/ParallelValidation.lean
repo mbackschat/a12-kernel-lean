@@ -145,10 +145,11 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr â†
       if paths.length < 2 then ordinary expression else
       pure (.leaf (.pair (.valuesNotUnique (â† paths.mapM (pairPath model group)))))
   | expression@(.call name arguments none none) => do
-      -- `AllGroupsFilled` and `AtLeastOneGroupFilled` over repeatable groups read each group on its joined
-      -- row, an unmatched side's included, so they are the conjunction and the disjunction of that row's group
+      -- `AllGroupsFilled` and `AtLeastOneGroupFilled` over plain groups read each group as `GroupFilled` does
+      -- beside the join, an unmatched side's included, so they are the conjunction and the disjunction of those
       -- presences, firing, referencing and proving a row token as those do (joined-row residual capture, runtime
-      -- rows `ga` and `gl` and static rows `c10` and `c13`, 2026-11-05).
+      -- rows `ga` and `gl` and static rows `c10` and `c13`, 2026-11-05; over two nonrepeatable groups inside a
+      -- joined group, peer row R12 of Letter I).
       if let some conjunctive := (match name with
           | "AllGroupsFilled" => some true
           | "AtLeastOneGroupFilled" => some false
@@ -159,10 +160,8 @@ private partial def pairSyntax (model : FlatModel) (group : GroupPath) : Expr â†
             | .mk operand none => operand.groupReference?.bind (Â·.resolveAgainst group |>.toOption)
             | _ => none) with
         | some (first :: rest@(_ :: _)) =>
-            if (first :: rest).all (fun reference => model.repeatableGroups.any (Â·.path == reference.path)) then
-              pure (rest.foldl (fun tree reference =>
-                if conjunctive then .and tree (presence reference) else .or tree (presence reference)) (presence first))
-            else ordinary expression
+            pure (rest.foldl (fun tree reference =>
+              if conjunctive then .and tree (presence reference) else .or tree (presence reference)) (presence first))
         | _ => ordinary expression
       else
       let some op := fieldFillOp? name | ordinary expression

@@ -328,6 +328,18 @@ private def tokenlessRows : List (String × Json × List String × Option Bool) 
 
 example : entryFailures tokenlessRows = [] := by native_decide
 
+/-- An empty token is admitted unlabelled and reads as a missing token once its enumeration is labelled; with
+its own empty text the model is not built (a12-dmkits `EnumValueAndLabelLawsTest` at `65bf78eab`, KF321, kernel
+31.1.1). -/
+example :
+    entryFailures [("an empty token, labelled",
+      entriesModel [entryText (some "") [("en_US", "None")], entryText (some "PLUS") [("en_US", "Plus")]],
+      [valueMissing, displayValues], some false)] = [] ∧
+    (verdictOf (entriesModel [entryText (some ""), entryText (some "PLUS")]) == admitted &&
+      verdictOf (entriesModel [entryText (some "") [("en_US", "")], entryText (some "PLUS") [("en_US", "Plus")]]) ==
+        .noModel) = true := by
+  native_decide
+
 private def labelRows : List (String × Json × List String × Option Bool) :=
   let labelled (token : String) (labels : List (String × String)) := entryText (some token) labels
   let plus := entryText (some "PLUS")

@@ -76,8 +76,9 @@ namespace A12Kernel
 inductive ConsistencyFieldType where
   | number (minFractionalDigits maxFractionalDigits : Int) (minValue maxValue : Option Rat)
   | string (noValueValidation lineBreaksPermitted : Bool)
-  /-- An Enumeration as the check reads it: its category names as bound, and whether it declares a value. -/
-  | enumeration (categoryNames : List String) (hasValues : Bool)
+  /-- An Enumeration as the check reads it: its category names as bound, whether it declares a value, and
+  whether an empty token carries an empty label text. -/
+  | enumeration (categoryNames : List String) (hasValues : Bool) (emptyTokenTextless : Bool)
   /-- A reference to a declared type definition, unresolved. -/
   | typeDefinition (id : String)
   | other (typeName : String)
@@ -280,6 +281,8 @@ inductive ModelBuildFailure where
   | enumerationCategoryNameDuplicated
   /-- A field whose Enumeration, resolved through its type definition, declares no value. -/
   | enumerationValuesMissing
+  /-- A field whose Enumeration holds an empty token carrying an empty label text (KF321, kernel 31.1.1). -/
+  | enumerationEmptyTokenTextless
   /-- A group's index or sort spelling that leaves no model, the empty sort name apart. -/
   | nomination (failure : NominationFailure)
   | sortFieldNameEmpty
@@ -337,11 +340,12 @@ all, judged on the type the field resolves to as the declaration walk judges it.
 def conversionFailure? : ConsistencyElement → Option ModelBuildFailure
   | .field f =>
       let repeatedCategoryName := match f.declared with
-        | .enumeration categoryNames _ => decide (categoryNames.eraseDups.length < categoryNames.length)
+        | .enumeration categoryNames _ _ => decide (categoryNames.eraseDups.length < categoryNames.length)
         | _ => false
       if repeatedCategoryName then some .enumerationCategoryNameDuplicated
       else match f.effective with
-        | some (.enumeration _ false) => some .enumerationValuesMissing
+        | some (.enumeration _ false _) => some .enumerationValuesMissing
+        | some (.enumeration _ true true) => some .enumerationEmptyTokenTextless
         | _ => none
   | _ => none
 

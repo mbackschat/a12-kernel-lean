@@ -52,7 +52,8 @@ private def readConsistencyFieldType (fieldType : Json) : Except String Consiste
         (← decimalMember? body "minValue") (← decimalMember? body "maxValue"))
   | "StringType" => pure (.string (← booleanMember? body "noValueValidation") (← booleanMember? body "lineBreaksPermitted"))
   | "EnumerationType" =>
-      pure (.enumeration ((← boundCategories body).map (·.name)) (!enumerationDeclaresNoValues body))
+      pure (.enumeration ((← boundCategories body).map (·.name)) (!enumerationDeclaresNoValues body)
+        (((enumerationValueEntries body).toOption.getD []).any (·.emptyTokenTextless)))
   | "TypeDefType" => pure (.typeDefinition (text body "typeDefinitionId"))
   | other => pure (.other other)
 

@@ -205,6 +205,17 @@ structure EnumerationValueDeclaration where
   labels : List EnumerationLabel := []
   deriving Repr, DecidableEq
 
+/-- The token the entry stores. An empty token stores none on an entry that carries a label: kernel 31.1.1
+admits an empty token only while it is unlabelled and reads a labelled one as a missing token (a12-dmkits
+`EnumValueAndLabelLawsTest` at `65bf78eab`, KF321). Whether a label on another entry has the same effect is
+unmeasured. -/
+def EnumerationValueDeclaration.storedToken? (value : EnumerationValueDeclaration) : Option String :=
+  value.token.filter fun token => !token.isEmpty || value.labels.isEmpty
+
+/-- Whether the entry's empty token carries an empty label text, which leaves no model (the same row). -/
+def EnumerationValueDeclaration.emptyTokenTextless (value : EnumerationValueDeclaration) : Bool :=
+  value.token == some "" && value.labels.any (·.text.isEmpty)
+
 /-- A Time or DateTime body as authored, whose one member is the format. -/
 structure TemporalTypeDeclaration where
   format : Option String := none
@@ -584,7 +595,7 @@ law ("the reverse", KF655); the measured rows give every token-less entry a decl
 token-less entry labelled only in an undeclared locale is not separated. -/
 private def displayClassFor (locale : String) (value : EnumerationValueDeclaration) : Bool :=
   let texts := labelTexts value locale
-  match value.token with
+  match value.storedToken? with
   | some _ => carriesLabel value && (texts.isEmpty || texts.any ExecutableDeclaration.blank)
   | none => texts.any (!ExecutableDeclaration.blank ·)
 
@@ -599,7 +610,7 @@ def enumerationLabelNotifications (locales : List String) (values : List Enumera
       locales.map fun locale => .declared .countOfValuesInvalid [locale]
     else []) ++
     raiseIf (values.any fun value => locales.any (displayClassFor · value)) .internalValuesAndDisplayValues ++
-    raiseIf (values.any fun value => value.token.isNone && carriesLabel value) .internalValueMissing ++
+    raiseIf (values.any fun value => value.storedToken?.isNone && carriesLabel value) .internalValueMissing ++
     locales.flatMap fun locale =>
       let perValue := values.flatMap fun value => (coded (labelTexts value locale)).eraseDups
       (perValue.eraseDups.filter fun text => 1 < perValue.count text).map
@@ -618,14 +629,14 @@ private def enumerationNotifications (context : FieldTypeContext)
   let locales := context.declaredLocales
   let values := declaration.values
   let coded := fun (texts : List String) => (texts.filter (!hasSupplementaryScalar ·)).map javaTrim
-  let tokens := values.filterMap (·.token)
+  let tokens := values.filterMap (·.storedToken?)
   let countedTexts := values.flatMap fun value =>
     (value.labels.filter fun label => locales.contains label.locale).map (·.text)
   let categoryTokens := declaration.categories.flatMap (·.tokens)
   let blockOwner : EnumerationDeclaration := {
     storedTokens := tokens
-    tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf (values.map (·.token))
-    displayFacts := values.flatMap fun value => (value.token.map fun stored =>
+    tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf (values.map (·.storedToken?))
+    displayFacts := values.flatMap fun value => (value.storedToken?.map fun stored =>
       value.labels.map fun label => { stored, locale := label.locale, display := label.text }).getD []
     categories := declaration.categories
     defaultStoredToken := declaration.sValue }
@@ -668,7 +679,8 @@ def FieldTypeDeclaration.judge (compilePattern : StringPatternCompiler) (context
       else .notifications (dateFragmentNotifications declaration).eraseDups
   | .dateRange declaration => .notifications (dateRangeNotifications declaration).eraseDups
   | .enumeration declaration =>
-      if declaration.values.isEmpty || categoryNamesCollide declaration.categories then .modelNotBuilt
+      if declaration.values.isEmpty || categoryNamesCollide declaration.categories ||
+          declaration.values.any (·.emptyTokenTextless) then .modelNotBuilt
       else .notifications (enumerationNotifications context declaration).eraseDups
   | .other => .notifications []
 

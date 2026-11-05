@@ -1098,6 +1098,17 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
 
+<a id="src-inbound-2026-11-05d"></a>
+## Reviewed Letter I of 2026-11-05: SPEC-2026-11-05-04 and -05 reconciled, a group list proves a joined row as its operands do, and a labelled empty Enumeration token is a missing token
+
+- `source`: Peer-session letter of 2026-11-05, `a12-kernel-lean-spec-corrections-2026-11-05d.md` (Letter I of the [kernel 31.1.1 migration](../PLAN.md#kernel-31-migration)), SHA-256 `4e70d1055ad6933e9984099399c6116a6a88195ad47d73a707cdf339cb715c41`, 11223 bytes, read from the user's exchange directory. It answers `SPEC-2026-11-05-04` and `SPEC-2026-11-05-05`.
+- `revision`: a12-dmkits `65bf78eabf02d575fab7418a76298dea97af8487`, read with `git` only; `CheckerJoinedRowProofResidualAgreementTest`, `JoinedRowListQuantifierDiffTest`, `CheckerDeclarationWithholdingAgreementTest`, `KeyedRowTokenListProofDiffTest`, `EnumValueAndLabelLawsTest`, `LocaleWriteSpellingLawsTest` and `CheckerBasicSentenceOrderAgreementTest.anEighthKeyInOneBucketResizesTheMap` exist there, and its commits `7ef4640cf`, `7bd382813`, `a32e640aa` and `45f160ace` are ancestors.
+- `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`) through those locks; reported by the peer, not run here. The peer reports replaying the [residual capture](message-parameter-rendering-probes.md#src-joined-row-proof-residuals) with every static observation and runtime row equal, the redacted index-overflow texts apart.
+- `review`: A HIGH reconciliation on 2026-11-05 read the R12 row, the eighth-key rows and the two empty-token rows in the peer's lock source, re-expressed R12 and the keyed group-list rows on the residual carrier and ran them through Lean's reader, rule check and template check ([locks](../../A12Kernel/Reference/Dm/UnmatchedParallelMessageLocks.lean)), ran the eighth-key rows through the [Enumeration notification locks](../../A12Kernel/Reference/Dm/EnumerationDeclarationNotificationLocks.lean) and the empty-token rows through the [declaration-shape locks](../../A12Kernel/Reference/Dm/DeclarationShapeLocks.lean). R12 and both empty-token rows were red before the change; the eighth key and the keyed group lists already agreed.
+- `adopted`: spec/11's [joined-row proof](../../spec/11-messages-and-custom.md#the-joined-row-proof) counts `AtLeastOneGroupFilled` among the every-operand calls, and the keyed guard's measured scope gains the group lists; spec/01 states the eighth-key rows under the [map order](../../spec/01-data-model.md#hash-map-order), the names-only target's withholding of an unparseable condition, and a labelled entry's empty token as a missing token, failing the build with an empty label text.
+- `not-adopted`: §6's locale write spelling (KF676) is the serializer's output, which no validation or computation outcome of this project reads; the model reader's locale parse is unchanged. §8 states no mechanism.
+- `sync`: inbound additions from a committed peer revision; no ledger entry is created for them. `SPEC-2026-11-05-04` and `SPEC-2026-11-05-05` are accepted at the revision above.
+
 <a id="src-inbound-2026-11-05c"></a>
 ## Reviewed Letter H of 2026-11-05: SPEC-2026-11-05-03 reconciled, and a joined level's row token needs a proved row
 
