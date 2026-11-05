@@ -77,6 +77,12 @@ def sievedFieldPointers (model : FlatModel)
     Except ReferenceProjectionError (List MessagePointer) :=
   (model.fields.filter references).mapM (sievedFieldPointer · environment)
 
+/-- An extent member is exact when its whole scope is bound and reopened below its bound levels otherwise. -/
+def extentMemberPointer (declaration : FlatFieldDecl) (bound : Nat) (environment : Env) :
+    Except ReferenceProjectionError MessagePointer :=
+  if declaration.repeatableScope.length ≤ bound then concreteFieldPointer declaration environment
+  else reopenedFieldPointer declaration bound environment
+
 /-- A group operand contributes the fields of its **whole subtree**, recursively and never a pointer to the group. The extent itself is [`FlatModel.groupSubtreeFields`](A12Kernel.FlatModel.groupSubtreeFields), shared with the entity list's group slot so that one site cannot disagree with another about how far a group reaches.
 
     **One depth rule serves both repetition shapes**, which is why they share this function rather than each owning a projection: repeatable levels **above** `boundCount` stay concrete at the firing row, and every repeatable level at or below it is **wildcarded**. The starred form supplies its star's own `firstStar`; the unstarred form supplies its authored path's own repeatable scope, and `fixedGroupPointers` below states why that is the whole scope rather than the levels strictly above it. Measured at a12-dmkits `bffe9cca`: an unstarred `/Shipment/Carrier` reaches `/Shipment[1]/Carrier[1]/Handoffs[0]/Site`, wildcarding the nested repeatable level while the message's own anchor stays concrete throughout. The two channels are different addresses of the same firing.
@@ -87,11 +93,7 @@ def sievedFieldPointers (model : FlatModel)
 def groupExpansionPointers (model : FlatModel) (groupPath : GroupPath)
     (boundCount : Nat) (environment : Env) :
     Except ReferenceProjectionError (List MessagePointer) :=
-  (model.groupSubtreeFields groupPath).mapM fun declaration =>
-    if declaration.repeatableScope.length ≤ boundCount then
-      concreteFieldPointer declaration environment
-    else
-      reopenedFieldPointer declaration boundCount environment
+  (model.groupSubtreeFields groupPath).mapM (extentMemberPointer · boundCount environment)
 
 /-- An unstarred group operand's expansion. The subtree-reaching half is measured on a nonrepeatable model, where the deeper descendant group's field joins the set and refutes direct-child expansion; the coordinate half is measured at `bffe9cca`. The relation is identical in the presence, entity-list, and count positions.
 
@@ -133,11 +135,7 @@ private def havingFieldPointerFor (firstStar : Nat)
     Except ReferenceProjectionError MessagePointer :=
   match origin with
   | .outer => concreteFieldPointer declaration environment
-  | .inner =>
-      if declaration.repeatableScope.length ≤ firstStar then
-        concreteFieldPointer declaration environment
-      else
-        reopenedFieldPointer declaration firstStar environment
+  | .inner => extentMemberPointer declaration firstStar environment
 
 private def havingNumberReferencePointer (model : FlatModel) (firstStar : Nat)
     (environment : Env) (reference : HavingNumberRef) :
@@ -171,12 +169,6 @@ private def havingGroupReferencePointers (model : FlatModel) (firstStar : Nat)
   let groupDepth := (model.repeatableScopeForGroupPath reference.path).length
   groupExpansionPointers model reference.path
     (match origin with | .outer => groupDepth | .inner => min groupDepth firstStar) environment
-
-/-- An extent member is exact when its whole scope is bound and reopened below its bound levels otherwise. -/
-def extentMemberPointer (declaration : FlatFieldDecl) (bound : Nat) (environment : Env) :
-    Except ReferenceProjectionError MessagePointer :=
-  if declaration.repeatableScope.length ≤ bound then concreteFieldPointer declaration environment
-  else reopenedFieldPointer declaration bound environment
 
 private def havingEntityListReferencePointers (model : FlatModel) (firstStar : Nat)
     (environment : Env) (operands : List (HavingFieldListSlot HavingPresenceRef)) :

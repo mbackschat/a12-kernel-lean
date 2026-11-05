@@ -47,7 +47,8 @@ private def requireValue (parent : Json) (key : String) : Except String Unit :=
   | .ok .null | .error _ => throw s!"member {key} is absent or null"
   | .ok _ => pure ()
 
-private def elementKinds : List String := ["Group", "Field", "Rule", "Computation"]
+/-- The element kinds a group body may hold. -/
+def elementKinds : List String := ["Group", "Field", "Rule", "Computation"]
 
 /-- The name an element declares, read as `bindModelMembers` binds it: an absent or `null` name is the
 empty name, which every reader then treats as blank. -/
@@ -201,8 +202,6 @@ def bindModelMembers (frame : ModelFrame) : Except String Unit := do
   discard <| booleanMember? frame.config "fieldRefByShortNameAllowed"
   for definition in frame.typeDefinitions do
     if let .ok fieldType := definition.getObjVal? "fieldType" then bindFieldType fieldType
-  -- Nesting never exceeds the characters of the text that holds it.
-  let fuel := frame.content.compress.length + 1
-  for root in frame.rootGroups do bindElement fuel root
+  for root in frame.rootGroups do bindElement frame.nestingFuel root
 
 end A12Kernel.Dm

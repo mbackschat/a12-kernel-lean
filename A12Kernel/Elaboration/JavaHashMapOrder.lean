@@ -1,3 +1,5 @@
+import A12Kernel.Semantics.String
+
 /-! # The iteration order of a Java `HashMap` filled through `computeIfAbsent`
 
 Two kernel 31.1.1 model checks state their findings in the iteration order of a `HashMap` they fill with
@@ -15,19 +17,11 @@ The values are locked against the peer's measured rows in the two consumers' loc
 
 namespace A12Kernel.JavaHashMap
 
-/-- A string's UTF-16 code units. -/
-private def utf16Units (text : String) : List UInt32 :=
-  text.toList.flatMap fun character =>
-    let scalar : UInt32 := character.val
-    if scalar < 0x10000 then [scalar]
-    else
-      let offset := scalar - 0x10000
-      [(0xD800 : UInt32) + (offset >>> 10), (0xDC00 : UInt32) + (offset &&& 0x3FF)]
-
-/-- Java's `String.hashCode`, wrapping at 32 bits, and `null`'s 0. -/
+/-- Java's `String.hashCode` over UTF-16 code units, wrapping at 32 bits, and `null`'s 0. -/
 def keyHash : Option String → UInt32
   | none => 0
-  | some text => (utf16Units text).foldl (fun hash unit => hash * 31 + unit) 0
+  | some text =>
+      (text.toList.flatMap utf16CodeUnits).foldl (fun hash unit => hash * 31 + UInt32.ofNat unit) 0
 
 /-- The table's hash of a key: the key's hash with its high half folded into the low. -/
 def spread (key : Option String) : UInt32 :=

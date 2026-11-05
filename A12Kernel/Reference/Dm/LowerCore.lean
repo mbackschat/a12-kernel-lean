@@ -74,14 +74,14 @@ def classifiedDetail [Repr ε] [StaticClassified ε] (error : ε) : String :=
   | some diagnostic => s!"{diagnostic.kernelCode} {cause}"
   | none => cause
 
-/-- The Kernel class a refusal detail leads with, if any. -/
-def Refusal.kernelClass? (refusal : Refusal) : Option String :=
-  (refusal.detail.splitOn " ").head?.filter (·.startsWith "MVK_")
-
 /-- Every Kernel class a refusal detail leads with, in order. A gate the Kernel answers with more than one
 class, such as an error target naming nothing, writes them all before its cause. -/
 def Refusal.kernelClasses (refusal : Refusal) : List String :=
   (refusal.detail.splitOn " ").takeWhile (·.startsWith "MVK_")
+
+/-- The Kernel class a refusal detail leads with, if any. -/
+def Refusal.kernelClass? (refusal : Refusal) : Option String :=
+  refusal.kernelClasses.head?
 
 /-- A refusal detail without its leading Kernel class: the structural cause alone, or the class when
 the detail is nothing else. -/

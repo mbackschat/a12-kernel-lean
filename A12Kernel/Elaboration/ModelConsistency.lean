@@ -675,7 +675,7 @@ def supportedLanguageNotifications (model : ConsistencyModel) : List ModelConsis
 /-- The Kernel's consistency check of a read model. An error means the model reaches a case the
 captures do not measure: attachment rule texts under another condition language, a bound outside
 the normal double range, or a criterion's error text that fails a message-text gate other than the dollar
-count. -/
+count, line-break, encoding and character gates. -/
 def check (model : ConsistencyModel) : Except String ModelConsistencyOutcome :=
   match firstBuildFailure? model with
   | some (path, failure) => pure (.notBuilt path failure)

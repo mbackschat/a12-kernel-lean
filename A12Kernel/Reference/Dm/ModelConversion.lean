@@ -96,8 +96,6 @@ private def draw (sentence : ConverterSentence) (path : List String) (discrimina
 
 private def kindOf (element : Json) : Option String := (element.getObjValAs? String "type").toOption
 
-private def knownKinds : List String := ["Group", "Field", "Rule", "Computation"]
-
 private def groupChildren (element : Json) : List Json :=
   match elementBody element "Group" with
   | .ok body => (groupElements body).toOption.getD []
@@ -179,7 +177,7 @@ private def convertChildren (definitions : List String) (authored : List Json) :
       let mut names : List String := []
       for child in children do
         let name := elementName child
-        let some kind := (kindOf child).filter knownKinds.contains | do kept := kept.push child; continue
+        let some kind := (kindOf child).filter elementKinds.contains | do kept := kept.push child; continue
         if ExecutableDeclaration.blank name then
           draw .elementNameMissing holder
           continue
@@ -244,7 +242,7 @@ private def holdsOrderedMember : Nat → Json → Bool
 
 /-- Convert a model whose members are bound. -/
 def convertModel (frame : ModelFrame) : ConvertedModel :=
-  let fuel := frame.content.compress.length + 1
+  let fuel := frame.nestingFuel
   let authored := frame.rootGroups.toList
   let definitions := frame.typeDefinitions.toList.filterMap fun definition =>
     (definition.getObjValAs? String "id").toOption

@@ -148,7 +148,7 @@ def readConsistencyModel (json : Json) : Except String ConsistencyModel := do
     jdkTaggedLabel? := jdkTaggedLabel? content
     validationModelUnbuilt := (convertModel frame).unbuilt
     expands := !frame.modelReferences.isEmpty ||
-      (← rootGroups.anyM (mountsBelow (frame.content.compress.length + 1))) }
+      (← rootGroups.anyM (mountsBelow frame.nestingFuel)) }
 
 /-- Read the model and run the consistency check. -/
 def checkModelConsistency (json : Json) : Except String ModelConsistencyOutcome := do

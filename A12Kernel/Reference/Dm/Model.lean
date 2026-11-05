@@ -209,27 +209,24 @@ def readEnumerationDeclaration (body : Json) : Except String EnumerationDeclarat
          tokenlessPositions := EnumerationDeclaration.tokenlessPositionsOf tokens,
          displayFacts := displayFacts.flatten, categories, defaultStoredToken }
 
+/-- A field's `EnumerationType` body when its type is an Enumeration, an absent body read as empty. -/
+private def enumerationBody? (fieldJson : Json) : Option Json := do
+  let fieldType ← (fieldJson.getObjVal? "fieldType").toOption
+  guard ((fieldType.getObjValAs? String "type").toOption == some "EnumerationType")
+  pure ((fieldType.getObjVal? "EnumerationType").toOption.getD (Json.mkObj []))
+
 /-- The notifications the Kernel raises for a field's ordinary Enumeration declaration, empty for any other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
 private def fieldEnumerationNotifications (charset : LegalCharset) (fieldJson : Json) :
     List EnumerationDeclarationNotification :=
-  match fieldJson.getObjVal? "fieldType" with
-  | .error _ => []
-  | .ok fieldType =>
-      match fieldType.getObjValAs? String "type" with
-      | .ok "EnumerationType" =>
-          let body := (fieldType.getObjVal? "EnumerationType").toOption.getD (Json.mkObj [])
-          match readEnumerationDeclaration body with
-          | .ok declaration => declaration.notifications charset
-          | .error _ => []
-      | _ => []
+  match (enumerationBody? fieldJson).map readEnumerationDeclaration with
+  | some (.ok declaration) => declaration.notifications charset
+  | _ => []
 
 /-- Kernel 31.1.1's label classes over a field's Enumeration and the model's declared locales, empty for any
 other field type and for a body this reader cannot parse (`readFieldType` reports that failure). -/
 private def enumerationLabelClasses (declaredLocales : List String) (fieldJson : Json) : List String :=
   let values : Except String (List EnumerationValueDeclaration) := do
-    let fieldType ← fieldJson.getObjVal? "fieldType"
-    unless (fieldType.getObjValAs? String "type").toOption == some "EnumerationType" do return []
-    let body := (fieldType.getObjVal? "EnumerationType").toOption.getD (Json.mkObj [])
+    let some body := enumerationBody? fieldJson | return []
     let entries := (body.getObjValAs? (Array Json) "values").toOption.getD #[]
     entries.toList.mapM fun entry => do
       pure { token := ← valueEntryToken entry
@@ -262,9 +259,7 @@ private def declaredLocaleLabels (declaredLocales : List String) (fieldJson : Js
 resolved as the declaration walk reads it: no value to enumerate, or two categories keyed by one name (kernel
 31.1.1, a12-dmkits `EnumDeclarationShapeLawsTest` and `CheckerEmptyMemberAgreementTest` at `1124b523f`). -/
 private def enumerationBuildFailure? (fieldJson : Json) : Except String (Option String) := do
-  let some fieldType := (fieldJson.getObjVal? "fieldType").toOption | pure none
-  unless (fieldType.getObjValAs? String "type").toOption == some "EnumerationType" do return none
-  let body := (fieldType.getObjVal? "EnumerationType").toOption.getD (Json.mkObj [])
+  let some body := enumerationBody? fieldJson | pure none
   if enumerationDeclaresNoValues body then
     return some "an Enumeration declaring no values leaves no model"
   if categoryNamesCollide (← boundCategories body) then

@@ -58,6 +58,10 @@ structure ModelFrame where
   conditionLanguage : Option String
   checkFailure? : Option FrameCheckFailure
 
+/-- Fuel for a walk over the content's nesting, which never exceeds the characters of the text holding it. -/
+def ModelFrame.nestingFuel (frame : ModelFrame) : Nat :=
+  frame.content.compress.length + 1
+
 /-- A scalar as the text the Kernel binds it to; `none` for `null` and for a container. -/
 def scalarText? : Json → Except String (Option String)
   | .str text => pure (some text)
