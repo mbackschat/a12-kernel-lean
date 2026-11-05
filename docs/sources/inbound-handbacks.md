@@ -1098,6 +1098,17 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
 
+<a id="src-inbound-2026-11-05e"></a>
+## Reviewed Letters J and K of 2026-11-05: a field key's read joins its level for a message without proving its row
+
+- `source`: Peer-session messages of 2026-11-05 from the a12-dmkits session, Letter J of the [kernel 31.1.1 migration](../PLAN.md#kernel-31-migration) carrying KF675's key-read rows and Letter K amending their provenance; they answer no ledger entry.
+- `revision`: a12-dmkits `2d86c44fbbbf40e397dd71b088cca541d4282fc4` (Letter J) and its descendant `74e77a32577fc2e0d6e2acc7d3a74375e9e63578` (Letter K), read with `git` only; at the second, `CheckerKeyReadMarkingAgreementTest` holds all six rows, the control's `Picks/LineNo` row added. The six rows with `Picks` keyed by `Code` come from the peer's throwaway probe, not locked; whether their class needs the rule or the model shape alone was not measured.
+- `oracle`: kernel 31.1.1 (`a12-kernel` `eec9134`), `checkConsistency`, through that lock; reported by the peer, not run here.
+- `review`: A HIGH reconciliation on 2026-11-05 rebuilt the peer's order model and ran the six rows and the six `Code` rows through Lean's reader, rule check and template check ([locks](../../A12Kernel/Reference/Dm/ParallelJoinMessageLocks.lean)). All twelve already agreed: spec/07's [iteration scope](../../spec/07-repetition-and-iteration.md#11-iteration-scope) already lets a field-valued key keep its own iteration, and the joined-row proof's leaf list already lets no operand outside a group prove its row.
+- `adopted`: spec/11 states the key-read rows beside the join's index-field members in [A.6](../../spec/11-messages-and-custom.md#a6-name-position-field-references), naming `Lines/LineNo` as the discriminating row, and in the [joined-row proof](../../spec/11-messages-and-custom.md#the-joined-row-proof)'s measured rows, each scoped to the measured carrier.
+- `not-adopted`: The `Code` rows enter no spec clause: they rest on an unlocked probe, the rule check refuses each condition before any parameter, and whether a key expression's read alone meets the index-name gate of spec/07's [static gates](../../spec/07-repetition-and-iteration.md#22-static-gates) is the peer's reading, unmeasured; Lean agrees and locks them. §2's account of the peer checker's marking pass states no Kernel mechanism.
+- `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
+
 <a id="src-inbound-2026-11-05d"></a>
 ## Reviewed Letter I of 2026-11-05: SPEC-2026-11-05-04 and -05 reconciled, a group list proves a joined row as its operands do, and a labelled empty Enumeration token draws the missing-token classes
 
