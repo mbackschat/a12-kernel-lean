@@ -37,6 +37,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-05-03"></a>
+### SPEC-2026-11-05-03 — An unmatched parallel side renders as an absent cell in every form, the join's index fields are members, and a joined group's row index is refused beside a condition that fires unmatched
+
+- `status`: pending
+- `canonical`: [spec/11 A.11](../spec/11-messages-and-custom.md#a11-rendering-a-rule-owned-message), the unmatched-side bullet; the membership list's parallel-join bullet; the `$#RootGroup$` paragraph's parallel row.
+- `delta`: Beside KF672's value rows: an unmatched side's String index field renders empty, an Enumeration's value and category render empty and a name renders the name. Both sides' index fields are members although the condition text names neither. Beside `FieldsNotCollectivelyFilled` over a field of each joined side, the absolute spelling of either joined group draws `INVALID_USE_OF_ITERATION_PARAM`; the earlier admission beside `FieldFilled` of a field of each side, on another route and model, does not isolate the gate, and which further conditions draw it is stated unmeasured.
+- `basis`: the [unmatched-side checkpoint](sources/message-parameter-rendering-probes.md#src-unmatched-parallel-side), `:adapter:kernelProbe` at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, both strategies agreeing, kernel 31.1.1.
+- `acceptance`: a12-dmkits' interpreter renders the checkpoint's `pg` and `pk` rows and its checker admits the `Dept` parameters and gives the two row-index parameters the class, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-11-05-02"></a>
 ### SPEC-2026-11-05-02 — A parallel join over an index nomination naming no field of its group draws the index-name class
 
@@ -70,12 +80,14 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-11-04-02"></a>
 ### SPEC-2026-11-04-02 — A `SumOfTerms` computation's row that divides by zero adds nothing and does not poison the sum
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/07 §3.10](../spec/07-repetition-and-iteration.md#310-sumofterms), the evaluation paragraph.
 - `delta`: Replaces "unmeasured" with the rule: in a computation, as in validation, a row whose term divides by zero, including by an empty divisor, adds nothing, and a sum whose only row divides by zero is 0; no outcome is cleared or errored. The same change records three measured scopes that change no rule: spec/10 §5.2 step 2's skip of a filtered `Sum`, `NumberOfFilledFields` and value-list subject, spec/07's `$` read inside a filter that references no leaf, and the `CurrentRepetition` guard row's refusal at an inner level under a skipped keyed outer level.
 - `basis`: `:adapter:kernelProbe` at a12-dmkits `e62c2059d78f896a0b6304891c76c113966cd069`, both strategies agreeing, kernel 31.1.1 ([checkpoint](sources/kernel-31-calibration-probes.md#src-first-kernel-31-capture)).
 - `acceptance`: a12-dmkits reconciles its account of a `SumOfTerms` computation over a dividing row with the rule, its interpreter computing the checkpoint's four `Total` rows as stated.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `da388eeac1f26c954947c8d9639b78104276e925`.
+- `disposition`: Reconciled with no correction: the peer reports re-running this project's capture at a12-dmkits `c8b1ff5ef` to the same four values with `probeDifferential` `ok`, and `SumOfTermsDivisionComputationLawsTest` locks the law in its own domain (`VALUE` 5, 7, 0 and 5, no outcome cleared or errored) on both strategies and its interpreter; its KF670 gains the computed row. [reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-05).
 
 <a id="spec-2026-11-04-01"></a>
 ### SPEC-2026-11-04-01 — The wholly relevant group extent never folds a capacity-one level, and a declared empty sub-group keeps its parent from being wholly relevant

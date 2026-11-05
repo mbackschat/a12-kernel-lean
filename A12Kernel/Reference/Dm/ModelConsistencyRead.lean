@@ -117,9 +117,13 @@ private def readUniquenessCriteria (content : Json) : Except String (List Consis
   let some entries ← frameList content "documentUniquenessCriteria" | pure []
   entries.toList.mapM fun entry => do
     let .obj _ := entry | throw "a document uniqueness criterion is no object"
-    let fieldPaths ← ((← frameList entry "fields").getD #[]).toList.mapM fun field => do
+    -- The fields are a set: an item without `fullName` is skipped beside a field that still decides the
+    -- criterion, and a field named twice is judged once (a12-dmkits `CheckerUniquenessCriterionAgreementTest`
+    -- and `DocumentUniquenessCriterionReachLawsTest` at `da388eeac`, kernel 31.1.1, KF671).
+    let fieldPaths ← ((← frameList entry "fields").getD #[]).toList.filterMapM fun field => do
       let .obj _ := field | throw "a document uniqueness criterion field is no object"
-      pure ((← frameText field "fullName").getD "")
+      frameText field "fullName"
+    let fieldPaths := fieldPaths.eraseDups
     pure { name := (← frameText entry "name").getD ""
            fieldPaths
            errorTexts := ← localizedTextValue (.arr ((← frameList entry "errorMessage").getD #[])) }

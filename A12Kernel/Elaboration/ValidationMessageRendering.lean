@@ -14,6 +14,9 @@ structure ValidationMessageRowContext (model : FlatModel)
   displayEnumerations : Bool := true
   parallelIndexToken : Option String := none
   references : Option MessageReferenceInputs := none
+  /-- Levels whose row the firing leaves absent: a parallel join's unmatched side. A read below one
+  renders as an absent cell. A parallel caller builds the context with `ResolvedParallelIndexRow.messageContext`. -/
+  absentLevels : List RepeatableLevel := []
 
 inductive ValidationMessageRenderingError where
   | environment (error : EnvBindingError)
@@ -24,6 +27,9 @@ inductive ValidationMessageRenderingError where
   /-- A keyed reference's key selects no row. `toRenderPartAt` renders that value or category empty, so
   the fault never leaves a render plan. -/
   | unresolvedSelection
+  /-- An unkeyed read lies below an absent level. `toRenderPartAt` renders that value or category as an
+  absent cell's, so the fault never leaves a render plan. -/
+  | absentRow
   deriving Repr, DecidableEq
 
 namespace ValidationMessageRowContext
@@ -85,6 +91,7 @@ def selectedGroupIndex (context : ValidationMessageRowContext model compilePatte
 duplicate or zero binding stays structural (rules `RS01`, `RS01C` on two documents). -/
 private def messageCoordinate (context : ValidationMessageRowContext model compilePattern)
     (level : RepeatableLevel) : Except ValidationMessageRenderingError Nat :=
+  if context.absentLevels.contains level then throw .absentRow else
   match context.environment.bindingAt level with
   | .ok coordinate => pure coordinate
   | .error (.missingBinding _) => pure 1
@@ -125,11 +132,29 @@ end ValidationMessageRowContext
 of the partner group renders the joined row rather than the firing row's coordinate
 ([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-message-parameter-rows-k15), rule
 `RPar`). The two sides share their outer frame, whose binding is kept once. A side the join leaves
-missing binds nothing, so a read of it renders that level's first row as any unbound level does; that
-is assumed, not measured, for a missing partner. -/
+missing binds nothing; `absentLevels` names its level so that a read of it renders an absent cell rather
+than that level's first row. -/
 def ResolvedParallelIndexRow.messageEnvironment (row : ResolvedParallelIndexRow) : Env :=
   (row.left.environment.toList ++ row.right.environment.toList).foldl
     (fun bound side => bound ++ side.filter fun (level, _) => !bound.any (·.1 == level)) []
+
+/-- The level of each side for which no row carries the joined key. On kernel 31.1.1 a value read there renders
+the field format's default, as a missing value does (`0`, `0.00`, the empty text), and an Enumeration's value
+and category render empty, under both strategies
+([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-unmatched-parallel-side)). A side
+whose key is duplicated or unavailable also binds no row but is not absent: neither is measured, and it keeps
+the unbound level's first-row reading. -/
+def ResolvedParallelIndexRow.absentLevels (row : ResolvedParallelIndexRow) : List RepeatableLevel :=
+  [row.left, row.right].filterMap fun side =>
+    if side.environment.isNone && !side.duplicatePointer && side.unavailableKey.isNone then some side.group.level
+    else none
+
+/-- The row context a parallel firing renders its message at, built from the joined row alone so that its
+bindings and its absent sides cannot be supplied apart. -/
+def ResolvedParallelIndexRow.messageContext (row : ResolvedParallelIndexRow) (document : Document)
+    (prepared : PreparedFlatStringContext model compilePattern) (locale : String)
+    (references : Option MessageReferenceInputs) : ValidationMessageRowContext model compilePattern :=
+  { environment := row.messageEnvironment, absentLevels := row.absentLevels, document, prepared, locale, references }
 
 /-- Resolve message coordinates at the firing environment, then substitute opaque display text. -/
 def CheckedValidationMessagePart.toRenderPartAt
@@ -161,12 +186,16 @@ def CheckedValidationMessagePart.toRenderPartAt
       match context.referencePath reference with
       | .ok path => pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => path))
       | .error .unresolvedSelection => pure (.text "")
+      | .error .absentRow =>
+          pure (part.toRenderPartWithGroupIndex
+            { inputs with fieldValue := fun cell => { inputs.fieldValue cell with displayValue := none } }
+            (fun _ => 1) (fun _ => []))
       | .error error => throw error
   | .fieldCategory access =>
       -- A key selecting no row renders an empty category rather than faulting (rule `RMissC`).
       match context.referencePath access.reference with
       | .ok path => pure (part.toRenderPartWithGroupIndex inputs (fun _ => 1) (fun _ => path))
-      | .error .unresolvedSelection =>
+      | .error .unresolvedSelection | .error .absentRow =>
           pure (part.toRenderPartWithGroupIndex { inputs with fieldStoredToken := fun _ => none }
             (fun _ => 1) (fun _ => []))
       | .error error => throw error

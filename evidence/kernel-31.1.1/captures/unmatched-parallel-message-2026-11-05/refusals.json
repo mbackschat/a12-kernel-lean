@@ -1,0 +1,7 @@
+{
+ "route": ":adapter:kernelProbe on request-p.json's first row with the model replaced; the Kernel's model consistency check refuses the model before any row, and every reported error is listed",
+ "rows": [
+  {"model": "P31_kind_refused_DM.json", "rule": "pg", "differs": "P31_DM's pg text plus vd=[$/Form/Demand/Kind.value$] vs=[$/Form/Supply/Kind.value$]", "errors": [{"parameter": "/Form/Demand/Kind", "code": "INVALID_FIELD"}, {"parameter": "/Form/Supply/Kind", "code": "INVALID_FIELD"}]},
+  {"model": "P31_group_refused_DM.json", "rule": "pg", "differs": "P31_DM's pg text with gd=[$#/Form/Demand$] gs=[$#/Form/Supply$] in front", "errors": [{"parameter": "#/Form/Demand", "code": "INVALID_USE_OF_ITERATION_PARAM"}, {"parameter": "#/Form/Supply", "code": "INVALID_USE_OF_ITERATION_PARAM"}]}
+ ]
+}

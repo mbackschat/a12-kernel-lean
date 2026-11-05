@@ -1,0 +1,80 @@
+{
+ "model": "Y31_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "this-year",
+   "documentInline": {
+    "Form": {
+     "Holder": "Ada",
+     "Claims": [
+      {
+       "Year": "2020",
+       "Amount": "80"
+      },
+      {
+       "Year": "2019",
+       "Amount": "60"
+      },
+      {
+       "Year": "2020",
+       "Amount": "40"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "earlier",
+   "documentInline": {
+    "Form": {
+     "Holder": "Ada",
+     "Claims": [
+      {
+       "Year": "2018",
+       "Amount": "80"
+      },
+      {
+       "Year": "2018",
+       "Amount": "60"
+      },
+      {
+       "Year": "2018",
+       "Amount": "40"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "full",
+   "documentInline": {
+    "Form": {
+     "Holder": "Ada",
+     "Claims": [
+      {
+       "Year": "2020",
+       "Amount": "80"
+      },
+      {
+       "Year": "2019",
+       "Amount": "60"
+      },
+      {
+       "Year": "2020",
+       "Amount": "40"
+      },
+      {
+       "Year": "2021",
+       "Amount": "5"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

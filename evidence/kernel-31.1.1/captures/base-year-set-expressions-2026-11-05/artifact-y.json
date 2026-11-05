@@ -1,0 +1,388 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.14.0",
+    "kernel" : {
+      "builtAgainst" : "31.1.1",
+      "runtime" : "31.1.1"
+    },
+    "source" : {
+      "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "Y31_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "this-year",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ycn",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ycn",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ysf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ysf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ytf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ytf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ytt",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ytt",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Year"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Diff",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "120.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ycn",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ycn",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ysf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ysf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ytf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ytf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ytt",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ytt",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Year"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Diff",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "1"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "120.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "earlier",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Diff",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Diff",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "6"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "full",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "ycn",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ycn",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ysf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ysf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ytf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ytf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Diff",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "120.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "ycn",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ycn",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ysf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ysf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            },
+            {
+              "code" : "ytf",
+              "field" : "Form/Holder",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ytf",
+              "referenced" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year",
+                "Form/Holder"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Claims[0]/Amount",
+                "/Form[1]/Claims[0]/Year"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Diff",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "0"
+              },
+              {
+                "field" : "Form/Total",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "120.00"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

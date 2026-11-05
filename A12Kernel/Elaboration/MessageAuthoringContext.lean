@@ -9,10 +9,14 @@ inductive MessageAuthoringCore (model : FlatModel) where
   | validation (condition : ValidationCondition model)
   | parallel (rule : CheckedParallelFieldRule model)
 
-/-- Whether a parallel rule reads `field` other than through an ordinary leaf beside the join: a
-pair leaf reads its operands, and a group leaf every field below its group. -/
+/-- Whether a parallel rule reads `field` other than through an ordinary leaf beside the join: the join
+reads both sides' index fields, a pair leaf its operands, and a group leaf every field below its group.
+Kernel 31.1.1 admits an index-field value parameter the condition text never names and lists both index
+fields among each firing's references
+([checkpoint](../../docs/sources/message-parameter-rendering-probes.md#src-unmatched-parallel-side)). -/
 def CheckedParallelFieldRule.pairReferencesField (rule : CheckedParallelFieldRule model)
     (field : FieldId) : Bool :=
+  rule.pair.groups.leftIndexDeclaration.id == field || rule.pair.groups.rightIndexDeclaration.id == field ||
   rule.condition.anyLeaf fun
     | .groupPresence _ reference => reference.referencesField model field
     | .ordinary _ => false

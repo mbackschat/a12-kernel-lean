@@ -17,7 +17,9 @@ no payload, so the notification path the check attaches, the criterion's name, i
 no observation (the last example). The expansion, rename and move rows of the same peer test need a host
 that expands or moves a model, which this check does not model, so they are not locked here.
 
-Locked: a12-dmkits DocumentUniquenessCriterionLawsTest at 1124b523f, kernel 31.1.1.
+Locked: a12-dmkits DocumentUniquenessCriterionLawsTest at 1124b523f, kernel 31.1.1; the reach and order rows
+below: `DocumentUniquenessCriterionReachLawsTest` and `CheckerUniquenessCriterionAgreementTest` at
+`da388eeac`, kernel 31.1.1 (KF671).
 -/
 
 namespace A12Kernel.Dm.UniquenessCriterionLocks
@@ -45,14 +47,17 @@ private def groupOf (id name : String) (repeatability : Nat) (children : List Js
   named "Group" id name [("repeatability", toJson repeatability), ("elements", Json.arr children.toArray)]
 
 /-- `PolicyNo` and `Product` required, `Holder` optional, `Branch` required only when its parent is,
-`Draft` transient, and a repeatable `Claims` of three whose `ClaimRef` is required. -/
+`Draft` transient, `Scratch` optional and transient, and a repeatable `Claims` of three whose `ClaimRef` and
+its fixed `Parts`' `PartRef` are required. -/
 private def policy : Json :=
   groupOf "/Policy" "Policy" 1
     [stringField "/Policy" "PolicyNo" (some absolute), stringField "/Policy" "Product" (some absolute),
       stringField "/Policy" "Holder",
       groupOf "/Policy/Office" "Office" 1 [stringField "/Policy/Office" "Branch" (some withParent)],
       stringField "/Policy" "Draft" (some absolute) (transient := true),
-      groupOf "/Policy/Claims" "Claims" 3 [stringField "/Policy/Claims" "ClaimRef" (some absolute)]]
+      stringField "/Policy" "Scratch" (transient := true),
+      groupOf "/Policy/Claims" "Claims" 3 [stringField "/Policy/Claims" "ClaimRef" (some absolute),
+        groupOf "/Policy/Claims/Parts" "Parts" 1 [stringField "/Policy/Claims/Parts" "PartRef" (some absolute)]]]
 
 /-- A criterion as the model stores it; no text is an empty message list. -/
 private def criterion (name : String) (fields : List String) (text : Option String) : Json :=
@@ -146,5 +151,83 @@ example : (checkModelConsistency (modelWith (some
       { path := ["PolicyKey"], kind := .uniquenessCriterionNameDuplicate },
       { path := ["PolicyKey"], kind := .uniquenessCriterionNameDuplicate }]) := by
   native_decide
+
+/-! ## Reach and order -/
+
+/-- A criterion whose fields and texts are written as the model stores them. -/
+private def stored (name : String) (fields : List Json) (texts : List (String × String)) : Json :=
+  Json.mkObj [("name", .str name), ("fields", Json.arr fields.toArray),
+    ("errorMessage", Json.arr (texts.map fun (locale, text) =>
+      Json.mkObj [("locale", .str locale), ("text", .str text)]).toArray)]
+
+private def fullName (path : String) : Json := Json.mkObj [("fullName", .str path)]
+
+/-- The policy model declaring "en_US" and "de_DE", with these criteria. -/
+private def bilingual (criteria : List Json) : Json :=
+  match modelWith (some criteria) with
+  | .obj members => match members.get? "header" with
+    | some header => .obj (members.insert "header" (header.setObjVal! "locales"
+        (Json.arr #[Json.mkObj [("code", "en_US")], Json.mkObj [("code", "de_DE")]])))
+    | none => .null
+  | _ => .null
+
+private def key : String := "Key $/Policy/PolicyNo$ is taken"
+
+/-- An item without `fullName` is skipped beside a field that decides the criterion, and a text whose locale is
+spelled `en-US` is the model locale's text. An empty text is no text, a blank one is a text, and a line break
+or a control character draws the shared gate's keyed class. -/
+example :
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo", Json.mkObj []] [("en_US", key)]]) = some [] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en-US", key)]]) = some [] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en_US", "")]]) = some [textMissing] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en_US", " ")]]) = some [] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en_US", "Key\ntaken")]]) =
+      some ["INVALID_LINEBREAK"] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en_US", "Key\u0007taken")]]) =
+      some ["INVALID_CHARACTERS"] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo.value"] [("en_US", "Taken")]]) =
+      some [fieldNotFound] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo", fullName "/Policy/PolicyNo"] [("en_US", key)]]) =
+      some [] := by native_decide
+
+/-- Each parameter naming no field of the criterion draws its own refusal, and a lone surrogate, read as the
+stand-in `parseModelJson` writes for its escape, draws the encoding gate's keyed class. -/
+example :
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"]
+        [("en_US", "No $/Policy/Product$ and $PolicyNo$")]]) = some [parameterInvalid, parameterInvalid] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"]
+        [("en_US", "Key " ++ String.singleton loneSurrogateStandIn ++ " taken")]]) = some ["WRONG_ENCODING"] := by
+  native_decide
+
+/-- A field below a fixed group inside a repeatable one is repeatable, an optional transient field draws both
+refusals, requiredness first, and the same field named twice draws them once. -/
+example :
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/Claims/Parts/PartRef"] [("en_US", "Taken")]]) =
+      some [fieldRepeatable] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/Scratch"] [("en_US", "Taken")]]) =
+      some [fieldNotRequired, fieldTransient] ∧
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/Scratch", fullName "/Policy/Scratch"] [("en_US", "Taken")]]) =
+      some [fieldNotRequired, fieldTransient] := by native_decide
+
+private def bilingualLabels (criteria : List Json) : Option (List String) :=
+  match checkModelConsistency (bilingual criteria) with
+  | .ok (.checked notifications) => some (notifications.map (·.kind.observedLabel))
+  | _ => none
+
+/-- Every declared locale is asked for a text, and the locales holding none are stated before each stored
+text's own refusal. -/
+example :
+    bilingualLabels [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en_US", key), ("de_DE", key)]] = some [] ∧
+    bilingualLabels [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en_US", key)]] = some [textMissing] ∧
+    bilingualLabels [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("de_DE", "Key\ntaken")]] =
+      some [textMissing, "INVALID_LINEBREAK"] := by native_decide
+
+/-- The names two criteria share come first, once for each of the two, before every criterion's own
+refusals. -/
+example :
+    labelsOf (some [stored "PolicyKey" [fullName "/Policy/PolicyNo"] [("en_US", "Taken")],
+        stored "Other" [] [("en_US", "Taken")],
+        stored "PolicyKey" [fullName "/Policy/Holder"] [("en_US", "Taken")]]) =
+      some [nameDuplicate, nameDuplicate, noField, fieldNotRequired] := by native_decide
 
 end A12Kernel.Dm.UniquenessCriterionLocks

@@ -61,8 +61,8 @@ a label-only capture cannot separate the latter. The order of one element's clas
 unmeasured too: a peer measurement of a12-dmkits `1124b523f` (`CheckerConverterSentenceAgreementTest`,
 kernel 31.1.1) compares sets of classes.
 
-The criteria check is measured on one "en_US" model, so each declared locale needing a text, and the order of
-one criterion's refusals, are derived and unmeasured (`uniquenessCriterionNotifications`).
+The criteria check, every declared locale asked for a text and the order of its refusals are measured
+(`uniquenessCriterionNotifications`) except the order of several distinct shared names.
 
 Not claimed: type definitions' own bodies, a bound outside the normal double range (an error, not a
 class), attachment condition texts under a language the captures do not cover, the combination of
@@ -205,6 +205,12 @@ inductive ModelConsistencyClass where
   /-- An error text with an unterminated `$`: the keyed class `WRONG_NUMBER_OF_DOLLARS` the rule messages
   share, reached through the shared message-text gate. -/
   | uniquenessCriterionDollars
+  /-- An error text holding a line break: the keyed class `INVALID_LINEBREAK` of the shared gate. -/
+  | uniquenessCriterionLinebreak
+  /-- An error text holding a lone surrogate: the keyed class `WRONG_ENCODING` of the shared gate. -/
+  | uniquenessCriterionEncoding
+  /-- An error text holding a control character: the keyed class `INVALID_CHARACTERS` of the shared gate. -/
+  | uniquenessCriterionCharacters
   deriving Repr, DecidableEq
 
 namespace ModelConsistencyClass
@@ -220,7 +226,8 @@ def all : List ModelConsistencyClass :=
     supportedLanguagesDuplicate, uniquenessCriterionNameMissing, uniquenessCriterionNoField,
     uniquenessCriterionFieldNotFound, uniquenessCriterionFieldNotRequired,
     uniquenessCriterionFieldRepeatable, uniquenessCriterionFieldTransient, uniquenessCriterionTextMissing,
-    uniquenessCriterionNameDuplicate, uniquenessCriterionParameterInvalid, uniquenessCriterionDollars]
+    uniquenessCriterionNameDuplicate, uniquenessCriterionParameterInvalid, uniquenessCriterionDollars,
+    uniquenessCriterionLinebreak, uniquenessCriterionEncoding, uniquenessCriterionCharacters]
 
 /-- The label the captures give the class. The two supported-language classes carry their Kernel code;
 every other class is codeless and named by itself. -/
@@ -258,6 +265,9 @@ def observedLabel : ModelConsistencyClass → String
   | uniquenessCriterionNameDuplicate => "codeless:uniqueness-criterion-name-duplicate"
   | uniquenessCriterionParameterInvalid => "codeless:uniqueness-criterion-parameter-invalid"
   | uniquenessCriterionDollars => KernelStaticDiagnostic.wrongNumberOfDollars.kernelCode
+  | uniquenessCriterionLinebreak => KernelStaticDiagnostic.invalidMessageLinebreak.kernelCode
+  | uniquenessCriterionEncoding => KernelStaticDiagnostic.wrongEncoding.kernelCode
+  | uniquenessCriterionCharacters => KernelStaticDiagnostic.invalidMessageCharacters.kernelCode
 
 end ModelConsistencyClass
 
@@ -538,44 +548,64 @@ private def criterionFieldNotifications (placed : List (String × ConsistencyFie
         raiseIf repeatable path .uniquenessCriterionFieldRepeatable ++
         raiseIf field.transient path .uniquenessCriterionFieldTransient
 
-/-- The refusals of one criterion's error text for one declared locale: no entry for the locale (the first
-entry of a locale is read when several are written, unmeasured), an unterminated `$`, which stops the
-parameters being read, or a parameter that is neither a field path of the criterion nor that path with a
-`.value` suffix. A text the shared message-text gates refuse for a line break, a control character or no
-characters at all is outside the measured profile, since no row measures it for a criterion; an empty
-parameter pair is read as a parameter naming no field, unmeasured. -/
-private def criterionTextNotifications (path : List String) (criterion : ConsistencyUniquenessCriterion)
-    (locale : ParsedLocale) : Except String (List ModelConsistencyNotification) :=
-  match criterion.errorTexts.find? (·.1 == locale.key) with
-  | none => pure [notification path .uniquenessCriterionTextMissing]
-  | some (_, text) =>
-      match validateMessageTemplateSource text with
-      | .error .oddDollarCount => pure [notification path .uniquenessCriterionDollars]
-      | .error _ => throw s!"error text of uniqueness criterion {criterion.name} fails a gate unmeasured for criteria"
-      | .ok segments =>
-          let named (parameter : String) :=
-            criterion.fieldPaths.any fun fullName => parameter == fullName || parameter == fullName ++ ".value"
-          pure (raiseIf ((messageParameterPieces segments).any (!named ·)) path .uniquenessCriterionParameterInvalid)
+/-- The text a criterion holds for a declared locale, its first entry when several are written (unmeasured);
+an empty text is none, as for no entry. -/
+private def criterionText? (criterion : ConsistencyUniquenessCriterion) (locale : ParsedLocale) :
+    Option String :=
+  (criterion.errorTexts.find? (·.1 == locale.key)).map (·.2) |>.filter (!·.isEmpty)
 
-/-- The notifications of one criterion: an empty name, a name another criterion carries, no field, each
-field's refusals in the written order, then each declared locale's text. The path is the criterion's name,
-derived, as is the order among these. -/
+/-- The refusals of one stored error text: the first of the shared message-text gates it fails, or else one
+for each parameter that is neither a field path of the criterion nor that path with a `.value` suffix
+(a12-dmkits `DocumentUniquenessCriterionReachLawsTest` and `CheckerUniquenessCriterionAgreementTest` at
+`da388eeac`, kernel 31.1.1, KF671). The gates' precedence, line break, encoding, control character and then an
+unterminated `$`, which stops the parameters being read, is the one measured on the rule-message carrier and
+assumed here: no criterion row combines two gates. An empty parameter pair is read as a parameter naming no
+field, unmeasured. -/
+private def criterionTextNotification (path : List String) (criterion : ConsistencyUniquenessCriterion)
+    (text : String) : Except String (List ModelConsistencyNotification) :=
+  match validateMessageTemplateSource text with
+  | .error .lineSeparator => pure [notification path .uniquenessCriterionLinebreak]
+  | .error .wrongEncoding => pure [notification path .uniquenessCriterionEncoding]
+  | .error (.controlCharacter _) => pure [notification path .uniquenessCriterionCharacters]
+  | .error .oddDollarCount => pure [notification path .uniquenessCriterionDollars]
+  | .error _ => throw s!"error text of uniqueness criterion {criterion.name} fails a gate unmeasured for criteria"
+  | .ok segments =>
+      let named (parameter : String) :=
+        criterion.fieldPaths.any fun fullName => parameter == fullName || parameter == fullName ++ ".value"
+      pure (((messageParameterPieces segments).filter (!named ·)).map fun _ =>
+        notification path .uniquenessCriterionParameterInvalid)
+
+/-- The notifications of one criterion after the shared names: an empty name, no field, each field's refusals
+in the written order, every declared locale holding no text or an empty one, then each declared locale's text
+in the order the criterion stores them. A text stored for an undeclared locale is not judged, unmeasured. The
+path is the criterion's name, derived. -/
 private def criterionNotifications (model : ConsistencyModel) (criterion : ConsistencyUniquenessCriterion) :
     Except String (List ModelConsistencyNotification) := do
   let path := [criterion.name]
   let placed := ConsistencyElement.placedFieldsAll [] false model.rootGroups
-  let sharesName := 1 < (model.uniquenessCriteria.filter (·.name == criterion.name)).length
-  let texts ← model.declaredLocales.flatMapM (criterionTextNotifications path criterion)
+  let missing := model.declaredLocales.filter (criterionText? criterion · |>.isNone)
+  let stored := criterion.errorTexts.filterMap fun (key, text) =>
+    model.declaredLocales.find? (·.key == key) |>.bind fun locale =>
+      if criterionText? criterion locale == some text then some (key, text) else none
+  let texts ← (stored.eraseDups.map (·.2)).flatMapM (criterionTextNotification path criterion)
   pure (raiseIf criterion.name.isEmpty path .uniquenessCriterionNameMissing ++
-    raiseIf sharesName path .uniquenessCriterionNameDuplicate ++
     raiseIf criterion.fieldPaths.isEmpty path .uniquenessCriterionNoField ++
-    criterion.fieldPaths.flatMap (criterionFieldNotifications placed path) ++ texts)
+    criterion.fieldPaths.flatMap (criterionFieldNotifications placed path) ++
+    missing.map (fun _ => notification path .uniquenessCriterionTextMissing) ++ texts)
 
-/-- The document uniqueness criteria check (spec/01 §1.5), each criterion in authored order. The empty name
-is judged for duplicates like any other, unmeasured. -/
+/-- The document uniqueness criteria check (spec/01 §1.5): first every name two criteria share, once for each
+criterion carrying it, then each criterion's own refusals in authored order (a12-dmkits
+`CheckerUniquenessCriterionAgreementTest` at `da388eeac`, kernel 31.1.1, KF671). This account states several
+distinct shared names in the order their first criterion is authored, which the one measured pair already
+contradicts ([SG9](../../docs/gaps/paths-and-groups.md#gap-sg9)). The empty name is judged for duplicates like
+any other, unmeasured. -/
 def uniquenessCriterionNotifications (model : ConsistencyModel) :
-    Except String (List ModelConsistencyNotification) :=
-  model.uniquenessCriteria.flatMapM (criterionNotifications model)
+    Except String (List ModelConsistencyNotification) := do
+  let names := model.uniquenessCriteria.map (·.name)
+  let shared := names.eraseDups.filter fun name => 1 < names.count name
+  let duplicates := shared.flatMap fun name =>
+    (names.filter (· == name)).map fun _ => notification [name] .uniquenessCriterionNameDuplicate
+  pure (duplicates ++ (← model.uniquenessCriteria.flatMapM (criterionNotifications model)))
 
 /-- The formal-check class of a printed bound: more digits than a stored Number may hold, otherwise a
 negative zero. The digit count leaves out the sign and the decimal point. -/

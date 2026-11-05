@@ -1,0 +1,319 @@
+{
+ "header": {
+  "id": "P31_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "P31_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Plan",
+        "name": "Plan",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Demand",
+        "name": "Demand",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Head",
+           "name": "Head",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Rate",
+           "name": "Rate",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2,
+              "minFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Supply",
+        "name": "Supply",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Head",
+           "name": "Head",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Rate",
+           "name": "Rate",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2,
+              "minFractionalDigits": 2
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType",
+             "StringType": {}
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Kind",
+           "name": "Kind",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "B"
+               }
+              ],
+              "categories": [
+               {
+                "name": "Band",
+                "values": [
+                 "Hi",
+                 "Lo"
+                ]
+               }
+              ]
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pv",
+        "name": "pv",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Head",
+         "errorCode": "pv",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "d=[$/Form/Demand/Head.value$] s=[$/Form/Supply/Head.value$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pr",
+        "name": "pr",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Rate",
+         "errorCode": "pr",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Rate, Supply/Rate)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "d=[$/Form/Demand/Rate.value$] s=[$/Form/Supply/Rate.value$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pn",
+        "name": "pn",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Note",
+         "errorCode": "pn",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Note, Supply/Note)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "d=[$/Form/Demand/Note.value$] s=[$/Form/Supply/Note.value$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pg",
+        "name": "pg",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Head",
+         "errorCode": "pg",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Head, Supply/Head)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "gd=[$#/Form/Demand$] gs=[$#/Form/Supply$] ns=[$/Form/Supply/Head$] nd=[$/Form/Demand/Head$] kd=[$/Form/Demand/Dept.value$] ks=[$/Form/Supply/Dept.value$]"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/pk",
+        "name": "pk",
+        "Rule": {
+         "errorEntityRelPath": "../Demand/Kind",
+         "errorCode": "pk",
+         "errorCondition": "FieldsNotCollectivelyFilled(Demand/Kind, Supply/Kind)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "vd=[$/Form/Demand/Kind.value$] vs=[$/Form/Supply/Kind.value$] cd=[$/Form/Demand/Kind->Band$] cs=[$/Form/Supply/Kind->Band$]"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

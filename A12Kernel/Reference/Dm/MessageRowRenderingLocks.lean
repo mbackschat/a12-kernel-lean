@@ -132,7 +132,8 @@ private def rendered (definition : DmRule) (template : String) (firstRowEmpty :=
         (.parallel parallelRule definition.group) template).toOption
       let rows ← (parallelRule.evalDocument preliminary preliminary.messageCacheContext.toOption).toOption
       pure (outcome ((rows.filter (·.outcome.message?.isSome)).mapM fun fired =>
-        render template fired.row.messageEnvironment))
+        (template.toRenderPlanAt (fired.row.messageContext document prepared "en_US" (some references))
+          (inputs document)).map (·.render.text)))
 
 example : model.validate.isOk = true := by native_decide
 

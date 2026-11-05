@@ -1,0 +1,508 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.14.0",
+    "kernel" : {
+      "builtAgainst" : "31.1.1",
+      "runtime" : "31.1.1"
+    },
+    "source" : {
+      "revision" : "e62c2059d78f896a0b6304891c76c113966cd069",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "P31_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "unmatched-both",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "pg",
+              "field" : "/Form[1]/Demand[-5]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ns=[Head] nd=[Head] kd=[] ks=[Ops]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ]
+            },
+            {
+              "code" : "pg",
+              "field" : "Form/Demand[2]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ns=[Head] nd=[Head] kd=[Eng] ks=[]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ]
+            },
+            {
+              "code" : "pk",
+              "field" : "/Form[1]/Demand[-5]/Kind",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "vd=[] vs=[A] cd=[] cs=[Hi]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Kind",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Kind"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Kind",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Kind"
+              ]
+            },
+            {
+              "code" : "pk",
+              "field" : "Form/Demand[2]/Kind",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "vd=[B] vs=[] cd=[Lo] cs=[]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Kind",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Kind"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Kind",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Kind"
+              ]
+            },
+            {
+              "code" : "pn",
+              "field" : "/Form[1]/Demand[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[] s=[sn2]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Note",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Note",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "pn",
+              "field" : "Form/Demand[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[dn2] s=[]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Note",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Note",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Note"
+              ]
+            },
+            {
+              "code" : "pr",
+              "field" : "/Form[1]/Demand[-5]/Rate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[0.00] s=[4.00]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Rate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Rate"
+              ]
+            },
+            {
+              "code" : "pr",
+              "field" : "Form/Demand[2]/Rate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[2.25] s=[0.00]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Rate",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Rate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Rate",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Rate"
+              ]
+            },
+            {
+              "code" : "pv",
+              "field" : "/Form[1]/Demand[-5]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[0] s=[2]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ]
+            },
+            {
+              "code" : "pv",
+              "field" : "Form/Demand[2]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[3] s=[0]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "pg",
+              "field" : "/Form[1]/Demand[-5]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ns=[Head] nd=[Head] kd=[] ks=[Ops]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ]
+            },
+            {
+              "code" : "pg",
+              "field" : "Form/Demand[2]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ns=[Head] nd=[Head] kd=[Eng] ks=[]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ]
+            },
+            {
+              "code" : "pk",
+              "field" : "/Form[1]/Demand[-5]/Kind",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "vd=[] vs=[A] cd=[] cs=[Hi]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Kind",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Kind"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Kind",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Kind"
+              ]
+            },
+            {
+              "code" : "pk",
+              "field" : "Form/Demand[2]/Kind",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "vd=[B] vs=[] cd=[Lo] cs=[]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Kind",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Kind"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Kind",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Kind"
+              ]
+            },
+            {
+              "code" : "pn",
+              "field" : "/Form[1]/Demand[-5]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[] s=[sn2]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Note",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Note",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Note"
+              ]
+            },
+            {
+              "code" : "pn",
+              "field" : "Form/Demand[2]/Note",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[dn2] s=[]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Note",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Note"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Note",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Note"
+              ]
+            },
+            {
+              "code" : "pr",
+              "field" : "/Form[1]/Demand[-5]/Rate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[0.00] s=[4.00]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Rate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Rate",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Rate"
+              ]
+            },
+            {
+              "code" : "pr",
+              "field" : "Form/Demand[2]/Rate",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[2.25] s=[0.00]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Rate",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Rate"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Rate",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Rate"
+              ]
+            },
+            {
+              "code" : "pv",
+              "field" : "/Form[1]/Demand[-5]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[0] s=[2]",
+              "referenced" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Demand[-5]/Dept",
+                "/Form[1]/Demand[-5]/Head",
+                "Form/Supply[2]/Dept",
+                "Form/Supply[2]/Head"
+              ]
+            },
+            {
+              "code" : "pv",
+              "field" : "Form/Demand[2]/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[3] s=[0]",
+              "referenced" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Supply[-5]/Dept",
+                "/Form[1]/Supply[-5]/Head",
+                "Form/Demand[2]/Dept",
+                "Form/Demand[2]/Head"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "matched-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "pg",
+              "field" : "Form/Demand/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ns=[Head] nd=[Head] kd=[Sales] ks=[Sales]",
+              "referenced" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ]
+            },
+            {
+              "code" : "pv",
+              "field" : "Form/Demand/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[5] s=[0]",
+              "referenced" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "pg",
+              "field" : "Form/Demand/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "ns=[Head] nd=[Head] kd=[Sales] ks=[Sales]",
+              "referenced" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ]
+            },
+            {
+              "code" : "pv",
+              "field" : "Form/Demand/Head",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "d=[5] s=[0]",
+              "referenced" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ],
+              "fillToFix" : [
+                "Form/Demand/Dept",
+                "Form/Demand/Head",
+                "Form/Supply/Dept",
+                "Form/Supply/Head"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

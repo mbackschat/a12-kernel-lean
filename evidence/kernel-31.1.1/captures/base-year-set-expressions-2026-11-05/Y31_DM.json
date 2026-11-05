@@ -1,0 +1,227 @@
+{
+ "header": {
+  "id": "Y31_DM",
+  "modelType": "document",
+  "modelVersion": "29.4.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Y31_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false,
+   "baseYear": "2020"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "UTC",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Holder",
+        "name": "Holder",
+        "Field": {
+         "fieldType": {
+          "type": "StringType",
+          "StringType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Total",
+        "name": "Total",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minFractionalDigits": 2
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Diff",
+        "name": "Diff",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Claims",
+        "name": "Claims",
+        "Group": {
+         "repeatability": 4,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Claims/Year",
+           "name": "Year",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Claims/Amount",
+           "name": "Amount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 2,
+              "minFractionalDigits": 2
+             }
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ysf",
+        "name": "ysf",
+        "Rule": {
+         "errorEntityRelPath": "../Holder",
+         "errorCode": "ysf",
+         "errorCondition": "FieldFilled(Holder) And Sum(Claims*/Amount Having ([Claims/Year] == BaseYear)) > 100",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ysf"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ytf",
+        "name": "ytf",
+        "Rule": {
+         "errorEntityRelPath": "../Holder",
+         "errorCode": "ytf",
+         "errorCondition": "FieldFilled(Holder) And SumOfTerms(Claims* Having [Claims/Year] == BaseYear, [Claims/Amount]) > 100",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ytf"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ytt",
+        "name": "ytt",
+        "Rule": {
+         "errorEntityRelPath": "../Holder",
+         "errorCode": "ytt",
+         "errorCondition": "FieldFilled(Holder) And SumOfTerms(Claims*, BaseYear - [Claims/Year]) == 1",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ytt"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Form/ycn",
+        "name": "ycn",
+        "Rule": {
+         "errorEntityRelPath": "../Holder",
+         "errorCode": "ycn",
+         "errorCondition": "FieldFilled(Holder) And NumberOfFilledFields(Claims*/Amount Having ([Claims/Year] == BaseYear)) == 2",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ycn"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/yc",
+        "name": "yc",
+        "Computation": {
+         "computedFieldRelPath": "../Total",
+         "computationAlternatives": [
+          {
+           "operation": "SumOfTerms(Claims* Having [Claims/Year] == BaseYear, [Claims/Amount])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "yc"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/yd",
+        "name": "yd",
+        "Computation": {
+         "computedFieldRelPath": "../Diff",
+         "computationAlternatives": [
+          {
+           "operation": "SumOfTerms(Claims*, BaseYear - [Claims/Year])"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "yd"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

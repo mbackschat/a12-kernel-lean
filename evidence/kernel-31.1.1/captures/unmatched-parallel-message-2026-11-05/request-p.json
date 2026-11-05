@@ -1,0 +1,68 @@
+{
+ "model": "P31_DM.json",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "unmatched-both",
+   "documentInline": {
+    "Form": {
+     "Plan": "Q3",
+     "Demand": [
+      {
+       "Dept": "Sales",
+       "Head": "5",
+       "Rate": "1.50",
+       "Note": "dn1",
+       "Kind": "A"
+      },
+      {
+       "Dept": "Eng",
+       "Head": "3",
+       "Rate": "2.25",
+       "Note": "dn2",
+       "Kind": "B"
+      }
+     ],
+     "Supply": [
+      {
+       "Dept": "Sales",
+       "Head": "5",
+       "Rate": "1.50",
+       "Note": "sn1",
+       "Kind": "B"
+      },
+      {
+       "Dept": "Ops",
+       "Head": "2",
+       "Rate": "4.00",
+       "Note": "sn2",
+       "Kind": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "matched-empty",
+   "documentInline": {
+    "Form": {
+     "Plan": "Q3",
+     "Demand": [
+      {
+       "Dept": "Sales",
+       "Head": "5"
+      }
+     ],
+     "Supply": [
+      {
+       "Dept": "Sales"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}
