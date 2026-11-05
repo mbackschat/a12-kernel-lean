@@ -32,7 +32,8 @@ export LC_ALL=C
 kernel_root="../a12-kernel"
 # The current kernel's re-capture of the frozen requests, which the population replay reads. Git ignores
 # it, so scripts/recapture-kernel-evidence.py must have run first (docs/KERNEL-UPGRADE-PLAYBOOK.md).
-evidence_root="evidence/kernel-31.1.1/local"
+observed_kernel="31.1.1"
+evidence_root="evidence/kernel-$observed_kernel/local"
 if [ ! -d "$evidence_root/captures" ]; then
   echo "no $evidence_root/captures: run scripts/recapture-kernel-evidence.py first" >&2
   exit 1
@@ -323,12 +324,9 @@ if ! lake build a12-kernel-replay >/dev/null; then
   echo "failed to build the population replay" >&2
   exit 1
 fi
-# A request is named `req*` or `request*`, or carries a prefix before that word, as `rel-request-24.json`.
-find "$evidence_root/captures" -type f -name '*req*.json' -print \
-  | grep -E '/(req[^/]*|[^/]*[-_.](request|req)([-_.][^/]*)?)\.json$' \
-  | sort | while read -r request; do
-    if grep -q '"rows"' "$request"; then echo "$request"; fi
-  done > "$work/replay-requests"
+# The re-capture script owns which files are requests, so its manifest, the evaluator packet and this
+# replay pair them by one rule; a regex copy here once kept nine prefixed requests out of the manifest.
+python3 -I scripts/recapture-kernel-evidence.py requests --to "$observed_kernel" > "$work/replay-requests"
 replay_requests="$(count "$work/replay-requests")"
 # shellcheck disable=SC2046
 .lake/build/bin/a12-kernel-replay $(cat "$work/replay-requests") > "$work/replay"

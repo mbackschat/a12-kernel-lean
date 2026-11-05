@@ -1,12 +1,21 @@
 """Assemble an evaluator packet (U01, U02) from one committed revision of a12-kernel-lean.
 
 Usage: python3 -I scripts/assemble-evaluator-packet.py <repo> <revision> <version> <out-dir> [<changes>]
-Every file is read from the revision with `git show`, never from the working tree, except the kernel
-31.1.1 runtime artifacts: Git ignores them (docs/KERNEL-UPGRADE-PLAYBOOK.md), so each is read from the local
-re-capture and must match its digest in the revision's evidence/kernel-31.1.1/RECAPTURE.sha256. Requests,
-models and documents are the frozen inputs under evidence/kernel-30.8.1/captures/ that the re-capture ran.
+Every file is read from the revision with `git show`, never from the working tree, except the observed
+kernel's runtime artifacts: Git ignores them (docs/KERNEL-UPGRADE-PLAYBOOK.md), so each is read from the local
+re-capture and must match its digest in the revision's evidence/kernel-<OBSERVED>/RECAPTURE.sha256. Requests,
+models and documents are the frozen inputs under evidence/kernel-<FROZEN>/captures/ that the re-capture ran.
+A request is paired with its artifact by the re-capture script's own `artifact_name`.
 """
-import hashlib, json, os, re, subprocess, sys
+import hashlib, importlib.util, json, os, re, subprocess, sys
+
+# The frozen inputs' kernel and the kernel the packet's artifacts were observed on; an upgrade edits these two.
+FROZEN, OBSERVED = "30.8.1", "31.1.1"
+
+_recapture = importlib.util.spec_from_file_location(
+    "recapture", os.path.join(os.path.dirname(os.path.abspath(__file__)), "recapture-kernel-evidence.py"))
+recapture = importlib.util.module_from_spec(_recapture)
+_recapture.loader.exec_module(recapture)
 
 repo, rev, version, out = sys.argv[1:5]
 changes = sys.argv[5] if len(sys.argv) > 5 else None
@@ -56,13 +65,13 @@ def patterns(x):
         for v in x:
             yield from patterns(v)
 
-root = "evidence/kernel-30.8.1/captures/"
-packet_root = "evidence/kernel-31.1.1/captures/"
-local_root = os.path.join(repo, "evidence/kernel-31.1.1/local/captures")
-digests = {line[66:]: line[:64] for line in show("evidence/kernel-31.1.1/RECAPTURE.sha256").decode().splitlines() if line}
+root = f"evidence/kernel-{FROZEN}/captures/"
+packet_root = f"evidence/kernel-{OBSERVED}/captures/"
+local_root = os.path.join(repo, f"evidence/kernel-{OBSERVED}/local/captures")
+digests = {line[66:]: line[:64] for line in show(f"evidence/kernel-{OBSERVED}/RECAPTURE.sha256").decode().splitlines() if line}
 
 def observed(rel):
-    """The local 31.1.1 artifact at rel (relative to the captures root), checked against its digest."""
+    """The local observed-kernel artifact at rel (relative to the captures root), checked against its digest."""
     if rel not in digests:
         return None
     data = open(os.path.join(local_root, rel), "rb").read()
@@ -72,10 +81,10 @@ def observed(rel):
 counts = {"requests": 0, "rows": 0, "engines-disagree": 0, "kernel-fault": 0, "host-feature": 0, "pattern": 0, "candidate": 0}
 for p in sorted(t for t in tree if t.startswith(root) and t.endswith(".json")):
     base = os.path.basename(p)
-    suffix = base[len("request"):] if base.startswith("request") else base[3:] if base.startswith("req") else None
-    if suffix is None:
+    artifact_base = recapture.artifact_name(base)
+    if artifact_base is None:
         continue
-    artifact = os.path.join(os.path.dirname(p), "artifact" + suffix)
+    artifact = os.path.join(os.path.dirname(p), artifact_base)
     artifact_data = observed(artifact[len(root):])
     if artifact_data is None:
         continue
@@ -122,7 +131,7 @@ put("PACKET.md", f"""# Evaluator packet {version}
 {change_line}- `spec/`: {len(spec)} files, the semantics map and the numbered chapters.
 - `docs/IMPLEMENTER-GUIDE.md`: the host-input contract section only.
 - `docs/sources/`: {len(sources)} provenance files the spec's `Sources:` lines cite; the spec text stays normative on its own.
-- `evidence/kernel-31.1.1/captures/`: {counts['requests']} requests with their kernel 31.1.1 artifacts, models and document files.
+- `evidence/kernel-{OBSERVED}/captures/`: {counts['requests']} requests with their kernel {OBSERVED} artifacts, models and document files.
 
 Artifact rows by the kit's classification, cases 1 to 4 and the remainder (case 5, the clock exclusion, and the evaluator's own refusals are decided by the evaluator):
 

@@ -13,6 +13,7 @@ artifacts NumberFormalProjection.lean replays into the committed root, their Ker
   static   --from 30.8.1 --to 31.1.1 --stamp 28.4.0:29.4.0 --checkout ../a12-rulekit-measure
   manifest --to 31.1.1
   keep     --to 31.1.1
+  requests --to 31.1.1
   declarations --from 30.8.1 --to 31.1.1 --stamp 28.4.0:29.4.0 --checkout ../a12-rulekit-measure
 
 `runtime` launches the probe JVM directly with the command line Gradle's `:adapter:kernelProbe` builds,
@@ -170,6 +171,14 @@ def runtime(args):
         sys.exit("SIBLING CHECKOUT CHANGED")
     print(f"{len(pending) + 1 - len(failures)} artifacts written; failed:")
     print("\n".join(os.path.relpath(f, REPO) for f in failures))
+
+
+def requests(args):
+    """Print every runtime request of the version's local re-capture, the population the replay runs, so the
+    coverage report pairs requests by `artifact_name` rather than a copy of it."""
+    base = root(args.to, "local", "captures")
+    for path in sorted(os.path.relpath(p, REPO) for p, _ in runtime_requests(base)):
+        print(path)
 
 
 def registered_batches():
@@ -376,14 +385,15 @@ def dump_json(value, path):
 
 
 def manifest(args):
+    """Digest every request's artifact, paired by `artifact_name`: a leading-`artifact` filter left out the
+    prefixed artifacts such as `rel-artifact-24.json` (2026-11-05)."""
     base = root(args.to, "local", "captures")
     lines = []
-    for dirpath, _, files in os.walk(base):
-        for name in files:
-            if name.startswith("artifact") and name.endswith(".json"):
-                path = os.path.join(dirpath, name)
-                digest = hashlib.sha256(open(path, "rb").read()).hexdigest()
-                lines.append(f"{digest}  {os.path.relpath(path, base)}")
+    for request, _ in runtime_requests(base):
+        path = os.path.join(os.path.dirname(request), artifact_name(os.path.basename(request)))
+        if os.path.exists(path):
+            digest = hashlib.sha256(open(path, "rb").read()).hexdigest()
+            lines.append(f"{digest}  {os.path.relpath(path, base)}")
     target = root(args.to, "RECAPTURE.sha256")
     open(target, "w", encoding="utf-8").write("\n".join(sorted(lines, key=lambda l: l[66:])) + "\n")
     print(f"{len(lines)} artifacts in {os.path.relpath(target, REPO)}")
@@ -412,7 +422,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     steps = parser.add_subparsers(dest="step", required=True)
     for name, function in (("prepare", prepare), ("runtime", runtime), ("static", static), ("manifest", manifest), ("keep", keep),
-                           ("declarations", declarations)):
+                           ("declarations", declarations), ("requests", requests)):
         step = steps.add_parser(name)
         step.set_defaults(function=function)
         step.add_argument("--to", required=True)

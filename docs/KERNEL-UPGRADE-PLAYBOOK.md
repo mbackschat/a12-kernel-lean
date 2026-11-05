@@ -11,6 +11,30 @@ This playbook owns the routine for moving the theory from one A12 kernel release
 - **A code's name is not its meaning.** Check every static diagnostic code the theory emits against its meaning on the new kernel, because a code can keep its name and change its trigger. Kernel 31.1.1 moved `MVK_WILDCARD_AT_LOWEST_LEVEL_REQUIRED` from `SumOfProducts` to `SumOfTerms`.
 - **a12-dmkits measures; this project adopts.** A correction from a committed, reviewed peer revision is an inbound change with no ledger entry. Only a correction this project originates becomes a `SPEC-` entry (the `spec/` hard rule in [`CLAUDE.md`](../CLAUDE.md)).
 
+## 0. Check readiness before the decision
+
+Run these on the current kernel's root before an upgrade starts, so the new re-capture is compared against a complete and current baseline. Each must hold; a failure is fixed on the current kernel first.
+
+1. **Every runtime request has its artifact.** `python3 -I scripts/recapture-kernel-evidence.py runtime --to <current> --checkout ../a12-rulekit-measure` prints `every request has its artifact`, or lists only the requests the [re-capture record](sources/kernel-31-calibration-probes.md#src-kernel-31-recapture) names as building no model (five on 31.1.1).
+2. **The manifest is current.** `manifest --to <current>` leaves `RECAPTURE.sha256` unchanged in `git diff`. A changed digest means a local artifact is stale or newer: move it aside, re-run it with `runtime`, and keep whichever digest the fresh run reproduces.
+3. **One request population.** `requests --to <current> | wc -l` equals the request count the [coverage report](CONFORMANCE-COVERAGE.md#axis-r--population-replay) states, and the manifest lists that count less the requests that build no model.
+4. **The gates are green:** `lake test`, the trust audit and a regenerated coverage report with no tier-1 divergence.
+
+### Version touchpoints
+
+Each place below names a kernel version; the steps that change it are in sections 1, 4 and 5. Search the old version with `git grep -n '<old>' -- scripts A12Kernel/Basic.lean 'A12Kernel/*Main.lean' A12Kernel/Evidence` afterwards for any place this list misses.
+
+| Place | What it names | Changed at |
+|---|---|---|
+| [`Basic.lean`](../A12Kernel/Basic.lean) `kernelVersion`, `retainedEvidenceKernelVersion` | the theory's kernel and the frozen bundles' | close, step 1 |
+| [`EvidenceMain.lean`](../A12Kernel/EvidenceMain.lean) `root`, `observed` | the frozen input root and the observed root | first calibration |
+| [the coverage report](../scripts/report-conformance-coverage.sh) `observed_kernel` | the re-capture the population replay reads | first calibration |
+| [the evaluator packet](../scripts/assemble-evaluator-packet.py) `FROZEN`, `OBSERVED` | the inputs' kernel and the shipped artifacts' | the next packet, close step 9 |
+| [`ReferenceProcessTestMain.lean`](../A12Kernel/ReferenceProcessTestMain.lean) | the accepted version and the wrong-kernel control | close, step 2 |
+| [`SOURCES.md`](SOURCES.md) kernel pin | the `../a12-kernel` revision the coverage report checks | decide and freeze, step 4 |
+| [`CLAUDE.md`](../CLAUDE.md) goal line, [`spec/SEMANTICS-MAP.md`](../spec/SEMANTICS-MAP.md) §0, [`EVIDENCE.md`](EVIDENCE.md#evolution) | the stated target and evidence scope | freeze, step 3; close, step 4 |
+| [the re-capture script](../scripts/recapture-kernel-evidence.py) | nothing: `--from`, `--to` and `--stamp` are arguments | — |
+
 ## 1. Decide and freeze
 
 1. Record the owner's decision in a new [`PLAN.md`](PLAN.md) section with the keys the 31.1.1 section uses: `decision`, `frozen`, `method`, the old-kernel measurement route, `owed`, `models`, one checkbox per batch, `next` and `close`.
@@ -78,4 +102,5 @@ The re-capture of section 2 opens `evidence/kernel-<new>/`. Point [`EvidenceMain
 - A construct may change its admitted operand kinds: `AddMonths` and `AddYears` refuse a DateTime on 31.1.1, which turned two planned runtime rows into static rows with no runtime witness. Run the static check on a new probe model before spending a runtime row on it.
 - A frozen observation file no projection registry names was never compared against Lean on either kernel: registering 26 such files on 31.1.1 found ten Lean disagreements its 30.8.1 rows would have shown too. Register every re-run observation file a projection can read, not only the ones it already lists.
 - A directory can retain several models beside one verdict file. Pair a hand-edited variant with its verdict by name; trying each candidate until the codes match reported the wrong model's deserialization failure as a change for `out-i-badindex.json`.
-- A request named with a prefix, `rel-request-24.json`, needs the re-capture script's whole-word rename to find its artifact, and the population replay needs the same rule to include it; before 2026-11-05 both took only a leading word.
+- A request named with a prefix, `rel-request-24.json`, needs the re-capture script's whole-word rename to find its artifact. Before 2026-11-05 the script's `runtime` and `manifest`, the evaluator packet and the coverage report each held their own copy of the rule; the copies drifted, and nine prefixed artifacts were measured but left out of `RECAPTURE.sha256`. All four now pair through the script's `artifact_name` and its `requests` step; a new tool that reads the requests must call it too.
+- A local re-capture root can hold artifacts older than its manifest: four `handback-rows-2026-10-23` artifacts differed from their digests on 2026-11-05, and a fresh run reproduced the committed digests. Check readiness (section 0) before trusting a local root.
