@@ -79,7 +79,7 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   | .value { index := none, filter := none, .. } => target.policy.kind == .enumeration || target.policy.kind == .boolean || target.policy.kind == .confirm
   | .value { path, index := some _, filter := none, .. } =>
       target.policy.kind == .enumeration && !path.segments.any (·.star)
-  | _ => false
+  | _ => target.policy.kind == .enumeration && (lowerSelectedStringExpr model group expression).isOk
 
 /-- Whether an ordinary Enumeration elaboration was refused with the calculation's own class, the one
 refusal a preamble naming it lifts. -/
@@ -96,25 +96,21 @@ private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
   -- `ud5`–`ud7`). A preamble naming that class admits such a field source into either target kind, whose
   -- domain then judges the attempt (spec/09 §4.3).
   if target.repeatableScope.isEmpty then
-    if suppressCalculation then
+    let ordinary := elaborateEnumerationComputation model group target.id source
+    if suppressCalculation && drawsCalculationRefusal ordinary (·.calculationRefusal?) then
       if let .field operand := source then
-        if drawsCalculationRefusal (elaborateEnumerationComputation model group target.id source)
-            (·.calculationRefusal?) then
-          return .document (CheckedDocumentComputationStep.ofSuppressedEnumeration
-            (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
-              (elaborateSuppressedEnumerationCalculation model group target.id operand)))
-    pure (.fixedEnumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
-      (elaborateEnumerationComputation model group target.id source)))
+        return .document (CheckedDocumentComputationStep.ofSuppressedEnumeration
+          (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
+            (elaborateSuppressedEnumerationCalculation model group target.id operand)))
+    pure (.fixedEnumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?) ordinary))
   else
-    if suppressCalculation then
+    let ordinary := checkAddressedEnumerationComputation model group target.id source
+    if suppressCalculation && drawsCalculationRefusal ordinary (·.calculationRefusal?) then
       if let .field operand := source then
-        if drawsCalculationRefusal (checkAddressedEnumerationComputation model group target.id source)
-            (·.calculationRefusal?) then
-          return .suppressedEnumeration
-            (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
-              (elaborateSuppressedAddressedEnumerationCalculation model group target.id operand))
-    pure (.enumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
-      (checkAddressedEnumerationComputation model group target.id source)))
+        return .suppressedEnumeration
+          (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
+            (elaborateSuppressedAddressedEnumerationCalculation model group target.id operand))
+    pure (.enumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?) ordinary))
 
 /-- `arity := .soleAllowed` lowers a keyed column read, with or without a category, into an
 Enumeration target as the one-operand scan: the Kernel clears that target on a missing or duplicated
@@ -129,24 +125,24 @@ private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) 
       (← lowerFirstFilledEntitySource model group arguments bindingGroup? suppress)))
   if target.policy.kind == .enumeration then
     let source ← lowerEnumerationFirstFilledSource model group arguments bindingGroup? suppress
-    -- A member outside the target's domain draws the calculation's own class on either target kind,
-    -- which a preamble naming it lifts (spec/09 §4.3).
-    if suppressCalculation && (if target.repeatableScope.isEmpty
-        then drawsCalculationRefusal (elaborateEnumerationFirstFilledComputation model group target.id source arity)
-          (·.calculationRefusal?)
-        else drawsCalculationRefusal (checkAddressedEnumerationFirstFilledComputation model group target.id source arity)
-          (·.calculationRefusal?)) then
-      return .suppressedEnumeration (← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
-        (elaborateSuppressedEnumerationFirstFilledComputation model group target.id source arity))
+    -- A String member or a member outside the target's domain draws the calculation's own class on either
+    -- target kind, which a preamble naming it lifts; the members are then scanned as a String target's are
+    -- (spec/09 §4.3).
+    let suppressed : Lowering (CheckedFirstFilledAlternative model) := do
+      return .suppressedEnumeration (← elaborated "FirstFilledValue"
+        (elaborateSuppressedEnumerationFirstFilledComputation model group target.id
+          (← lowerFirstFilledEntitySource model group arguments bindingGroup? suppress) arity))
     if hFixed : target.repeatableScope = [] then
-      let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
-        (elaborateEnumerationFirstFilledComputation model group target.id source arity)
+      let ordinary := elaborateEnumerationFirstFilledComputation model group target.id source arity
+      if suppressCalculation && drawsCalculationRefusal ordinary (·.calculationRefusal?) then return ← suppressed
+      let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?) ordinary
       if hField : target.id = operation.target.field then
         return .fixedEnumeration operation target hField hFixed
       else refuse "FirstFilledValue" "target identity"
     else
-      return .addressedEnumeration (← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
-        (checkAddressedEnumerationFirstFilledComputation model group target.id source arity))
+      let ordinary := checkAddressedEnumerationFirstFilledComputation model group target.id source arity
+      if suppressCalculation && drawsCalculationRefusal ordinary (·.calculationRefusal?) then return ← suppressed
+      return .addressedEnumeration (← elaboratedEnumerationFirstFilled (·.calculationRefusal?) ordinary)
   let source ← lowerFirstFilledSource model group arguments bindingGroup? suppress
   match target.temporalFirstFilledFamily?, target.policy.kind with
   | some .time, _ =>
@@ -166,6 +162,17 @@ private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) 
       pure (.boolean (← elaborated "FirstFilledValue" (checkBooleanFirstFilledComputation model group target.id source)))
   | _, _ => refuse "FirstFilledValue" "target kind"
 
+/-- A String expression into an Enumeration target: the calculation's own refusal, unless a preamble naming
+it lifts the domain check and the target judges the expression's text (spec/09 §4.3). The expression's own
+resolution and self-read gates answer first. -/
+private def suppressedEnumerationText (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
+    (surface : SurfaceSelectedStringExpression) (suppressCalculation : Bool) :
+    Lowering (CheckedRowComputationOperation model) := do
+  let operation ← elaborated "EnumerationComputation"
+    (elaborateSuppressedEnumerationStringExpression model group target.id surface)
+  if suppressCalculation then return .suppressedEnumerationText operation
+  refuse "EnumerationComputation" CalculationRefusal.invalidEnumCalculation.catalogKey
+
 /-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
     (expression : Expr) (suppress : Bool := false) (suppressCalculation : Bool := false) :
@@ -179,9 +186,15 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
       -- `MVK_NO_WILDCARDS_ALLOWED` (`e5`, `e6` of the semantic-index checkpoint).
       let .indexed _ _ ← lowerEntityOperand model group (.mk (.entity reference) none)
         | refuse "EnumerationComputation" "keyed extent"
-      return .firstFilled (← lowerFirstFilledAlternative model group target
-        [.mk (.entity reference) none] (arity := .soleAllowed) (suppress := suppress)
-        (suppressCalculation := suppressCalculation))
+      match lowerFirstFilledAlternative model group target [.mk (.entity reference) none]
+          (arity := .soleAllowed) (suppress := suppress) (suppressCalculation := suppressCalculation) with
+      | .ok operation => return .firstFilled operation
+      -- A keyed column of another kind is a String expression the calculation refuses (`c05` of the
+      -- suppressed-shapes checkpoint); one the expression's own gates refuse keeps its refusal.
+      | .error refusal =>
+          if let .ok surface := lowerSelectedStringExpr model group expression then
+            return ← suppressedEnumerationText model group target surface suppressCalculation
+          throw refusal
   if target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange then
     if let .value { path, index := none, category := none, filter := none } := expression then
       let some source := path.toFieldPath? | refuse "ScalarCopy" "source path"
@@ -233,7 +246,14 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
         | none => SurfaceTextFieldOperand.direct field
         | some name => .category field name
       return ← lowerEnumerationAlternative model group target (.field source) suppressCalculation
-  | other => refuse "RowComputation" other.construct
+  | other => do
+      -- Any other String expression is an operation the calculation's domain check refuses outright, after
+      -- the expression's own resolution and self-read gates; the preamble naming that class admits it and
+      -- the target judges its text (spec/09 §4.3).
+      if target.policy.kind == .enumeration then
+        if let .ok surface := lowerSelectedStringExpr model group other then
+          return ← suppressedEnumerationText model group target surface suppressCalculation
+      refuse "RowComputation" other.construct
 
 /-- One `Time(...)` component: a quoted constant, an extractor over a field, or a Number or digit
 String field. -/

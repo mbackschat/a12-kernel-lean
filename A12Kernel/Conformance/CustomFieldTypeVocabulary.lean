@@ -9,13 +9,13 @@ namespace A12Kernel.Conformance.CustomFieldTypeVocabulary
 
 open A12Kernel
 
-/- The catalog is exactly the thirty-six detail keys and thirteen types, and no name repeats. A
+/- The catalog is exactly the forty detail keys and fourteen types, and no name repeats. A
    duplicate would silently merge two of the Kernel's refusals into one. -/
 example :
-    CustomFieldTypeDetail.all.length = 36 ∧
-      (CustomFieldTypeDetail.all.map (·.catalogKey)).eraseDups.length = 36 ∧
-      CustomFieldType.all.length = 13 ∧
-      (CustomFieldType.all.map (·.errorCode)).eraseDups.length = 13 := by
+    CustomFieldTypeDetail.all.length = 40 ∧
+      (CustomFieldTypeDetail.all.map (·.catalogKey)).eraseDups.length = 40 ∧
+      CustomFieldType.all.length = 14 ∧
+      (CustomFieldType.all.map (·.errorCode)).eraseDups.length = 14 := by
   native_decide
 
 /- Every refusal key has an owner and the success sentinel has none, so `owners` partitions the
@@ -30,8 +30,8 @@ example :
    double-counts by exactly one, which is the arithmetic a consumer building a per-type switch has
    to get right. -/
 example :
-    (CustomFieldType.all.map (fun t => (CustomFieldTypeDetail.refusalsOf t).length)).sum = 36 ∧
-      CustomFieldTypeDetail.all.length - 1 = 35 := by
+    (CustomFieldType.all.map (fun t => (CustomFieldTypeDetail.refusalsOf t).length)).sum = 40 ∧
+      CustomFieldTypeDetail.all.length - 1 = 39 := by
   native_decide
 
 /- First counterexample to the obvious simplification: one detail key, two owning types. A consumer

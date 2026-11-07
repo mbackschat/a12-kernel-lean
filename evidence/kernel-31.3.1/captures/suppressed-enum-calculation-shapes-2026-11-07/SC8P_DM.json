@@ -1,0 +1,953 @@
+{
+ "header": {
+  "id": "SC8P_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "SC8P_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   }
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Text",
+        "name": "Text",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Text2",
+        "name": "Text2",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Wide",
+        "name": "Wide",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Count",
+        "name": "Count",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutA",
+        "name": "OutA",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutB",
+        "name": "OutB",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutC",
+        "name": "OutC",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutD",
+        "name": "OutD",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutE",
+        "name": "OutE",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutF",
+        "name": "OutF",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutG",
+        "name": "OutG",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutH",
+        "name": "OutH",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/OutI",
+        "name": "OutI",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Alpha"
+              }
+             ]
+            },
+            {
+             "value": "9",
+             "label": [
+              {
+               "locale": "en_US",
+               "text": "Nine"
+              }
+             ]
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Cats",
+        "name": "Cats",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Cats/Key",
+           "name": "Key",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Cats/Code",
+           "name": "Code",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Key"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Lines/LText",
+           "name": "LText",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Lines/LOut1",
+           "name": "LOut1",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Alpha"
+                 }
+                ]
+               },
+               {
+                "value": "9",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Nine"
+                 }
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Lines/LOut2",
+           "name": "LOut2",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Alpha"
+                 }
+                ]
+               },
+               {
+                "value": "9",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Nine"
+                 }
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Lines/LOut3",
+           "name": "LOut3",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Alpha"
+                 }
+                ]
+               },
+               {
+                "value": "9",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Nine"
+                 }
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Lines/r01",
+           "name": "r01",
+           "Computation": {
+            "computedFieldRelPath": "../LOut1",
+            "computationAlternatives": [
+             {
+              "operation": "[LText]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ],
+            "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Lines/r02",
+           "name": "r02",
+           "Computation": {
+            "computedFieldRelPath": "../LOut2",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(LText, /Form/Text)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ],
+            "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Lines/r03",
+           "name": "r03",
+           "Computation": {
+            "computedFieldRelPath": "../LOut3",
+            "computationAlternatives": [
+             {
+              "operation": "[LText] + \"x\""
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ],
+            "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Demand",
+        "name": "Demand",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/DLabel",
+           "name": "DLabel",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/DCode",
+           "name": "DCode",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "9"
+               },
+               {
+                "value": "B"
+               }
+              ]
+             }
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Supply",
+        "name": "Supply",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/SOut1",
+           "name": "SOut1",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Alpha"
+                 }
+                ]
+               },
+               {
+                "value": "9",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Nine"
+                 }
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/SOut2",
+           "name": "SOut2",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Alpha"
+                 }
+                ]
+               },
+               {
+                "value": "9",
+                "label": [
+                 {
+                  "locale": "en_US",
+                  "text": "Nine"
+                 }
+                ]
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Supply/j01",
+           "name": "j01",
+           "Computation": {
+            "computedFieldRelPath": "../SOut1",
+            "computationAlternatives": [
+             {
+              "operation": "[/Form/Demand/DLabel]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ],
+            "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Supply/j02",
+           "name": "j02",
+           "Computation": {
+            "computedFieldRelPath": "../SOut2",
+            "computationAlternatives": [
+             {
+              "operation": "[/Form/Demand/DCode]"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ],
+            "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c01",
+        "name": "c01",
+        "Computation": {
+         "computedFieldRelPath": "../OutA",
+         "computationAlternatives": [
+          {
+           "operation": "[Text]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c02",
+        "name": "c02",
+        "Computation": {
+         "computedFieldRelPath": "../OutB",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Text, Wide)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c03",
+        "name": "c03",
+        "Computation": {
+         "computedFieldRelPath": "../OutC",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Text, Text2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c04",
+        "name": "c04",
+        "Computation": {
+         "computedFieldRelPath": "../OutD",
+         "computationAlternatives": [
+          {
+           "operation": "[Text] + [Text2]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c05",
+        "name": "c05",
+        "Computation": {
+         "computedFieldRelPath": "../OutE",
+         "computationAlternatives": [
+          {
+           "operation": "[Cats/Code For \"k1\"]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c06",
+        "name": "c06",
+        "Computation": {
+         "computedFieldRelPath": "../OutF",
+         "computationAlternatives": [
+          {
+           "operation": "FieldValueAsString(Count)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c07",
+        "name": "c07",
+        "Computation": {
+         "computedFieldRelPath": "../OutG",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Lines*/LText)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c08",
+        "name": "c08",
+        "Computation": {
+         "computedFieldRelPath": "../OutH",
+         "computationAlternatives": [
+          {
+           "operation": "[Count]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/c09",
+        "name": "c09",
+        "Computation": {
+         "computedFieldRelPath": "../OutI",
+         "computationAlternatives": [
+          {
+           "operation": "[Wide]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

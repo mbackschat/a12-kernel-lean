@@ -8,13 +8,12 @@ import A12Kernel.Reference.Dm.EntryFrameFixture
 
 The remaining carriers of the preamble that lifts `MVK_ERROR_INVALID_ENUM_CALCULATION`
 ([spec/09 §4.3](../../../spec/09-computations.md#43-number-string-enumeration-and-custom-targets)): a direct
-field into a repeatable target, and `FirstFilledValue` into a fixed and a repeatable one. a12-dmkits KF298
-measures the runtime from a String field source on a fixed target only
-([inbound record](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07)). The runtime rows
-here are therefore derived from the target's own check, which the measured rows establish, and unmeasured
-on their carrier. The controls separate the account in which the preamble lifts every class; the
-`FirstFilledValue` rows additionally separate a scan that falls through a rejected token from the one that
-judges the first filled token.
+field into a repeatable target, and `FirstFilledValue` into a fixed and a repeatable one. Kernel 31.3.1
+measures a row copy and String and mixed first-filled lists on both target kinds
+([checkpoint](../../../docs/sources/kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes)); the Enumeration and category member
+lists here are the same scan and target check, unmeasured on these members. The controls separate the
+account in which the preamble lifts every class; the `FirstFilledValue` rows additionally separate a scan
+that falls through a rejected token from the one that judges the first filled token.
 -/
 
 namespace A12Kernel.Dm.SuppressedEnumerationRowCalculationLocks

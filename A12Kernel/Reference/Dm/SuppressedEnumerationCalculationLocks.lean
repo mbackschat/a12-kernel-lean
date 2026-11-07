@@ -11,8 +11,9 @@ would draw that class, and its target judges each attempted text at runtime (spe
 rows are a12-dmkits KF298's, measured on both strategies (31.3.1 Letter J §5,
 [inbound record](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07)): a declared token is
 stored, a declared value's label or an undeclared text leaves the target errored without a message, and an
-empty text clears a seeded target. The wider Enumeration source is judged by the same target check, derived
-and unmeasured; the controls separate the account in which the preamble lifts every class.
+empty text clears a seeded target. The wider Enumeration source is judged by the same target check, measured
+on kernel 31.3.1 ([checkpoint](../../../docs/sources/kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes), row `c09`);
+the controls separate the account in which the preamble lifts every class.
 -/
 
 namespace A12Kernel.Dm.SuppressedEnumerationCalculationLocks
@@ -71,8 +72,7 @@ example :
     run "[Text]" [("Text", ""), ("Out", "A")] = some ("cleared", []) := by
   native_decide
 
--- A wider Enumeration source is admitted under the preamble and judged by the same target check; derived
--- from the target check, unmeasured for this source kind.
+-- A wider Enumeration source is admitted under the preamble and judged by the same target check (`c09`).
 example :
     verdict "[Wide]" (preamble := "") = some "MVK_ERROR_INVALID_ENUM_CALCULATION" &&
     verdict "[Wide]" = some "admitted" &&
@@ -81,8 +81,8 @@ example :
   native_decide
 
 -- The preamble lifts only the calculation's class: the scale-warning preamble leaves it standing (spec/12
--- §4, measured), and a Number source keeps the comparison's class and a literal outside the domain the
--- literal's (both derived: the preamble names neither).
+-- §4, measured), a Number source keeps the comparison's class (`c08` of the suppressed-shapes checkpoint,
+-- measured), and a literal outside the domain keeps the literal's (derived: the preamble names neither).
 example :
     verdict "[Text]" (preamble := "@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)") =
       some "MVK_ERROR_INVALID_ENUM_CALCULATION" &&

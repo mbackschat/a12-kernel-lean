@@ -55,6 +55,8 @@ inductive ParallelJoinedRowOperation (view : FlatModel) where
   /-- An Enumeration copy into a target whose scope continues above its joined group, which the
   instance view keeps repeatable. -/
   | rowEnumeration (operation : CheckedAddressedEnumerationComputation view)
+  /-- An Enumeration target computed from a String expression whose preamble lifted the domain check. -/
+  | enumerationText (operation : CheckedSuppressedEnumerationStringExpression view)
   | bound (target : FieldId) (family : DocumentTargetFamily) (reads : ComputationReadFootprint)
 
 namespace ParallelJoinedRowOperation
@@ -64,12 +66,13 @@ def target : ParallelJoinedRowOperation view → FieldId
   | .temporal operation => operation.target
   | .enumeration operation => operation.target.field
   | .rowEnumeration operation => operation.target.field
+  | .enumerationText operation => operation.target.id
   | .bound target _ _ => target
 
 def family : ParallelJoinedRowOperation view → DocumentTargetFamily
   | .string _ => .string
   | .temporal operation => operation.family
-  | .enumeration _ | .rowEnumeration _ => .enumeration
+  | .enumeration _ | .rowEnumeration _ | .enumerationText _ => .enumeration
   | .bound _ family _ => family
 
 /-- Field identities are the model's, since the instance view keeps every field. -/
@@ -79,6 +82,7 @@ def referencesWith (field : FieldId) (filterReads : CorrelatedHaving → Bool) :
   | .temporal operation => operation.expression.referencesWith field filterReads
   | .enumeration operation => operation.source.referencesField field
   | .rowEnumeration operation => operation.source.referencesField field
+  | .enumerationText operation => operation.referencesField field
   | .bound _ _ reads => reads.references field
 
 def requiresProducer (target field : FieldId) (producerProtected : FieldId → ResolvedGroupReference → Bool) :
@@ -99,6 +103,9 @@ def evaluateIn (matchers : StringTargetMatchers) (context : ScalarComputationCon
   | .rowEnumeration operation =>
       let outcome := (operation.evaluateIn context.read).asExactStringTargetOutcome
       pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+  | .enumerationText operation => do
+      let outcome ← (operation.evaluateIn context).mapError .stringExpression
+      pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.projection outcome)
   -- Never selected: `execute` scans only the joined alternatives.
   | .bound _ family _ => pure (family.noValue, DocumentComputationReadBack.empty)
 

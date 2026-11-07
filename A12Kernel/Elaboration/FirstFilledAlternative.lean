@@ -106,7 +106,7 @@ def evaluateAt (operation : CheckedFirstFilledAlternative model) (world : World)
         pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
     | .suppressedEnumeration operation =>
         let outcome ← (operation.evaluateAtWithRead (world := some world) document document.read
-          environment).mapError (.enumeration ∘ .source)
+          environment).mapError .string
         pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.projection outcome)
     | .boolean operation =>
         let address ← targetAddress operation.target environment (.site ∘ .targetEnvironment)

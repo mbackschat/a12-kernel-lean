@@ -37,6 +37,26 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-07-02"></a>
+### SPEC-2026-11-07-02 — A tolerance band refuses a String, Date or Custom target, behind the preamble, syntax and names and ahead of the kind comparison and the self-read
+
+- `status`: pending
+- `canonical`: [spec/09 §1.4](../spec/09-computations.md#14-wrong-kind-constants-and-field-sources)'s tolerance-band bullet.
+- `delta`: Extends the String row to Date targets under every rounding mode and to Custom targets under `Exact`, orders the tolerance class ahead of the kind class a String target reading a Number meets unbanded and ahead of the self-read, and behind the preamble, the operation's syntax and its names; kernel 31.3.1's new `MVK_ERROR_INVALID_FIELDTYPE`, whose source branch the tolerance gate pre-empts, has no admitted witness on those kinds.
+- `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [tolerance-band kinds](sources/kernel-31-calibration-probes.md#src-tolerance-band-target-kinds) and the [precedence batch](sources/kernel-31-calibration-probes.md#src-computation-precedence).
+- `acceptance`: a12-dmkits' checker gives the same classes on the same grid, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
+<a id="spec-2026-11-07-01"></a>
+### SPEC-2026-11-07-01 — The Enumeration calculation gate judges an operation's shape, so its preamble admits every String-valued operation and the target judges the text
+
+- `status`: pending
+- `canonical`: [spec/09 §4.3](../spec/09-computations.md#43-number-string-enumeration-and-custom-targets)'s Enumeration bullets and §1.4's keyed-String note.
+- `delta`: Extends the KF298 account from a copied text to every operation the gate refuses: a concatenation, `FieldValueAsString`, a keyed String column, a String or mixed `FirstFilledValue` list and a starred String walk, on fixed and repeatable targets, and a copy and a `FirstFilledValue` list on key-joined ones, each refused without the preamble and admitted with it, the target judging the text; a first-filled scan judges the selected member without falling through; a first-filled list naming its own target answers the self-read either way; the generated rule still fires where a non-empty operation text differs from the stored target, and an empty one fires nothing.
+- `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [suppressed calculation shapes](sources/kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes), both strategies, and the [precedence batch](sources/kernel-31-calibration-probes.md#src-computation-precedence).
+- `acceptance`: a12-dmkits' checker refuses and its interpreter judges the same shapes, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-11-05-05"></a>
 ### SPEC-2026-11-05-05 — A relative error target of names only names a child of the rule element, and the Java map order resizes a small table at a bucket's eighth key
 

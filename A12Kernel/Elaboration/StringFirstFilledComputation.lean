@@ -173,6 +173,32 @@ structure StringFirstFilledComputationRunView (model : FlatModel) (ResidualMessa
   operation : CheckedStringFirstFilledComputation model
   string : StringComputationRunView ResidualMessage CellAddr
 
+/-- The first filled token of `source` at one target instance's environment, as a computation reads its
+members: a String first-filled target and a suppressed Enumeration one select alike and differ only in how
+their target judges the token. -/
+def CheckedTokenEntitySource.computationFirstFilledToken (source : CheckedTokenEntitySource model)
+    (input : CheckedDocument model) (read : CellAddr → Except CheckedDocumentError CheckedCell)
+    (environment : Env) (world : Option World := none) :
+    Except StringFirstFilledComputationFault FirstFilledTokenResult := do
+  let selected ← scanComputationFirstFilledSelections environment
+    (fun
+      | .calendarUnavailable => .unsupportedDateCalendar
+      | .valueFailure => .temporalValueFailure
+      | .worldUnavailable => .worldUnavailable
+      | .typeValidityValueFailure => .typeValidityValueFailure
+      | .stringExpressionUnavailable => .stringExpressionUnavailable
+      | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
+      | .groupUnavailable path => .unsupportedGroupOperand path)
+      (·.computationSelection (world := world) (filterStoredText := input.storedTextWithRead read) input.readDocument environment (input.computationCellAt read)
+        (selectedRead := fun source => source.sideWith .computation input.readDocument environment
+          (input.computationCellAt read environment) (input.storedTextWithRead read environment) (input.computationCellAt read)
+          (input.resolveSemanticIndexColumnWith read) |>.mapError (fun _ => .unsupportedGroupOperand source.path)))
+      source.operands {}
+    |>.mapError .source
+  pure (match selected with
+    | .inl _ => .noValue
+    | .inr result => result.asToken)
+
 namespace CheckedStringFirstFilledComputation
 
 def referencesWith (operation : CheckedStringFirstFilledComputation model) (field : FieldId)
@@ -191,24 +217,7 @@ def evaluateAt (operation : CheckedStringFirstFilledComputation model)
     Except StringFirstFilledComputationFault StringFirstFilledComputationOutcome := do
   let targetPath ← environment.pathForScope operation.target.repeatableScope
     |>.mapError .targetEnvironment
-  let selected ← scanComputationFirstFilledSelections environment
-    (fun
-      | .calendarUnavailable => .unsupportedDateCalendar
-      | .valueFailure => .temporalValueFailure
-      | .worldUnavailable => .worldUnavailable
-      | .typeValidityValueFailure => .typeValidityValueFailure
-      | .stringExpressionUnavailable => .stringExpressionUnavailable
-      | .storedTextUnavailable fieldId => .storedTextUnavailable fieldId
-      | .groupUnavailable path => .unsupportedGroupOperand path)
-      (·.computationSelection (world := world) (filterStoredText := input.storedTextWithRead read) input.readDocument environment (input.computationCellAt read)
-        (selectedRead := fun source => source.sideWith .computation input.readDocument environment
-          (input.computationCellAt read environment) (input.storedTextWithRead read environment) (input.computationCellAt read)
-          (input.resolveSemanticIndexColumnWith read) |>.mapError (fun _ => .unsupportedGroupOperand source.path)))
-      operation.source.operands {}
-    |>.mapError .source
-  let result : FirstFilledTokenResult := match selected with
-    | .inl _ => .noValue
-    | .inr result => result.asToken
+  let result ← operation.source.computationFirstFilledToken input read environment world
   pure {
     targetField := { field := operation.targetField, path := targetPath }
     outcome := operation.target.stringPolicy.checkTargetWithPattern matcher

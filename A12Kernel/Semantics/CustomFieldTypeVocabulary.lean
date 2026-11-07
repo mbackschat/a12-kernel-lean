@@ -2,12 +2,12 @@ import A12Kernel.Cell
 
 /-! # The registered custom field types and their refusal vocabulary
 
-A condition may ask whether a field's value is a valid instance of a named predefined type — a German tax number, an IBAN, an identification number. The Kernel ships validators for thirteen such types, and this module records their observable refusal vocabulary.
+A condition may ask whether a field's value is a valid instance of a named predefined type — a German tax number, an IBAN, an identification number. Kernel 31.3.1 ships validators for fourteen such types, and this module records their observable refusal vocabulary.
 
 Like the runtime formal number checks, the family answers on **two independent axes**, and a consumer that collapses them gets a different answer than the Kernel does.
 
-* The **surfaced code** is what a validation result carries. There are fourteen for thirteen types, because of the exception below, and it is what a consumer switches on.
-* The **detail key** selects the message and names *which* of the type's checks refused. There are thirty-six, and a type has between one and six.
+* The **surfaced code** is what a validation result carries. There are fifteen for fourteen types, because of the exception below, and it is what a consumer switches on.
+* The **detail key** selects the message and names *which* of the type's checks refused. There are forty, and a type has between one and six.
 
 Neither axis is a function of the other, and both counterexamples are worth keeping because each defeats a plausible simplification:
 
@@ -51,9 +51,11 @@ inductive CustomFieldType where
   | federalTaxNumber
   /-- Criminal-proceedings file reference. -/
   | criminalFileReference
+  /-- Tax-investigation number, new in Kernel 31.3.1. -/
+  | taxInvestigationNumber
   deriving Repr, DecidableEq
 
-/-- One of the thirty-six detail keys that select a refusal's message. -/
+/-- One of the forty detail keys that select a refusal's message. -/
 inductive CustomFieldTypeDetail where
   /-- The success sentinel. It is a member of the catalog rather than an absence, which matters to a
   consumer enumerating the catalog: it is the one key that never accompanies a refusal. -/
@@ -76,6 +78,8 @@ inductive CustomFieldTypeDetail where
   | taxNumberFormat | taxNumberOffice | taxNumberDistrictFormat | taxNumberNegativePattern
   | taxNumberCheckDigit
   | criminalFileFormat | criminalFileOffice | criminalFileCheckDigit
+  | taxInvestigationFormat | taxInvestigationOffice | taxInvestigationDistinguishingNumber
+  | taxInvestigationCheckDigit
   deriving Repr, DecidableEq
 
 namespace CustomFieldType
@@ -95,6 +99,7 @@ def errorCode : CustomFieldType → String
   | .dateDayMonthYear => "ungueltigesDatumTTMMJJ"
   | .federalTaxNumber => "ungueltigeBundessteuernummer"
   | .criminalFileReference => "ungueltigesStrafAktenzeichen"
+  | .taxInvestigationNumber => "ungueltigeESStErmittlungsnummer"
 
 /-- The separate code the identification number surfaces for a value in its test range. It is not any type's ordinary code, so a consumer enumerating `errorCode` alone misses it; the Kernel gives it no special treatment beyond its spelling. -/
 def testRangeCode : String := "testIDNummer"
@@ -103,7 +108,7 @@ def testRangeCode : String := "testIDNummer"
 def all : List CustomFieldType :=
   [.identificationNumber, .taxNumber, .unitValueFileReference,
     .taxOfficeNumber, .countryAbbreviation, .iban, .ibanInternational, .bic, .bicInternational,
-    .dateMonthYear, .dateDayMonthYear, .federalTaxNumber, .criminalFileReference]
+    .dateMonthYear, .dateDayMonthYear, .federalTaxNumber, .criminalFileReference, .taxInvestigationNumber]
 
 end CustomFieldType
 
@@ -147,6 +152,10 @@ def catalogKey : CustomFieldTypeDetail → String
   | .criminalFileFormat => "STRAFAZ_FORMAT_FEHLER"
   | .criminalFileOffice => "STRAFAZ_FINANZAMT_FEHLER"
   | .criminalFileCheckDigit => "STRAFAZ_PRUEFZIFFER_FEHLER"
+  | .taxInvestigationFormat => "ESSTERMNR_FORMAT_FEHLER"
+  | .taxInvestigationOffice => "ESSTERMNR_FINANZAMT_FEHLER"
+  | .taxInvestigationDistinguishingNumber => "ESSTERMNR_UNTERSCHEIDUNGSNUMMER_FEHLER"
+  | .taxInvestigationCheckDigit => "ESSTERMNR_PRUEFZIFFER_FEHLER"
 
 /-- The types whose validator can select this key. A list rather than a single type because the two date types share one key, and empty for the success sentinel, which belongs to every validator and refuses for none. -/
 def owners : CustomFieldTypeDetail → List CustomFieldType
@@ -171,6 +180,8 @@ def owners : CustomFieldTypeDetail → List CustomFieldType
   | .taxNumberCheckDigit => [.taxNumber]
   | .criminalFileFormat | .criminalFileOffice | .criminalFileCheckDigit =>
       [.criminalFileReference]
+  | .taxInvestigationFormat | .taxInvestigationOffice | .taxInvestigationDistinguishingNumber
+  | .taxInvestigationCheckDigit => [.taxInvestigationNumber]
 
 /-- The code a refusal carrying this key surfaces, given the type whose validator produced it. Every key surfaces its type's own code except the test-range key, which is the whole reason this is a function of both arguments rather than of the type alone. -/
 def surfacedCode (detail : CustomFieldTypeDetail) (owner : CustomFieldType) : String :=
@@ -189,7 +200,9 @@ def all : List CustomFieldTypeDetail :=
     .identificationNumberDigitSequence, .identificationNumberLength,
     .identificationNumberCheckDigit, .identificationNumberWhitespace, .countryAbbreviationInvalid,
     .taxNumberFormat, .taxNumberOffice, .taxNumberDistrictFormat, .taxNumberNegativePattern,
-    .taxNumberCheckDigit, .criminalFileFormat, .criminalFileOffice, .criminalFileCheckDigit]
+    .taxNumberCheckDigit, .criminalFileFormat, .criminalFileOffice, .criminalFileCheckDigit,
+    .taxInvestigationFormat, .taxInvestigationOffice, .taxInvestigationDistinguishingNumber,
+    .taxInvestigationCheckDigit]
 
 /-- The keys a given type's validator can select, refusals only. -/
 def refusalsOf (type : CustomFieldType) : List CustomFieldTypeDetail :=

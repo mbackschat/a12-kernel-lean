@@ -313,6 +313,9 @@ def resolveMessageGroup {model : FlatModel} (condition : ValidationMessageCondit
             .ok (base ++ path)
           else
             match parents, path with
+            -- The bare word's fallback ignores the model's short-name flag: both message positions share
+            -- one short-name lookup (kernel `EntityResolver.findShortName`), whose flag independence the
+            -- name position measures (`messageNameModel` above); this position is measured with the flag on.
             | 0, [name] =>
                 match model.fields.filter (·.name == name) with
                 | [declaration] => .ok declaration.path

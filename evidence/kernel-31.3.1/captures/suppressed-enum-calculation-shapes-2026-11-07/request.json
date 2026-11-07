@@ -1,0 +1,222 @@
+{
+ "model": "SC8R_DM.json",
+ "clock": "2026-11-07T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "tok",
+   "documentInline": {
+    "Form": {
+     "OutA": "A",
+     "OutB": "A",
+     "OutC": "A",
+     "OutD": "A",
+     "OutE": "A",
+     "OutF": "A",
+     "OutG": "A",
+     "OutI": "A",
+     "Text": "9",
+     "Text2": "",
+     "Wide": "A",
+     "Count": "9",
+     "Cats": [
+      {
+       "Key": "k1",
+       "Code": "9"
+      }
+     ],
+     "Lines": [
+      {
+       "LOut1": "A",
+       "LOut2": "A",
+       "LOut3": "A",
+       "LText": "9"
+      },
+      {
+       "LOut1": "A",
+       "LOut2": "A",
+       "LOut3": "A",
+       "LText": "Z"
+      }
+     ],
+     "Demand": [
+      {
+       "Dept": "d1",
+       "DLabel": "9",
+       "DCode": "A"
+      }
+     ],
+     "Supply": [
+      {
+       "Dept": "d1",
+       "SOut1": "A",
+       "SOut2": "A"
+      },
+      {
+       "Dept": "d9",
+       "SOut1": "A",
+       "SOut2": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "lab",
+   "documentInline": {
+    "Form": {
+     "OutA": "A",
+     "OutB": "A",
+     "OutC": "A",
+     "OutD": "A",
+     "OutE": "A",
+     "OutF": "A",
+     "OutG": "A",
+     "OutI": "A",
+     "Text": "Alpha",
+     "Text2": "",
+     "Wide": "B",
+     "Count": "5",
+     "Cats": [
+      {
+       "Key": "k1",
+       "Code": "Alpha"
+      }
+     ],
+     "Lines": [
+      {
+       "LOut1": "A",
+       "LOut2": "A",
+       "LOut3": "A",
+       "LText": "Alpha"
+      }
+     ],
+     "Demand": [
+      {
+       "Dept": "d1",
+       "DLabel": "Alpha",
+       "DCode": "B"
+      }
+     ],
+     "Supply": [
+      {
+       "Dept": "d1",
+       "SOut1": "A",
+       "SOut2": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "und",
+   "documentInline": {
+    "Form": {
+     "OutA": "A",
+     "OutB": "A",
+     "OutC": "A",
+     "OutD": "A",
+     "OutE": "A",
+     "OutF": "A",
+     "OutG": "A",
+     "OutI": "A",
+     "Text": "Z",
+     "Text2": "",
+     "Wide": "B",
+     "Count": "77",
+     "Cats": [
+      {
+       "Key": "k1",
+       "Code": "Z"
+      }
+     ],
+     "Lines": [
+      {
+       "LOut1": "A",
+       "LOut2": "A",
+       "LOut3": "A",
+       "LText": "Z"
+      }
+     ],
+     "Demand": [
+      {
+       "Dept": "d1",
+       "DLabel": "Z",
+       "DCode": "B"
+      }
+     ],
+     "Supply": [
+      {
+       "Dept": "d1",
+       "SOut1": "A",
+       "SOut2": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "emp",
+   "documentInline": {
+    "Form": {
+     "OutA": "A",
+     "OutB": "A",
+     "OutC": "A",
+     "OutD": "A",
+     "OutE": "A",
+     "OutF": "A",
+     "OutG": "A",
+     "OutI": "A",
+     "Lines": [
+      {
+       "LOut1": "A",
+       "LOut2": "A",
+       "LOut3": "A"
+      }
+     ],
+     "Supply": [
+      {
+       "Dept": "d1",
+       "SOut1": "A",
+       "SOut2": "A"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "ord",
+   "documentInline": {
+    "Form": {
+     "OutA": "A",
+     "OutB": "A",
+     "OutC": "A",
+     "OutD": "A",
+     "OutE": "A",
+     "OutF": "A",
+     "OutG": "A",
+     "OutI": "A",
+     "Text2": "9",
+     "Wide": "B",
+     "Lines": [
+      {
+       "LOut1": "A",
+       "LOut2": "A",
+       "LOut3": "A"
+      },
+      {
+       "LOut1": "A",
+       "LOut2": "A",
+       "LOut3": "A",
+       "LText": "9"
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

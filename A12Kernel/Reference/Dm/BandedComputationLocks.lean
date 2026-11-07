@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Elaboration.GeneratedComputationValidation
 import A12Kernel.Reference.Dm.EntryFrameFixture
+import A12Kernel.Reference.Dm.ComputationCheck
 
 namespace A12Kernel.Dm.BandedComputationLocks
 open A12Kernel
@@ -300,5 +301,115 @@ example :
       ("Exact", "-1.249", "-2.25", [("-1.25", true, false), ("0", true, true)])]
     cases.all (fun (mode, source, stored, expected) =>
       parallelGenerated mode source stored == some expected) = true := by native_decide
+
+/-! ## The tolerance operator's target kinds
+
+A tolerance-banded alternative into a String or Date target under every rounding mode, or a Custom target under
+`Exact`, the only mode measured on it, draws the generated comparison's `MVK_INVALID_TYPE_FOR_TOLERANCE_OP`,
+ahead of the kind class a String target reading a Number meets unbanded, while a Number target is admitted; the
+unbanded twins keep the rounding mode's class.
+Kernel 31.3.1, each computation `c<kind><mode><band>` named by its target kind (`S`, `D`, `N`, `C`, `SN` for a
+String target reading a Number), rounding mode (`E`, `U`, `D`) and band (`b`, `u`)
+([checkpoint](../../../docs/sources/kernel-31-calibration-probes.md#src-tolerance-band-target-kinds)).
+-/
+
+private def toleranceModel : Option DmModel := do
+  let json ← (Lean.Json.parse (r#"{"content":{"modelConfig":{"conditionLanguage":{"code":"en_US"}},"modelRoot":{"rootGroups":[{"type":"Group","id":"/Form","name":"Form","Group":{"repeatability":1,"elements":[
+{"type":"Field","id":"/Form/Src","name":"Src","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Field","id":"/Form/SrcD","name":"SrcD","Field":{"fieldType":{"type":"DateType","DateType":{"format":"yyyy-MM-dd"}}}},
+{"type":"Field","id":"/Form/SrcN","name":"SrcN","Field":{"fieldType":{"type":"NumberType","NumberType":{"maxFractionalDigits":0}}}},
+{"type":"Field","id":"/Form/TSEb","name":"TSEb","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSEb","name":"cSEb","Computation":{"computedFieldRelPath":"../TSEb","roundingMode":"Exact","computationAlternatives":[{"operation":"[Src]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TSEu","name":"TSEu","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSEu","name":"cSEu","Computation":{"computedFieldRelPath":"../TSEu","roundingMode":"Exact","computationAlternatives":[{"operation":"[Src]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TSUb","name":"TSUb","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSUb","name":"cSUb","Computation":{"computedFieldRelPath":"../TSUb","roundingMode":"RoundUp","computationAlternatives":[{"operation":"[Src]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TSUu","name":"TSUu","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSUu","name":"cSUu","Computation":{"computedFieldRelPath":"../TSUu","roundingMode":"RoundUp","computationAlternatives":[{"operation":"[Src]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TSDb","name":"TSDb","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSDb","name":"cSDb","Computation":{"computedFieldRelPath":"../TSDb","roundingMode":"RoundDown","computationAlternatives":[{"operation":"[Src]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TSDu","name":"TSDu","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSDu","name":"cSDu","Computation":{"computedFieldRelPath":"../TSDu","roundingMode":"RoundDown","computationAlternatives":[{"operation":"[Src]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TDEb","name":"TDEb","Field":{"fieldType":{"type":"DateType","DateType":{"format":"yyyy-MM-dd"}}}},
+{"type":"Computation","id":"/Form/cDEb","name":"cDEb","Computation":{"computedFieldRelPath":"../TDEb","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcD]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TDEu","name":"TDEu","Field":{"fieldType":{"type":"DateType","DateType":{"format":"yyyy-MM-dd"}}}},
+{"type":"Computation","id":"/Form/cDEu","name":"cDEu","Computation":{"computedFieldRelPath":"../TDEu","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcD]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TDUb","name":"TDUb","Field":{"fieldType":{"type":"DateType","DateType":{"format":"yyyy-MM-dd"}}}},
+{"type":"Computation","id":"/Form/cDUb","name":"cDUb","Computation":{"computedFieldRelPath":"../TDUb","roundingMode":"RoundUp","computationAlternatives":[{"operation":"[SrcD]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TDUu","name":"TDUu","Field":{"fieldType":{"type":"DateType","DateType":{"format":"yyyy-MM-dd"}}}},
+{"type":"Computation","id":"/Form/cDUu","name":"cDUu","Computation":{"computedFieldRelPath":"../TDUu","roundingMode":"RoundUp","computationAlternatives":[{"operation":"[SrcD]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TDDb","name":"TDDb","Field":{"fieldType":{"type":"DateType","DateType":{"format":"yyyy-MM-dd"}}}},
+{"type":"Computation","id":"/Form/cDDb","name":"cDDb","Computation":{"computedFieldRelPath":"../TDDb","roundingMode":"RoundDown","computationAlternatives":[{"operation":"[SrcD]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TDDu","name":"TDDu","Field":{"fieldType":{"type":"DateType","DateType":{"format":"yyyy-MM-dd"}}}},
+{"type":"Computation","id":"/Form/cDDu","name":"cDDu","Computation":{"computedFieldRelPath":"../TDDu","roundingMode":"RoundDown","computationAlternatives":[{"operation":"[SrcD]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TNEb","name":"TNEb","Field":{"fieldType":{"type":"NumberType","NumberType":{"maxFractionalDigits":0}}}},
+{"type":"Computation","id":"/Form/cNEb","name":"cNEb","Computation":{"computedFieldRelPath":"../TNEb","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcN]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TNEu","name":"TNEu","Field":{"fieldType":{"type":"NumberType","NumberType":{"maxFractionalDigits":0}}}},
+{"type":"Computation","id":"/Form/cNEu","name":"cNEu","Computation":{"computedFieldRelPath":"../TNEu","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcN]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TNUb","name":"TNUb","Field":{"fieldType":{"type":"NumberType","NumberType":{"maxFractionalDigits":0}}}},
+{"type":"Computation","id":"/Form/cNUb","name":"cNUb","Computation":{"computedFieldRelPath":"../TNUb","roundingMode":"RoundUp","computationAlternatives":[{"operation":"[SrcN]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TNUu","name":"TNUu","Field":{"fieldType":{"type":"NumberType","NumberType":{"maxFractionalDigits":0}}}},
+{"type":"Computation","id":"/Form/cNUu","name":"cNUu","Computation":{"computedFieldRelPath":"../TNUu","roundingMode":"RoundUp","computationAlternatives":[{"operation":"[SrcN]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TNDb","name":"TNDb","Field":{"fieldType":{"type":"NumberType","NumberType":{"maxFractionalDigits":0}}}},
+{"type":"Computation","id":"/Form/cNDb","name":"cNDb","Computation":{"computedFieldRelPath":"../TNDb","roundingMode":"RoundDown","computationAlternatives":[{"operation":"[SrcN]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TNDu","name":"TNDu","Field":{"fieldType":{"type":"NumberType","NumberType":{"maxFractionalDigits":0}}}},
+{"type":"Computation","id":"/Form/cNDu","name":"cNDu","Computation":{"computedFieldRelPath":"../TNDu","roundingMode":"RoundDown","computationAlternatives":[{"operation":"[SrcN]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/SrcC","name":"SrcC","Field":{"fieldType":{"type":"CustomFieldType","CustomFieldType":{"name":"PolicyCode"}}}},
+{"type":"Field","id":"/Form/TCEb","name":"TCEb","Field":{"fieldType":{"type":"CustomFieldType","CustomFieldType":{"name":"PolicyCode"}}}},
+{"type":"Computation","id":"/Form/cCEb","name":"cCEb","Computation":{"computedFieldRelPath":"../TCEb","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcC]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TCEu","name":"TCEu","Field":{"fieldType":{"type":"CustomFieldType","CustomFieldType":{"name":"PolicyCode"}}}},
+{"type":"Computation","id":"/Form/cCEu","name":"cCEu","Computation":{"computedFieldRelPath":"../TCEu","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcC]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TSNEb","name":"TSNEb","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSNEb","name":"cSNEb","Computation":{"computedFieldRelPath":"../TSNEb","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcN]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}]}},
+{"type":"Field","id":"/Form/TSNEu","name":"TSNEu","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/cSNEu","name":"cSNEu","Computation":{"computedFieldRelPath":"../TSNEu","roundingMode":"Exact","computationAlternatives":[{"operation":"[SrcN]"}],"errorMessage":[{"locale":"en_US","text":"m"}]}}]}}]}}}"#)).toOption
+  let dm ← (readModel (checkedEntryFrame json)).toOption
+  if dm.refusals.isEmpty then some dm else none
+
+private def toleranceVerdicts : Option (List (String × String)) := do
+  let dm ← toleranceModel
+  pure (dm.computations.map fun computation => (computation.name.drop 1 |>.toString,
+    match checkComputation dm .english computation with
+    | .ok _ => "admitted"
+    | .error refusal => refusal.kernelClass?.getD s!"unclassified {refusal.detail}"))
+
+example : toleranceVerdicts = some [("SEb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("SEu", "admitted"), ("SUb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("SUu", "MVK_ERROR_WRONG_ROUNDING_MODE"), ("SDb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("SDu", "MVK_ERROR_WRONG_ROUNDING_MODE"), ("DEb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("DEu", "admitted"), ("DUb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("DUu", "MVK_ERROR_WRONG_ROUNDING_MODE"), ("DDb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("DDu", "MVK_ERROR_WRONG_ROUNDING_MODE"), ("NEb", "admitted"), ("NEu", "admitted"), ("NUb", "admitted"), ("NUu", "MVK_ERROR_WRONG_ROUNDING_MODE"), ("NDb", "admitted"), ("NDu", "MVK_ERROR_WRONG_ROUNDING_MODE"), ("CEb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("CEu", "admitted"), ("SNEb", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("SNEu", "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING")] := by
+  native_decide
+
+/-! ## The tolerance class's place among a computation's gates
+
+The tolerance operator's class answers in the generated comparison, after the preamble, the operation's syntax
+and its name resolution and ahead of the self-read: a banded String target reading an unknown name, an
+incomplete operation or an unsupported preamble name draws that gate's class, while one reading itself draws
+the tolerance class (Kernel 31.3.1, computations `t0`–`t6` of the
+[precedence batch](../../../docs/sources/kernel-31-calibration-probes.md#src-computation-precedence)).
+-/
+
+private def precedenceVerdicts : Option (List (String × String)) := do
+  let json ← (Lean.Json.parse (r#"{"content":{"modelConfig":{"conditionLanguage":{"code":"en_US"}},"modelRoot":{"rootGroups":[{"type":"Group","id":"/Form","name":"Form","Group":{"repeatability":1,"elements":[
+{"type":"Field","id":"/Form/Src","name":"Src","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Field","id":"/Form/T0","name":"T0","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Field","id":"/Form/T1","name":"T1","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Field","id":"/Form/T3","name":"T3","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Field","id":"/Form/T4","name":"T4","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Field","id":"/Form/T5","name":"T5","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Field","id":"/Form/T6","name":"T6","Field":{"fieldType":{"type":"StringType"}}},
+{"type":"Computation","id":"/Form/t0","name":"t0","Computation":{"computedFieldRelPath":"../T0","computationAlternatives":[{"operation":"[Nope]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}],"roundingMode":"Exact"}},
+{"type":"Computation","id":"/Form/t1","name":"t1","Computation":{"computedFieldRelPath":"../T1","computationAlternatives":[{"operation":"[Src] +","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}],"roundingMode":"Exact"}},
+{"type":"Computation","id":"/Form/t3","name":"t3","Computation":{"computedFieldRelPath":"../T3","computationAlternatives":[{"operation":"[T3]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}],"roundingMode":"Exact"}},
+{"type":"Computation","id":"/Form/t4","name":"t4","Computation":{"computedFieldRelPath":"../T4","computationAlternatives":[{"operation":"[Src]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}],"roundingMode":"Exact","additionalParserInformation":"@SuppressWarning(MVK_NOT_A_CODE)"}},
+{"type":"Computation","id":"/Form/t5","name":"t5","Computation":{"computedFieldRelPath":"../T5","computationAlternatives":[{"operation":"[Nope]"}],"errorMessage":[{"locale":"en_US","text":"m"}],"roundingMode":"Exact"}},
+{"type":"Computation","id":"/Form/t6","name":"t6","Computation":{"computedFieldRelPath":"../T6","computationAlternatives":[{"operation":"[Src] + [Src]","toleranceRangeOp":"DiffersWithToleranceRange1"}],"errorMessage":[{"locale":"en_US","text":"m"}],"roundingMode":"Exact"}}]}}]}}}"#)).toOption
+  let dm ← (readModel (checkedEntryFrame json)).toOption
+  if !dm.refusals.isEmpty then none
+  pure (dm.computations.map fun computation => (computation.name,
+    match checkComputation dm .english computation with
+    | .ok _ => "admitted"
+    | .error refusal => refusal.kernelClass?.getD s!"unclassified {refusal.detail}"))
+
+example : precedenceVerdicts = some [("t0", "MVK_INVALID_ENTITY"), ("t1", "MVK_INCOMPLETE_INPUT"),
+    ("t3", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"), ("t4", "MVK_INVALID_SUPPRESSED_WARNING"),
+    ("t5", "MVK_INVALID_ENTITY"), ("t6", "MVK_INVALID_TYPE_FOR_TOLERANCE_OP")] := by
+  native_decide
 
 end A12Kernel.Dm.BandedComputationLocks

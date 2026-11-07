@@ -1,0 +1,68 @@
+{
+ "cSEb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cSEu": [
+  "admitted"
+ ],
+ "cSUb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cSUu": [
+  "MVK_ERROR_WRONG_ROUNDING_MODE"
+ ],
+ "cSDb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cSDu": [
+  "MVK_ERROR_WRONG_ROUNDING_MODE"
+ ],
+ "cDEb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cDEu": [
+  "admitted"
+ ],
+ "cDUb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cDUu": [
+  "MVK_ERROR_WRONG_ROUNDING_MODE"
+ ],
+ "cDDb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cDDu": [
+  "MVK_ERROR_WRONG_ROUNDING_MODE"
+ ],
+ "cNEb": [
+  "admitted"
+ ],
+ "cNEu": [
+  "admitted"
+ ],
+ "cNUb": [
+  "admitted"
+ ],
+ "cNUu": [
+  "MVK_ERROR_WRONG_ROUNDING_MODE"
+ ],
+ "cNDb": [
+  "admitted"
+ ],
+ "cNDu": [
+  "MVK_ERROR_WRONG_ROUNDING_MODE"
+ ],
+ "cCEb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cCEu": [
+  "admitted"
+ ],
+ "cSNEb": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "cSNEu": [
+  "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+ ]
+}

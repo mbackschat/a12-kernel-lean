@@ -1,0 +1,2267 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.15.0",
+    "kernel" : {
+      "builtAgainst" : "31.3.1",
+      "runtime" : "31.3.1"
+    },
+    "source" : {
+      "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "SC8R_DM.json",
+    "locale" : "en_US",
+    "clock" : "2026-11-07T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "tok",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c01",
+              "field" : "Form/OutA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutA",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c05",
+              "field" : "Form/OutE",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Cats/Code",
+                "Form/Cats/Key",
+                "Form/OutE"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c06",
+              "field" : "Form/OutF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Count",
+                "Form/OutF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j01",
+              "field" : "Form/Supply/SOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DLabel",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut1",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines[2]/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut1",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut2",
+                "Form/Lines/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines[2]/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut2",
+                "Form/Lines[2]/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines[2]/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut3",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "9x"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Zx"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Supply[2]/SOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Supply[2]/SOut2",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c01",
+              "field" : "Form/OutA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutA",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c05",
+              "field" : "Form/OutE",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Cats/Code",
+                "Form/Cats/Key",
+                "Form/OutE"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c06",
+              "field" : "Form/OutF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Count",
+                "Form/OutF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j01",
+              "field" : "Form/Supply/SOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DLabel",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut1",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines[2]/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut1",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut2",
+                "Form/Lines/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines[2]/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut2",
+                "Form/Lines[2]/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines[2]/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut3",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "9x"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Zx"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Supply[2]/SOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Supply[2]/SOut2",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "lab",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c01",
+              "field" : "Form/OutA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutA",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c05",
+              "field" : "Form/OutE",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Cats/Code",
+                "Form/Cats/Key",
+                "Form/OutE"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c06",
+              "field" : "Form/OutF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Count",
+                "Form/OutF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c09",
+              "field" : "Form/OutI",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutI",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j01",
+              "field" : "Form/Supply/SOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DLabel",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j02",
+              "field" : "Form/Supply/SOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DCode",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut1",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut2",
+                "Form/Lines/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alphax"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "5"
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/Supply/SOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c01",
+              "field" : "Form/OutA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutA",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c05",
+              "field" : "Form/OutE",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Cats/Code",
+                "Form/Cats/Key",
+                "Form/OutE"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c06",
+              "field" : "Form/OutF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Count",
+                "Form/OutF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c09",
+              "field" : "Form/OutI",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutI",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j01",
+              "field" : "Form/Supply/SOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DLabel",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j02",
+              "field" : "Form/Supply/SOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DCode",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut1",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut2",
+                "Form/Lines/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alphax"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "5"
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Alpha"
+              },
+              {
+                "field" : "Form/Supply/SOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "und",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c01",
+              "field" : "Form/OutA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutA",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c05",
+              "field" : "Form/OutE",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Cats/Code",
+                "Form/Cats/Key",
+                "Form/OutE"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c06",
+              "field" : "Form/OutF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Count",
+                "Form/OutF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c09",
+              "field" : "Form/OutI",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutI",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j01",
+              "field" : "Form/Supply/SOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DLabel",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j02",
+              "field" : "Form/Supply/SOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DCode",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut1",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut2",
+                "Form/Lines/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Zx"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "77"
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Supply/SOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c01",
+              "field" : "Form/OutA",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutA",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c05",
+              "field" : "Form/OutE",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Cats/Code",
+                "Form/Cats/Key",
+                "Form/OutE"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c06",
+              "field" : "Form/OutF",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Count",
+                "Form/OutF"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "c09",
+              "field" : "Form/OutI",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutI",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j01",
+              "field" : "Form/Supply/SOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DLabel",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut1"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "j02",
+              "field" : "Form/Supply/SOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Demand/DCode",
+                "Form/Demand/Dept",
+                "Form/Supply/Dept",
+                "Form/Supply/SOut2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut1",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut2",
+                "Form/Lines/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Zx"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "77"
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "Z"
+              },
+              {
+                "field" : "Form/Supply/SOut2",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "emp",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "x"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Supply/SOut2",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "x"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Supply/SOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Supply/SOut2",
+                "cleared" : true,
+                "errored" : false
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    },
+    {
+      "name" : "ord",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ]
+            },
+            {
+              "code" : "c09",
+              "field" : "Form/OutI",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutI",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines[2]/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut1",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines[2]/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut2",
+                "Form/Lines[2]/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines[2]/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut3",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "x"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut1",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "9x"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "c02",
+              "field" : "Form/OutB",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ],
+              "fillToFix" : [
+                "Form/OutB",
+                "Form/Text",
+                "Form/Wide"
+              ]
+            },
+            {
+              "code" : "c03",
+              "field" : "Form/OutC",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutC",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c04",
+              "field" : "Form/OutD",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ],
+              "fillToFix" : [
+                "Form/OutD",
+                "Form/Text",
+                "Form/Text2"
+              ]
+            },
+            {
+              "code" : "c07",
+              "field" : "Form/OutG",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ],
+              "fillToFix" : [
+                "/Form[1]/Lines[0]/LText",
+                "Form/OutG"
+              ]
+            },
+            {
+              "code" : "c09",
+              "field" : "Form/OutI",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/OutI",
+                "Form/Wide"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r01",
+              "field" : "Form/Lines[2]/LOut1",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut1",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r02",
+              "field" : "Form/Lines[2]/LOut2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut2",
+                "Form/Lines[2]/LText",
+                "Form/Text"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines/LOut3",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ],
+              "fillToFix" : [
+                "Form/Lines/LOut3",
+                "Form/Lines/LText"
+              ]
+            },
+            {
+              "code" : "r03",
+              "field" : "Form/Lines[2]/LOut3",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "m",
+              "referenced" : [
+                "Form/Lines[2]/LOut3",
+                "Form/Lines[2]/LText"
+              ],
+              "fillToFix" : [ ]
+            }
+          ],
+          "computations" : {
+            "outcomes" : [
+              {
+                "field" : "Form/Lines/LOut1",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut2",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/Lines/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "x"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut1",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut2",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/Lines[2]/LOut3",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "9x"
+              },
+              {
+                "field" : "Form/OutA",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutB",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              },
+              {
+                "field" : "Form/OutC",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutD",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutE",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutF",
+                "cleared" : true,
+                "errored" : false
+              },
+              {
+                "field" : "Form/OutG",
+                "cleared" : false,
+                "errored" : false,
+                "value" : "9"
+              },
+              {
+                "field" : "Form/OutI",
+                "cleared" : false,
+                "errored" : true,
+                "value" : "B"
+              }
+            ],
+            "formalErrorsInOperands" : [ ]
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -407,12 +407,16 @@ private def lowerParallelNumber (language : Language) (model : FlatModel) (compu
   | [operation] => pure (.single operation)
   | _ => (.alternatives ·) <$> elaborated "ParallelNumber" (certifyParallelNumericAlternativeTable operations)
 
+/-- Whether a lowering was refused with the Enumeration calculation's own class, the one a preamble lifts. -/
+private def Refusal.drawsCalculationClass (refusal : Refusal) : Bool :=
+  refusal.kernelClass? == some CalculationRefusal.invalidEnumCalculation.catalogKey
+
 /-- A String or temporal row target whose operation reads a partner row. The joined Number carrier's
 key joins and guards carry over; the operation is checked against the instance view, where each joined
 group is a fixed group, so the ordinary row elaborators read a partner field as a fixed read
 (joined-carrier capture, rows `t01`–`t03`, 2026-10-14). -/
 private def lowerJoinedRows (language : Language) (model : FlatModel) (computation : DmComputation)
-    (target : FlatFieldDecl) (operations : List Expr) (suppress : Bool) :
+    (target : FlatFieldDecl) (operations : List Expr) (suppress : Bool) (suppressCalculation : Bool) :
     Lowering (CheckedParallelJoinedRowStep model) := do
   let group := computation.group
   let _ ← elaborated "ParallelRows" (checkAddressedRepeatableTarget model group target.id)
@@ -425,12 +429,23 @@ private def lowerJoinedRows (language : Language) (model : FlatModel) (computati
   let view := model.parallelInstanceView joined
   let some viewTarget := (view.lookupUniqueId target.id).toOption | refuse "ParallelRows" "target"
   let operations ← operations.mapM fun expression => do
-    match ← lowerRowAlternativeOperation view group viewTarget expression suppress with
-    | .stringExpression operation => pure (ParallelJoinedRowOperation.string operation)
-    | .temporalExpression operation => pure (.temporal operation)
-    | .fixedEnumeration operation => pure (.enumeration operation)
-    | .enumeration operation => pure (.rowEnumeration operation)
-    | _ => refuse "ParallelRows" "operation"
+    match lowerRowAlternativeOperation view group viewTarget expression suppress with
+    | .ok (.stringExpression operation) => pure (ParallelJoinedRowOperation.string operation)
+    | .ok (.temporalExpression operation) => pure (.temporal operation)
+    | .ok (.fixedEnumeration operation) => pure (.enumeration operation)
+    | .ok (.enumeration operation) => pure (.rowEnumeration operation)
+    | .ok _ => refuse "ParallelRows" "operation"
+    -- A copy or expression the calculation refuses reads its partner, under the preamble naming that class,
+    -- through the joined context as the String expression it also is (`j01`, `j02` of the
+    -- suppressed-shapes checkpoint).
+    -- One with no joined carrier, such as `FirstFilledValue`, which the Kernel admits there (precedence batch),
+    -- is unsupported rather than refused with the class the preamble lifts.
+    | .error refusal => do
+        if suppressCalculation && refusal.drawsCalculationClass then
+          let .ok surface := lowerSelectedStringExpr view group expression | refuse "ParallelRows" "operation"
+          return .enumerationText (← elaborated "EnumerationComputation"
+            (elaborateSuppressedEnumerationStringExpression view group viewTarget.id surface))
+        throw refusal
   let alternatives := (guards.zip operations).map fun (precondition, operation) =>
     ({ precondition, operation } : ParallelJoinedRowAlternative model joined)
   elaborated "ParallelRows" (checkParallelJoinedRowStep model group target.id joined alternatives)
@@ -487,7 +502,12 @@ private def checkComputationOrderedAdmission (language : Language) (model : Flat
     expression.hasProjectedReferenceTo model computation.group target.id
   let ordered := fun (source : Lowering Expr) =>
     source.toOption.any Expr.needsOrderedAdmission || projected source
-  if !common.any ordered && !alternatives.any (fun (guard, operation, _) => guard.any ordered || ordered operation) then return
+  -- A tolerance band beside a non-Number target is the generated comparison's own class, after its operands
+  -- resolve and ahead of the self-read (precedence batch, kernel 31.3.1), so its comparison is checked here.
+  let bandedNonNumber := target.policy.kind.surfaceKind != .number &&
+    computation.alternatives.any (·.toleranceRangeOp.isSome)
+  if !bandedNonNumber && !common.any ordered &&
+      !alternatives.any (fun (guard, operation, _) => guard.any ordered || ordered operation) then return
   let check := checkRawConditionBeforeGlobals model computation.group target.groupPath
   let mut facts : FilterRuleFacts := {}
   if let some common := common then facts := facts.merge (← check (← common) suppress)
@@ -518,11 +538,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   let texts := computation.commonPrecondition.toList ++ computation.alternatives.flatMap
     (fun alternative => alternative.precondition.toList ++ [alternative.operation])
   let hasHaving := texts.any fun text => (parseText language text).toOption.any (·.body.hasHaving)
-  let readOutputModes := do
-    let modes ← computationOutputModes computation
-    if target.policy.kind.surfaceKind != .number && modes.any Option.isSome then
-      refuse "ToleranceRange" "non-Number target"
-    pure modes
+  let readOutputModes := computationOutputModes computation
   -- Delay caller compatibility only for the complete filter preflight; unfiltered callers
   -- retain their existing admission boundary (H08's scope in docs/gaps/paths-and-groups.md).
   let earlyModes ← if hasHaving then pure none else some <$> readOutputModes
@@ -542,6 +558,11 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   checkComputationOrderedAdmission language model computation target suppress
   -- Calculation-mode compatibility follows the generated condition’s parser gates (spec/09 §6).
   let outputModes ← match earlyModes with | some modes => pure modes | none => readOutputModes
+  -- The ordered check above answers a banded non-Number target with the tolerance operator's class under every
+  -- rounding mode, ahead of the kind comparison, so `MVK_ERROR_INVALID_FIELDTYPE` has no known witness
+  -- (tolerance-band checkpoint, kernel 31.3.1); no executable carrier exists for one it admitted.
+  if target.policy.kind.surfaceKind != .number && outputModes.any Option.isSome then
+    refuse "ToleranceRange" KernelStaticDiagnostic.invalidTypeForToleranceOp.kernelCode
   -- A guard the ordinary reader refused can only belong to the joined Number route.
   let (common, guards) ← if allowParallelGuards then pure (none, [])
     else guards language model computation target suppress
@@ -559,7 +580,8 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   if allowParallelGuards then
     if !row then refuse "Guard" "joined route"
     let .number _ := target.policy.kind
-      | return (target, .joinedRows (← lowerJoinedRows language model computation target operations suppress))
+      | return (target, .joinedRows (← lowerJoinedRows language model computation target operations suppress
+          suppressCalculation))
     return (target, .parallel (← lowerParallelNumber language model computation target
       (← numericExpressions) suppress outputModes))
   let document : Lowering (FlatFieldDecl × LoweredComputation model) := do
@@ -595,9 +617,12 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     match ordinary with
     | .ok step => return (target, .rows step)
     | .error refusal =>
-        match lowerJoinedRows language model computation target operations suppress with
+        match lowerJoinedRows language model computation target operations suppress suppressCalculation with
         | .ok step => return (target, .joinedRows step)
-        | .error _ => throw refusal
+        -- A join the calculation refuses answers with that class, ahead of the ordinary route's scope
+        -- refusal (`j01`, `j02` of the suppressed-shapes checkpoint, without the preamble).
+        | .error joined =>
+            throw (if joined.drawsCalculationClass then joined else refusal)
   match target.policy.kind with
   | .number _ => do
       let expressions ← numericExpressions

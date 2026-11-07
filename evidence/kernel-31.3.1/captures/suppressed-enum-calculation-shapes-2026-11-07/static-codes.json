@@ -1,0 +1,79 @@
+{
+ "SC8P_DM.json": {
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "codes": [
+   [
+    "/Form/c08",
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ]
+  ]
+ },
+ "SC8N_DM.json": {
+  "valid": false,
+  "verification": "KERNEL_CONFIRMED",
+  "codes": [
+   [
+    "/Form/Lines/r01",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/Lines/r02",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/Lines/r03",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/Supply/j01",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/Supply/j02",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c01",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c02",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c03",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c04",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c05",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c06",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c07",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ],
+   [
+    "/Form/c08",
+    "MVK_INVALID_COMPARE_TO_ENUM_OR_STRING"
+   ],
+   [
+    "/Form/c09",
+    "MVK_ERROR_INVALID_ENUM_CALCULATION"
+   ]
+  ]
+ },
+ "SC8R_DM.json": {
+  "valid": true,
+  "verification": "KERNEL_CONFIRMED",
+  "codes": []
+ }
+}

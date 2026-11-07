@@ -1,0 +1,731 @@
+{
+ "header": {
+  "id": "PREC_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "SG5_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   }
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Src",
+        "name": "Src",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Text",
+        "name": "Text",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/Wide",
+        "name": "Wide",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            },
+            {
+             "value": "B"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/T0",
+        "name": "T0",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/T1",
+        "name": "T1",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/T2",
+        "name": "T2",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/T3",
+        "name": "T3",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/T4",
+        "name": "T4",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/T5",
+        "name": "T5",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/T6",
+        "name": "T6",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/t0",
+        "name": "t0",
+        "Computation": {
+         "computedFieldRelPath": "../T0",
+         "computationAlternatives": [
+          {
+           "operation": "[Nope]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/t1",
+        "name": "t1",
+        "Computation": {
+         "computedFieldRelPath": "../T1",
+         "computationAlternatives": [
+          {
+           "operation": "[Src] +",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/t2",
+        "name": "t2",
+        "Computation": {
+         "computedFieldRelPath": "../T2",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact",
+         "additionalParserInformation": "@SuppressWarning(MVK_BOGUS"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/t3",
+        "name": "t3",
+        "Computation": {
+         "computedFieldRelPath": "../T3",
+         "computationAlternatives": [
+          {
+           "operation": "[T3]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/t4",
+        "name": "t4",
+        "Computation": {
+         "computedFieldRelPath": "../T4",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact",
+         "additionalParserInformation": "@SuppressWarning(MVK_NOT_A_CODE)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/t5",
+        "name": "t5",
+        "Computation": {
+         "computedFieldRelPath": "../T5",
+         "computationAlternatives": [
+          {
+           "operation": "[Nope]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/t6",
+        "name": "t6",
+        "Computation": {
+         "computedFieldRelPath": "../T6",
+         "computationAlternatives": [
+          {
+           "operation": "[Src] + [Src]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact"
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O1",
+        "name": "O1",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O2",
+        "name": "O2",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O3",
+        "name": "O3",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O4",
+        "name": "O4",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O5",
+        "name": "O5",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/O6",
+        "name": "O6",
+        "Field": {
+         "fieldType": {
+          "type": "EnumerationType",
+          "EnumerationType": {
+           "values": [
+            {
+             "value": "A"
+            },
+            {
+             "value": "9"
+            }
+           ]
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/f1",
+        "name": "f1",
+        "Computation": {
+         "computedFieldRelPath": "../O1",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Text, O1)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/f2",
+        "name": "f2",
+        "Computation": {
+         "computedFieldRelPath": "../O2",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Text, O2)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/f3",
+        "name": "f3",
+        "Computation": {
+         "computedFieldRelPath": "../O3",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(O3, Text)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/f4",
+        "name": "f4",
+        "Computation": {
+         "computedFieldRelPath": "../O4",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(O4, Text)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/f5",
+        "name": "f5",
+        "Computation": {
+         "computedFieldRelPath": "../O5",
+         "computationAlternatives": [
+          {
+           "operation": "FirstFilledValue(Wide, O5)"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/f6",
+        "name": "f6",
+        "Computation": {
+         "computedFieldRelPath": "../O6",
+         "computationAlternatives": [
+          {
+           "operation": "[O6]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Demand",
+        "name": "Demand",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Demand/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Demand/DLabel",
+           "name": "DLabel",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Form/Supply",
+        "name": "Supply",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Form/Supply/Dept",
+           "name": "Dept",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/SOut1",
+           "name": "SOut1",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "9"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/SOut2",
+           "name": "SOut2",
+           "Field": {
+            "fieldType": {
+             "type": "EnumerationType",
+             "EnumerationType": {
+              "values": [
+               {
+                "value": "A"
+               },
+               {
+                "value": "9"
+               }
+              ]
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Form/Supply/SStr",
+           "name": "SStr",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Supply/j1",
+           "name": "j1",
+           "Computation": {
+            "computedFieldRelPath": "../SOut1",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/Form/Demand/DLabel, /Form/Text)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ],
+            "additionalParserInformation": "@SuppressWarning(MVK_ERROR_INVALID_ENUM_CALCULATION)"
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Supply/j2",
+           "name": "j2",
+           "Computation": {
+            "computedFieldRelPath": "../SOut2",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/Form/Demand/DLabel, /Form/Text)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          },
+          {
+           "type": "Computation",
+           "id": "/Form/Supply/j3",
+           "name": "j3",
+           "Computation": {
+            "computedFieldRelPath": "../SStr",
+            "computationAlternatives": [
+             {
+              "operation": "FirstFilledValue(/Form/Demand/DLabel, /Form/Text)"
+             }
+            ],
+            "errorMessage": [
+             {
+              "locale": "en_US",
+              "text": "m"
+             }
+            ]
+           }
+          }
+         ],
+         "indexFieldName": "Dept"
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/U2",
+        "name": "U2",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/u2",
+        "name": "u2",
+        "Computation": {
+         "computedFieldRelPath": "../U2",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ],
+         "roundingMode": "Exact",
+         "additionalParserInformation": "@SuppressWarning(MVK_BOGUS"
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

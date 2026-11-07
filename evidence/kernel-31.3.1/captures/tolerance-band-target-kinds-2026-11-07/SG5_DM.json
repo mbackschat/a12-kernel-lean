@@ -1,0 +1,805 @@
+{
+ "header": {
+  "id": "SG5_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "SG5_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   }
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Form",
+     "name": "Form",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Form/Src",
+        "name": "Src",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SrcD",
+        "name": "SrcD",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SrcN",
+        "name": "SrcN",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSEb",
+        "name": "TSEb",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSEb",
+        "name": "cSEb",
+        "Computation": {
+         "computedFieldRelPath": "../TSEb",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSEu",
+        "name": "TSEu",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSEu",
+        "name": "cSEu",
+        "Computation": {
+         "computedFieldRelPath": "../TSEu",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSUb",
+        "name": "TSUb",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSUb",
+        "name": "cSUb",
+        "Computation": {
+         "computedFieldRelPath": "../TSUb",
+         "roundingMode": "RoundUp",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSUu",
+        "name": "TSUu",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSUu",
+        "name": "cSUu",
+        "Computation": {
+         "computedFieldRelPath": "../TSUu",
+         "roundingMode": "RoundUp",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSDb",
+        "name": "TSDb",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSDb",
+        "name": "cSDb",
+        "Computation": {
+         "computedFieldRelPath": "../TSDb",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSDu",
+        "name": "TSDu",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSDu",
+        "name": "cSDu",
+        "Computation": {
+         "computedFieldRelPath": "../TSDu",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "[Src]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TDEb",
+        "name": "TDEb",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cDEb",
+        "name": "cDEb",
+        "Computation": {
+         "computedFieldRelPath": "../TDEb",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcD]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TDEu",
+        "name": "TDEu",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cDEu",
+        "name": "cDEu",
+        "Computation": {
+         "computedFieldRelPath": "../TDEu",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcD]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TDUb",
+        "name": "TDUb",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cDUb",
+        "name": "cDUb",
+        "Computation": {
+         "computedFieldRelPath": "../TDUb",
+         "roundingMode": "RoundUp",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcD]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TDUu",
+        "name": "TDUu",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cDUu",
+        "name": "cDUu",
+        "Computation": {
+         "computedFieldRelPath": "../TDUu",
+         "roundingMode": "RoundUp",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcD]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TDDb",
+        "name": "TDDb",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cDDb",
+        "name": "cDDb",
+        "Computation": {
+         "computedFieldRelPath": "../TDDb",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcD]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TDDu",
+        "name": "TDDu",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cDDu",
+        "name": "cDDu",
+        "Computation": {
+         "computedFieldRelPath": "../TDDu",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcD]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TNEb",
+        "name": "TNEb",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cNEb",
+        "name": "cNEb",
+        "Computation": {
+         "computedFieldRelPath": "../TNEb",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TNEu",
+        "name": "TNEu",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cNEu",
+        "name": "cNEu",
+        "Computation": {
+         "computedFieldRelPath": "../TNEu",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TNUb",
+        "name": "TNUb",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cNUb",
+        "name": "cNUb",
+        "Computation": {
+         "computedFieldRelPath": "../TNUb",
+         "roundingMode": "RoundUp",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TNUu",
+        "name": "TNUu",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cNUu",
+        "name": "cNUu",
+        "Computation": {
+         "computedFieldRelPath": "../TNUu",
+         "roundingMode": "RoundUp",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TNDb",
+        "name": "TNDb",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cNDb",
+        "name": "cNDb",
+        "Computation": {
+         "computedFieldRelPath": "../TNDb",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TNDu",
+        "name": "TNDu",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cNDu",
+        "name": "cNDu",
+        "Computation": {
+         "computedFieldRelPath": "../TNDu",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/SrcC",
+        "name": "SrcC",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "PolicyCode"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TCEb",
+        "name": "TCEb",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "PolicyCode"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cCEb",
+        "name": "cCEb",
+        "Computation": {
+         "computedFieldRelPath": "../TCEb",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcC]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TCEu",
+        "name": "TCEu",
+        "Field": {
+         "fieldType": {
+          "type": "CustomFieldType",
+          "CustomFieldType": {
+           "name": "PolicyCode"
+          }
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cCEu",
+        "name": "cCEu",
+        "Computation": {
+         "computedFieldRelPath": "../TCEu",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcC]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSNEb",
+        "name": "TSNEb",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSNEb",
+        "name": "cSNEb",
+        "Computation": {
+         "computedFieldRelPath": "../TSNEb",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Form/TSNEu",
+        "name": "TSNEu",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/Form/cSNEu",
+        "name": "cSNEu",
+        "Computation": {
+         "computedFieldRelPath": "../TSNEu",
+         "roundingMode": "Exact",
+         "computationAlternatives": [
+          {
+           "operation": "[SrcN]"
+          }
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

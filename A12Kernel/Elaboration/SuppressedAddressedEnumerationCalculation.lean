@@ -6,15 +6,26 @@ import A12Kernel.Elaboration.SuppressedEnumerationCalculation
 A repeatable Enumeration target computed from a direct field under the preamble that lifts
 `MVK_ERROR_INVALID_ENUM_CALCULATION` ([spec/09 §4.3](../../spec/09-computations.md#43-number-string-enumeration-and-custom-targets)).
 Each target row reads its own source cell and the target judges that token as a fixed target does
-(`CheckedSuppressedEnumerationCalculation`). The runtime is measured on a fixed target from a String field
-source (a12-dmkits KF298, 31.3.1 Letter J §5); this carrier is the same target check applied per row,
-derived and unmeasured.
+(`CheckedSuppressedEnumerationCalculation`), measured on kernel 31.3.1 from a String field source
+([checkpoint](../../docs/sources/kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes), row `r01`).
 
 This is a separate operation from `CheckedAddressedEnumerationComputation`, whose `sourceAllowed`
 certificate the proofs under `A12Kernel/Proofs/` rely on.
 -/
 
 namespace A12Kernel
+
+/-- The Enumeration target of a suppressed calculation, placed and refused as its ordinary carrier places it:
+a fixed target through the fixed target check, a repeatable one through the addressed one. -/
+def elaborateSuppressedEnumerationTarget (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId) :
+    Except AddressedEnumerationComputationElabError (FlatFieldDecl × CheckedEnumerationProjection) := do
+  let declaration ← (model.lookupUniqueId targetField).mapError fun cause => .ordinary (.resolve cause)
+  if declaration.repeatableScope.isEmpty then
+    let target ← (elaborateEnumerationComputationTarget model targetField).mapError .ordinary
+    pure (declaration, target.projection)
+  else
+    let target ← checkAddressedEnumerationTarget model declaringGroup targetField
+    pure (declaration, target.projection)
 
 /-- A repeatable Enumeration target computed from a direct field whose tokens the target need not declare. -/
 structure CheckedSuppressedAddressedEnumerationCalculation (model : FlatModel) where

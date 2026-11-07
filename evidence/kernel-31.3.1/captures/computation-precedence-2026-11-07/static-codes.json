@@ -1,0 +1,53 @@
+{
+ "t0": [
+  "MVK_INVALID_ENTITY"
+ ],
+ "t1": [
+  "MVK_INCOMPLETE_INPUT"
+ ],
+ "t2": [
+  "MVK_UNEXPECTED_TOKEN"
+ ],
+ "t3": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "t4": [
+  "MVK_INVALID_SUPPRESSED_WARNING"
+ ],
+ "t5": [
+  "MVK_INVALID_ENTITY"
+ ],
+ "t6": [
+  "MVK_INVALID_TYPE_FOR_TOLERANCE_OP"
+ ],
+ "f1": [
+  "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+ ],
+ "f2": [
+  "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+ ],
+ "f3": [
+  "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+ ],
+ "f4": [
+  "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+ ],
+ "f5": [
+  "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+ ],
+ "f6": [
+  "MVK_ERROR_REFERENCE_TO_CALCULATED_FIELD"
+ ],
+ "j1": [
+  "admitted"
+ ],
+ "j2": [
+  "MVK_ERROR_INVALID_ENUM_CALCULATION"
+ ],
+ "j3": [
+  "admitted"
+ ],
+ "u2": [
+  "MVK_UNEXPECTED_TOKEN"
+ ]
+}

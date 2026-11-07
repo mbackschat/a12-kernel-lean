@@ -10,6 +10,8 @@ import A12Kernel.Elaboration.NumericComputation.Table
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
 import A12Kernel.Elaboration.StringExpression
+import A12Kernel.Elaboration.SuppressedEnumerationStringExpression
+import A12Kernel.Elaboration.SuppressedEnumerationFirstFilledComputation
 import A12Kernel.Elaboration.ScalarCopyComputation
 import A12Kernel.Elaboration.CustomFirstFilledComputation
 
@@ -83,6 +85,17 @@ self-read into a repeatable target is not among them and keeps no class. -/
 instance : StaticClassified AddressedEnumerationComputationElabError := ⟨fun
   | .ordinary (.source (.resolve error)) => error.diagnostic?
   | .ordinary (.targetSelfReferenceAtDirectField _) => some .errorReferenceToCalculatedField
+  | _ => none⟩
+
+instance : StaticClassified SuppressedEnumerationStringExpressionElabError := ⟨fun
+  | .target cause => StaticClassified.diagnostic? cause
+  | .expression (.resolve error) => error.diagnostic?
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
+  | _ => none⟩
+
+instance : StaticClassified SuppressedEnumerationFirstFilledElabError := ⟨fun
+  | .target cause => StaticClassified.diagnostic? cause
+  | .targetSelfReference _ => some .errorReferenceToCalculatedField
   | _ => none⟩
 
 instance : StaticClassified AddressedEnumerationFirstFilledComputationElabError := ⟨fun

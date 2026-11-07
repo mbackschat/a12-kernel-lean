@@ -6,10 +6,10 @@ A computation whose preamble names `MVK_ERROR_INVALID_ENUM_CALCULATION` lifts th
 source's tokens lie in its Enumeration target's domain
 ([spec/09 §4.3](../../spec/09-computations.md#43-number-string-enumeration-and-custom-targets)). The target
 then judges each attempted text at runtime: a token it declares is stored, an empty text clears it, and any
-other text, a declared value's label included, leaves it errored without a message. That runtime is
-measured for a String field source on both strategies (a12-dmkits KF298, 31.3.1 Letter J §5); an
-Enumeration or category source whose tokens leave the target's domain is judged by the same target check,
-derived and unmeasured.
+other text, a declared value's label included, leaves it errored without a message. Kernel 31.3.1 measures
+that runtime for a String field source (a12-dmkits KF298, 31.3.1 Letter J §5) and for an Enumeration source
+beyond the target's domain ([checkpoint](../../docs/sources/kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes)); a category source is
+judged by the same target check, unmeasured.
 
 This is a checked operation of its own rather than a weakening of
 `CheckedEnumerationComputationOperation`, whose static domain certificate the exact-token projection and

@@ -93,6 +93,7 @@ import A12Kernel.Reference.Dm.ModelConsistencyLocks
 import A12Kernel.Reference.Dm.SuppressionPragmaLocks
 import A12Kernel.Reference.Dm.SuppressedEnumerationCalculationLocks
 import A12Kernel.Reference.Dm.SuppressedEnumerationRowCalculationLocks
+import A12Kernel.Reference.Dm.SuppressedEnumerationShapeLocks
 import A12Kernel.Reference.Dm.EmptyGroupLocks
 import A12Kernel.Reference.Dm.ParseDefectClassLocks
 import A12Kernel.Reference.Dm.SupportedCharactersLocks
