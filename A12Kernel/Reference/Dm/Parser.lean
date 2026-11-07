@@ -467,14 +467,19 @@ def parseText (language : Language) (text : String) : Except SyntaxError Text :=
   parseLexemes (← lex language text)
 
 /-- Read a text that must be a suppression preamble and nothing else, as a computation's parser information is
-read alone (spec/09 §6): its suppressed names. -/
-def parsePreambleSnippet (language : Language) (text : String) : Except SyntaxError (List String) := do
-  let lexemes ← lex language text
+read alone (spec/09 §6): its suppressed names. The first failure in the text answers (spec/12 §4): a parser
+failure at a token ahead of a character the lexer cannot take is the parser's, while one met only because the
+lexable prefix ended is the lexer's. -/
+def parsePreambleSnippet (language : Language) (text : String) : Except SyntaxError (List String) :=
+  let (lexemes, lexError?) := lexPrefix language text
   let grammar : P (List String) := do
     let names ← preamble
     if names.isEmpty || (← peek).isSome then failHere .unexpectedToken
     return names
-  (run grammar lexemes).1
+  match (run grammar lexemes).1, lexError? with
+  | result, none => result
+  | .error error, some lexError => .error (if error.atEnd then lexError else error)
+  | .ok _, some lexError => .error lexError
 
 /-- Model reference attributes name declarations, including DSL keywords. The retained temporal
 filter matrix targets fields named Date and Time without expression-language quoting. -/

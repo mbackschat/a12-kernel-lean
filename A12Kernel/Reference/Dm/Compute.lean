@@ -528,13 +528,14 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   let earlyModes ← if hasHaving then pure none else some <$> readOutputModes
   -- Kernel 31.3.1 reads the preamble alone, ahead of every text, and a refused one is the computation's only
   -- class (spec/09 §1.2; a12-dmkits KF298). The unfiltered route's rounding class keeps its 31.1.1 place ahead
-  -- of it, unmeasured on 31.3.1.
+  -- of it, unmeasured on 31.3.1. Its parse failure is not a member's: `checkComputation` lets the generated rule
+  -- speak for a member's, and that rule reads the preamble inline, where an unclosed one meets the condition.
   let suppress ← match computation.preambleText language with
     | none => pure false
     | some text => do
         let suppressed ← match parsePreambleSnippet language text with
           | .ok names => pure names
-          | .error error => refuse "Syntax" error.errorClass.code
+          | .error error => refuse "SuppressWarning" error.errorClass.code
         checkSuppressed suppressed
         pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")
   checkComputationOrderedAdmission language model computation target suppress

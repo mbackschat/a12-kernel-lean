@@ -124,11 +124,12 @@ example :
 /-- The class the computation admission entry `checkComputation` reports, the entry peer KF298's rows
 measure. A parser failure ahead of an unlexable character answers first; these single-entry rows are 30.8.1's,
 and a second entry after the unlexable one is unmeasured since the list grammar changed. -/
-private def checkedComputationOutcome (suppressed : List String) : String :=
+private def checkedComputationOutcome (suppressed : List String) (text : Option String := none) : String :=
   let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   match checkComputation dm .english {
     group := ["Form"], name := "Cp", targetRelPath := "../Total", commonPrecondition := none
-    alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := suppressed } with
+    alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := suppressed
+    parserInformation := text } with
   | .ok _ => "admitted"
   | .error refusal => refusal.detail
 
@@ -137,6 +138,19 @@ example :
     checkedComputationOutcome ["And É"] == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
     checkedComputationOutcome ["MVK_FRAÉ", scaleWarning] == KernelStaticDiagnostic.lexerStandardError.kernelCode &&
     checkedComputationOutcome [scaleWarning] == "admitted" := by
+  native_decide
+
+-- A preamble read alone ends where its text ends, so an unclosed one meets the end of input, while the generated
+-- rule, which carries the preamble at the head of its condition, would meet the condition's first token there and
+-- draw `MVK_UNEXPECTED_TOKEN`. The computation reports its alone read: the mechanism is Letter J's §5, the class
+-- of an unclosed preamble derived and unmeasured.
+example :
+    checkedComputationOutcome [] (some "@SuppressWarning(MVK_BOGUS") ==
+      KernelStaticDiagnostic.expectedTokenNotFound.kernelCode &&
+    checkedComputationOutcome [] (some s!"@SuppressWarning({scaleWarning},") ==
+      KernelStaticDiagnostic.expectedTokenNotFound.kernelCode &&
+    checkedComputationOutcome [] (some "@SuppressWarning") ==
+      KernelStaticDiagnostic.expectedTokenNotFound.kernelCode := by
   native_decide
 
 end A12Kernel.Dm.SuppressionPragmaLocks
