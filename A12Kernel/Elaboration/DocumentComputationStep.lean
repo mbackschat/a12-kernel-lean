@@ -14,6 +14,7 @@ import A12Kernel.Elaboration.DateTimeMixedShiftComputation
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.TimeFromDateTimeComputation
 import A12Kernel.Elaboration.EnumerationComputation
+import A12Kernel.Elaboration.SuppressedEnumerationCalculation
 import A12Kernel.Elaboration.EnumerationFirstFilledComputation
 import A12Kernel.Elaboration.ExactTokenComputationResult
 import A12Kernel.Elaboration.FullDateComputation
@@ -587,6 +588,17 @@ def ofEnumeration (operation : CheckedEnumerationComputationOperation model) :
   excludesTarget := operation.targetNotReferenced
   runSelected _ _ document :=
     let outcome := (operation.source.evaluate document.flatContext).asExactStringTargetOutcome
+    pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+
+/-- An Enumeration copy whose preamble lifts the domain check, the target judging the attempted text. -/
+def ofSuppressedEnumeration (operation : CheckedSuppressedEnumerationCalculation model) :
+    CheckedDocumentComputationStep model where
+  target := operation.target.field
+  family := .enumeration
+  operationReferencesWith field _ := operation.source.field.id == field
+  excludesTarget := operation.targetNotReferenced
+  runSelected _ _ document :=
+    let outcome := operation.evaluate document.flatContext
     pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
 
 /-- A DateRange construction over two Date fields. -/

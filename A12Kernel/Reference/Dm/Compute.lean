@@ -530,14 +530,15 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   -- class (spec/09 §1.2; a12-dmkits KF298). The unfiltered route's rounding class keeps its 31.1.1 place ahead
   -- of it, unmeasured on 31.3.1. Its parse failure is not a member's: `checkComputation` lets the generated rule
   -- speak for a member's, and that rule reads the preamble inline, where an unclosed one meets the condition.
-  let suppress ← match computation.preambleText language with
-    | none => pure false
+  let (suppress, suppressCalculation) ← match computation.preambleText language with
+    | none => pure (false, false)
     | some text => do
         let suppressed ← match parsePreambleSnippet language text with
           | .ok names => pure names
           | .error error => refuse "SuppressWarning" error.errorClass.code
         checkSuppressed suppressed
-        pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")
+        pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES",
+          suppressed.contains CalculationRefusal.invalidEnumCalculation.catalogKey)
   checkComputationOrderedAdmission language model computation target suppress
   -- Calculation-mode compatibility follows the generated condition’s parser gates (spec/09 §6).
   let outputModes ← match earlyModes with | some modes => pure modes | none => readOutputModes
@@ -583,6 +584,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     let ordinary : Lowering (RowStep model) := do
       let alternatives ← (guards.zip operations).mapM fun (precondition, expression) => do
         let operation ← lowerRowAlternativeOperation model computation.group target expression suppress
+          suppressCalculation
         pure ({ precondition, operation } : CheckedComputationAlternative model _)
       let table ← elaborated "RowComputation" (certifyRowComputationTable alternatives common)
       let some step := CheckedRowComputationStep.ofTable? table

@@ -82,12 +82,20 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
   | _ => false
 
 private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
-    (target : FlatFieldDecl) (source : SurfaceEnumerationComputationSource) :
+    (target : FlatFieldDecl) (source : SurfaceEnumerationComputationSource) (suppressCalculation : Bool) :
     Lowering (CheckedRowComputationOperation model) := do
   -- A String source or out-of-domain Enumeration source is the calculation's own refusal on a fixed
   -- target (k22-static-s2-2026-10-24, `to4`, `to21`) and a repeatable one (k22-static-s3-2026-10-24,
-  -- `ud5`–`ud7`).
+  -- `ud5`–`ud7`). A preamble naming that class admits such a field source into a fixed target, whose
+  -- domain then judges the attempt (spec/09 §4.3).
   if target.repeatableScope.isEmpty then
+    if suppressCalculation then
+      if let .field operand := source then
+        if let .error error := elaborateEnumerationComputation model group target.id source then
+          if error.calculationRefusal? == some .invalidEnumCalculation then
+            return .document (CheckedDocumentComputationStep.ofSuppressedEnumeration
+              (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
+                (elaborateSuppressedEnumerationCalculation model group target.id operand)))
     pure (.fixedEnumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
       (elaborateEnumerationComputation model group target.id source)))
   else
@@ -136,7 +144,8 @@ private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) 
 
 /-- Retain each admitted operation certificate before certifying row-local selection. -/
 def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
-    (expression : Expr) (suppress : Bool := false) : Lowering (CheckedRowComputationOperation model) := do
+    (expression : Expr) (suppress : Bool := false) (suppressCalculation : Bool := false) :
+    Lowering (CheckedRowComputationOperation model) := do
   if let .call "FirstFilledValue" arguments none none := expression then
     return .firstFilled (← lowerFirstFilledAlternative model group target arguments (suppress := suppress))
   if target.policy.kind == .enumeration then
@@ -189,7 +198,7 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
   | .string text => do
       if isTemporalConstant text then refuse "RowComputation" "temporal literal"
       if target.policy.kind == .enumeration then
-        return ← lowerEnumerationAlternative model group target (.literal text)
+        return ← lowerEnumerationAlternative model group target (.literal text) suppressCalculation
       return .stringConstant (← elaborated "StringComputation"
         (checkRepeatableStringConstantComputation model group target.id text))
   | .value { path, index := none, category, filter := none } => do
@@ -197,7 +206,7 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
       let source := match category with
         | none => SurfaceTextFieldOperand.direct field
         | some name => .category field name
-      return ← lowerEnumerationAlternative model group target (.field source)
+      return ← lowerEnumerationAlternative model group target (.field source) suppressCalculation
   | other => refuse "RowComputation" other.construct
 
 /-- One `Time(...)` component: a quoted constant, an extractor over a field, or a Number or digit
