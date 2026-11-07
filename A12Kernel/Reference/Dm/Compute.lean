@@ -535,8 +535,7 @@ private def lowerComputationWith (allowParallelGuards : Bool)
         let suppressed ← match parsePreambleSnippet language text with
           | .ok names => pure names
           | .error error => refuse "Syntax" error.errorClass.code
-        if suppressed.any (!suppressibleWarnings.contains ·) then
-          refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
+        checkSuppressed suppressed
         pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")
   checkComputationOrderedAdmission language model computation target suppress
   -- Calculation-mode compatibility follows the generated condition’s parser gates (spec/09 §6).

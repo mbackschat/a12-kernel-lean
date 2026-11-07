@@ -33,18 +33,18 @@ private def staticVerdict {α} : Lowering α → String
 /-- The verdict of `json` across the three readers and the rule, computation and possible-cause checks. -/
 def modelVerdict (json : Json) : ModelVerdict :=
   let built := readModelWithAdmission json
+  let (statics, possibleCauses) := match built with
+    | .error _ => ([], [])
+    | .ok dm =>
+      (dm.rules.map (staticVerdict <| checkValidationRule dm .english ·) ++
+          dm.computations.map (staticVerdict <| checkComputation dm .english ·),
+        dm.rules.filterMap fun rule => match possibleCauseRefusals dm .english rule with
+          | .ok [] => none
+          | .ok refusals => some s!"{rule.name}: {refusals.map (·.kernelCode)}"
+          | .error reason => some s!"{rule.name}: unjudged: {reason}")
   { built := reprStr built
     consistency := reprStr (checkModelConsistency json)
     declarations := reprStr (fieldTypeDeclarationNotifications json fun _ => .compiled fun _ => true)
-    statics := match built with
-      | .ok dm => dm.rules.map (staticVerdict <| checkValidationRule dm .english ·) ++
-          dm.computations.map (staticVerdict <| checkComputation dm .english ·)
-      | .error _ => []
-    possibleCauses := match built with
-      | .ok dm => dm.rules.filterMap fun rule => match possibleCauseRefusals dm .english rule with
-          | .ok [] => none
-          | .ok refusals => some s!"{rule.name}: {refusals.map (·.kernelCode)}"
-          | .error reason => some s!"{rule.name}: unjudged: {reason}"
-      | .error _ => [] }
+    statics, possibleCauses }
 
 end A12Kernel.Dm

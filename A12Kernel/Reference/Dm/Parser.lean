@@ -434,21 +434,18 @@ private def suppressedName : P String := do
       advance; pure name
   | _ => failHere .expectedTokenNotFound
 
-/-- The names after the first, each led by a comma; `fuel` bounds the list by the remaining lexemes. -/
-private def moreSuppressedNames : Nat → P (List String)
-  | 0 => pure []
-  | fuel + 1 => do
-      if ← acceptSymbol "," then return (← suppressedName) :: (← moreSuppressedNames fuel)
-      else return []
+/-- A comma list of one or more suppressed names. -/
+private partial def suppressedNames : P (List String) := do
+  let name ← suppressedName
+  if ← acceptSymbol "," then return name :: (← suppressedNames) else return [name]
 
 /-- The suppression preamble, a comma list of one or more names (kernel 31.3.1; spec/12 §4). -/
 private def preamble : P (List String) := do
   if ← acceptKeyword "@SuppressWarning" then
     expectSymbol "("
-    let first ← suppressedName
-    let rest ← moreSuppressedNames (← read).size
+    let names ← suppressedNames
     expectSymbol ")"
-    return first :: rest
+    return names
   else return []
 
 /-- Read one condition or operation text from its lexemes, with the events completed before the text

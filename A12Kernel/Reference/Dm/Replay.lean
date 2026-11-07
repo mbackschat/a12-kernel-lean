@@ -51,7 +51,7 @@ def validationRules (model : DmModel) (language : Language) : List DmRule :=
   model.rules ++ model.computations.map fun computation =>
     (computation.generatedRule? language).getD
       { group := computation.group, name := computation.name, errorEntityRelPath := computation.targetRelPath
-        errorCode := computation.errorCode.getD computation.name, condition := "(", severity := "ERROR" }
+        errorCode := computation.effectiveCode, condition := "(", severity := "ERROR" }
 
 /-- The model path of a rule's error field as an unindexed message pointer spells it. The path is
 written relative to the rule element, one level below its declaring group, and read lexically as the

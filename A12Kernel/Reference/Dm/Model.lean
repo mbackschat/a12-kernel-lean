@@ -453,16 +453,12 @@ def computationString? (json : Json) (key : String) : Except String (Option Stri
 
 /-- The legacy `errorCodesToSuppress` list: absent or `null` is empty and a scalar entry is its text, coerced
 like a scalar member (a12-dmkits KF298 at kernel 31.3.1). A non-list member is a reader refusal, measured for a
-bare string and an object; so is a container or `null` entry, which no row measures. -/
-private def suppressionList (json : Json) : Except String (List String) :=
-  match (json.getObjVal? "errorCodesToSuppress").toOption with
-  | none | some .null => pure []
-  | some (.arr entries) => entries.toList.mapM fun
-      | .str value => pure value
-      | .num value => pure value.toString
-      | .bool value => pure (if value then "true" else "false")
-      | _ => throw "expected scalar entries: errorCodesToSuppress"
-  | some _ => throw "expected a list: errorCodesToSuppress"
+bare string and an object; so is a container or `null` entry, which no row measures, and a non-integer
+number, outside the represented profile (`scalarText?`). -/
+private def suppressionList (json : Json) : Except String (List String) := do
+  (← frameMembers json "errorCodesToSuppress").mapM fun entry => do
+    let some text ← scalarText? entry | throw "expected scalar entries: errorCodesToSuppress"
+    pure text
 
 private def readAlternative (json : Json) : Except String DmAlternative := do
   pure {

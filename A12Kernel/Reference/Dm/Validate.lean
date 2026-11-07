@@ -108,14 +108,18 @@ def errorGroupOf (model : FlatModel) : RuleErrorEntity → Lowering GroupPath
 scale warning (spec/12 §4; a12-dmkits KF298). -/
 def suppressibleWarnings : List String := ["MVK_INVALID_COMPARE_DEC_PLACES", "MVK_ERROR_INVALID_ENUM_CALCULATION"]
 
+/-- Refuse a preamble naming a code it may not suppress, on a rule and a computation alike. -/
+def checkSuppressed (suppressed : List String) : Lowering Unit := do
+  if suppressed.any (!suppressibleWarnings.contains ·) then
+    refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
+
 /-- Apply the shared syntax and warning-suppression gates before choosing an execution carrier. -/
 def parseValidationText (language : Language) (condition : String) : Lowering Text := do
   let text ← match parseText language condition with
     | .ok text => pure text
     | .error error => refuse "Syntax" error.errorClass.code
   if !text.body.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
-  if text.suppressed.any (!suppressibleWarnings.contains ·) then
-    refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
+  checkSuppressed text.suppressed
   pure text
 
 /-- A rule-gate refusal's detail, the class the gate draws ahead of the cause. -/

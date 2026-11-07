@@ -77,12 +77,13 @@ private partial def expressionEntities (model : FlatModel) (group : GroupPath) (
 
 private partial def referenceEntities (model : FlatModel) (group : GroupPath) (asGroup : Bool)
     (reference : Reference) : List (List String) :=
-  let own := match namedEntity model group reference.path with
+  let named? := namedEntity model group reference.path
+  let own := match named? with
     | some (.inl field) => [field]
     | some (.inr named) => groupEntities model asGroup named
     | none => []
   -- A semantic index names the field it keys on, and a key written as a reference names its own entity.
-  let indexed := match reference.index, namedEntity model group reference.path with
+  let indexed := match reference.index, named? with
     | some key, some named =>
         let selected := match named with | .inl field => field.dropLast | .inr named => named
         let indexField := ((model.semanticIndexGroupForPath? selected).bind (·.indexField)).bind

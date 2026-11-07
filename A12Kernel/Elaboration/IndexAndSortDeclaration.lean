@@ -49,7 +49,7 @@ inductive RowFieldRefusal where
 
 namespace RowFieldRefusal
 
-/-- The exact catalog key, `none` for the codeless capacity notification. -/
+/-- The exact catalog key, `none` for the two codeless notifications. -/
 def kernelCode? : RowFieldRefusal → Option String
   | .nameUnresolved .indexField => some "MVK_INVALID_INDEX_FIELD"
   | .nameUnresolved .sortField => some "MVK_INVALID_SORT_FIELD"
@@ -62,9 +62,11 @@ def kernelCode? : RowFieldRefusal → Option String
   | .sortNameUnset => none
 
 /-- The capture label: the catalog key, or for a codeless notification its observed label. -/
-def label (refusal : RowFieldRefusal) : String :=
-  refusal.kernelCode?.getD (if refusal == .sortNameUnset then "codeless:sort-name-unset"
-    else "codeless:sort-list-capacity")
+def label : RowFieldRefusal → String
+  | .sortListCapacity => "codeless:sort-list-capacity"
+  | .sortNameUnset => "codeless:sort-name-unset"
+  | refusal@(.nameUnresolved _) | refusal@(.valueValidationOff _) | refusal@.indexFieldTableEnum
+  | refusal@.sortFieldDuplicate | refusal@.sortInfoMissing => refusal.kernelCode?.getD ""
 
 /-- Whether the class is one of the Kernel's index and sort checks, which wait on the entity walk: a
 model whose walk refused anything draws none of them. Measured beside a refused path and a count below
@@ -177,8 +179,8 @@ structure RowFieldDeclarations where
   deriving Repr, DecidableEq
 
 /-- A sort name the metamodel reads as an unfilled entry: written, not empty, and blank as Java's `isBlank`
-reads it, so an em space counts and trimming would not. An empty name is no entry at all, which leaves no
-model (a12-dmkits `GroupIndexAndSortReferenceLawsTest` at `1124b523f`, kernel 31.1.1). -/
+reads it, so an em space counts and trimming would not. An empty name is not an unfilled entry: it draws the
+unresolved-name class and the codeless unset notification (`sortNameUnset`), where kernel 31.1.1 built no model. -/
 def unfilledSortName (written : String) : Bool := !written.isEmpty && ExecutableDeclaration.blank written
 
 /-- Keep an entry unless its name is already kept, so each name is judged at its first entry. -/
@@ -187,7 +189,7 @@ def keepFirstName (kept : List (String × NominatedTarget)) (entry : String × N
   if kept.any (·.1 == entry.1) then kept else kept ++ [entry]
 
 /-- Every refusal the group's declarations draw: the index nomination's, then each distinct sort
-name's once in written order, then the list's three judgements. A list rather than a first match,
+name's once in written order, then the list's judgements. A list rather than a first match,
 because the Kernel judges every name, a fourth entry's included: two disqualified sort fields draw two
 classes, while a field named twice draws its own class once. The duplicate class reads only the first
 three entries, so a name repeated only at the fourth draws none, and every entry beyond the third

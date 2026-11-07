@@ -80,7 +80,8 @@ def restamp(text, stamp):
 
 
 def copy(source, target, stamp=None):
-    """Copy source to target, restamping a model header when `stamp` is given; whether a stamp was replaced.
+    """Copy source to target, restamping a model header when `stamp` is given; False when a stamp was asked
+    for and none was replaced.
     Every frozen file carrying a `modelVersion` is a model, so the content decides, never the name
     (2026-11-07); any other file is copied byte for byte."""
     os.makedirs(os.path.dirname(target), exist_ok=True)
@@ -235,8 +236,8 @@ def materialize_inline_specs(cwd, operations):
     for op in ops:
         if isinstance(op, dict) and "spec" in op:
             spec_file = next(a for a in op["args"] if a.endswith(".json"))
-            json.dump(op.pop("spec"), open(os.path.join(cwd, spec_file), "w", encoding="utf-8"))
-    json.dump(ops, open(path, "w", encoding="utf-8"), indent=1)
+            dump_json(op.pop("spec"), os.path.join(cwd, spec_file))
+    dump_json(ops, path)
 
 
 def fold_legacy_suppression(cwd, model_path):
@@ -259,7 +260,7 @@ def fold_legacy_suppression(cwd, model_path):
                 codes = spec.pop("errorCodesToSuppress")
                 if codes and not str(spec.get("additionalParserInformation") or "").strip():
                     spec["additionalParserInformation"] = f"{keyword}({','.join(codes)})"
-                json.dump(spec, open(path, "w", encoding="utf-8"), indent=2)
+                dump_json(spec, path)
 
 
 def envelope(dmtool, cwd, arguments):

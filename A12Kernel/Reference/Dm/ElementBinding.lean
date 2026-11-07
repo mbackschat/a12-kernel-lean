@@ -191,16 +191,20 @@ def possibleCauseListKey : CustomErrorEntitySlot → String
   | .ifFilled => "entitiesEnabledAsPossibleCauseIfFilled"
   | .ifNotFilled => "entitiesEnabledAsPossibleCauseIfNotFilled"
 
-/-- One possible-cause entry's `relativePath` as its text: a string, or a number read as its text
-(a12-dmkits KF682, kernel 31.3.1). A Boolean is read as its text too, which no row measures. An entry
-that is no object, and a path that is absent, `null` or a container, leave no model. -/
+/-- One possible-cause entry's `relativePath` as its text, bound as every scalar member is (`scalarText?`): a
+string, or an integer read as its text (a12-dmkits KF682, kernel 31.3.1). A Boolean is read as its text too,
+which no row measures. An entry that is no object, and a path that is absent, `null` or a container, leave
+no model. -/
 private def possibleCausePath (entry : Json) : Except String String := do
   let .obj _ := entry | throw "possible-cause entry is no object"
-  match entry.getObjVal? "relativePath" with
-  | .ok (.str text) => pure text
-  | .ok (.num value) => pure value.toString
-  | .ok (.bool value) => pure (if value then "true" else "false")
-  | _ => throw "possible-cause entry has no readable relativePath"
+  let some text ← scalarText? ((entry.getObjVal? "relativePath").toOption.getD .null)
+    | throw "possible-cause entry has no readable relativePath"
+  pure text
+
+/-- How many `..` steps a relative path text leads with, the run a reader compares with the levels between its
+base and the technical model root. -/
+def leadingUpSteps (text : String) : Nat :=
+  ((text.splitOn "/").takeWhile (· == "..")).length
 
 /-- A rule's possible-cause filter as kernel 31.3.1 reads it (a12-dmkits KF682): `none` when the member is
 absent or `null`, else both lists, an absent list empty. A filter that is no object, a list that is no
@@ -213,14 +217,11 @@ def readPossibleCauseFilter (depth : Nat) (body : Json) : Except String (Option 
     | .ok filter@(.obj _) => pure filter
     | .ok _ => throw "possible-cause filter is no object"
   let slot (slot : CustomErrorEntitySlot) : Except String (List String) := do
-    let entries ← match filter.getObjVal? (possibleCauseListKey slot) with
-      | .error _ => pure #[]
-      | .ok (.arr entries) => pure entries
-      | .ok _ => throw s!"possible-cause list {possibleCauseListKey slot} is no list"
+    let entries := (← frameList filter (possibleCauseListKey slot) (nonNull := true)).getD #[]
     entries.toList.mapM fun entry => do
       let path ← possibleCausePath entry
       if path.startsWith "/" then throw s!"possible-cause path {path} is absolute"
-      if depth < ((path.splitOn "/").takeWhile (· == "..")).length then
+      if depth < leadingUpSteps path then
         throw s!"possible-cause path {path} climbs above the model root"
       pure path
   pure (some { ifFilled := ← slot .ifFilled, ifNotFilled := ← slot .ifNotFilled })

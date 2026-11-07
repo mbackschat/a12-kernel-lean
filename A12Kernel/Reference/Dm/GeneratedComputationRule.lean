@@ -20,6 +20,10 @@ warnings travel with its generated comparisons.
 
 namespace A12Kernel.Dm
 
+/-- The code of the computation's generated validation: its declared code, else its name (a12-dmkits KF678). -/
+def DmComputation.effectiveCode (computation : DmComputation) : String :=
+  computation.errorCode.getD computation.name
+
 /-- The computation's suppression preamble as text: its parser information unless blank, else the legacy list
 folded into one pragma of the model's language, else none (kernel 31.3.1; a12-dmkits KF298). -/
 def DmComputation.preambleText (language : Language) (computation : DmComputation) : Option String :=
@@ -64,7 +68,7 @@ def DmComputation.generatedRule? (language : Language) (computation : DmComputat
   let preamble := ((computation.preambleText language).map (· ++ "\n")).getD ""
   pure {
     group := computation.group, name := computation.name
-    errorEntityRelPath := computation.targetRelPath, errorCode := computation.errorCode.getD computation.name
+    errorEntityRelPath := computation.targetRelPath, errorCode := computation.effectiveCode
     condition := preamble ++
       s!"{keywordSpelling language "FieldFilled"}({target}){and}{common}{body}"
     severity := "ERROR" }

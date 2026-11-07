@@ -138,7 +138,7 @@ private def spelledNames? (holder : List String) (text : String) : Option (List 
 /-- Whether a computed-field path's leading `..` run climbs past the technical model root, the first step
 climbing from the computation to its group. -/
 private def climbsPastModelRoot (holder : List String) (text : String) : Bool :=
-  holder.length + 1 < ((text.splitOn "/").takeWhile (· == "..")).length
+  holder.length + 1 < leadingUpSteps text
 
 /-- What the converter makes of a computation: dropped, or kept with the names its target resolved to when
 that spelling is read. -/
