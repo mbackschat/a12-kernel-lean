@@ -1,0 +1,34 @@
+{
+ "producer": {
+  "a12-dmkits": "505683610",
+  "command": "model check",
+  "date": "2026-11-07",
+  "dmtool": "0.15.0",
+  "kernel": {
+   "built": "31.3.1",
+   "runtime": "31.3.1"
+  }
+ },
+ "rows": {
+  "sg20-short-off.json": {
+   "rules": {
+    "R_IN_BOTH": "MVK_NO_ITERATION_FOR_WILDCARD",
+    "R_IN_NEITHER": "MVK_INVALID_ENTITY",
+    "R_ONLY_IN_LINES": "MVK_INVALID_ENTITY",
+    "R_PREFIXED": "admitted"
+   },
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED"
+  },
+  "sg20-short-on.json": {
+   "rules": {
+    "R_IN_BOTH": "MVK_NO_ITERATION_FOR_WILDCARD",
+    "R_IN_NEITHER": "MVK_INVALID_ENTITY",
+    "R_ONLY_IN_LINES": "admitted",
+    "R_PREFIXED": "admitted"
+   },
+   "valid": false,
+   "verification": "KERNEL_CONFIRMED"
+  }
+ }
+}

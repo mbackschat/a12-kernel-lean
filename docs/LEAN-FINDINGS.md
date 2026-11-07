@@ -2799,3 +2799,11 @@ The October 29a letter recorded a header demand of a well-formed language tag, m
 Lean treatment: none in Lean; [spec/01 §1.1](../spec/01-data-model.md#member-binding) states the Kernel's account and [SPEC-2026-10-29-02](https://github.com/mbackschat/a12-kernel-lean/blob/1f755d54874701c9056ef7be93a6ba6005779ad5/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-10-29-02) carries it back.
 
 **Before adopting an oracle refusal that arrives as an exception, locate the throwing frame relative to the oracle's gate.** A refusal thrown after the gate returned is the instrument's, whatever the route is called.
+
+## LF225 — a peer row's model configuration is part of its carrier, and its tooling's defaults are not the Kernel's
+
+Adopting [31.3.1 Letter J](sources/inbound-handbacks.md#src-inbound-2026-11-07) §7, this project recorded `Sum(Lines*/Amount Having [Note] == "x") < [Premium]` from `/Policy` as measured "with short-name references off" and opened a gap claiming the Kernel resolves a filter body's unprefixed read from the filtered group. The letter never stated the flag. a12-dmkits' `DocumentModelDraft` writes `fieldRefByShortNameAllowed` on for every model it builds, while the Kernel's default and this project's fixtures leave it off, so the row's `[Note]` reached `Lines/Note` through the ordinary short-name fallback. A Kernel 31.3.1 grid ([checkpoint](sources/having-filter-probes.md#src-having-body-short-name)) refuses the read with the flag off and admits it with the flag on, exactly as Lean already did; the gap was a premise this project wrote, not a divergence.
+
+Lean treatment: none; [`HavingBodyResolutionLocks`](../A12Kernel/Reference/Dm/HavingBodyResolutionLocks.lean) locks the eight cells.
+
+**Before recording a peer row's premise, read the configuration its model actually carried, and never fill an unstated flag from this project's default.** A name-resolution, locale or zone outcome depends on members the row's prose rarely mentions.

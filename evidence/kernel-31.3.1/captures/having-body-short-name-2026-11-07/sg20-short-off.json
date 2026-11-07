@@ -1,0 +1,178 @@
+{
+ "header": {
+  "id": "SG20_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "BYOrd_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false,
+   "baseYear": "2024"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": false
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "name": "Policy",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Policy/Premium",
+        "name": "Premium",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Policy/Tag",
+        "name": "Tag",
+        "Field": {
+         "fieldType": {
+          "type": "StringType"
+         }
+        }
+       },
+       {
+        "type": "Group",
+        "id": "/Policy/Lines",
+        "name": "Lines",
+        "Group": {
+         "repeatability": 5,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Policy/Lines/Amount",
+           "name": "Amount",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Policy/Lines/Note",
+           "name": "Note",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Policy/Lines/Tag",
+           "name": "Tag",
+           "Field": {
+            "fieldType": {
+             "type": "StringType"
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/R_ONLY_IN_LINES",
+        "name": "R_ONLY_IN_LINES",
+        "Rule": {
+         "errorEntityRelPath": "../Premium",
+         "errorCode": "R_ONLY_IN_LINES",
+         "errorCondition": "Sum(Lines*/Amount Having [Note] == \"x\") < [Premium]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/R_PREFIXED",
+        "name": "R_PREFIXED",
+        "Rule": {
+         "errorEntityRelPath": "../Premium",
+         "errorCode": "R_PREFIXED",
+         "errorCondition": "Sum(Lines*/Amount Having [Lines/Note] == \"x\") < [Premium]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/R_IN_BOTH",
+        "name": "R_IN_BOTH",
+        "Rule": {
+         "errorEntityRelPath": "../Premium",
+         "errorCode": "R_IN_BOTH",
+         "errorCondition": "Sum(Lines*/Amount Having [Tag] == \"x\") < [Premium]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Policy/R_IN_NEITHER",
+        "name": "R_IN_NEITHER",
+        "Rule": {
+         "errorEntityRelPath": "../Premium",
+         "errorCode": "R_IN_NEITHER",
+         "errorCondition": "Sum(Lines*/Amount Having [Nope] == \"x\") < [Premium]",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

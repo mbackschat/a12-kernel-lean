@@ -14,9 +14,9 @@ and whether the check runs at all.
 **The candidates come from the unexpanded condition.** A field read names its field. A group operand stays
 a group only where the operator reads it as one: the group-presence predicates, the group-list
 quantifiers, the filled-group count and a `SumOfTerms` iteration; elsewhere it names every field below it.
-A starred segment on the way to a field is not itself named. A `Having` body's references count, as this
-theory's `Having` reading resolves them, from the rule's group; the Kernel also admits a body read naming a
-field of the filtered group without its prefix, which this theory refuses (gap SG20). So does the index field
+A starred segment on the way to a field is not itself named. A `Having` body's references count as resolved
+like any condition read, from the rule's group and then by short name where the model allows it (measured on
+kernel 31.3.1, docs/sources/having-filter-probes.md#src-having-body-short-name). So does the index field
 a semantic index keys on, with a key written as a reference. `CurrentRepetition` names nothing, and
 `RepetitionNotUnique`'s `@From` scope is read as a group: spec/14 states neither for the scope, so that
 reading is unmeasured. The join index field a parallel iteration adds is not read here: no row of the filter

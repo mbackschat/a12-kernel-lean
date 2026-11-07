@@ -2,6 +2,17 @@
 
 The filter's leaf domain, connectives, correlation, scope gate, and two-arm behaviour. Group-list, group-count, capacity, and `CurrentRepetition`-operand checkpoints stay in [`group-and-iteration-probes.md`](group-and-iteration-probes.md).
 
+<a id="src-having-body-short-name"></a>
+#### An unprefixed read in a filter body resolves from the rule's group and then by short name, as every condition read does, measured on Kernel 31.3.1 2026-11-07
+
+- `revision`: dmtool 0.15.0 at a12-dmkits `505683610`, clean before and after, Kernel `31.3.1` built and runtime; `model check`, every row `KERNEL_CONFIRMED`.
+- `retained`: [`observations.json`](../../evidence/kernel-31.3.1/captures/having-body-short-name-2026-11-07/observations.json) SHA-256 `46ff80d4d670f26bf576a198eb426c3db5a0357642a49530b650e7e376b4facf`, a code-only projection by rule over [`sg20-short-off.json`](../../evidence/kernel-31.3.1/captures/having-body-short-name-2026-11-07/sg20-short-off.json) SHA-256 `d13ac9208c9f6d451bb36442c0474d899ad10ccce956ddf05f905908da847f41` and [`sg20-short-on.json`](../../evidence/kernel-31.3.1/captures/having-body-short-name-2026-11-07/sg20-short-on.json) SHA-256 `5a5ab273245ab788cbdb95aa795f61da976a23a1ddff4c2b600368a43b2a442a`, which differ only in `fieldRefByShortNameAllowed`.
+- `question`: [31.3.1 Letter J](inbound-handbacks.md#src-inbound-2026-11-07) §7 measures `Sum(Lines*/Amount Having [Note] == "x") < [Premium]` firing from `/Policy` with `Note` declared only in `Lines`, a read Lean refused; this project had recorded that row as measured with short names off, a premise the letter never stated.
+- `claim`: from a rule in `/Policy` over `Lines*/Amount`, `Having [Note]` with `Note` only in `Lines` is refused `MVK_INVALID_ENTITY` with short names off and admitted with them on; `Having [Lines/Note]` is admitted either way; `Having [Tag]` with `Tag` in both groups reads `/Policy/Tag` and draws `MVK_NO_ITERATION_FOR_WILDCARD` either way; `Having [Nope]` draws `MVK_INVALID_ENTITY` either way. The filter opens no resolution scope of its own.
+- `carrier`: a12-dmkits' `DocumentModelDraft` writes `fieldRefByShortNameAllowed` on for every model it builds, so the letter's row ran with short names on.
+- `representation`: Lean's readers give the same verdict in all eight cells; no semantic change.
+- `sync`: none; it confirms [spec/08 §2](../../spec/08-paths-and-references.md)'s resolution order inside a filter body.
+
 <a id="src-filter-reference-two-levels-above"></a>
 #### Both filter gates read path membership and nothing about depth, and the admitted constant is keyed to the referenced level, measured locally 2026-09-06
 
