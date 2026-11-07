@@ -149,6 +149,13 @@ def booleanMember? (json : Json) (key : String) : Except String Bool :=
       | _ => throw s!"{key} {text}"
   | .ok other => throw s!"{key} {other.compress}"
 
+/-- A temporal type's `youngerThan1900Check`: bound as a Boolean, so a spelling that binds no value still
+leaves the model unread, but never checked or evaluated, so it reads as `false` whatever it says (kernel
+31.3.1, A12K-4073; a12-dmkits KF677). -/
+def inertYearCheck (body : Json) : Except String Bool := do
+  let _ ← booleanMember? body "youngerThan1900Check"
+  pure false
+
 private def intMinimum : Int := -2147483648
 private def intMaximum : Int := 2147483647
 

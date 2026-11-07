@@ -302,10 +302,6 @@ def DeclarationNotificationKind.label? : DeclarationNotificationKind → Option 
   | .emptyCode => none
   | .supplementaryCharacter => some ElementNameKind.supplementaryCharacter.label
 
-/-- The capture label of a row-key declaration's refusal. -/
-def RowFieldRefusal.label (refusal : RowFieldRefusal) : String :=
-  refusal.kernelCode?.getD "codeless:sort-list-capacity"
-
 /-- Every label the whole-model collection can produce: the field-type vocabulary, the name and group
 classes, the executable declarations', the row-key refusals' and the encoding class. A comparison with
 an observation restricts it to this vocabulary because the capture also records the classes of rule

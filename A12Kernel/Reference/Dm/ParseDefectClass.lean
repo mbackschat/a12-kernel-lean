@@ -96,10 +96,10 @@ def parseDefectClass? (model : FlatModel) (group : GroupPath) (language : Langua
   let firstEvent := (counted.findSome? (eventClass ·.event)).map (·.kernelCode)
   match result, lexError? with
   | .ok _, none => none
-  | .error error, none => firstEvent.orElse fun _ => some error.errorClass.code
+  | .error error, none => firstEvent.orElse fun _ => some (error.errorClass.codeAt group.length)
   | .error error, some lexError =>
       if error.atEnd then firstEvent.orElse fun _ => some lexError.errorClass.code
-      else firstEvent.orElse fun _ => some error.errorClass.code
+      else firstEvent.orElse fun _ => some (error.errorClass.codeAt group.length)
   | .ok _, some lexError => firstEvent.orElse fun _ => some lexError.errorClass.code
 
 end A12Kernel.Dm

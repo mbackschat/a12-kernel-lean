@@ -54,7 +54,7 @@ private def elabError? (checked : Except
   | .error cause => some cause
   | .ok _ => none
 
-/- A repeatable target accepts component-equivalent DateRange spellings over a sibling star and refuses a different component set. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
+/- A repeatable target accepts component-equivalent DateRange spellings over a sibling star and refuses a different component set. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group lands on the model root and names no root group there, and one step further climbs past it (kernel 31.3.1, KF679). -/
 example : operation?.isSome = true ∧
     (checkDateRangeFirstFilledComputation model
       ["Projects", "Tasks"] target.id
@@ -65,7 +65,11 @@ example : operation?.isSome = true ∧
         some (.shape (.sourceCarrier monthSource.path)) ∧
     elabError? (checkDateRangeFirstFilledComputation model
       ["Summary"] fixedTarget.id (siblingStar source.name)) =
-        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) := by
+        some (.shape (.site (.source (.resolve (.unknownRootGroup
+          { base := .relative 1, groups := ["Choices"], field := source.name }))))) ∧
+    elabError? (checkDateRangeFirstFilledComputation model
+      ["Summary"] fixedTarget.id ({ siblingStar source.name with base := .relative 2 })) =
+        some (.shape (.site (.source (.resolve (.aboveRoot 2))))) := by
   native_decide
 
 private def prepared :

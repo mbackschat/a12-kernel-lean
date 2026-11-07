@@ -350,8 +350,14 @@ example :
         some (.invalidReference namedWithoutParent) := by
   native_decide
 
-example : errorOf (model.resolveField ["Order", "Details"]
-    (relative 2 [] "Quantity")) = some (.aboveRoot 2) := by
+/-- Kernel 31.3.1 lets an up-run land on the model root and continue as the absolute path the rest spells
+(KF679, [Letter J](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07)): `Quantity` is no root
+group, as its absolute twin shows, while a run one step further climbs past the root. -/
+example : errorOf (model.resolveField ["Order", "Details"] (relative 2 [] "Quantity")) =
+      some (.unknownRootGroup (relative 2 [] "Quantity")) ∧
+    errorOf (model.resolveField ["Order", "Details"] (absolute [] "Quantity")) =
+      some (.unknownRootGroup (absolute [] "Quantity")) ∧
+    errorOf (model.resolveField ["Order", "Details"] (relative 3 [] "Quantity")) = some (.aboveRoot 3) := by
   native_decide
 
 /-- Two **root** groups, which the Kernel admits: a model with more than one root is authorable and
@@ -422,7 +428,8 @@ example :
       key? ["Order"] (absolute ["Order", "Nope"] "Limit") = some .invalidEntity ∧
       key? ["Order"] (absolute [] "Order") = none ∧
       key? ["Order"] (bare "Nope") = some .invalidEntity ∧
-      key? ["Order", "Details"] (relative 2 [] "Quantity") = some .tooManyParentGroups ∧
+      key? ["Order", "Details"] (relative 2 [] "Quantity") = some .invalidRootGroup ∧
+      key? ["Order", "Details"] (relative 3 [] "Quantity") = some .tooManyParentGroups ∧
       key? ["Order"] (absolute ["Order", "Details"] "Limit") = none := by
   native_decide
 

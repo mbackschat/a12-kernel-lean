@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.LowerString
 import A12Kernel.Reference.Dm.Validate
+import A12Kernel.Reference.Dm.GeneratedComputationRule
 import A12Kernel.Reference.Dm.LowerNumeric
 import A12Kernel.Reference.Dm.LowerDocument
 import A12Kernel.Reference.Dm.LowerRows
@@ -524,18 +525,18 @@ private def lowerComputationWith (allowParallelGuards : Bool)
   -- Delay caller compatibility only for the complete filter preflight; unfiltered callers
   -- retain their existing admission boundary (H08's scope in docs/gaps/paths-and-groups.md).
   let earlyModes ← if hasHaving then pure none else some <$> readOutputModes
-  let suppression : Lowering (List String) := if computation.errorCodesToSuppress.isEmpty then pure [] else
-    (·.suppressed) <$> parsed language
-      s!"@SuppressWarning({",".intercalate computation.errorCodesToSuppress}) 0"
-  let validatedSuppression : Lowering Bool := do
-    let suppressed ← suppression
-    if suppressed.any (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
-      refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
-    pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")
-  -- Filter preflight starts at the generated preamble (spec/09 §6; spec/12 §4).
-  -- The unfiltered route defers preamble failures until guards and operation syntax finish.
-  let suppress ← if hasHaving then validatedSuppression else
-    pure ((suppression.toOption.getD []).contains "MVK_INVALID_COMPARE_DEC_PLACES")
+  -- Kernel 31.3.1 reads the preamble alone, ahead of every text, and a refused one is the computation's only
+  -- class (spec/09 §1.2; a12-dmkits KF298). The unfiltered route's rounding class keeps its 31.1.1 place ahead
+  -- of it, unmeasured on 31.3.1.
+  let suppress ← match computation.preambleText language with
+    | none => pure false
+    | some text => do
+        let suppressed ← match parsePreambleSnippet language text with
+          | .ok names => pure names
+          | .error error => refuse "Syntax" error.errorClass.code
+        if suppressed.any (!suppressibleWarnings.contains ·) then
+          refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
+        pure (suppressed.contains "MVK_INVALID_COMPARE_DEC_PLACES")
   checkComputationOrderedAdmission language model computation target suppress
   -- Calculation-mode compatibility follows the generated condition’s parser gates (spec/09 §6).
   let outputModes ← match earlyModes with | some modes => pure modes | none => readOutputModes
@@ -546,7 +547,6 @@ private def lowerComputationWith (allowParallelGuards : Bool)
     let body := (← parsed language alternative.operation).body
     if !body.parensLegal false then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
     pure body
-  let suppress ← if hasHaving then pure suppress else validatedSuppression
   let row := !target.repeatableScope.isEmpty
   -- Only an atom carrying a filter is typed at the filter's binding; a partner read beside it keeps
   -- the unbound reading the joined route resolves (k22-joined-computations-2026-10-24, `Ca2`).

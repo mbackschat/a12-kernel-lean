@@ -89,19 +89,20 @@ private def nominationCodes (json : Option Json) : Option (List String) :=
    [the ordering locks](OrderingMemberLocks.lean)' (Locked: a12-dmkits GroupIndexAndSortReferenceLawsTest at
    1124b523f, kernel 31.1.1). -/
 example :
-    nominationCodes (nominating "\"sortFields\":[{\"name\":\"K\"}],") = some [] ∧
-      nominationCodes (nominating "\"sortFields\":[{\"name\":\"NVV\"}],") =
+    nominationCodes (nominating "\"sortFields\":[{\"name\":\"K\",\"order\":\"ASC\"}],") = some [] ∧
+      nominationCodes (nominating "\"sortFields\":[{\"name\":\"NVV\",\"order\":\"ASC\"}],") =
         some ["MVK_SORT_FIELD_NO_VALUE_VALIDATION"] ∧
-      nominationCodes (nominating "\"sortFields\":[{\"name\":\"../Value\"}],") = some ["MVK_INVALID_SORT_FIELD"] ∧
-      nominationCodes (nominating "\"sortFields\":[{\"name\":\"K\"},{\"name\":\"K\"}],") =
+      nominationCodes (nominating "\"sortFields\":[{\"name\":\"../Value\",\"order\":\"ASC\"}],") = some ["MVK_INVALID_SORT_FIELD"] ∧
+      nominationCodes (nominating "\"sortFields\":[{\"name\":\"K\",\"order\":\"ASC\"},{\"name\":\"K\",\"order\":\"ASC\"}],") =
         some ["MVK_SORT_FIELD_DUPLICATE"] ∧
       nominationCodes (nominating
-          "\"sortFields\":[{\"name\":\"K\"},{\"name\":\"K\"},{\"name\":\"K\"},{\"name\":\"K\"}],") =
+          "\"sortFields\":[{\"name\":\"K\",\"order\":\"ASC\"},{\"name\":\"K\",\"order\":\"ASC\"},{\"name\":\"K\",\"order\":\"ASC\"},{\"name\":\"K\",\"order\":\"ASC\"}],") =
         some ["MVK_SORT_FIELD_DUPLICATE", "codeless:sort-list-capacity"] ∧
       nominationCodes (nominating "\"indexFieldName\":\"Nope\",") = some ["MVK_INVALID_INDEX_FIELD"] ∧
       nominationCodes (nominating "\"indexFieldName\":\"/Form/Items/K\",") =
         some ["nomination /Form/Items/K leaves no model"] ∧
-      nominationCodes (nominating "\"sortFields\":[{\"name\":\"\"}],") = some ["nomination  leaves no model"] := by
+      nominationCodes (nominating "\"sortFields\":[{\"name\":\"\",\"order\":\"ASC\"}],") =
+        some ["MVK_INVALID_SORT_FIELD", "codeless:sort-name-unset"] := by
   native_decide
 
 /-! ## Retired variant members

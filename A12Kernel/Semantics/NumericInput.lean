@@ -37,19 +37,22 @@ def sourceIdentity (value : NumericInputDecimal) : NumericSourceIdentity :=
   else
     .decimal { unscaled := value.unscaled, scale := value.scale.toNat }
 
-/-- Strip only fractional trailing zeros and then pad to the declaration's minimum fractional scale. -/
+/-- The stored value's integer digits as a decimal's precision less its scale: zero or negative below one,
+and a coefficient of `0` counting one digit. -/
+def integerDigits (value : NumericInputDecimal) : Int :=
+  ((toString value.unscaled.natAbs).length : Int) - value.scale
+
+/-- Strip only fractional trailing zeros, pad to the declaration's minimum fractional scale, and cap the
+scale so the text keeps at most fifteen digits, rounding the dropped digits half up. Kernel 31.3.1 caps the
+scale at `15` less the stored value's `integerDigits`, never below zero; kernel 31.1.1 had no cap
+(a12-dmkits KF681, measured on the pad and the rounding; the floor at zero and the count below one are
+source reading). -/
 def formalReadStored (value : NumericInputDecimal)
     (minimumScale : Nat) : StoredNumber :=
   let stored := value.storedNumber
-  let (magnitude, naturalScale) :=
-    StoredNumber.stripFractionalZeros stored.unscaled.natAbs stored.scale
-  let selectedScale := max naturalScale minimumScale
-  let selectedMagnitude :=
-    magnitude * decimalFactor (selectedScale - naturalScale)
-  { unscaled :=
-      if stored.unscaled < 0 then -(selectedMagnitude : Int)
-      else selectedMagnitude
-    scale := selectedScale }
+  let naturalScale := (StoredNumber.stripFractionalZeros stored.unscaled.natAbs stored.scale).2
+  let selectedScale := min (max naturalScale minimumScale) (15 - value.integerDigits).toNat
+  { unscaled := rescaleHalfUpUnscaled stored.amount selectedScale, scale := selectedScale }
 
 /-- Render the declaration-adjusted text consumed by formal checking and value readers. -/
 def formalReadText (value : NumericInputDecimal)

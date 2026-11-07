@@ -63,7 +63,7 @@ private def elabError? (checked : Except
   | .error cause => some cause
   | .ok _ => none
 
-/- A repeatable target admits only a complete ISO DateTime source and target over a sibling star. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
+/- A repeatable target admits only a complete ISO DateTime source and target over a sibling star. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group lands on the model root and names no root group there, and one step further climbs past it (kernel 31.3.1, KF679). -/
 example : operation?.isSome = true ∧
     elabError? (checkDateTimeFirstFilledComputation model
       ["Projects", "Tasks"] target.id
@@ -79,7 +79,11 @@ example : operation?.isSome = true ∧
         some (.shape (.targetCarrier incompleteTarget.path)) ∧
     elabError? (checkDateTimeFirstFilledComputation model
       ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
-        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) := by
+        some (.shape (.site (.source (.resolve (.unknownRootGroup
+          { base := .relative 1, groups := ["Choices"], field := source.name }))))) ∧
+    elabError? (checkDateTimeFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star ({ siblingStar source.name with base := .relative 2 }))) =
+        some (.shape (.site (.source (.resolve (.aboveRoot 2))))) := by
   native_decide
 
 private def prepared :

@@ -115,7 +115,7 @@ private def groupEl (id name : String) (repeatability : Nat) (children : List Js
     (usageType.map fun value => [("usageType", Json.str value)]).getD [] ++
     (indexFieldName.map fun value => [("indexFieldName", Json.str value)]).getD [] ++
     (sortFieldNames.map fun names => [("sortFields", Json.arr (names.map fun sortName =>
-      Json.mkObj [("name", .str sortName)]).toArray)]).getD [])
+      Json.mkObj [("name", .str sortName), ("order", "ASC")]).toArray)]).getD [])
 
 private def typedefEl (id name : String) (fieldType : Json) : Json :=
   Json.mkObj [("id", .str id), ("name", .str name), ("fieldType", fieldType)]
@@ -328,7 +328,8 @@ private def emptinessRows : List (String × Row) := [
   ("b-error-condition-empty", { append := [ruleEl "/Form/R" "R" "../Value" ""], observed := ["MVK_CONDITION_MISSING", "MVK_INCOMPLETE_INPUT", conditionEmpty] }),
   ("b-operation-empty", { append := [computationEl "/Form/C" "C" "../Total" [""]], observed := ["MVK_INCOMPLETE_INPUT", operationEmpty] }),
   ("b-enum-dup-categories", { append := [fieldEl "/Form/E" "E" (enumerationType ["a", "b"] [("K", ["a"]), ("K", ["b"])])], observed := [notBuilt] }),
-  ("b-sort-name-empty", { append := [groupEl "/Form/G" "G" 3 [fieldEl "/Form/G/K" "K" (stringType)] (sortFieldNames := [""])], observed := [notBuilt] }),
+  -- Kernel 31.3.1 builds this model and draws the sort role's classes, which the declaration walk owns (KF680).
+  ("b-sort-name-empty", { append := [groupEl "/Form/G" "G" 3 [fieldEl "/Form/G/K" "K" (stringType)] (sortFieldNames := [""])], observed := ["MVK_INVALID_SORT_FIELD", "codeless:sort-name-unset"] }),
   ("b-typedef-id-empty", { typeDefinitions := [typedefEl "" "Td" (stringType)], observed := [idEmpty] }),
   ("b-typedef-name-empty", { typeDefinitions := [typedefEl "Td" "" (stringType)], observed := [typedefNameEmpty] })]
 
@@ -440,15 +441,14 @@ example :
   native_decide
 
 /-- The spellings that leave no model stop the check ahead of every class, at the group naming them: an
-absolute one, one climbing past the root and one landing on a group, the parent, a child or a sibling of the
-base model. A spelling landing on nothing builds. -/
+absolute one and one climbing past the root. A spelling landing on a group, the parent, a child or a sibling of
+the base model, builds on kernel 31.3.1 as one landing on nothing does, its class the declaration walk's
+(KF680). -/
 example :
     (["/Form/G/K", "../../../K", "..", "Sub", "../Items", "../Missing", "../../K"].map indexedOutcome) =
       [some (.notBuilt ["Form", "G"] (.nomination .absolute)),
         some (.notBuilt ["Form", "G"] (.nomination .climbsAboveRoot)),
-        some (.notBuilt ["Form", "G"] (.nomination .landsOnGroup)),
-        some (.notBuilt ["Form", "G"] (.nomination .landsOnGroup)),
-        some (.notBuilt ["Form", "G"] (.nomination .landsOnGroup)),
+        some (.checked []), some (.checked []), some (.checked []),
         some (.checked []), some (.checked [])] := by
   native_decide
 

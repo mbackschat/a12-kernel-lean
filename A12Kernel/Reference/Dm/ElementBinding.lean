@@ -168,6 +168,21 @@ private def refuseContainer (body : Json) (key : String) : Except String Unit :=
   | .ok (.obj _) | .ok (.arr _) => throw s!"model member {key} is a container"
   | _ => pure ()
 
+/-- A sort entry as kernel 31.3.1 binds it (a12-dmkits KF680): an object whose `name` is a scalar and whose
+`order` is one of the enum's two constants. The order is read as the measured rows admit it: `ASC`, `DESC`,
+`0` or `1` after leading characters at or below U+0020, or the integer `0` or `1`, `-0` included. `"asc"`,
+`"UP"`, `""`, `"ASC "`, `"01"`, `2`, `-1`, `1.0` and `true` are measured unreadable; reading trailing
+whitespace as part of the text is Lean's generalization from `"ASC "`, the one trailing row measured. -/
+private def bindSortEntry (entry : Json) : Except String Unit := do
+  let .obj _ := entry | throw "sort entry is no object"
+  requireValue entry "name"
+  refuseContainer entry "name"
+  let admitted := match entry.getObjVal? "order" with
+    | .ok (.str text) => ["ASC", "DESC", "0", "1"].contains (text.dropWhile fun char : Char => char.toNat ≤ 0x20).copy
+    | .ok (.num value) => value.exponent == 0 && (value.mantissa == 0 || value.mantissa == 1)
+    | _ => false
+  if !admitted then throw "sort entry order is unreadable"
+
 /-- Bind one element and, below a group, every element under it. `fuel` bounds the nesting depth. -/
 private def bindElement : Nat → Json → Except String Unit
   | 0, _ => throw "model elements nest deeper than the model is long"
@@ -179,7 +194,7 @@ private def bindElement : Nat → Json → Except String Unit
       | "Group" =>
           discard <| primitiveIntMember? body "repeatability"
           if let .ok (.arr sorts) := body.getObjVal? "sortFields" then
-            for sort in sorts do requireValue sort "name"
+            for sort in sorts do bindSortEntry sort
           for child in ← groupElements body do bindElement fuel child
       | "Field" =>
           for key in ["global", "transient"] do discard <| booleanMember? body key

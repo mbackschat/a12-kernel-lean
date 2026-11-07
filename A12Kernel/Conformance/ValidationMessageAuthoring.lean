@@ -389,7 +389,9 @@ example :
 
 /- The name position's path refusals carry their own classes: an unknown root, an entity that does not
 resolve below it, and a walk past the root. A name that resolves to a group is no read field, whatever the condition reads inside it
-([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)). -/
+([checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-name-position-refusals)). A walk
+landing exactly on the model root continues as the absolute spelling, so `../..` plus a name that is no
+root draws the root class (kernel 31.3.1, KF679). -/
 example :
     let root := namedClassOn? model ["Order"] (pathAt (.relative 0) ["Head", "Deeper"] "Deep")
     root "See $/Nope/Amount$" = some (some "INVALID_ROOT_GROUP") ∧
@@ -399,6 +401,8 @@ example :
       root "See $Head$" = some (some "INVALID_FIELD") ∧
       root "See $Head/Deeper$" = some (some "INVALID_FIELD") ∧
       namedClassOn? model ["Order", "Head"] (bare "Amount") "See $../../Amount$" =
+        some (some "INVALID_ROOT_GROUP") ∧
+      namedClassOn? model ["Order", "Head"] (bare "Amount") "See $../../../Amount$" =
         some (some "ERROR_TEXT_PARAMETER_TOO_MANY_PARENT_GROUPS") ∧
       namedClassOn? model ["Order", "Head"] (bare "Amount") "See $..Wrong/Amount$" =
         some (some "INVALID_ENTITY") := by

@@ -197,10 +197,11 @@ private def fieldAt (base : PathBase) (groups : List String) (name : String) :
 
 example :
     [fieldAt .absolute ["Probe"] "Nope", fieldAt .absolute ["Nope"] "AVal",
-      fieldAt (.relative 0) [] "Nope", fieldAt (.relative 1) [] "AVal"].map (fun operand =>
+      fieldAt (.relative 0) [] "Nope", fieldAt (.relative 1) [] "AVal",
+      fieldAt (.relative 2) [] "AVal"].map (fun operand =>
         diagnostic? .atLeastOneGroupFilled [operand, group ["Probe", "B"]]) =
       [some .invalidEntity, some .invalidRootGroup, some .invalidEntity,
-        some .tooManyParentGroups] ∧
+        some .invalidRootGroup, some .tooManyParentGroups] ∧
     diagnostic? .atLeastOneGroupFilled
       [fieldAt .absolute ["Probe", "A"] "AVal", group ["Probe", "B"]] = none := by
   native_decide
@@ -210,9 +211,12 @@ example :
 The Kernel reads a group path segment by segment, as it reads a field path, so the class turns on
 which segment missed. An undeclared first segment is the root class whatever follows it, a lone
 segment and a declared group read at root position included; a later miss is the entity class, and a
-parent walk above the root has its own. A starred operand answers first for an earlier star landing
+parent walk past the root has its own. A starred operand answers first for an earlier star landing
 on a nonrepeatable segment, a field included
-([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
+([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)).
+A walk landing exactly on the model root continues as the absolute spelling its remaining segments make,
+so from a root group `..` plus a name that is no root draws the root class on every carrier below
+(kernel 31.3.1, KF679). -/
 
 private def groupAt (base : PathBase) (groups : List String) : SurfaceGroupListOperand :=
   .group (.path { base, groups })
@@ -224,10 +228,10 @@ private def starAt (base : PathBase) (groups : List SurfaceStarGroupSegment) :
 example :
     [groupAt .absolute ["Nope", "A"], groupAt .absolute ["Nope"], groupAt .absolute ["A"],
       groupAt .absolute ["Probe", "Nope"], groupAt (.relative 0) ["Nope"],
-      groupAt (.relative 1) ["A"]].map (fun operand =>
+      groupAt (.relative 1) ["A"], groupAt (.relative 2) ["A"]].map (fun operand =>
         diagnostic? .atLeastOneGroupFilled [operand, group ["Probe", "B"]]) =
       [some .invalidRootGroup, some .invalidRootGroup, some .invalidRootGroup,
-        some .invalidEntity, some .invalidEntity, some .tooManyParentGroups] := by
+        some .invalidEntity, some .invalidEntity, some .invalidRootGroup, some .tooManyParentGroups] := by
   native_decide
 
 example :
@@ -237,11 +241,12 @@ example :
       starAt .absolute [seg "Probe" false, seg "A", seg "Nope" false],
       starAt .absolute [seg "Probe" false, seg "A" false, seg "AVal", seg "Nope" false],
       starAt .absolute [seg "Probe", seg "Rows"],
-      starAt (.relative 1) [seg "Rows"],
+      starAt (.relative 1) [seg "Rows"], starAt (.relative 2) [seg "Rows"],
       starAt .absolute [seg "Probe" false, seg "A"]].map (fun operand =>
         diagnostic? .atLeastOneGroupFilled [operand]) =
       [some .invalidEntity, some .invalidRootGroup, some .invalidWildcard, some .invalidWildcard,
-        some .invalidWildcard, some .tooManyParentGroups, some .invalidWildcard] ∧
+        some .invalidWildcard, some .invalidRootGroup, some .tooManyParentGroups,
+        some .invalidWildcard] ∧
     diagnostic? .atLeastOneGroupFilled [rowsStar] = none := by
   native_decide
 
@@ -255,9 +260,10 @@ example :
       | .error error => error.groupListDiagnostic?
     [presence .absolute ["Nope", "A"], presence .absolute ["Nope"], presence .absolute ["A"],
       presence .absolute ["Probe", "Nope"], presence (.relative 0) ["Nope"],
-      presence (.relative 1) ["A"], presence .absolute ["Probe", "A"]] =
+      presence (.relative 1) ["A"], presence (.relative 2) ["A"], presence .absolute ["Probe", "A"]] =
       [some .invalidRootGroup, some .invalidRootGroup, some .invalidRootGroup,
-        some .invalidEntity, some .invalidEntity, some .tooManyParentGroups, none] := by
+        some .invalidEntity, some .invalidEntity, some .invalidRootGroup, some .tooManyParentGroups,
+        none] := by
   native_decide
 
 /- The count carrier draws the same classes. A fixed-only list is read by the comparison carrier and
@@ -285,15 +291,16 @@ example :
     let starredAt (base : PathBase) (groups : GroupPath) : SurfaceGroupCountOperand :=
       .starred (.terminallyStarred base groups)
     [fixedAt .absolute ["Nope", "A"], fixedAt .absolute ["A"], fixedAt (.relative 0) ["Nope"],
-      fixedAt (.relative 1) ["A"]].map (fun operand =>
+      fixedAt (.relative 1) ["A"], fixedAt (.relative 2) ["A"]].map (fun operand =>
         countOperandsDiagnostic? [operand, fixedAt .absolute ["Probe", "B"]]) =
       [some .invalidRootGroup, some .invalidRootGroup, some .invalidEntity,
-        some .tooManyParentGroups] ∧
+        some .invalidRootGroup, some .tooManyParentGroups] ∧
     [starredAt .absolute ["Probe", "Nope"], starredAt .absolute ["Nope", "Rows"],
-      starredAt .absolute ["Probe", "A"], starredAt (.relative 1) ["Rows"]].map (fun operand =>
+      starredAt .absolute ["Probe", "A"], starredAt (.relative 1) ["Rows"],
+      starredAt (.relative 2) ["Rows"]].map (fun operand =>
         starredCountDiagnostic? [operand]) =
       [some .invalidEntity, some .invalidRootGroup, some .invalidWildcard,
-        some .tooManyParentGroups] := by
+        some .invalidRootGroup, some .tooManyParentGroups] := by
   native_decide
 
 private def countAtDiagnostic? (rowGroup : GroupPath) (operands : List SurfaceGroupCountOperand) :

@@ -258,13 +258,15 @@ example : [false, true].all (fun repeated => profileOutputs.all fun (format, fir
     profileRun "yyyy-MM-dd" format "2024-06-11" "2023-12-11" (some 2023) repeated ==
       expectedProfiles repeated ("value " ++ first) ("value " ++ clean)) := by native_decide
 
+/- The pre-1900 check is inert on kernel 31.3.1: a checked 1899 source is no formal error and a checked
+   target stores the 1899 value (KF677, [31.3.1 Letter J](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §1; kernel 31.1.1 cleared the first and errored the second). -/
 example : [false, true].all (fun repeated =>
     profileRun "yyyy-MM-dd" "yyyy-MM-dd" "1899-12-31" "2024-06-11" none repeated
-      (sourceChecked := true) == expectedProfiles repeated "cleared" "value 2022-07-08" &&
+      (sourceChecked := true) == expectedProfiles repeated "value 1899-12-31" "value 2022-07-08" &&
     profileRun "yyyy-MM-dd" "yyyy-MM-dd" "1900-01-01" "bad" none repeated
       (sourceChecked := true) == expectedProfiles repeated "value 1900-01-01" "value 2022-07-08" &&
     profileRun "yyyy-MM-dd" "yyyy-MM-dd" "1899-12-31" "2024-06-11" none repeated
-      (targetChecked := true) == expectedProfiles repeated "errored 1899-12-31" "value 2022-07-08") := by native_decide
+      (targetChecked := true) == expectedProfiles repeated "value 1899-12-31" "value 2022-07-08") := by native_decide
 
 example : [false, true].all (fun repeated =>
     profileRun "dd.MM." "yyyy-MM-dd" "11.06." "12.12." (some 2023) repeated

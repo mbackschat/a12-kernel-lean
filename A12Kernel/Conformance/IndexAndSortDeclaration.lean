@@ -102,12 +102,12 @@ example :
       [some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", some "MVK_SORT_FIELD_NO_VALUE_VALIDATION", none, none] := by
   native_decide
 
-/- Seven distinct keys across two roles and the list, beside the codeless capacity class. The index and sort
+/- Seven distinct keys across two roles and the list, beside the codeless capacity and unset-name classes. The index and sort
    spellings differ by more than a prefix, so a consumer deriving one from the other by substitution gets a
    key the Kernel never emits. -/
 example :
     (RowFieldRefusal.all.filterMap (·.kernelCode?)).eraseDups.length = 7 ∧
-      RowFieldRefusal.all.length = 8 ∧
+      RowFieldRefusal.all.length = 9 ∧
       RowFieldRefusal.sortInfoMissing.kernelCode? = some "MVK_SORT_INFO_MISSING" ∧
       (RowFieldRefusal.valueValidationOff .indexField).kernelCode? =
         some "MVK_INDEX_FIELD_NO_VALUE_VALIDATION" ∧
@@ -192,27 +192,32 @@ example :
       nominationShortName ["Order"] ".." = "" := by
   native_decide
 
-/- Only an absolute spelling, a climb above the root and a non-empty spelling landing on a group leave no
-   model; the group is whatever `isGroup` names, and the empty spelling lands on the group itself without
-   that being a failure. -/
+/- Only an absolute spelling and a climb past the model root leave no model; a spelling landing on a group and
+   the empty spelling, which lands on the group itself, are judged by name. -/
 example :
-    let isGroup := fun path => path == ["Order"] || path == items
-    nominationFailure? isGroup items "/Order/Items/Key" = some .absolute ∧
-      nominationFailure? isGroup items "../../../Key" = some .climbsAboveRoot ∧
-      nominationFailure? isGroup items ".." = some .landsOnGroup ∧
-      nominationFailure? isGroup ["Order"] "Items" = some .landsOnGroup ∧
-      nominationFailure? isGroup items "" = none ∧
-      nominationFailure? isGroup items "../../Key" = none ∧
-      nominationFailure? isGroup items "../Key" = none := by
+    nominationFailure? items "/Order/Items/Key" = some .absolute ∧
+      nominationFailure? items "../../../Key" = some .climbsAboveRoot ∧
+      nominationFailure? items ".." = none ∧
+      nominationFailure? ["Order"] "Items" = none ∧
+      nominationFailure? items "" = none ∧
+      nominationFailure? items "../../Key" = none ∧
+      nominationFailure? items "../Key" = none := by
   native_decide
 
-/- A sort name written empty binds no reference and leaves no model, where an index written empty keeps the
-   group's own name and is unresolved; a spelling landing on a group is no model in either role. -/
+/- Kernel 31.3.1 resolves an ordering member as a field: a spelling landing on a group draws the role's
+   unresolved class and a sort name written empty the sort role's, where 31.1.1 left no model for both
+   (a12-dmkits KF680). An index written empty keeps the group's own name and is unresolved. -/
 example :
-    lookup .sortField "" = .noModel ∧
+    lookup .sortField "" = .cascade (some (.nameUnresolved .sortField)) ∧
       lookup .indexField "" = .cascade (some (.nameUnresolved .indexField)) ∧
-      lookup .indexField ".." = .noModel ∧
+      lookup .indexField ".." = .cascade (some (.nameUnresolved .indexField)) ∧
       lookup .sortField "/Order/Items/Key" = .noModel := by
+  native_decide
+
+/- An empty sort name adds the codeless unset-name notification to the list's judgements. -/
+example :
+    (rowFieldDeclarationRefusals { sort := [("", .unresolved), ("K", .field false false)] }).map (·.label) =
+      ["MVK_INVALID_SORT_FIELD", "codeless:sort-name-unset"] := by
   native_decide
 
 /- The list's unfilled-entry class is drawn once however many of the first three names are blank but not

@@ -286,28 +286,28 @@ Sources: [condition positions](../docs/sources/inbound-handbacks.md#inbound-2026
 
 | Form | Written | Meaning |
 |---|---|---|
-| suppress-warning preamble | `@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)` | waive the equality scale gate — the **only** suppressible warning ([§5 §1](04-numbers-and-decimals.md#1-scale-gates----checked-at-parse-time)) |
+| suppress-warning preamble | `@SuppressWarning(MVK_INVALID_COMPARE_DEC_PLACES)` | waive the named warnings; two codes are suppressible: the equality scale gate ([§5 §1](04-numbers-and-decimals.md#1-scale-gates----checked-at-parse-time)), the **only** suppressible comparison class, and the Enumeration calculation class `MVK_ERROR_INVALID_ENUM_CALCULATION` ([§11 §4.3](09-computations.md#43-number-string-enumeration-and-custom-targets)) |
 | reference-group scope | `RepetitionNotUnique(a, b @From Group)` | choose the uniqueness scope ([§9 §6](07-repetition-and-iteration.md#6-repetitionnotunique-precisely-)) |
 | the rule's own group | `RuleGroup` | the rule's containing group as an entity; counts as referencing the error field; a `*` on it is rejected ([§10 §1](08-paths-and-references.md#1-absolute-relative-and-short-name-references)) |
 | semantic index | `[Field For "value"]` or `[Field For CustomerName]` | select a row by a literal index value or by the value read from the named field ([§10 §4](08-paths-and-references.md#4-rows-are-addressed-by-semantic-key-never-by-position-)) |
 | correlation | `$path` (inside `Having`) | pin to the current outer repetition ([§9 §3.2](07-repetition-and-iteration.md#32-correlation--and-currentrepetition)) |
 | list separator | `… In …` | separates an operator's leading arguments from its trailing list (concrete syntax §3.2) |
 
-**A rule carries the preamble as written text; a computation's `errorCodesToSuppress` reaches the same preamble as text.** The computation's entries are joined with `,` into `@SuppressWarning(…)` ahead of the condition and parsed by the condition lexer and parser in the model's condition language, so the first failure in that text answers, whether it is a character the lexer cannot take or a token the parser cannot use. An absent or empty list is admitted.
+**The preamble is a comma list of one or more names. A rule carries it as written text at the head of its condition; a computation carries its own text, read alone and first.** A computation's preamble is its `additionalParserInformation` text unless that text is blank, and otherwise its legacy `errorCodesToSuppress` entries joined with `,` into `@SuppressWarning(…)` (`@UnterdrueckeWarnung(…)` in a German model), so a stored text wins over any list beside it; a blank text beside an absent or empty list is no preamble. That text must be a preamble and nothing else, parsed by the condition lexer and parser in the model's condition language, so the first failure in it answers, whether a character the lexer cannot take or a token the parser cannot use, and a refused preamble is the only class the computation reports. An explicit `null` for either member is absence, a list entry or text written as a JSON number is read as its text, and a legacy member that is a bare string or an object leaves no model, even beside a stored text. A rule's condition shares the list grammar, unmeasured on a rule.
 
 | Entry text | Class | Measured members |
 |---|---|---|
-| the supported name, alone | admitted | padded with spaces, or with a tab and a line break, too |
-| one entry that lexes as a single name other than the supported code | `MVK_INVALID_SUPPRESSED_WARNING` | `Late_Fee`, `_LATE_FEE`, `MVK:LATE`, `MVK_GEBÜHR`, `MVK_CODE7`, the supported name in lower case, a keyword of the *other* condition language |
+| supported names | admitted | either code alone, padded with spaces or with a tab and a line break; two codes; the same code twice |
+| an entry that lexes as a single name other than a supported code, anywhere in the list | `MVK_INVALID_SUPPRESSED_WARNING` | `Late_Fee`, `_LATE_FEE`, `MVK:LATE`, `MVK_GEBÜHR`, `MVK_CODE7`, the supported name in lower case, a keyword of the *other* condition language; an unsupported name ahead of or after a supported one |
 | text that lexes but is not one usable name | `MVK_UNEXPECTED_TOKEN` | `7_DAYS`, `MVK_LATE FEE`, `MVK_LATE.FEE`, either quoted form, a trailing `;;` comment, `#Zeile`, a blank entry, a keyword of the model's own language (`And`, `Sum` in an English model, `Summe` in a German one) |
-| two or more entries | `MVK_UNEXPECTED_TOKEN` | the supported name twice or three times; a list led by an unsupported name, whose parse failure answers ahead of the name gate |
-| a character the lexer cannot take | `MVK_LEXER_STANDARD_ERROR`, unless a parser failure comes earlier in the text | `MVK_FRAÉ`, an unclosed quote, `#LATE`, a no-break space before the name; `7_DAYS É` and `And É` are `MVK_UNEXPECTED_TOKEN`, and `MVK_FRAÉ` followed by the supported name is the lexer error while the reverse order is `MVK_UNEXPECTED_TOKEN` |
+| text that is no preamble alone | `MVK_UNEXPECTED_TOKEN` | an empty entry, `@SuppressWarning()`, a bare code without the pragma, a preamble followed by a condition, a text or entry written as a number |
+| a character the lexer cannot take | `MVK_LEXER_STANDARD_ERROR`, unless a parser failure comes earlier in the text | `MVK_FRAÉ`, an unclosed quote, `#LATE`, a no-break space before the name; `7_DAYS É` and `And É` are `MVK_UNEXPECTED_TOKEN`, and `MVK_FRAÉ` followed by the supported name is the lexer error; the reverse order is unmeasured since the list grammar admits a second entry |
 
 Under the alphabet of concrete syntax §1 `7_DAYS` spells one name, yet this position refuses it as a token rather than as an unsupported name; which other spellings take that route is unmeasured.
 
-**Being the text's first part, the preamble's class answers ahead of the classes measured beside it:** an unsupported name draws `MVK_INVALID_SUPPRESSED_WARNING` beside an operation or precondition naming nothing, a text in a rounding slot, a read of the computed field and a control character in the message, each of which draws its own class without the member, and the supported name twice draws `MVK_UNEXPECTED_TOKEN` beside the unresolved operation, the rounding slot and the control character.
+**The preamble's class answers ahead of the classes measured beside it:** an unsupported name draws `MVK_INVALID_SUPPRESSED_WARNING` beside an operation or precondition naming nothing, a text in a rounding slot, a read of the computed field and a control character in the message, each of which draws its own class without the member. Suppressing the Enumeration calculation class leaves the scale gate standing, and the other way round.
 
-Sources: [list reads](../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads), [lexer and blank text](../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-lexer-and-blank-text), [computation texts](../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-computation-texts).
+Sources: [list reads](../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-list-reads), [lexer and blank text](../docs/sources/inbound-handbacks.md#inbound-2026-09-24b-lexer-and-blank-text), [computation texts](../docs/sources/inbound-handbacks.md#inbound-2026-09-25b-computation-texts), [inbound 2026-11-07](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07).
 
 ---
 
@@ -472,5 +472,5 @@ Sources: [inbound 2026-09-21 corrections](../docs/sources/inbound-handbacks.md#i
 - [ ] A refused text draws the first class raised under the event model of concrete syntax §3.1.
 - [ ] Each argument slot is typed per the operator reference's S column: a field bare in an `entity` slot, bracketed in a `value` position.
 - [ ] Paths: absolute `/`, relative up-run with an optional turning point, per-segment `*`, short name, quoted names; specifiers `Having` / `For` with a string or field-reference key / `$` attach to references; their legality is [§10](08-paths-and-references.md)'s and [§9 §4](07-repetition-and-iteration.md#4-where-a-star-binds--the-anchor-rules-)'s.
-- [ ] Directives: `@SuppressWarning(only-that-code)` with the entry classes of concrete syntax §4, `@From`, `RuleGroup`, `In`.
+- [ ] Directives: `@SuppressWarning(code, …)` over the two suppressible codes, with the entry classes of concrete syntax §4, `@From`, `RuleGroup`, `In`.
 - [ ] Bidirectional keyword table with categories (EN canonical, DE supported); the German-only constructs refused by the classes of concrete syntax §5.

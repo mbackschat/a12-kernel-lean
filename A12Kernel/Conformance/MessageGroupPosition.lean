@@ -106,17 +106,21 @@ example :
         some (.turningPointMismatch "#..Wrong/Side") := by
   native_decide
 
-/- A parent walk reaches the ancestor arm, and one that climbs past the root group is refused on the
-message route's own above-root class. A bare `..` names the parent itself. -/
+/- A parent walk reaches the ancestor arm, and one that climbs past the technical model root is refused on
+the message route's own above-root class. A bare `..` names the parent itself. On kernel 31.3.1 a walk may
+land on the model root and continue into a root group, so `../../Order` from `Head` re-enters the rule's own
+root and `../Head` from the root names no root group (KF679,
+[31.3.1 Letter J](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §2). -/
 example :
     headGroupOk? "In $#..$" = some true ∧
       headGroupOk? "In $#../Head$" = some true ∧
       headGroupError? "In $#../Side$" = some (.invalidGroupParameter "#../Side") ∧
       headGroupError? "In $#Deeper$" = some (.invalidGroupParameter "#Deeper") ∧
-      headGroupError? "In $#../../Order$" =
-        some (.parameterAboveRoot "#../../Order") ∧
+      headGroupOk? "In $#../../Order$" = some true ∧
+      headGroupError? "In $#../../../Order$" =
+        some (.parameterAboveRoot "#../../../Order") ∧
       pathTemplateError? ["Order"] (bare "Other") "In $#../Head$" =
-        some (.parameterAboveRoot "#../Head") := by
+        some (.invalidGroupParameter "#../Head") := by
   native_decide
 
 /- The argument is refused in **layers**
@@ -315,22 +319,28 @@ example :
 /- The parent walk's check is an action at the end of the walk, so it answers before any fault in the
 names after it, and before a turning point's dotted continuation, which only its first word is
 compared by. Two or more up-steps ending on a separator before a token that continues no name count
-one step more, which only a walk reaching the root exactly can show
+one step more, which only a walk reaching its floor exactly can show. On kernel 31.3.1 that floor is the
+technical model root: a count reaching it exactly lets the token after the walk answer, and one step more
+draws the above-root class (KF679, [31.3.1 Letter J](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07)
+§2; the root rule's `../RuleGroup` and `Head`'s `../../Head//%` keep Lean's order, unmeasured on 31.3.1)
 ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-10-01a-parent-walk-and-dotted-names), [checkpoint](../../docs/sources/message-and-pointer-probes.md#src-message-group-walk-and-dotted-names)). -/
 example :
     let base := pathTemplateError? ["Order", "Head", "Deeper", "Base"] (bare "Bottom")
     let deeper := pathTemplateError? ["Order", "Head", "Deeper"] (bare "Deep")
     pathTemplateError? ["Order"] (bare "Other") "In $#../RuleGroup$" =
-        some (.parameterAboveRoot "#../RuleGroup") ∧
+        some (.parameterSyntax "#../RuleGroup" .unexpected) ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..Wrong/$" =
         some (.turningPointMismatch "#..Wrong/") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#..Wrong/%$" =
         some (.turningPointMismatch "#..Wrong/%") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#../../Head//%$" =
-        some (.parameterAboveRoot "#../../Head//%") ∧
-      deeper "In $#../../RuleGroup$" = some (.parameterAboveRoot "#../../RuleGroup") ∧
-      deeper "In $#../../$" = some (.parameterAboveRoot "#../../") ∧
-      deeper "In $#../..//$" = some (.parameterAboveRoot "#../..//") ∧
+        some (.invalidGroupParameter "#../../Head//%") ∧
+      pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#../../../Head//%$" =
+        some (.parameterAboveRoot "#../../../Head//%") ∧
+      deeper "In $#../../RuleGroup$" = some (.parameterSyntax "#../../RuleGroup" .unexpected) ∧
+      deeper "In $#../../$" = some (.parameterSyntax "#../../" .expectedToken) ∧
+      deeper "In $#../..//$" = some (.parameterSyntax "#../..//" .unexpected) ∧
+      deeper "In $#../../../$" = some (.parameterAboveRoot "#../../../") ∧
       deeper "In $#../../%$" = some (.parameterSyntax "#../../%" .lexer) ∧
       deeper "In $#../../Nope$" = some (.invalidGroupParameter "#../../Nope") ∧
       base "In $#../../$" = some (.parameterSyntax "#../../" .expectedToken) ∧
@@ -338,7 +348,9 @@ example :
         some (.parameterSyntax "#../../RuleGroup" .unexpected) ∧
       base "In $#../..//$" = some (.parameterSyntax "#../..//" .unexpected) ∧
       base "In $#../../../RuleGroup$" =
-        some (.parameterAboveRoot "#../../../RuleGroup") ∧
+        some (.parameterSyntax "#../../../RuleGroup" .unexpected) ∧
+      base "In $#../../../../RuleGroup$" =
+        some (.parameterAboveRoot "#../../../../RuleGroup") ∧
       pathTemplateError? ["Order", "Head"] (bare "Amount") "In $#../$" =
         some (.parameterSyntax "#../" .truncated) ∧
       pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../Head$" = some true ∧
@@ -409,8 +421,8 @@ example :
       head "In $#..Wrong.%$" = some (.parameterSyntax "#..Wrong.%" .lexer) ∧
       head "In $#..Wrong.x$" = some (.turningPointMismatch "#..Wrong.x") ∧
       head "In $#..Wrong/..$" = some (.turningPointMismatch "#..Wrong/..") ∧
-      deeper "In $#../../-x$" = some (.parameterAboveRoot "#../../-x") ∧
-      deeper "In $#../../($" = some (.parameterAboveRoot "#../../(") ∧
+      deeper "In $#../../-x$" = some (.parameterSyntax "#../../-x" .unexpected) ∧
+      deeper "In $#../../($" = some (.parameterSyntax "#../../(" .unexpected) ∧
       deeper "In $#../../123$" = some (.invalidGroupParameter "#../../123") ∧
       pathTemplateOk? ["Order", "Head", "Deeper"] (bare "Deep") "In $#../../'Head'$" = some true ∧
       (["Head.Vordruckname.x", "Head.Usb.x", "Head.RootGroup.x"].all fun argument =>

@@ -13,9 +13,9 @@ import A12Kernel.Evidence.ValidationProjectionTest
 
 def main : IO Unit := do
   -- The frozen 30.8.1 root holds every input and the compact bundles of the retired producer, which
-  -- cannot be re-run; the 31.1.1 root holds the re-captured observations of the same inputs.
+  -- cannot be re-run; the 31.3.1 root holds the re-captured observations of the same inputs.
   let root : System.FilePath := "evidence/kernel-30.8.1"
-  let observed : System.FilePath := "evidence/kernel-31.1.1"
+  let observed : System.FilePath := "evidence/kernel-31.3.1"
   A12Kernel.Evidence.ObservationBundleTest.checkIo
   let validationCount ← A12Kernel.Evidence.ValidationProjection.checkArtifacts root
   let stringCount ← A12Kernel.Evidence.StringComputationProjection.checkArtifacts root

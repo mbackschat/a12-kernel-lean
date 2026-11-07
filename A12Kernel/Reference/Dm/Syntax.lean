@@ -135,6 +135,9 @@ inductive SyntaxErrorClass
   | bracketMissing
   /-- A segment's `.*` star, the H-model spelling an A12 model refuses (spec/12 §3.1). -/
   | pointInA12Model
+  /-- A `*` on the `step`-th up-step of a leading run (`..*`, `../..*`); its class depends on the
+  rule's depth, so `codeAt` names it (spec/10 §1). -/
+  | starredUpStep (step : Nat)
   deriving Repr, BEq, DecidableEq
 
 def SyntaxErrorClass.code : SyntaxErrorClass → String
@@ -144,6 +147,15 @@ def SyntaxErrorClass.code : SyntaxErrorClass → String
   | .incompleteInput => "MVK_INCOMPLETE_INPUT"
   | .bracketMissing => "MVK_BRACKET_MISSING"
   | .pointInA12Model => "MVK_POINT_IN_A12_MODEL"
+  | .starredUpStep _ => "MVK_INVALID_WILDCARD_REL"
+
+/-- The class a refused text draws from a rule declared `depth` groups below the model root. Each up-step
+is judged as it is taken: a starred step that climbs past the model root draws the parent-depth class, and
+one that stays in the model, the model root included, the star's own class (kernel 31.3.1, a12-dmkits
+KF679). -/
+def SyntaxErrorClass.codeAt (depth : Nat) : SyntaxErrorClass → String
+  | .starredUpStep step => if depth < step then "MVK_TOO_MANY_PARENT_GROUPS" else "MVK_INVALID_WILDCARD_REL"
+  | errorClass => errorClass.code
 
 structure SyntaxError where
   errorClass : SyntaxErrorClass

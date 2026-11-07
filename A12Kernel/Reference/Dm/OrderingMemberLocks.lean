@@ -3,12 +3,15 @@ import A12Kernel.Reference.Dm.ModelConsistencyRead
 import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
 import A12Kernel.Reference.Dm.ModelVerdictFixture
 
-/-! # What kernel 31.1.1 makes of a group's ordering members
+/-! # What kernel 31.3.1 makes of a group's ordering members
 
 Kernel 30.8.1 bound a group's `indexFieldName` and each `sortFields[].name` against the model and left no
 model when the spelling bound nowhere. Kernel 31.1.1 keeps the last segment of the spelling joined to the
 group's own path, wherever it lands, and judges that name against the group's own direct children; only an
-absolute spelling, a climb above the root, a landing on a group and a sort name written empty leave no model.
+absolute spelling, a climb above the root, a landing on a group and a sort name written empty left no model.
+Kernel 31.3.1 resolves the member as a field reference, so a landing on a group and an empty sort name draw
+the role's unresolved class, and it reads a sort entry only with both its members (a12-dmkits KF680,
+[inbound](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §3).
 Each row is one model of the carrier below with one ordering member written, and asserts what the three
 readers draw together: the coded classes the declaration walk and the consistency check report, with their
 multiplicity and no class beyond them, or no model on all three. The model reader's own row-key refusals must
@@ -16,7 +19,8 @@ equal the walk's wherever it can judge them; a model the flat validation refuses
 String with no line-break permission) is a limit of that reader and not asserted. The codeless sentences are
 the last cluster's.
 
-Locked: the four a12-dmkits tests each cluster names, at 1124b523f, kernel 31.1.1.
+Locked: the four a12-dmkits tests each cluster names, at 1124b523f, kernel 31.1.1, and the KF680 rows of
+`GroupIndexAndSortReferenceLawsTest` and `SortOrderBindingTest`, kernel 31.3.1.
 -/
 
 namespace A12Kernel.Dm.OrderingMemberLocks
@@ -85,7 +89,7 @@ private def written (group member : String) (value : Option Json) (carrier : Car
   | _ => { carrier with items := members }
 
 private def sortList (names : List String) : Json :=
-  Json.arr (names.map fun name => Json.mkObj [("name", .str name)]).toArray
+  Json.arr (names.map fun name => Json.mkObj [("name", .str name), ("order", "ASC")]).toArray
 
 /-! ## What the three readers draw -/
 
@@ -157,7 +161,7 @@ private def stringLineBreak : String := "MVK_STRING_TYPE_NO_VAL_AND_NO_LINE_BREA
 Locked: a12-dmkits `GroupIndexAndSortReferenceLawsTest` at 1124b523f, kernel 31.1.1. A name is judged
 against the group's own children whatever it lands on: the parent's field, a rule and nothing are only names,
 and the empty and blank index spellings keep the group's name and a blank. Only an absolute spelling, one
-climbing past the root and one landing on a group leave no model. -/
+climbing past the root leave no model; one landing on a group draws the unresolved class on 31.3.1. -/
 
 private def indexRows : List (String × Json × Verdict) :=
   let index (spelling : String) (group : String := "Items") : Json :=
@@ -174,11 +178,11 @@ private def indexRows : List (String × Json × Verdict) :=
    ("unresolvable on a nonrepeatable group", index "Missing" "Address", cls [indexMissing]),
    ("a .. that climbs to the root", index "../../Sku", admitted),
    ("a .. that climbs past the root", index "../../../Sku", .noModel),
-   ("a .. landing on the parent group", index "..", .noModel),
+   ("a .. landing on the parent group", index "..", cls [indexMissing]),
    ("a rule of the group", ({ written "Items" "indexFieldName" (some (.str "ItemCheck")) with rule := true } : Carrier).json,
     cls [indexMissing]),
    ("a descending path with no ..", index "Items/Sku", admitted),
-   ("a child group of the named group", index "Items" "Order", .noModel),
+   ("a child group of the named group", index "Items" "Order", cls [indexMissing]),
    ("a descending path that does resolve", index "Items/Sku" "Order", cls [indexMissing]),
    ("an absolute path to the group's own field", index "/Order/Items/Sku", .noModel),
    ("the number 5", (written "Items" "indexFieldName" (some (toJson (5 : Nat)))).json, cls [indexMissing])]
@@ -191,20 +195,40 @@ private def sortRows : List (String × Json × Verdict) :=
   [("Sku, the control", sorted "Sku", admitted),
    ("an empty list", (written "Items" "sortFields" (some (sortList []))).json, admitted),
    ("a field that does not exist", sorted "Missing", cls [sortMissing]),
-   ("an empty name", sorted "", .noModel),
+   ("an empty name", sorted "", cls [sortMissing]),
    ("an entry with no name", (written "Items" "sortFields" (some (Json.arr #[Json.mkObj []]))).json, .noModel),
    ("an absolute path", sorted "/Order/Items/Sku", .noModel),
    ("a numeric name",
-    (written "Items" "sortFields" (some (Json.arr #[Json.mkObj [("name", toJson (5 : Nat))]]))).json,
+    (written "Items" "sortFields" (some (Json.arr #[Json.mkObj [("name", toJson (5 : Nat)), ("order", "ASC")]]))).json,
     cls [sortMissing]),
    ("a field outside the group that resolves", sorted "../CustomerName", cls [sortMissing]),
-   ("a child group of the named group", sorted "Items" "Order", .noModel),
+   ("a child group of the named group", sorted "Items" "Order", cls [sortMissing, "MVK_INVALID_SORTINFO"]),
    ("a blank name", sorted "   ", cls [sortMissing, sortInfoMissing]),
    ("a rule of the group", ({ written "Items" "sortFields" (some (sortList ["ItemCheck"])) with rule := true } : Carrier).json,
     cls [sortMissing]),
    ("a .. that climbs to the root", sorted "../../Sku", admitted)]
 
 example : failures sortRows = [] := by native_decide
+
+/-- Kernel 31.3.1 binds a sort entry's `order` as its non-null two-constant enum, and an entry without a name
+or an order, or one that is no object, leaves no model on every reader (KF680). -/
+private def sortEntryRows : List (String × Json × Verdict) :=
+  let entry (members : List (String × Json)) : Json :=
+    (written "Items" "sortFields" (some (Json.arr #[Json.mkObj members]))).json
+  let ordered (order : Json) : Json := entry [("name", "Sku"), ("order", order)]
+  let number (text : String) : Json := (Json.parse text).toOption.getD .null
+  [("no order", entry [("name", "Sku")], .noModel),
+   ("a null order", ordered .null, .noModel),
+   ("a null name", entry [("name", .null), ("order", "ASC")], .noModel),
+   ("an object name", entry [("name", Json.mkObj []), ("order", "ASC")], .noModel),
+   ("a list name", entry [("name", Json.arr #[]), ("order", "ASC")], .noModel),
+   ("an entry that is no object", (written "Items" "sortFields" (some (Json.arr #["Sku"]))).json, .noModel)] ++
+  (["asc", "UP", "", "ASC ", "01"].map fun text => (s!"order {text}", ordered (.str text), .noModel)) ++
+  (["2", "-1", "1.0", "true"].map fun text => (s!"order {text} unquoted", ordered (number text), .noModel)) ++
+  ([" ASC", "\tDESC", "1", " 1"].map fun text => (s!"order {text}", ordered (.str text), admitted)) ++
+  (["1", "-0"].map fun text => (s!"order {text} unquoted", ordered (number text), admitted))
+
+example : failures sortEntryRows = [] := by native_decide
 
 /-- A second `Sku` beside the group's own separates the landing from the name: `../Sku` lands on the parent's
 field, outside the group, and is admitted because the group carries a `Sku` of its own. A spelling landing
@@ -459,7 +483,6 @@ private def under (name : String) : String := s!"{itemsPath}/{name}"
 private def listing (entries : List (String × String)) : List String :=
   (entries.map fun (label, path) => s!"{label}@{path}").mergeSort (· ≤ ·)
 
-private def unbuilt : List (String × String) := [("UNBUILT", "")]
 private def shape : String := "codeless:field-name-shape"
 private def pathInvalid : String := "MVK_PATH_INVALID"
 private def digitInitial : String := "MVK_NAME_STARTS_WITH_DIGIT_A12_DV"
@@ -540,15 +563,15 @@ private def memberRows : List (String × Row × List String) :=
    ("an index climbing to the root", sku (some "../../Sku"), []),
    ("an index descending from the group", sku (some "Items/Sku"), []),
    ("an index naming nothing", sku (some "Missing"), [(indexMissing, itemsPath)]),
-   ("an index landing on the parent group", sku (some ".."), unbuilt),
-   ("a sort written empty", sku none [""], unbuilt),
+   ("an index landing on the parent group", sku (some ".."), [(indexMissing, itemsPath)]),
+   ("a sort written empty", sku none [""], [(sortMissing, itemsPath), ("codeless:sort-name-unset", itemsPath)]),
    ("a sort of three spaces", sku none ["   "], blankSort),
    ("a sort of one tab", sku none ["\t"], blankSort),
    ("a sort of one em space", sku none [emSpace], blankSort),
    ("two blank sorts", sku none ["   ", "\t"], (sortMissing, itemsPath) :: blankSort),
    ("a sort climbing to the root", sku none ["../../Sku"], []),
    ("a sort naming nothing", sku none ["Missing"], [(sortMissing, itemsPath)]),
-   ("a sort landing on the parent group", sku none [".."], unbuilt),
+   ("a sort landing on the parent group", sku none [".."], [(sortMissing, itemsPath)]),
    ("a refused name sorted twice", { field := "Sk-u", sorts := ["Sk-u", "Sk-u"] },
     [(shape, itemsPath), (pathInvalid, under "Sk-u"), (shape, under "Sk-u")]),
    ("a refused name at the fourth entry among plain ones",

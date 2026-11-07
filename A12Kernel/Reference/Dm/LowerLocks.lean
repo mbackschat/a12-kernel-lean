@@ -551,18 +551,6 @@ example :
        some false, some false, some false, some false, some false] := by
   native_decide
 
-/- A computation's suppressed codes are read as one preamble: the supported name padded is admitted,
-and the same name twice is refused ([`spec/12`](../../../spec/12-concrete-syntax.md) §4). -/
-example :
-    let computation (codes : List String) : DmComputation :=
-      { group := ["Order"], name := "C", targetRelPath := "../Amt", commonPrecondition := none
-        alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := codes }
-    let admitted (codes : List String) := (lowerComputation model .english (computation codes)).toOption.isSome
-    [admitted [], admitted [" MVK_INVALID_COMPARE_DEC_PLACES "],
-     !admitted ["MVK_INVALID_COMPARE_DEC_PLACES", "MVK_INVALID_COMPARE_DEC_PLACES"],
-     !admitted ["MVK_LATE"]].all id := by
-  native_decide
-
 private def repeatableRoot : FlatModel :=
   { fields := [{ id := 1, groupPath := ["Rep"], name := "P", policy := { kind := .number { scale := 0, signed := true } },
                  repeatableScope := [10] }]

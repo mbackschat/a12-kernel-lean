@@ -240,10 +240,10 @@ example :
     labels rule "R-x" = ["codeless:rule-name-content"] ∧
     labels rule "Rä" = ["codeless:rule-name-content"] ∧
     labels rule "xmlR" = [] ∧ labels rule "Rx" = [] ∧
-    labels .computation "1C" = ["codeless:rule-name-content"] ∧
-    labels .computation "C-x" = ["codeless:code-content", "codeless:rule-name-content"] ∧
-    labels .computation "Cä" = ["codeless:rule-name-content"] ∧
-    labels .computation "Cx" = [] := by
+    labels (.computation none) "1C" = ["codeless:rule-name-content"] ∧
+    labels (.computation none) "C-x" = ["codeless:code-content", "codeless:rule-name-content"] ∧
+    labels (.computation none) "Cä" = ["codeless:rule-name-content"] ∧
+    labels (.computation none) "Cx" = [] := by
   native_decide
 
 

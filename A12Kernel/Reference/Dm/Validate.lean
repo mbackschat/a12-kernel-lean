@@ -104,14 +104,17 @@ def errorGroupOf (model : FlatModel) : RuleErrorEntity → Lowering GroupPath
       pure declaration.groupPath
   | .group path => pure path
 
+/-- The codes a suppression preamble may name; kernel 31.3.1 adds the Enumeration calculation class beside the
+scale warning (spec/12 §4; a12-dmkits KF298). -/
+def suppressibleWarnings : List String := ["MVK_INVALID_COMPARE_DEC_PLACES", "MVK_ERROR_INVALID_ENUM_CALCULATION"]
+
 /-- Apply the shared syntax and warning-suppression gates before choosing an execution carrier. -/
 def parseValidationText (language : Language) (condition : String) : Lowering Text := do
   let text ← match parseText language condition with
     | .ok text => pure text
     | .error error => refuse "Syntax" error.errorClass.code
   if !text.body.parensLegal true then refuse "Syntax" SyntaxErrorClass.unexpectedToken.code
-  -- The scale warning is the only suppressible one (spec/12 §4); any other name is a static error.
-  if text.suppressed.any (· != "MVK_INVALID_COMPARE_DEC_PLACES") then
+  if text.suppressed.any (!suppressibleWarnings.contains ·) then
     refuse "SuppressWarning" KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
   pure text
 

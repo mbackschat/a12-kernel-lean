@@ -302,7 +302,7 @@ private def rows : List (String × Json × List String) := [
     { emptyRoot with elements := edits [withoutRule, withGroupMember "indexFieldName" "Label"] } ["UNBUILT"],
   row "a root group with an empty name, its group sorted by a field"
     { emptyRoot with elements := edits [withoutRule,
-      withGroupMember "sortFields" (Json.arr #[Json.mkObj [("name", "Label")]])] }
+      withGroupMember "sortFields" (Json.arr #[Json.mkObj [("name", "Label"), ("order", "ASC")]])] }
     ["UNBUILT"],
   row "a root group with an empty name, beside a named root holding a rule"
     { emptyRoot with extraRoots := [secondRoot "Claim"] } ["RK_ROOT_GROUP_NAME_MISSING", "RK_NAME_EMPTY"],

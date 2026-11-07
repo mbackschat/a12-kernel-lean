@@ -86,6 +86,9 @@ def SurfaceGroupPath.resolveAgainst (reference : SurfaceGroupPath)
         let base ← GroupPath.walkUp declaringGroup parents |>.mapError .resolve
         if !base.matchesTurningPoint reference.turningPoint then
           throw (.invalidGroupReference reference)
+        -- A walk stopping on the model root names no group (KF679: `GroupFilled(..)` from a root rule).
+        else if (base ++ reference.groups).isEmpty then
+          throw (.resolve (.aboveRoot parents))
         else
           pure (base ++ reference.groups)
   if GroupPath.isValid path then pure path else throw (.invalidGroupReference reference)

@@ -71,7 +71,12 @@ structure DmComputation where
   targetRelPath : String
   commonPrecondition : Option String
   alternatives : List DmAlternative
+  /-- The legacy suppression list, read only when `parserInformation` is blank (`DmComputation.preambleText`). -/
   errorCodesToSuppress : List String
+  /-- The declared code of the generated validation; absent or `null`, the computation's name codes it. -/
+  errorCode : Option String := none
+  /-- The authored `additionalParserInformation`, a preamble text read alone. -/
+  parserInformation : Option String := none
   roundingMode : String := "Exact"
   /-- The authored message per locale, kept for the model build's read of an undeclared locale's text. A
   member the reader cannot bind is left out, which no row measures for a computation. -/
@@ -94,7 +99,7 @@ def DmRule.declaration (rule : DmRule) : ExecutableDeclaration :=
   { group := rule.group, name := rule.name, kind := .rule (.text rule.errorCode) }
 
 def DmComputation.declaration (computation : DmComputation) : ExecutableDeclaration :=
-  { group := computation.group, name := computation.name, kind := .computation }
+  { group := computation.group, name := computation.name, kind := .computation computation.errorCode }
 
 def DmModel.declarations (model : DmModel) : List ExecutableDeclaration :=
   model.rules.map (·.declaration) ++ model.computations.map (·.declaration)
@@ -375,7 +380,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       -- capture and `Y1850` of the derived-row capture, whose check stays inert).
       let partialSource := if typeName == "DateType" then str? body "datePrecision" else none
       let youngerThan1900Check ← if typeName == "TimeType" || typeName == "DateTimeType" then pure false
-        else booleanMember? body "youngerThan1900Check"
+        else inertYearCheck body
       pure { base with
         policy := { kind := .temporal kind (TemporalComponents.ofFormat format) }
         temporalTargetPolicy := some {
@@ -401,7 +406,7 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
           format := format
           separator := separator
           interpretationOfYear := interpretationOfYear
-          youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" } }
+          youngerThan1900Check := ← inertYearCheck body } }
   | "CustomFieldType" =>
       let customName ← body.getObjValAs? String "name"
       pure { base with customType := some {
@@ -436,13 +441,26 @@ private structure ReadState where
 
 /-- KF297's optional computation members default only on absence/null; scalar coercion must
 still reach closed-set admission, while containers are reader errors. -/
-private def computationString? (json : Json) (key : String) : Except String (Option String) :=
+def computationString? (json : Json) (key : String) : Except String (Option String) :=
   match (json.getObjVal? key).toOption with
   | none | some .null => pure none
   | some (.str value) => pure (some value)
   | some (.num value) => pure (some value.toString)
   | some (.bool value) => pure (some (if value then "true" else "false"))
   | some _ => throw s!"expected scalar computation member: {key}"
+
+/-- The legacy `errorCodesToSuppress` list: absent or `null` is empty and a scalar entry is its text, coerced
+like a scalar member (a12-dmkits KF298 at kernel 31.3.1). A non-list member is a reader refusal, measured for a
+bare string and an object; so is a container or `null` entry, which no row measures. -/
+private def suppressionList (json : Json) : Except String (List String) :=
+  match (json.getObjVal? "errorCodesToSuppress").toOption with
+  | none | some .null => pure []
+  | some (.arr entries) => entries.toList.mapM fun
+      | .str value => pure value
+      | .num value => pure value.toString
+      | .bool value => pure (if value then "true" else "false")
+      | _ => throw "expected scalar entries: errorCodesToSuppress"
+  | some _ => throw "expected a list: errorCodesToSuppress"
 
 private def readAlternative (json : Json) : Except String DmAlternative := do
   pure {
@@ -560,17 +578,19 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         messages } }
   | "Computation" =>
       let roundingMode ← StateT.lift (computationString? body "roundingMode")
+      let errorCode ← StateT.lift (computationString? body "errorCode")
+      let parserInformation ← StateT.lift (computationString? body "additionalParserInformation")
+      let errorCodesToSuppress ← StateT.lift (suppressionList body)
       let alternatives ← StateT.lift do
         (← body.getObjValAs? (Array Json) "computationAlternatives").toList.mapM readAlternative
       modify fun state => { state with
-        declarations := state.declarations.push { group := path, name, kind := .computation }
+        declarations := state.declarations.push { group := path, name, kind := .computation errorCode }
         computations := state.computations.push {
-        group := path, name, alternatives
+        group := path, name, alternatives, errorCode, parserInformation, errorCodesToSuppress
         targetRelPath := (str? body "computedFieldRelPath").getD ""
         commonPrecondition := str? body "commonPrecondition"
         roundingMode := roundingMode.getD "Exact"
-        messages := (localizedTextMember body "errorMessage").toOption.getD []
-        errorCodesToSuppress := ((body.getObjValAs? (Array String) "errorCodesToSuppress").toOption.getD #[]).toList } }
+        messages := (localizedTextMember body "errorMessage").toOption.getD [] } }
   | other => modify fun state => { state with refusals := state.refusals.push (path ++ [name], s!"element {other}") }
 
 private def readSupportedCharacters (entries : List String)
@@ -619,7 +639,7 @@ private def nominationRefusals (flat : FlatModel) (state : ReadState) : List (Li
       index := (indexOf path).bind fun written => (judged .indexField written).toOption
       sort := sorts.filterMap fun written => ((judged .sortField written).toOption.map (written, ·)) }
     (rowFieldDeclarationRefusals declarations).map fun refusal =>
-      (path, refusal.kernelCode?.getD "codeless:sort-list-capacity")
+      (path, refusal.label)
 
 /-- Read a DM-JSON model. A structural fault in the file fails the whole read; an unmappable
 declaration is refused alone. -/

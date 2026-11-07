@@ -153,22 +153,26 @@ private def gateStar (path : GroupPath) : SurfaceGroupCountOperand :=
 
 /- A group operand that does not resolve draws the class of the segment that missed on the
    computation arm as in validation: an undeclared first segment, alone or naming a declared group at
-   root position, is the root class and a later miss the entity class. A parent walk above the root
+   root position, is the root class and a later miss the entity class. A parent walk past the root
    and a terminal star on a fixed group draw their own
-   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)). -/
+   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-group-operand-resolution-classes)),
+   while a walk landing exactly on the model root continues as the absolute spelling and draws its
+   class (kernel 31.3.1, KF679). -/
 example :
     let fixedAt (base : PathBase) (groups : GroupPath) : SurfaceGroupCountOperand :=
       .fixed (.path { base, groups })
     [fixedAt .absolute ["Nope", "Flat"], fixedAt .absolute ["Nope"], fixedAt .absolute ["Flat"],
-      fixedAt .absolute ["Probe", "Nope"], fixedAt (.relative 1) ["Flat"]].map (fun operand =>
+      fixedAt .absolute ["Probe", "Nope"], fixedAt (.relative 1) ["Flat"],
+      fixedAt (.relative 2) ["Flat"]].map (fun operand =>
         gateCode? [operand, fixedOperand ["Probe", "Flat"]]) =
       [some .invalidRootGroup, some .invalidRootGroup, some .invalidRootGroup,
-        some .invalidEntity, some .tooManyParentGroups] ∧
+        some .invalidEntity, some .invalidRootGroup, some .tooManyParentGroups] ∧
     [gateStar ["Probe", "Nope"], gateStar ["Nope", "Rows"], gateStar ["Probe", "Flat"],
-      .starred (.terminallyStarred (.relative 1) ["Rows"])].map (fun operand =>
+      .starred (.terminallyStarred (.relative 1) ["Rows"]),
+      .starred (.terminallyStarred (.relative 2) ["Rows"])].map (fun operand =>
         gateCode? [operand]) =
       [some .invalidEntity, some .invalidRootGroup, some .invalidWildcard,
-        some .tooManyParentGroups] := by
+        some .invalidRootGroup, some .tooManyParentGroups] := by
   native_decide
 
 /-- `Rows*/Inner*`, the star strictly inside `Rows*` that an author can write from the root. -/

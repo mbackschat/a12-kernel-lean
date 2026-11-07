@@ -91,8 +91,10 @@ example :
   native_decide
 
 /- An unresolvable key path takes the resolver's class rather than a key-specific one, and the class
-   names the segment that missed, a walk above the root, or a bare name matching several fields
-   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+   names the segment that missed, a walk past the root, or a bare name matching several fields
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
+   A walk landing exactly on the model root continues as the absolute spelling, so `..` plus a name that is
+   no root draws the root class (kernel 31.3.1, KF679). -/
 example :
     let shortNameModel : FlatModel :=
       { probeModel with
@@ -104,6 +106,8 @@ example :
     diagnostic? (key ["Nope", "Rows"] "RowVal") = some .invalidRootGroup ∧
     diagnostic? (relativeKey "Nope") = some .invalidEntity ∧
     diagnostic? { base := .relative 1, groups := ["Rows"], field := "RowVal" } =
+      some .invalidRootGroup ∧
+    diagnostic? { base := .relative 2, groups := ["Rows"], field := "RowVal" } =
       some .tooManyParentGroups ∧
     (match CheckedValidationCondition.fromRepetitionNotUnique shortNameModel ["Probe"]
         { firstKey := relativeKey "RowKey2", restKeys := [] } ["Probe", "Rows"] with

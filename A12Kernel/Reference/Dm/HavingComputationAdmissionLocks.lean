@@ -121,15 +121,18 @@ example : [false, true].all (fun row =>
     result numberTarget row (some (guard false)) [{ precondition := none, operation := "9" }]
       ["UNKNOWN_WARNING"] "RoundUp" == invalidSuppressedWarning) = true := by native_decide
 
+/- Kernel 31.3.1 reads the preamble alone ahead of every text, so an unsupported name answers ahead of a name
+   resolving to nothing and a text the parser refuses, where 31.1.1 deferred it on the unfiltered route
+   (a12-dmkits KF298, source-read step order of the computation check). -/
 example : [false, true].all (fun row =>
     let common := some "FieldFilled(Missing)"
     let operations := [{ precondition := none, operation := "9" }]
     let own := [{ precondition := some "FieldFilled(Missing)", operation := "9" }]
     result numberTarget row common operations != "admitted" &&
-    result numberTarget row common operations ["UNKNOWN_WARNING"] == result numberTarget row common operations &&
-    result numberTarget row none own ["UNKNOWN_WARNING"] == result numberTarget row none own &&
+    result numberTarget row common operations ["UNKNOWN_WARNING"] == invalidSuppressedWarning &&
+    result numberTarget row none own ["UNKNOWN_WARNING"] == invalidSuppressedWarning &&
     result numberTarget row (some "FieldFilled(Error)") [{ precondition := none, operation := "[" }]
-      ["UNKNOWN_WARNING"] == SyntaxErrorClass.expectedTokenNotFound.code &&
+      ["UNKNOWN_WARNING"] == invalidSuppressedWarning &&
     result numberTarget row (some "FieldFilled(Error)") [{ precondition := none, operation := "9" }]
       ["UNKNOWN_WARNING"] == invalidSuppressedWarning) = true := by native_decide
 

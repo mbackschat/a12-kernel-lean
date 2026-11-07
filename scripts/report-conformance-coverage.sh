@@ -32,7 +32,7 @@ export LC_ALL=C
 kernel_root="../a12-kernel"
 # The current kernel's re-capture of the frozen requests, which the population replay reads. Git ignores
 # it, so scripts/recapture-kernel-evidence.py must have run first (docs/KERNEL-UPGRADE-PLAYBOOK.md).
-observed_kernel="31.1.1"
+observed_kernel="31.3.1"
 evidence_root="evidence/kernel-$observed_kernel/local"
 if [ ! -d "$evidence_root/captures" ]; then
   echo "no $evidence_root/captures: run scripts/recapture-kernel-evidence.py first" >&2

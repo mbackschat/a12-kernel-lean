@@ -35,7 +35,10 @@ stated once per holding group whatever the kinds, and a shared name once per kin
 A model that builds no validation model at all is `unbuilt`, measured for two compositions and not
 modelled by any mechanism: a root group whose `name` is present as exactly the empty text and holds, at
 any depth, a rule with an error path, a computation, a group with an index field or a group with sort
-fields; and a kept computation whose target is a field the conversion dropped. That a rule with an empty
+fields; a kept computation whose target is a field the conversion dropped; and, on kernel 31.3.1, a
+computation whose target's leading `..` run climbs past the technical model root (a12-dmkits KF679,
+`../../../Customer/Name` from a computation in a root group; the same climb in an error target is
+unmeasured). That a rule with an empty
 error path, a blank, absent or `null` root name, only fields, or a rule in a sibling named root builds is
 measured too. That a target lying in a duplicate or blank-root group is unbuilt is derived, not measured.
 
@@ -87,6 +90,8 @@ private structure Drawn where
   sentences : Array (ConverterSentence × List String × String) := #[]
   /-- The resolved names of each kept computation's target. -/
   targets : Array (List String) := #[]
+  /-- Whether a computation's target climbs past the technical model root. -/
+  pastModelRoot : Bool := false
 
 private def draw (sentence : ConverterSentence) (path : List String) (discriminator : String := "") :
     StateM Drawn Unit :=
@@ -129,6 +134,11 @@ private def spelledNames? (holder : List String) (text : String) : Option (List 
     if names.isEmpty || names.any (·.isEmpty) then none else some names
   else none
 
+/-- Whether a computed-field path's leading `..` run climbs past the technical model root, the first step
+climbing from the computation to its group. -/
+private def climbsPastModelRoot (holder : List String) (text : String) : Bool :=
+  holder.length + 1 < ((text.splitOn "/").takeWhile (· == "..")).length
+
 /-- What the converter makes of a computation: dropped, or kept with the names its target resolved to when
 that spelling is read. -/
 private inductive ComputationOutcome where
@@ -142,7 +152,9 @@ private def convertComputation (authored : List Json) (holder path : List String
     draw .computedFieldNotSpecified path
     return .dropped
   match spelledNames? holder text with
-  | none => return .kept none
+  | none =>
+      if climbsPastModelRoot holder text then modify fun drawn => { drawn with pastModelRoot := true }
+      return .kept none
   | some names =>
       if (resolveField authored names).isNone then
         draw .computedFieldNotFound path
@@ -251,6 +263,6 @@ def convertModel (frame : ModelFrame) : ConvertedModel :=
     (match root.getObjVal? "name" with | .ok (.str "") => true | _ => false) && holdsOrderedMember fuel root
   let strandedTarget := drawn.targets.any fun path => (resolveField roots.toList path).isNone
   { roots, sentences := drawn.sentences.toList.map fun (sentence, path, _) => (sentence, path)
-    unbuilt := emptyNamedRoot || strandedTarget }
+    unbuilt := emptyNamedRoot || strandedTarget || drawn.pastModelRoot }
 
 end A12Kernel.Dm

@@ -305,7 +305,11 @@ def resolveMessageGroup {model : FlatModel} (condition : ValidationMessageCondit
       match walkMessageGroup condition parameter parents turningPoint with
       | .error error => .error error
       | .ok base =>
-          if model.declaresEntityPath (base ++ path) then
+          -- A walk stopping on the model root names no group (KF679), while one continuing from it
+          -- names a group below it and keeps the group class, never the root class (`$#../Loans$`).
+          if (base ++ path).isEmpty then
+            .error (.parameterAboveRoot parameter)
+          else if model.declaresEntityPath (base ++ path) then
             .ok (base ++ path)
           else
             match parents, path with
@@ -444,8 +448,11 @@ private def resolveMessageSpec (model : FlatModel)
       Except ValidationMessageTemplateError
         (Option (ResolvedMessageEntity model condition ⊕ GroupPath))
   | .ruleGroup => pure none
-  | .walk parents turningPoint =>
-      (some ∘ .inr) <$> walkMessageGroup condition parameter parents (turningPoint.map (·.text))
+  | .walk parents turningPoint => do
+      let base ← walkMessageGroup condition parameter parents (turningPoint.map (·.text))
+      -- A bare walk names the group it reaches, and the model root is no group (KF679: `$..$`).
+      if base.isEmpty then throw (.parameterAboveRoot parameter)
+      pure (some (.inr base))
   | .path authored => some <$> resolveMessageEntity model profile condition parameter authored
 
 private def resolveMessageGroupKeyEntity (model : FlatModel)

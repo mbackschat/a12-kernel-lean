@@ -203,8 +203,10 @@ example :
   native_decide
 
 /- The field operand's resolution owns its classes, as on every other carrier measured: a miss by the
-   segment that missed, a walk above the root, and a bare name matching several fields
-   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/
+   segment that missed, a walk past the root, and a bare name matching several fields
+   ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)).
+   A walk landing exactly on the model root continues as the absolute spelling, so `..` plus a name that is
+   no root draws the root class (kernel 31.3.1, KF679). -/
 example :
     let tagIn (group : String) : FlatFieldDecl :=
       { stringDeclaration with id := if group == "Info" then 4 else 5
@@ -217,9 +219,11 @@ example :
         { condition with field := { base, groups, field } })
     [codeAt .absolute ["Claim"] "Nope", codeAt .absolute ["Claim", "Nope"] "Code",
       codeAt .absolute ["Nope"] "Code", codeAt .absolute [] "Nope", codeAt (.relative 0) [] "Nope",
-      codeAt (.relative 1) [] "Code", codeAt (.relative 0) [] "Tag", codeAt .absolute ["Claim"] "Code"] =
+      codeAt (.relative 1) [] "Code", codeAt (.relative 2) [] "Code", codeAt (.relative 0) [] "Tag",
+      codeAt .absolute ["Claim"] "Code"] =
       [some .invalidEntity, some .invalidEntity, some .invalidRootGroup, some .invalidRootGroup,
-        some .invalidEntity, some .tooManyParentGroups, some .fieldNameNotUnique, none] := by
+        some .invalidEntity, some .invalidRootGroup, some .tooManyParentGroups, some .fieldNameNotUnique,
+        none] := by
   native_decide
 
 /- A raw field is refused by the field-value read's raw gate, registered-custom and bound repeatable fields are admitted for prepared evaluation, and an ordinary declared-pattern field is admitted for prepared evaluation. A repeatable field is bound by its reading row; from an enclosing group without a row-bound error field it draws the Kernel's missing wildcard ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-pattern-and-key-resolver-classes)). -/

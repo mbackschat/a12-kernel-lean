@@ -20,7 +20,8 @@ theorem rowFieldRefusal_roles_agree_off_tableEnum (role : RowFieldRole) (target 
         | .indexFieldTableEnum => .indexFieldTableEnum
         | .sortFieldDuplicate => .sortFieldDuplicate
         | .sortListCapacity => .sortListCapacity
-        | .sortInfoMissing => .sortInfoMissing) := by
+        | .sortInfoMissing => .sortInfoMissing
+        | .sortNameUnset => .sortNameUnset) := by
   cases target with
   | unresolved => rfl
   | group => rfl
@@ -48,12 +49,12 @@ theorem rowFieldRefusal_valueValidationOff (role : RowFieldRole) (tableEnumerati
     rowFieldRefusal role (.field true tableEnumeration) = some (.valueValidationOff role) := by
   rfl
 
-/-- A group's two roles are independent: within the duplicate window and with distinct, filled sort names,
-the sort refusals are exactly those of its sort nominations. A blank name adds the unfilled-entry class,
-which is a judgement of the list and not of the nomination. -/
+/-- A group's two roles are independent: within the duplicate window and with distinct, filled, written sort
+names, the sort refusals are exactly those of its sort nominations. A blank name adds the unfilled-entry class
+and an empty one the unset-name notification, both judgements of the list and not of the nomination. -/
 theorem rowFieldDeclarationRefusals_sort_only (sort : List (String × NominatedTarget))
     (distinct : (sort.map (·.1)).Nodup) (short : sort.length ≤ 3)
-    (filled : ∀ entry ∈ sort, unfilledSortName entry.1 = false) :
+    (filled : ∀ entry ∈ sort, unfilledSortName entry.1 = false) (written : ∀ entry ∈ sort, entry.1 ≠ "") :
     rowFieldDeclarationRefusals { index := none, sort := sort } =
       sort.filterMap (rowFieldRefusal .sortField ·.2) := by
   have keep : ∀ (kept rest : List (String × NominatedTarget)),
@@ -77,7 +78,9 @@ theorem rowFieldDeclarationRefusals_sort_only (sort : List (String × NominatedT
     fun names => List.filter_eq_self.mpr (by simp)
   have noneUnfilled : sort.any (unfilledSortName ·.1) = false := by
     simpa [List.any_eq_false] using filled
+  have noneEmpty : sort.any (·.1.isEmpty) = false := by
+    simpa [List.any_eq_false, String.isEmpty_iff] using written
   simp [rowFieldDeclarationRefusals, whole, leading, distinct, unfiltered, Nat.sub_eq_zero_of_le short,
-    noneUnfilled]
+    noneUnfilled, noneEmpty]
 
 end A12Kernel

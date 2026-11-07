@@ -778,7 +778,9 @@ example : entityDiagnostic .minimum (starOperand "Amount") = none := by
   native_decide
 
 /-- A starred path's own refusals reach the aggregate through the shared shape: the resolver's three
-    name classes, and a star on a nonrepeatable segment, which answers ahead of a later miss. `Sum`,
+    name classes, and a star on a nonrepeatable segment, which answers ahead of a later miss. A relative
+    step from the rule's root group lands on the model root and continues as the absolute spelling, so
+    it draws that spelling's root class while one step more climbs past it (kernel 31.3.1, KF679). `Sum`,
     `MaxValue`, `FirstFilledValue` and `FieldValuesNotUnique` gave one answer per row
     ([checkpoint](../../docs/sources/path-resolution-class-probes.md#src-starred-path-segment-order)). -/
 example :
@@ -788,7 +790,9 @@ example :
       [{ name := "Sections", starred := true }, { name := "Items", starred := true }]
     entityDiagnostic .sum (star ({ name := "Shop" } :: items) "Nope") = some .invalidEntity ∧
     entityDiagnostic .sum (star ({ name := "Nope" } :: items) "Amount") = some .invalidRootGroup ∧
-    entityDiagnostic .sum (star items "Amount" (.relative 1)) = some .tooManyParentGroups ∧
+    entityDiagnostic .sum (star items "Amount" (.relative 1)) = some .invalidRootGroup ∧
+    entityDiagnostic .sum (star items "Amount") = some .invalidRootGroup ∧
+    entityDiagnostic .sum (star items "Amount" (.relative 2)) = some .tooManyParentGroups ∧
     entityDiagnostic .sum (star ({ name := "Shop", starred := true } :: items) "Amount") =
       some .invalidWildcard ∧
     entityDiagnostic .maximum

@@ -35,7 +35,7 @@ private def baseText : String := r#"{
    {"type":"Field","id":"/Form/Code","name":"Code","Field":{"fieldType":{"type":"CustomFieldType","CustomFieldType":{"name":"PolicyCode"}}}},
    {"type":"Field","id":"/Form/Hinted","name":"Hinted","Field":{"fieldType":{"type":"StringType","StringType":{"hintList":[{"locale":"en_US","values":["AB"]}]}}}},
    {"type":"Field","id":"/Form/Linked","name":"Linked","Field":{"fieldType":{"type":"TypeDefType","TypeDefType":{"typeDefinitionId":"Refd"}}}},
-   {"type":"Group","id":"/Form/Rows","name":"Rows","Group":{"repeatability":3,"sortFields":[{"name":"K"}],"elements":[
+   {"type":"Group","id":"/Form/Rows","name":"Rows","Group":{"repeatability":3,"sortFields":[{"name":"K","order":"ASC"}],"elements":[
      {"type":"Field","id":"/Form/Rows/K","name":"K","Field":{"fieldType":{"type":"StringType","StringType":{}}}}]}},
    {"type":"Rule","id":"/Form/R","name":"R","Rule":{"errorEntityRelPath":"../Note","errorCode":"R1","errorCondition":"FieldFilled(Note)","severity":"ERROR"}},
    {"type":"Computation","id":"/Form/C","name":"C","Computation":{"computedFieldRelPath":"../Amount","computationAlternatives":[{"operation":"1"}]}}

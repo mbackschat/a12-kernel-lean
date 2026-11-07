@@ -41,7 +41,8 @@ private def policyOf (fieldType : String) : Option TemporalTargetPolicy :=
 
 private def refused (fieldType : String) : Bool := (read fieldType).isOk == false
 
-/-- Members a Time or DateTime body does not declare, and a fragment's precision, are read past. -/
+/-- Members a Time or DateTime body does not declare, and a fragment's precision, are read past; a Date's
+pre-1900 check is bound but inert on kernel 31.3.1 (KF677, [31.3.1 Letter J](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §1). -/
 example :
     policyOf r#"{"type":"DateTimeType","DateTimeType":{"youngerThan1900Check":true}}"# =
       some { format := "yyyy-MM-dd'T'HH:mm:ss" } ∧
@@ -51,7 +52,7 @@ example :
     policyOf r#"{"type":"DateFragmentType","DateFragmentType":{"formatOfFragment":"dd.MM.","datePrecision":"DAY_OPTIONAL"}}"# =
       some { format := "dd.MM." } ∧
     policyOf r#"{"type":"DateType","DateType":{"youngerThan1900Check":true,"datePrecision":"DAY_OPTIONAL"}}"# =
-      some { format := "yyyy-MM-dd", partialMode := .dayOptional, youngerThan1900Check := true } := by
+      some { format := "yyyy-MM-dd", partialMode := .dayOptional } := by
   native_decide
 
 /-- An empty format is the kind's default, a blank one leaves no model, and a fragment's empty format has no

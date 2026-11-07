@@ -9,7 +9,7 @@ A computation also acts as a validation rule of one exact generated shape
 the computed field is filled, the common precondition, then either the lone alternative's
 precondition and mismatch or the disjunction of every alternative's guarded mismatch. The rule is
 declared in the computation's group, anchors at the computed field, and fires under the
-computation's own name, so its message type, error pointer and reference channels are the ordinary
+computation's declared code, else its name, so its message type, error pointer and reference channels are the ordinary
 rule arm's projections of that condition; peer [KF522](../../../../a12-rulekit/docs/KERNEL-FINDINGS.md#kf522)
 measures that the computation-check message's lists follow the rule arm's static selection.
 
@@ -19,6 +19,16 @@ warnings travel with its generated comparisons.
 -/
 
 namespace A12Kernel.Dm
+
+/-- The computation's suppression preamble as text: its parser information unless blank, else the legacy list
+folded into one pragma of the model's language, else none (kernel 31.3.1; a12-dmkits KF298). -/
+def DmComputation.preambleText (language : Language) (computation : DmComputation) : Option String :=
+  match computation.parserInformation with
+  | some text => if ExecutableDeclaration.blank text then folded else some text
+  | none => folded
+where
+  folded := if computation.errorCodesToSuppress.isEmpty then none else
+    some s!"{keywordSpelling language "@SuppressWarning"}({",".intercalate computation.errorCodesToSuppress})"
 
 /-- The computed field as its declaring group reads it. The target path is written relative to the
 computation element, one level below that group, so a leading `..` is dropped; an absolute path is
@@ -51,12 +61,11 @@ def DmComputation.generatedRule? (language : Language) (computation : DmComputat
     | alternatives => pure ("(\n" ++
         s!"\n{keywordSpelling language "Or"}\n".intercalate
           (alternatives.map fun alternative => s!"({guarded alternative}\n)") ++ "\n)")
-  let suppression := if computation.errorCodesToSuppress.isEmpty then "" else
-    s!"{keywordSpelling language "@SuppressWarning"}({",".intercalate computation.errorCodesToSuppress}) "
+  let preamble := ((computation.preambleText language).map (· ++ "\n")).getD ""
   pure {
     group := computation.group, name := computation.name
-    errorEntityRelPath := computation.targetRelPath, errorCode := computation.name
-    condition := suppression ++
+    errorEntityRelPath := computation.targetRelPath, errorCode := computation.errorCode.getD computation.name
+    condition := preamble ++
       s!"{keywordSpelling language "FieldFilled"}({target}){and}{common}{body}"
     severity := "ERROR" }
 

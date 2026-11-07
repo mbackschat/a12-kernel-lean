@@ -80,7 +80,7 @@ private def elabError? (checked : Except
   | .error cause => some cause
   | .ok _ => none
 
-/- A repeatable target admits the four fragment controls exercised here over a sibling star and separates carrier identity and self-reference. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
+/- A repeatable target admits the four fragment controls exercised here over a sibling star and separates carrier identity and self-reference. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group lands on the model root and names no root group there, and one step further climbs past it (kernel 31.3.1, KF679). -/
 example : operation?.isSome = true ∧
     (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] yearTarget.id
@@ -101,7 +101,11 @@ example : operation?.isSome = true ∧
         some (.shape (.sourceCarrier source.path)) ∧
     elabError? (checkFullDateFirstFilledComputation model
       ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
-        some (.shape (.site (.source (.resolve (.aboveRoot 1))))) ∧
+        some (.shape (.site (.source (.resolve (.unknownRootGroup
+          { base := .relative 1, groups := ["Choices"], field := source.name }))))) ∧
+    elabError? (checkFullDateFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star ({ siblingStar source.name with base := .relative 2 }))) =
+        some (.shape (.site (.source (.resolve (.aboveRoot 2))))) ∧
     elabError? (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] target.id (.star targetStar)) =
         some (.shape (.site (.starPlacement (.targetSelfReference target.id)))) := by

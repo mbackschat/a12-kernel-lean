@@ -453,27 +453,28 @@ Sources: [inbound 2026-10-18](../docs/sources/inbound-handbacks.md#src-inbound-2
 - a stored value is first judged real, and a real label below the floor draws the floor's `datumFalsch` while an unreal one draws the format's `datumFormatFalsch`. Reality is proleptic, with one zone-dependent exception: outside `Europe/Berlin` a Julian leap day before the cutover is still read as real, at its Julian instant, which carries that instant's proleptic label (`1500-02-29` reads as `1500-03-10`). So under `Europe/Berlin` `1582-10-04`, `1582-10-05` and `1582-10-14` draw `datumFalsch` and `1500-02-29`, `1300-02-29` and `1700-02-29` draw `datumFormatFalsch`; under UTC `1582-10-04`, `1500-02-29` and `1300-02-29` draw `datumFalsch` and `1700-02-29` draws `datumFormatFalsch`. Other zones and the cutover labels under UTC are unmeasured;
 - a **stored** value below it is the formal error `datumFalsch`, which suppresses referencing rules ([§3 B.1](02-logic-and-formal-errors.md#b1-what-a-formal-error-is)); a **computed** one is ERRORED; a date **range** floors its *start* the same way, with the range's own pair of codes ([§8.1](#81-declaration-and-stored-text)).
 
-⚠ **The floor is not a criterion of the `Date(...)` constructor's reality test** ([§3.4](#34-calendar-reality)): it gates stored and computed values only. Static component admission and the immediate-entity requirement of the validity predicates apply separately. The floor is also distinct from the opt-in pre-1900 check below.
+⚠ **The floor is not a criterion of the `Date(...)` constructor's reality test** ([§3.4](#34-calendar-reality)): it gates stored and computed values only. Static component admission and the immediate-entity requirement of the validity predicates apply separately. The floor is also distinct from the pre-1900 check below, which no longer judges a value.
 
 Sources: [M8 temporal adoption](../docs/sources/inbound-handbacks.md#src-m8-temporal-adoption).
 
 ### 4.1 The pre-1900 check
 
-**`DateType.youngerThan1900Check` is an opt-in, declaration-owned basic-format check**, independent of Date precision and of the always-on floor. When enabled, a concrete Date strictly before `1900-01-01` is the formal error `datumFalsch`, and `1900-01-01` is valid. Ordinary partial-Date completion and reason preservation happen first, so an unknown-year value stays non-relevant rather than being reclassified as an ancient concrete date. The same declared gate classifies an admitted computed full-Date target ([§11 §4.2](09-computations.md#42-temporal-targets)); a partial-Date computation target is statically refused and adds no runtime case.
+**`youngerThan1900Check` is read but never checked or evaluated.** `DateType`, `DateFragmentType` and `DateRangeType` still bind the member as a Boolean, so a spelling that binds no value, such as `1e0`, leaves the model unread, and the model serializer writes a declared check back; but no declaration is refused for it and no value is judged by it. Kernel 31.1.1 still checked it; on 31.3.1 the measured rows are:
 
-**On DATE and DATE_FRAGMENT the check is declarable only where the format carries a year**, and the declaration kinds otherwise differ:
+| Input | Result |
+|---|---|
+| the check on each of the 13 admitted DATE formats, the six year-free ones included, and on each of them as a DATE_FRAGMENT | admitted |
+| the check on each of the 12 admitted DATE_RANGE pairs | admitted |
+| the check on a DATE declared `HH:mm:ss` | admitted |
+| the check beside `DAY_OPTIONAL` on `MM-dd` | `MVK_OPTIONAL_DATE_TYPE_INVALID` alone |
+| stored `1899-12-31` on a checked year-bearing DATE, `1899-12` on a checked DATE_FRAGMENT, `31.12.1899-01.01.1901` on a checked DATE_RANGE, and a year-free range under Base Year 1899 | no finding |
+| a computed `31.12.1899`, copied or as a Date constant, into a checked DATE, repeatable or not | a value |
+| stored `1500-06` on a DATE_FRAGMENT, with and without the check | `datumFalsch`, the floor of §4 |
+| a checked month-pair DATE_RANGE beside an unchecked one of the same interpretation | one shared runtime class ([§8.2](#82-the-two-stage-runtime-reading)) |
 
-| Declaration | Year-free formats | Year-bearing formats |
-|---|---|---|
-| DATE | refused at model admission, `MVK_ADDITIONAL_CHECK_INVALID` | admitted |
-| DATE_FRAGMENT | as DATE: of the thirteen admitted formats the six year-free ones — `MM`, `MM-dd`, `MMdd`, `ddMM`, `dd.MM.`, `HH:mm:ss` — are refused | the seven year-bearing ones are admitted |
-| DATE_RANGE | exempt: every admitted `(format, separator)` pair takes the check, the year-free ones included ([§8.1](#81-declaration-and-stored-text)) | admitted |
-| TIME | the declaration does not declare the property: the reader passes over it, and it has no effect | — |
-| DATE_TIME | the declaration does not declare the property: the reader passes over it, and an enabled check has no effect, so `1850-01-01T10:00:00` draws no finding (kernel 31.1.1; 30.8.1's reader refused the model) | — |
+TIME and DATE_TIME do not declare the member: their reader passes over it.
 
-The Kernel states the refusal in component terms — a date field lacking a year cannot carry the check — not kind terms. So the year co-requirement belongs to the DATE and DATE_FRAGMENT carriers, not to the check: a consumer gates the check on year presence there and must not model it as admitted-and-inert on those two kinds, while one enforcing the requirement on every temporal kind refuses the legal year-free range declarations.
-
-Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-09-08), [inbound 2026-09-05c](../docs/sources/inbound-handbacks.md#inbound-2026-09-05c), [inbound 2026-09-21](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections).
+Sources: [31.3.1 Letter J](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §1 (kernel 31.3.1), [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-09-08), [inbound 2026-09-05c](../docs/sources/inbound-handbacks.md#inbound-2026-09-05c), [inbound 2026-09-21](../docs/sources/inbound-handbacks.md#inbound-2026-09-21-corrections).
 
 ### 4.2 Message keys of a stored Date refusal
 
@@ -489,16 +490,16 @@ Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-
    | `YEAR_OPTIONAL` | an unknown year beside a known month or day, `DATUM_JAHROPTIONAL_MONAT_ODER_TAG_ANGEGEBEN` | an unknown month beside a known day, `DATUM_MONATOPTIONAL_TAG_ANGEGEBEN` |
 
    The unknown parts then read as `01` (day, month) and `2000` (year) for the steps below, so `DAY_OPTIONAL` `2026-13-00` selects `DATUM_MONAT_FEHLER`.
-3. **Calendar reality.** A syntactically sound label the runtime calendar rejects ([§4](#4-the-gregorian-floor)) keeps the code `datumFormatFalsch` and is read component by component: a zero component selects `DATUM_FORMAT`; with the pre-1900 check enabled a year below 1900 selects `DATUM_ADDITIONAL_CHECK`, ahead of the month, so `13.13.1850` selects it; a month above 12 selects `DATUM_MONAT_FEHLER`; an exact 29 February `DATUM_FEBRUAR_29_FEHLER`; and every other day `DATUM_TAG_FEHLER`.
-4. **Position.** A real label fails only as a date, with the code `datumFalsch`: under the enabled pre-1900 check `DATUM_ADDITIONAL_CHECK`, otherwise below the floor `DATUM`.
+3. **Calendar reality.** A syntactically sound label the runtime calendar rejects ([§4](#4-the-gregorian-floor)) keeps the code `datumFormatFalsch` and is read component by component: a zero component selects `DATUM_FORMAT`; a month above 12 selects `DATUM_MONAT_FEHLER`; an exact 29 February `DATUM_FEBRUAR_29_FEHLER`; and every other day `DATUM_TAG_FEHLER`.
+4. **Position.** A real label fails only as a date, below the floor, with the code `datumFalsch` and the key `DATUM`.
 
 **The same reading serves every date-bearing format, applied to the completed text.**
 
-- A format without a day — `yyyy`, `yyyy-MM`, `yyyyMM`, `MM` and the clock `HH:mm:ss` — selects `DATUM_FORMAT` for every refusal, month `13` included, and the date keys only for a real date under the pre-1900 check or below the floor.
+- A format without a day — `yyyy`, `yyyy-MM`, `yyyyMM`, `MM` and the clock `HH:mm:ss` — selects `DATUM_FORMAT` for every refusal, month `13` included, and the date keys only for a real date below the floor.
 - The day-bearing `MM-dd`, `MMdd`, `ddMM` and `dd.MM.` are completed with the Base Year, `2000` when none is declared, before the reading, so `02-29` is admitted without a Base Year and selects `DATUM_FEBRUAR_29_FEHLER` under a common one.
-- A DateTime label of the declared shape is read by its date half whatever its clock holds: a clock out of range on a sound date selects `DATUM_TAG_FEHLER`, on 29 February or month `13` those keys, and on a zero component `DATUM_FORMAT`. With the pre-1900 check enabled, a malformed date below 1900 selects `DATUM_ADDITIONAL_CHECK` ahead of its month, 29 February and day.
+- A DateTime label of the declared shape is read by its date half whatever its clock holds: a clock out of range on a sound date selects `DATUM_TAG_FEHLER`, on 29 February or month `13` those keys, and on a zero component `DATUM_FORMAT`.
 
-**A DateRange** missing its separator, or not split into two nonempty readable endpoints, selects `DATUM_BEREICH_FORMAT`. An unreal endpoint, the start read first, selects the start or end variant of the month, 29-February and day keys, a zero component the range's format key and the pre-1900 check `DATUM_BEREICH_DATUM_ADDITIONAL_CHECK`; an inverted range selects `DATUM_BEREICH_NICHT_GUELTIG`, and a start below the floor `DATUM_BEREICH_DATUM`.
+**A DateRange** missing its separator, or not split into two nonempty readable endpoints, selects `DATUM_BEREICH_FORMAT`. An unreal endpoint, the start read first, selects the start or end variant of the month, 29-February and day keys, a zero component the range's format key; an inverted range selects `DATUM_BEREICH_NICHT_GUELTIG`, and a start below the floor `DATUM_BEREICH_DATUM`.
 
 Measured scope, on kernel 31.1.1 by re-running the kernel 30.8.1 rows: the three fixed-width complete formats with one separator, the three partial precisions over `yyyy-MM-dd`, a `yyyy-MM-dd` range at `/`, the component-omitting formats, the clock and the date-time format, every row selecting the key it selected on 30.8.1 except two labels whose reality changed with the calendar: under `Europe/Berlin` `1582-10-10` now draws `datumFalsch` with `DATUM` and `1500-02-29` `datumFormatFalsch` with `DATUM_FEBRUAR_29_FEHLER`. A Base Year below 1900 is unmeasured.
 
@@ -668,7 +669,7 @@ A lone `0` is never an omission marker; an omitted month beside a present day is
 2. For a declaration that admits omissions, a wrong component width or separator count is the format error.
 3. **The omission pattern**: zeros that are not a monotone suffix, or a suffix deeper than the precision admits, are the date error `datumFalsch`. This precedes the reality test: `YEAR_OPTIONAL` `0000-13-00` is the date error.
 4. **Reality of the present components** on the earliest completion: an unreal calendar date among them is the format error, an impossible month beside a legally omitted day included, so `DAY_OPTIONAL` `2024-13-00` is the format error rather than an omission failure.
-5. **Position**: an admitted shape whose earliest completion falls below the universal floor or the enabled pre-1900 boundary is the date error, so `DAY_OPTIONAL` `1583-10-00` is the date error while `1583-11-00` is admitted.
+5. **Position**: an admitted shape whose earliest completion falls below the universal floor is the date error, so `DAY_OPTIONAL` `1583-10-00` is the date error while `1583-11-00` is admitted.
 
 The message keys follow the same order ([§4.2](#42-message-keys-of-a-stored-date-refusal)).
 
@@ -747,14 +748,14 @@ Sources: [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-
 
 ### 8.2 The two-stage runtime reading
 
-**DateRange document input and runtime reads use two stages.** Document conversion first parses the text under the field's own format and separator, a missing month or day defaulting to 1 in the converted Date endpoints. Runtime formatting, formal checking and endpoint reads then use a shared definition selected in declaration order. For interpreted ranges the sharing key distinguishes `FROM` from `TO` and the pre-1900 flag but drops the declared format and separator, and the first field of that class supplies those runtime details; standard ranges keep their format and separator distinct. So reordering declarations can change validity, endpoint values and computed presentation, even when a Base Year is configured.
+**DateRange document input and runtime reads use two stages.** Document conversion first parses the text under the field's own format and separator, a missing month or day defaulting to 1 in the converted Date endpoints. Runtime formatting, formal checking and endpoint reads then use a shared definition selected in declaration order. For interpreted ranges the sharing key distinguishes `FROM` from `TO` but drops the declared format, the separator and the pre-1900 flag (the flag separated the classes on kernel 31.1.1), and the first field of that class supplies those runtime details; standard ranges keep their format and separator distinct. So reordering declarations can change validity, endpoint values and computed presentation, even when a Base Year is configured.
 
 - **Completion of a shared yearless day-and-month format** uses the declared Base Year, or 2000 when absent. On a wrapping pair, `FROM` anchors the start and moves the finish into the following year, and `TO` anchors the finish and moves the start into the preceding year. Endpoint calendar validity is checked in the placed year: with an effective dotted day-and-month format and Base Year 2020, `01.11-29.02` is valid under `TO` but `datumBereichFormatFalsch` under `FROM`, whose finish would be February 29, 2021. This completion does not generalize to every yearless format: an effective month-only format refuses a wrapping pair with `datumBereichNichtGueltig` under either interpretation, with or without a Base Year.
-- **Formal position checking is separate from endpoint completion.** Effective day-and-month formats use the Base Year for the always-on floor and the optional pre-1900 check; effective month-only formats use neither the endpoint's completed year nor the Base Year for them. So both `MM` spellings accept an ordered pair under Base Year 1500 with either flag setting, while still refusing reversed pairs. Day-and-month ranges with the flag refuse Base Year 1899 and accept 1901; their unflagged twins accept both.
+- **Formal position checking is separate from endpoint completion.** Effective day-and-month formats use the Base Year for the always-on floor; effective month-only formats use neither the endpoint's completed year nor the Base Year for them. So both `MM` spellings accept an ordered pair under Base Year 1500 with either flag setting, while still refusing reversed pairs. Day-and-month ranges with the flag refuse Base Year 1899 and accept 1901; their unflagged twins accept both.
 - **The two stages also lose components.** With interpreted `dd.MM` declarations first, a later month-only `03/10` input becomes `01.03-01.10` and its end-Day is 1; with interpreted `MM` declarations first that read becomes `03/10`, and positional endpoint completion gives end-Day 31. A later full-Date input can lose its supplied years when rendered through either shared yearless profile, and numeric endpoint reads then return the runtime anchor years. A pre-1900 flag different from the first declaration's creates a separate sharing class. Empty numeric endpoint reads compute 0, and formally invalid sources clear their dependent computations. Raw text that conversion could not decode is checked under the effective runtime format, so even a compact-month declaration can report the shared separator's missing-separator class.
 - **A computed DateRange is rendered through the target's shared runtime definition**, and that text is checked before dependent computations consume it. A valid dotted-`FROM` wrapping source copied into a month-only `TO` sharing class therefore produces an errored `11/02` attempt, and a following end-Year computation clears; ordered input writes `03/10`, and the dependent year is 2000 in an unconfigured model. An empty source clears the target and lets the dependent numeric read substitute 0. Formal source poison and target rejection both block the dependent read, but only target rejection keeps the attempted text.
 
-Sources: [shared runtime](../docs/sources/date-range-construction.md#src-date-range-shared-runtime), [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-09-08).
+Sources: [31.3.1 Letter J](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §1 (the flag no longer separates a class), [shared runtime](../docs/sources/date-range-construction.md#src-date-range-shared-runtime), [inbound 2026-09-08](../docs/sources/inbound-handbacks.md#inbound-2026-09-08).
 
 ### 8.3 Bound extraction
 
@@ -912,7 +913,7 @@ Sources: [temporal difference gates](../docs/sources/computation-placement-and-c
 - [ ] `AddMonths` clamps, `AddYears` corrects into leap years; shift amounts truncate and narrow to signed 32 bits; runtime dates are proleptic in the model zone, a shift keeps its source offset where the label allows, and static constant admission stays hybrid.
 - [ ] Extractions and differences are non-expandable scale-0 Numbers; empty operands give symmetric fillable zero; `DifferenceInDays` steps model-zone calendar days; sub-day differences divide epoch milliseconds, truncated toward zero, order `b − a`.
 - [ ] `Valid`/`Invalid` over `Date(...)` have complementary truth but distinct verdicts; over a named type an unregistered name fails the rule.
-- [ ] The floor `1583-10-16` gates stored and computed values, not the constructor; the pre-1900 check follows [§4.1](#41-the-pre-1900-check)'s table.
+- [ ] The floor `1583-10-16` gates stored and computed values, not the constructor; the pre-1900 check is bound but inert ([§4.1](#41-the-pre-1900-check)).
 - [ ] Zones resolve through a versioned `java.time` profile with local mean time; a gap label moves forward by the gap, an overlap takes the earlier offset, sub-day shifts keep their instant, `DifferenceInDays` counts whole wall-clock days, and a label with no instant is answered per carrier.
 - [ ] Partial dates: monotone suffix, omission before reality before position, precision classes per gate; `ValueAsDate` bridges them.
 - [ ] Ranges: equality by component set, closed intervals, any-pair versus scalar-versus-list overlap.

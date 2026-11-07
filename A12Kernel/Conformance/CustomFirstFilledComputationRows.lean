@@ -110,7 +110,7 @@ private def elabError? (checked :
   | .error cause => some cause
   | .ok _ => none
 
-/- The checked boundary separates target placement, Custom declaration identity checked before placement, source shape and scope, and self-reference, while an ordinary String, another Custom type and another policy of the same name feed the scan alike; a fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
+/- The checked boundary separates target placement, Custom declaration identity checked before placement, source shape and scope, and self-reference, while an ordinary String, another Custom type and another policy of the same name feed the scan alike; a fixed target takes the fixed shape, where this relative sibling star from an unrelated group lands on the model root and continues as the absolute path `Choices*/Code`, which names no root group, and one step further climbs past the root (kernel 31.3.1, KF679). Placement is containment: the ancestor `["Projects"]` is admitted with an operand spelled for that base, while `["Projects", "Choices"]` — which shares the target's enclosing prefix without containing it — is refused, so an account keyed on a common ancestor still admits what only containment rejects. -/
 example :
     operation?.isSome = true ∧
     elabError? (checkCustomFirstFilledComputation model
@@ -126,7 +126,15 @@ example :
         some (.site (.repeatableTarget (.targetOutsideDeclaringGroup target.path ["Projects", "Choices"]))) ∧
     elabError? (checkCustomFirstFilledComputation model
       ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
-        some (.site (.source (.resolve (.aboveRoot 1)))) ∧
+        some (.site (.source (.resolve (.unknownRootGroup
+          { base := .relative 1, groups := ["Choices"], field := source.name })))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star { siblingStar source.name with base := .absolute })) =
+        some (.site (.source (.resolve (.unknownRootGroup
+          { base := .absolute, groups := ["Choices"], field := source.name })))) ∧
+    elabError? (checkCustomFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star { siblingStar source.name with base := .relative 2 })) =
+        some (.site (.source (.resolve (.aboveRoot 2)))) ∧
     elabError? (checkCustomFirstFilledComputation model
       ["Projects", "Choices"] ordinarySource.id
         (.star (siblingStar source.name))) =

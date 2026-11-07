@@ -141,16 +141,17 @@ theorem checkMessageGroup_absolute_admitted
       · simp only [Bool.or_eq_true, not_or] at hRoot
         simp [hRoot.1, hRoot.2] at admitted
 
-/-- A relative argument is admitted only when its parent walk stays at or below the root group, so a
-climb past the root is never reached through the relative form, whatever path follows it. -/
+/-- A relative argument is admitted only when its parent walk stays at or below the technical model root,
+so a climb past it is never reached through the relative form, whatever path follows it. Landing on the
+model root itself is admitted when a group path continues from it (kernel 31.3.1, KF679). -/
 theorem checkMessageGroup_relative_walkWithinRoot
     {model : FlatModel} {condition : ValidationMessageCondition model}
     {parameter : String} {parents : Nat} {turningPoint : Option String} {path : GroupPath}
     {remainder : MessageGroupRemainder} {access : CheckedValidationMessageGroup model condition}
     (admitted : checkMessageGroup condition parameter
       (.relative parents turningPoint path) remainder = .ok access) :
-    parents < condition.rowGroup.length := by
-  by_cases hWithin : parents < condition.rowGroup.length
+    parents ≤ condition.rowGroup.length := by
+  by_cases hWithin : parents ≤ condition.rowGroup.length
   · exact hWithin
   · cases remainder <;>
       simp [checkMessageGroup, resolveMessageGroup, walkMessageGroup, GroupPath.walkUp,

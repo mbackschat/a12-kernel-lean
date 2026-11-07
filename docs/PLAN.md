@@ -236,18 +236,19 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 - `frozen`: tag `kernel-31.1.1-final` on `7dc020261` holds the last account that targets 31.1.1. Retained observations under `evidence/kernel-30.8.1/` and `evidence/kernel-31.1.1/` keep their version and their meaning.
 - `pin`: `../a12-kernel` is pinned at `6e6b3a6`, the 2026.06-ext2 release commit, by owner decision; the peer read source at `6363abf` on `fixes/2026.06-ext2-fixes`, whose six later commits touch build files and one structural-mapping class only. The measurement checkout moved to a12-dmkits `505683610` on 2026-11-07, whose launcher reports dmtool 0.15.0 and kernel 31.3.1 built and runtime.
 - `method`: as for 31.1.1, a clause moves only on a measured row; the letter's §10 mechanisms are source reading and move nothing. The re-capture runs first this time, so each batch compares against the population's 31.3.1 artifacts.
-- `models`: the re-capture restamps the frozen models 28.4.0 to 29.8.0, assuming the 31.3.1 migrator changes nothing else, since the four new members are optional; unverified until a12-dmkits migrates the retained probe models.
-- `owed`: none yet.
+- `models`: the re-capture restamps the frozen models 28.4.0 to 29.8.0; [Letter K](sources/inbound-handbacks.md#src-inbound-2026-11-07a) found the migrator changes nothing else except folding eight models' legacy suppression lists, which the Kernel's read folds anyway.
+- `owed`: a runtime row for a computation whose preamble suppresses `MVK_ERROR_INVALID_ENUM_CALCULATION` ([SG8](gaps/strings-and-messages.md#gap-sg8)); not yet requested.
+- `cleanup`: the temporal policies' `youngerThan1900Check` fields and the pre-1900 gates they enable are unreachable from DM-JSON once N3 lands; remove them, with the proofs that quantify over them, as their own change after the migration closes.
 - `batches`: risk-first, each adopting its letter rows into spec/ and Lean with its focused checks and one gate:
-  - [ ] `N1 relative walk` (§2): the model root as a turning point of every relative path, in conditions, messages, error targets and computed targets.
-  - [ ] `N2 number text cap` (§4): a stored Number's runtime text capped at fifteen digits, half up.
-  - [ ] `N3 inert year check` (§1): `youngerThan1900Check` bound but never checked or evaluated.
-  - [ ] `N4 computation code and preamble` (§5): `errorCode` and `additionalParserInformation`.
-  - [ ] `N5 sort entry` (§3): both members required and the order's enum binding.
+  - [x] `N1 relative walk` (§2): the model root as a turning point of every relative path, in conditions, messages, error targets and computed targets.
+  - [x] `N2 number text cap` (§4): a stored Number's runtime text capped at fifteen digits, half up.
+  - [x] `N3 inert year check` (§1): `youngerThan1900Check` bound but never checked or evaluated.
+  - [x] `N4 computation code and preamble` (§5): `errorCode` and `additionalParserInformation`.
+  - [x] `N5 sort entry` (§3): both members required and the order's enum binding.
   - [ ] `N6 possible-cause filter` (§6): the filter's reader, duplicate and reference checks.
   - [ ] `N7 possibly-causing entities` (§7): the message's cause groups.
   - [ ] `N8 smaller corrections` (§8).
-- `next`: finish the re-capture (`prepare` and `runtime` are under way), replay it, then start N1.
+- `next`: N6. The [31.3.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-313-recapture) is done and `lake test` reads it; the population replay and the triggered cold review of N1–N8 run at the close.
 - `close`: the playbook's section 4.
 
 <a id="next-consumer-decision"></a>

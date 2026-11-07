@@ -147,7 +147,7 @@ private def order (members : List (String × Json)) (fields : List Json := [fiel
 private def index (name : String) : List (String × Json) := [("indexFieldName", Json.str name)]
 
 private def sorts (names : List String) : List (String × Json) :=
-  [("sortFields", Json.arr (names.map fun name => Json.mkObj [("name", Json.str name)]).toArray)]
+  [("sortFields", Json.arr (names.map fun name => Json.mkObj [("name", Json.str name), ("order", Json.str "ASC")]).toArray)]
 
 private def skipsValidation (name : String) : Json :=
   field name (body := [("noValueValidation", true), ("lineBreaksPermitted", true)])

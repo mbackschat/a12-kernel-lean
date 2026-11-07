@@ -279,7 +279,7 @@ The order-2 rows answer ahead of the walk, measured on the unbound segment itsel
 
 | Condition | Trio | Pair | `GroupFilled` | `NumberOfFilledGroups` |
 |---|---|---|---|---|
-| group path does not resolve | class of the segment that missed: `MVK_INVALID_ROOT_GROUP` for an absolute path whose first segment names no root group; `MVK_TOO_MANY_PARENT_GROUPS` for a walk above the root; `MVK_INVALID_ENTITY` for any other miss, relative paths included | same | — | same |
+| group path does not resolve | class of the segment that missed: `MVK_INVALID_ROOT_GROUP` for an absolute path, or a relative walk continuing from the model root, whose first segment names no root group; `MVK_TOO_MANY_PARENT_GROUPS` for a walk stopping on the model root or climbing past it; `MVK_INVALID_ENTITY` for any other miss, relative paths included | same | — | same |
 | a field operand | admitted | admitted | — | `MVK_NO_FIELDS_ALLOWED` |
 | an operand naming a group with no field in its subtree, in any position | the empty class: `MVK_GROUP_IS_EMPTY`, or `MVK_ROOT_GROUP_IS_EMPTY` for a root ([§10](08-paths-and-references.md)) | the empty class | the empty class | the empty class, ahead of the list gates |
 | fewer than two operands, the sole one ordinary | `MVK_PARAMSIZE_INVALID2` | admitted | — | `MVK_PARAMSIZE_INVALIDGN` for a lone fixed operand holding a field, a root included; a lone empty group or root draws its empty class (`MVK_GROUP_IS_EMPTY`, `MVK_ROOT_GROUP_IS_EMPTY`) instead |

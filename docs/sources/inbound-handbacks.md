@@ -1098,6 +1098,16 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
 
+<a id="src-inbound-2026-11-07a"></a>
+## Received 31.3.1 Letter K of 2026-11-07: what the 31.3.1 migrator does to the retained models
+
+- `source`: Peer-session letter of 2026-11-07, `a12-kernel-lean-spec-corrections-2026-11-07a.md`, SHA-256 `32149df0a34bce68e5e83261c468a4f4838894723f69a65e595802b7251c3732`. It answers the migration plan's `models` assumption and corrects nothing in [Letter J](#src-inbound-2026-11-07).
+- `revision`: a12-dmkits `f39ef89c2`, clean, with one throwaway test class deleted after the run; the frozen population at this repository's `ebba0b7df`.
+- `oracle`: the kernel 31.3.1 document-model migrator called directly, UTC, no custom code, each model with one representative of every other model id in its directory; parsed-tree diff with decimals as `BigDecimal`. Reported by the peer, not run here.
+- `rows`: 987 of 996 distinct models change only `header.modelVersion`. Eight, 21 computations, fold `errorCodesToSuppress` into `additionalParserInformation` and move that member: `aggregate-repeatable-warning-suppressed-division`, `date-range-bound-component-scale-suppression`, `filter-suppression-and-row-carriers-2026-10-14`, `filter-waiver-carriers-2026-10-14`, both `string-integer-source-scale-suppression` models, `tolerance-family-2026-10-11` and `uniqueness-computation-guards-2026-10-04`. `model-frame-check-route-2026-10-29/noversion_DM.json` throws in the migrator.
+- `consequence`: the [31.3.1 re-capture](kernel-31-calibration-probes.md#src-kernel-313-recapture) keeps the stamp-only restamp, since the Kernel folds a stored list on read (Letter J §5), and writes the same fold into computation specs dmtool 0.15.0 reads.
+- `sync`: inbound measurement; no ledger entry.
+
 <a id="src-inbound-2026-11-07"></a>
 ## Received 31.3.1 Letter J of 2026-11-07: what kernel 31.3.1 changed, measured
 
@@ -1105,6 +1115,7 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `revision`: a12-dmkits `505683610a0c57711fe59fb6ca70d315e6a2f2a1`, clean; the peer reports every named lock green at `c6893a848`, one release-tooling commit earlier.
 - `oracle`: kernel 31.3.1, the peer's `checkConsistency`, both-strategy runtime differentials, reader, serializer and typed-API rows as each row names; source readings at `a12-kernel` `6363abf`. Reported by the peer, not run here.
 - `state`: received; its rows are adopted batch by batch in the migration's `batches` key, and §10's mechanisms are source reading that moves no clause.
+- `adoption-n1-n5`: §1–§5 adopted 2026-11-07. Lean follows §3's rows where its stated mechanism does not: the letter says the order trims as Java's `trim` does, yet measures `"ASC "` unreadable beside an admitted `" ASC"`, so Lean strips leading characters only. §5's suppressed `MVK_ERROR_INVALID_ENUM_CALCULATION` is admitted at the check, which Lean does not follow until a runtime row says what such a computation stores ([SG8](../gaps/strings-and-messages.md#gap-sg8)).
 - `sync`: inbound measurements from a committed peer revision; no ledger entry is created for them.
 
 <a id="src-inbound-2026-11-05e"></a>

@@ -157,27 +157,31 @@ private partial def segments (header : Path) : P (List Segment) := do
     return first :: (← segments header)
   else return [first]
 
-/-- An up-run: each `..` climbs one level, and a name written directly after the last one is its
-turning-point label rather than a descent, which needs the `/`. -/
-private partial def ups : P (Nat × Option String) := do
-  if (← peek) != some (.symbol "..") then return (0, none)
+/-- An up-run after `taken` steps: each `..` climbs one level, and a name written directly after the last
+one is its turning-point label rather than a descent, which needs the `/`. A `*` on a step fails there, so
+nothing after it is read (spec/10 §1). -/
+private partial def upRun (taken : Nat) : P (Nat × Option String) := do
+  if (← peek) != some (.symbol "..") then return (taken, none)
   advance
+  let step := taken + 1
+  if (← peek) == some (.symbol "*") then
+    let offset := ((← read)[← get]?.map (·.offset)).getD 0
+    throw { errorClass := .starredUpStep step, offset }
   match ← peek with
   | some (.symbol "/") =>
       if (← peekAt 1) == some (.symbol "..") then
         advance
-        let (count, label) ← ups
-        return (count + 1, label)
-      else return (1, none)
-  | some (.name label _) => advance; return (1, some label)
-  | _ => return (1, none)
+        upRun step
+      else return (step, none)
+  | some (.name label _) => advance; return (step, some label)
+  | _ => return (step, none)
 
 /-- A path; once it closes, its steps are no longer open. -/
 private def path : P Path := do
   let opened := (← getThe (Array RecordedEvent)).size
   let correlated ← acceptSymbol "$"
   let absolute ← acceptSymbol "/"
-  let (ups, turningPoint) ← if absolute then pure (0, none) else ups
+  let (ups, turningPoint) ← if absolute then pure (0, none) else upRun 0
   let header : Path := { correlated, absolute, ups, turningPoint, segments := [] }
   let segments ← if ups == 0 then segments header
     else if ← acceptSymbol "/" then segments header else pure []
@@ -420,19 +424,31 @@ private partial def argument (id : String) (index : Nat) : P Argument := do
   return .mk expr rangeEnd
 end
 
+/-- One name of a suppression preamble. A quoted or digit-initial name lexes as one name yet is no usable
+name here, so it is a parse failure at that token (spec/12 §4, `7_DAYS` and `'MVK_LATE'`), ahead of a later
+character the lexer cannot take. -/
+private def suppressedName : P String := do
+  match ← peek with
+  | some (.name name quoted) =>
+      if quoted || name.front.isDigit then failHere .unexpectedToken
+      advance; pure name
+  | _ => failHere .expectedTokenNotFound
+
+/-- The names after the first, each led by a comma; `fuel` bounds the list by the remaining lexemes. -/
+private def moreSuppressedNames : Nat → P (List String)
+  | 0 => pure []
+  | fuel + 1 => do
+      if ← acceptSymbol "," then return (← suppressedName) :: (← moreSuppressedNames fuel)
+      else return []
+
+/-- The suppression preamble, a comma list of one or more names (kernel 31.3.1; spec/12 §4). -/
 private def preamble : P (List String) := do
   if ← acceptKeyword "@SuppressWarning" then
     expectSymbol "("
-    -- A quoted or digit-initial name lexes as one name yet is no usable name here, so it is a parse
-    -- failure at that token (spec/12 §4, `7_DAYS` and `'MVK_LATE'`), ahead of a later character the
-    -- lexer cannot take.
-    let name ← match ← peek with
-      | some (.name name quoted) =>
-          if quoted || name.front.isDigit then failHere .unexpectedToken
-          advance; pure name
-      | _ => failHere .expectedTokenNotFound
+    let first ← suppressedName
+    let rest ← moreSuppressedNames (← read).size
     expectSymbol ")"
-    return [name]
+    return first :: rest
   else return []
 
 /-- Read one condition or operation text from its lexemes, with the events completed before the text
@@ -452,6 +468,16 @@ def parseLexemes (lexemes : Array Lexeme) : Except SyntaxError Text :=
 /-- Read one condition or operation text in a model's language. -/
 def parseText (language : Language) (text : String) : Except SyntaxError Text := do
   parseLexemes (← lex language text)
+
+/-- Read a text that must be a suppression preamble and nothing else, as a computation's parser information is
+read alone (spec/09 §6): its suppressed names. -/
+def parsePreambleSnippet (language : Language) (text : String) : Except SyntaxError (List String) := do
+  let lexemes ← lex language text
+  let grammar : P (List String) := do
+    let names ← preamble
+    if names.isEmpty || (← peek).isSome then failHere .unexpectedToken
+    return names
+  (run grammar lexemes).1
 
 /-- Model reference attributes name declarations, including DSL keywords. The retained temporal
 filter matrix targets fields named Date and Time without expression-language quoting. -/

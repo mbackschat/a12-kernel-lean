@@ -283,9 +283,8 @@ inductive ModelBuildFailure where
   | enumerationValuesMissing
   /-- A field whose Enumeration holds an empty token carrying an empty label text (KF321, kernel 31.1.1). -/
   | enumerationEmptyTokenTextless
-  /-- A group's index or sort spelling that leaves no model, the empty sort name apart. -/
+  /-- A group's index or sort spelling that leaves no model. -/
   | nomination (failure : NominationFailure)
-  | sortFieldNameEmpty
   /-- Two type definitions carry one id, the empty id included. -/
   | typeDefinitionIdRepeated
   /-- A declared locale with an empty language, or two codes naming one locale. -/
@@ -408,12 +407,11 @@ private def raiseIf (condition : Bool) (path : List String) (kind : ModelConsist
   if condition then [notification path kind] else []
 
 /-- The defect of one element that stops the Kernel building the model. A group's spellings are read from
-its own path against the authored groups, which `isGroup` names. -/
-def buildFailure? (isGroup : List String → Bool) (path : List String) : ConsistencyElement →
+its own path. -/
+def buildFailure? (path : List String) : ConsistencyElement →
     Option ModelBuildFailure
   | .group _ _ _ _ indexFieldName sortFieldNames _ =>
-      if sortFieldNames.any (·.isEmpty) then some .sortFieldNameEmpty
-      else ((indexFieldName.toList ++ sortFieldNames).findSome? (nominationFailure? isGroup path)).map .nomination
+      ((indexFieldName.toList ++ sortFieldNames).findSome? (nominationFailure? path)).map .nomination
   | element@(.field _) | element@(.rule ..) | element@(.computation ..) => element.conversionFailure?
 
 /-- The first id two type definitions share, which every model reader refuses before building. -/
@@ -437,11 +435,7 @@ def firstBuildFailure? (model : ConsistencyModel) : Option (List String × Model
   | some id => some ([id], .typeDefinitionIdRepeated)
   | none =>
       if model.validationModelUnbuilt then some ([], .validationModelUnbuilt)
-      else
-        let groupPaths := model.entries.filterMap fun (path, element) =>
-          match element with | .group .. => some path | _ => none
-        model.entries.findSome? fun (path, element) =>
-          (buildFailure? groupPaths.contains path element).map (path, ·)
+      else model.entries.findSome? fun (path, element) => (buildFailure? path element).map (path, ·)
 
 /-- The type definitions in the order the checks walk them: as declared for a model with nothing to expand,
 and otherwise by id, compared by UTF-16 code unit (a local probe of 2026-10-29 and peer KF647's Latin-1 row,

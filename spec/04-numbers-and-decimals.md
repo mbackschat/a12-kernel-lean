@@ -11,14 +11,18 @@ Empty-number behaviour (`0` substitution, its exceptions in aggregates) is in [�
 
 **An in-memory Number cell has one of two storage regimes, selected by the actual stored value representation rather than by the field declaration or the consumer, and every evaluation channel reads the one text that regime selects.** A **decimal-valued** placement retains its exact coefficient and scale, so `250.00` and `250` have the same amount but different source identities. A **String-valued** placement is read verbatim.
 
-**The decimal-valued regime derives one formal-read text before evaluation** by stripping fractional trailing zeros, flooring the resulting scale at the declaration's `minFractionalDigits`, rescaling exactly, and rendering in plain notation:
+**The decimal-valued regime derives one formal-read text before evaluation** by stripping fractional trailing zeros, flooring the resulting scale at the declaration's `minFractionalDigits`, capping it so the text keeps at most fifteen digits, rescaling half up, and rendering in plain notation:
 
 ```
-readScale = max(value.stripTrailingZeros().scale, minFractionalDigits)
-readText  = value.setScale(readScale).toPlainString()
+integerDigits = value.precision − value.scale          (of the value as stored)
+readScale     = min(max(value.stripTrailingZeros().scale, 0, minFractionalDigits),
+                    max(0, 15 − integerDigits))
+readText      = value.setScale(readScale, HALF_UP).toPlainString()
 ```
 
 Thus a decimal-valued `250.00` in a scale-0 field is read as `250`, the same decimal amount in a field with `minFractionalDigits = 2` is read as `250.00`, and a negative-scale value such as `1E+5` is read as plain `100000`. This evaluation text does not replace the exact decimal identity retained by the document.
+
+**The cap binds where padding or a long stored value would pass fifteen digits.** On a field taking exactly ten decimals, `12345` reads with ten and is admitted, while `123456`, `1234567` and the quoted `"123456"` read with nine and eight and draw `zahlFalscheAnzahlNachkommastellen`, where an uncapped pad would draw `stelligkeitZuLang`. On a field taking up to fourteen, a stored `1234567890.1234567`, seventeen significant digits the document reader admits, reads as `1234567890.12346` and draws no length class. A rule `[Rate] > 1.12345678901234` fires on `1.123456789012345` and not on `1.123456789012344`, which separates half up from half even. The floor at zero, and the integer digits of a value below one, zero or negative so that its cap exceeds fifteen, are unmeasured. A computed value is stored by the computation's own rendering ([§11 §4.3](09-computations.md#43-number-string-enumeration-and-custom-targets)), which has no cap. Kernel 31.1.1 rescaled exactly with no cap.
 
 **The String-valued regime reads the stored text verbatim**, so the same stored text can receive different formal results by regime: on a `maxFractionalDigits = 0` field, String-valued `250.00` fails with `zahlHatDezimalTrenner` while decimal-valued `250.00` is read as `250` and is clean; on a `minFractionalDigits = 2` field, String-valued `250` fails with `zahlOhneDezimalTrenner` while decimal-valued `250` is read as `250.00` and is clean. Two placements belong to this regime and remain verbatim rather than being silently normalized or dropped: a Number placement whose leading zeros are retained under `leadingZerosAllowed`, and a present nonempty value that failed conversion.
 
@@ -40,7 +44,7 @@ Formal codes are locale-independent across `en_US` and `de_DE`.
 
 > **Non-normative implementation note.** Keep the storage regime, exact decimal coefficient/scale, regime-selected formal-read text, and computed-target rendering as distinct facts. Exact decimal identity is needed for scale-sensitive change equality; the formal-read projection is needed by every stored-input evaluation channel; computed target application follows the separate scale-19 rule in [§11 §4.3](09-computations.md#43-number-string-enumeration-and-custom-targets). A single text or unconditional re-rendering cannot preserve both input regimes.
 
-Sources: [source route](../docs/sources/cross-layer-routes.md#src-number-wire-ingestion), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [Number ingress checkpoint](../docs/sources/domain-ingestion-probes.md#src-number-ingress-k16).
+Sources: [31.3.1 Letter J](../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §4 (the fifteen-digit cap, kernel 31.3.1), [source route](../docs/sources/cross-layer-routes.md#src-number-wire-ingestion), [inbound 2026-10-21](../docs/sources/inbound-handbacks.md#src-inbound-2026-10-21), [Number ingress checkpoint](../docs/sources/domain-ingestion-probes.md#src-number-ingress-k16).
 
 ---
 

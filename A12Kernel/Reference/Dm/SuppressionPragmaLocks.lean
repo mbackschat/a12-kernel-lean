@@ -5,12 +5,14 @@ import A12Kernel.Reference.Dm.ComputationCheck
 
 /-! # The suppression pragma of a computation or rule
 
-A computation's `errorCodesToSuppress` is rendered as one `@SuppressWarning(…)` pragma of the model's
-condition language, so its class is the pragma's: one entry that lexes as a single name is admitted
-when it is the scale warning and refused with `MVK_INVALID_SUPPRESSED_WARNING` otherwise, and two
-entries fail the parse (spec/12 §4). The rows `sw-1`, `sw-twin` and `sw-two` replay the retained
-Kernel 30.8.1 capture `evidence/kernel-30.8.1/captures/field-declaration-notifications-2026-10-13/`;
-the lower-case and padded names are statements of spec/12 §4 without a retained row of their own.
+A computation's preamble is its `additionalParserInformation` text unless blank, else its legacy
+`errorCodesToSuppress` folded into one `@SuppressWarning(…)` pragma of the model's condition language; kernel
+31.3.1 parses it alone and first, so its class is the computation's only one (a12-dmkits KF298 re-measured
+2026-11-07, [inbound record](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §5). The pragma
+takes a comma list of names, each the scale warning or the Enumeration calculation class; one entry's lexical
+and token classes are the 30.8.1 rows `sw-1` and `sw-twin` of
+`evidence/kernel-30.8.1/captures/field-declaration-notifications-2026-10-13/` and spec/12 §4's single-entry
+table, whose shape the 31.3.1 grammar keeps.
 
 The rule route shares the pragma gate and is locked once, since a rule carries the pragma as text; it
 is the admission entry `checkValidationRule`, whose syntax refusals take the first class a production
@@ -26,11 +28,13 @@ private def model : FlatModel := {
     { id := 1, name := "Total", groupPath := ["Form"], policy := { kind := .number { scale := 0, signed := true } } },
     { id := 2, name := "Ref", groupPath := ["Form"], policy := { kind := .string } }] }
 
-/-- The code a computation declaring these suppressed entries is refused on, or `admitted`. -/
-private def computationOutcome (suppressed : List String) : String :=
+/-- The code a computation declaring these legacy entries, and optionally a parser-information text, is
+refused on, or `admitted`. -/
+private def computationOutcome (suppressed : List String) (text : Option String := none) : String :=
   match lowerComputation model .english {
     group := ["Form"], name := "Cp", targetRelPath := "../Total", commonPrecondition := none
-    alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := suppressed } with
+    alternatives := [{ precondition := none, operation := "1" }], errorCodesToSuppress := suppressed
+    parserInformation := text } with
   | .ok _ => "admitted"
   | .error refusal => refusal.detail
 
@@ -46,30 +50,64 @@ private def scaleWarning : String := "MVK_INVALID_COMPARE_DEC_PLACES"
 
 example : KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode = "MVK_INVALID_SUPPRESSED_WARNING" := rfl
 
--- sw-1 (an unknown name), sw-twin (the scale warning) and sw-two (two entries).
+private def unexpected : String := KernelStaticDiagnostic.unexpectedToken.kernelCode
+private def unsupported : String := KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode
+private def enumCalculation : String := "MVK_ERROR_INVALID_ENUM_CALCULATION"
+
+-- sw-1 (an unknown name) and sw-twin (the scale warning); a list of supported names, repeated or padded, is
+-- admitted, and an unsupported name anywhere in it is the whitelist class.
 example :
-    computationOutcome ["MVK_BOGUS"] == KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode &&
+    computationOutcome ["MVK_BOGUS"] == unsupported &&
     computationOutcome [scaleWarning] == "admitted" &&
-    computationOutcome [scaleWarning, scaleWarning] == KernelStaticDiagnostic.unexpectedToken.kernelCode := by
+    computationOutcome [scaleWarning, scaleWarning] == "admitted" &&
+    computationOutcome [scaleWarning, enumCalculation] == "admitted" &&
+    computationOutcome [s!" {scaleWarning} ", s!" {enumCalculation}"] == "admitted" &&
+    computationOutcome ["MVK_BOGUS", scaleWarning] == unsupported &&
+    computationOutcome [scaleWarning, "MVK_BOGUS"] == unsupported := by
   native_decide
 
 -- A genuine code the Kernel does not let a pragma suppress is refused like an invented one, and the name
 -- is compared case-sensitively; whitespace around it is not part of the name.
 example :
-    computationOutcome ["MVK_NO_NUMBER"] == KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode &&
-    computationOutcome [scaleWarning.toLower] == KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode &&
+    computationOutcome ["MVK_NO_NUMBER"] == unsupported &&
+    computationOutcome [scaleWarning.toLower] == unsupported &&
     computationOutcome [s!"  {scaleWarning}  "] == "admitted" &&
     computationOutcome [s!"\t\n{scaleWarning}"] == "admitted" := by
   native_decide
 
--- A list led by an unsupported name fails the parse ahead of the name gate (spec/12 §4).
-example : computationOutcome ["MVK_BOGUS", scaleWarning] == KernelStaticDiagnostic.unexpectedToken.kernelCode := by
+-- An empty entry, an empty pragma, a bare code and a pragma followed by a condition are no preamble alone. A
+-- numeric entry is its text, a digit-initial name.
+example :
+    computationOutcome ["", scaleWarning] == unexpected &&
+    computationOutcome [scaleWarning, ""] == unexpected &&
+    computationOutcome [] (some "@SuppressWarning()") == unexpected &&
+    computationOutcome [] (some scaleWarning) == unexpected &&
+    computationOutcome [] (some s!"@SuppressWarning({scaleWarning}) FieldFilled(Ref)") == unexpected &&
+    computationOutcome [] (some "7") == unexpected &&
+    computationOutcome ["7"] == unexpected := by
   native_decide
 
--- The rule route reports the same class for the same name.
+-- A stored text wins over the list beside it; a blank text leaves the list to answer.
 example :
-    ruleOutcome "MVK_BOGUS" == KernelStaticDiagnostic.invalidSuppressedWarning.kernelCode &&
-    ruleOutcome scaleWarning == "admitted" := by
+    computationOutcome ["MVK_BOGUS"] (some s!"@SuppressWarning({scaleWarning})") == "admitted" &&
+    computationOutcome [scaleWarning] (some "@SuppressWarning(MVK_BOGUS)") == unsupported &&
+    computationOutcome ["MVK_BOGUS"] (some " \t") == unsupported &&
+    computationOutcome [] (some "") == "admitted" := by
+  native_decide
+
+/-- A German model folds the list into its own pragma spelling. -/
+example :
+    ({ group := ["Form"], name := "Cp", targetRelPath := "../Total", commonPrecondition := none
+       alternatives := [], errorCodesToSuppress := ["A", "B"] } : DmComputation).preambleText .german =
+      some "@UnterdrueckeWarnung(A,B)" := by
+  native_decide
+
+-- The rule route reports the same class for the same name and reads the same list grammar, which a rule's
+-- own condition shares with the computation's preamble (unmeasured on a rule).
+example :
+    ruleOutcome "MVK_BOGUS" == unsupported &&
+    ruleOutcome scaleWarning == "admitted" &&
+    ruleOutcome s!"{scaleWarning}, {enumCalculation}" == "admitted" := by
   native_decide
 
 -- A digit-initial name, a quoted name and a keyword of the model's own language lex but are no usable name at this
@@ -84,7 +122,8 @@ example :
   native_decide
 
 /-- The class the computation admission entry `checkComputation` reports, the entry peer KF298's rows
-measure; `lowerComputation` alone answers a later unlexable character with the lexer class. -/
+measure. A parser failure ahead of an unlexable character answers first; these single-entry rows are 30.8.1's,
+and a second entry after the unlexable one is unmeasured since the list grammar changed. -/
 private def checkedComputationOutcome (suppressed : List String) : String :=
   let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   match checkComputation dm .english {
@@ -96,7 +135,6 @@ private def checkedComputationOutcome (suppressed : List String) : String :=
 example :
     checkedComputationOutcome ["7_DAYS É"] == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
     checkedComputationOutcome ["And É"] == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
-    checkedComputationOutcome [scaleWarning, "MVK_FRAÉ"] == KernelStaticDiagnostic.unexpectedToken.kernelCode &&
     checkedComputationOutcome ["MVK_FRAÉ", scaleWarning] == KernelStaticDiagnostic.lexerStandardError.kernelCode &&
     checkedComputationOutcome [scaleWarning] == "admitted" := by
   native_decide

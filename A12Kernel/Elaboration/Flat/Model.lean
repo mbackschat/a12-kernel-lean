@@ -1,4 +1,5 @@
 import A12Kernel.Elaboration.Flat.Types
+import A12Kernel.Elaboration.Flat.AuthoredPath
 
 /-! # Validated flat-model and path resolution -/
 
@@ -596,64 +597,11 @@ private def SurfaceFieldPath.hasValidShape (reference : SurfaceFieldPath) : Bool
     | .absolute => !reference.groups.isEmpty
     | .relative _ => true
 
-def PathKeywordProfile.requiresQuote (profile : PathKeywordProfile)
-    (name : String) : Bool :=
-  profile.reserved.contains name
-
-namespace AuthoredPathName
-
-/-- Validate one exact-case keyword collision and erase accepted quote syntax before semantic name lookup. Unnecessary quotes are legal and become semantically transparent. -/
-def lower (name : AuthoredPathName) (profile : PathKeywordProfile) :
-    Except PathSyntaxError String :=
-  if profile.requiresQuote name.text && !name.quoted then
-    .error (.unquotedKeyword name.text)
-  else
-    .ok name.text
-
-end AuthoredPathName
-
-namespace PathKeywordProfile
-
-/-- Canonical structured rendering quotes exactly the names that collide with the selected language's terminal set. -/
-def reifyName (profile : PathKeywordProfile) (name : String) :
-    AuthoredPathName :=
-  { text := name, quoted := profile.requiresQuote name }
-
-end PathKeywordProfile
-
-namespace AuthoredFieldPath
-
-/-- Validate quote provenance in every name-bearing position, then erase it into the sole existing structured field-path representation. -/
-def lower (path : AuthoredFieldPath) (profile : PathKeywordProfile) :
-    Except PathSyntaxError SurfaceFieldPath := do
-  let turningPoint ← match path.turningPoint with
-    | none => pure none
-    | some name => pure (some (← name.lower profile))
-  let groups ← path.groups.mapM (·.lower profile)
-  let field ← path.field.lower profile
-  pure { base := path.base, turningPoint, groups, field }
-
-end AuthoredFieldPath
-
-namespace SurfaceFieldPath
-
-/-- Reintroduce canonical quote provenance without changing the semantic path identity. -/
-def reifyQuotes (path : SurfaceFieldPath) (profile : PathKeywordProfile) :
-    AuthoredFieldPath :=
-  {
-    base := path.base
-    turningPoint := path.turningPoint.map profile.reifyName
-    groups := path.groups.map profile.reifyName
-    field := profile.reifyName path.field
-  }
-
-end SurfaceFieldPath
-
+/-- Climb `parents` groups from `group`. A walk may land on the technical model root, the empty path, and
+continue into any root group, while a climb past it is refused (kernel 31.3.1, a12-dmkits KF679). The model
+root is never a target, so each caller refuses a walk that ends there. -/
 def GroupPath.walkUp (group : GroupPath) (parents : Nat) : Except ResolveError GroupPath :=
-  if parents < group.length then
-    .ok (group.take (group.length - parents))
-  else
-    .error (.aboveRoot parents)
+  if parents ≤ group.length then .ok (group.take (group.length - parents)) else .error (.aboveRoot parents)
 
 /-- Check an optional explicit turning-point label against the group reached by parent walking. The label is a guard, never an alternative ancestor search. -/
 def GroupPath.matchesTurningPoint (group : GroupPath)
@@ -783,10 +731,12 @@ def FlatModel.resolveFieldDeclarationUnchecked (model : FlatModel)
         let base ← GroupPath.walkUp declaringGroup parents
         if !base.matchesTurningPoint reference.turningPoint then
           throw (.invalidEntity reference)
-        else
-          match ← model.lookupPath? (base ++ reference.groups ++ [reference.field]) with
-          | some declaration => pure declaration
-          | none => throw (.invalidEntity reference)
+        -- From the model root the path continues as an absolute one, its first segment a declared root (KF679).
+        if base.isEmpty && !model.declaresRoot (reference.groups.headD reference.field) then
+          throw (.unknownRootGroup reference)
+        match ← model.lookupPath? (base ++ reference.groups ++ [reference.field]) with
+        | some declaration => pure declaration
+        | none => throw (.invalidEntity reference)
 
 /-- The group path a field reference's spelling names, whether or not the model declares it. -/
 private def namedGroupPath? (declaringGroup : GroupPath) (reference : SurfaceFieldPath) : Option GroupPath := do

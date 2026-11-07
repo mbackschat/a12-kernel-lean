@@ -145,14 +145,17 @@ example :
   native_decide
 
 /- Keeping the target-relative spelling while moving to the ancestor fails in the *source*, not the placement,
-so the two causes stay separable. The encoding differs from the Kernel here and the case records only the local
-outcome: this fragment refuses the walk itself, because one parent exceeds a one-segment declaring group, while
-the Kernel's measured `..` reached its root and then failed the lookup under it. Same separation of causes,
-different cause on this cell. -/
+so the two causes stay separable. One parent from a one-segment declaring group lands on the model root, where
+`Choices` names no root group, and a second parent climbs past the root (kernel 31.3.1, KF679; kernel 31.1.1
+refused the first walk as above the root). -/
 example :
     elabError? (checkBooleanFirstFilledComputation model
       ["Projects"] target.id (.star (siblingStar source.name))) =
-        some (.site (.source (.resolve (.aboveRoot 1)))) := by
+        some (.site (.source (.resolve (.unknownRootGroup
+          { base := .relative 1, groups := ["Choices"], field := source.name })))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Projects"] target.id (.star { siblingStar source.name with base := .relative 2 })) =
+        some (.site (.source (.resolve (.aboveRoot 2)))) := by
   native_decide
 
 /- Containment is checked against a representable declaring group, never on its own: `[]` is a prefix of every
@@ -167,12 +170,16 @@ example :
         some (.site (.repeatableTarget (.target (.invalidRuleGroup ["Projects", ""])))) := by
   native_decide
 
-/- A repeatable Boolean target requires one Boolean star axis and no target self-read, and a non-Boolean target is refused before placement. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group resolves above the root. -/
+/- A repeatable Boolean target requires one Boolean star axis and no target self-read, and a non-Boolean target is refused before placement. A fixed target takes the fixed shape, where this relative sibling star from an unrelated group lands on the model root and names no root group there, and one step further climbs past it (kernel 31.3.1, KF679). -/
 example :
     operation?.isSome = true ∧
     elabError? (checkBooleanFirstFilledComputation model
       ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
-        some (.site (.source (.resolve (.aboveRoot 1)))) ∧
+        some (.site (.source (.resolve (.unknownRootGroup
+          { base := .relative 1, groups := ["Choices"], field := source.name })))) ∧
+    elabError? (checkBooleanFirstFilledComputation model
+      ["Summary"] fixedTarget.id (.star ({ siblingStar source.name with base := .relative 2 }))) =
+        some (.site (.source (.resolve (.aboveRoot 2)))) ∧
     elabError? (checkBooleanFirstFilledComputation model
       ["Projects", "Choices"] confirmSource.id (.star (siblingStar source.name))) =
         some (.targetKind confirmSource.path .confirm) ∧

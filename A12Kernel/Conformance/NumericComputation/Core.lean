@@ -509,8 +509,10 @@ example :
 
 /- **A computation operand's name failure is the shared resolver's, so its class is too**, and the
    operation's own projection delegates to that resolver for an operand: an unknown root segment, an
-   unknown name below a known root, an unknown bare name, and a parent walk above the root
-   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)). -/
+   unknown name below a known root, an unknown bare name, and a parent walk past the root
+   ([checkpoint](../../../docs/sources/path-resolution-class-probes.md#src-resolver-failure-classes-every-carrier)).
+   A walk landing exactly on the model root continues as the absolute spelling, so `..Source` draws the
+   root class like `/Source` (kernel 31.3.1, KF679). -/
 example :
     let key? (operand : SurfaceFieldPath) : Option KernelStaticDiagnostic :=
       match checkedErrorOf (.binary .add (.atom (.field operand))
@@ -520,7 +522,8 @@ example :
     key? (surfacePath ["Root"] "Nope") = some .invalidEntity ∧
       key? (surfacePath ["Nope"] "Source") = some .invalidRootGroup ∧
       key? { base := .relative 0, groups := [], field := "Nope" } = some .invalidEntity ∧
-      key? { base := .relative 1, groups := [], field := "Source" } =
+      key? { base := .relative 1, groups := [], field := "Source" } = some .invalidRootGroup ∧
+      key? { base := .relative 2, groups := [], field := "Source" } =
         some .tooManyParentGroups := by
   native_decide
 

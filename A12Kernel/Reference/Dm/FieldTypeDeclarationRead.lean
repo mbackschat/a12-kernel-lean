@@ -115,11 +115,11 @@ private def readDeclaration (fieldJson : Json) : Except String FieldTypeDeclarat
   | "DateType" =>
       pure (.date { format := ← optionalString body "format"
                     partialMode := ← partialMode? (← optionalString body "datePrecision")
-                    youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" })
+                    youngerThan1900Check := ← inertYearCheck body })
   | "TimeType" | "DateTimeType" => pure (.temporal { format := ← optionalString body "format" })
   | "DateFragmentType" =>
       pure (.dateFragment { format := ← optionalString body "formatOfFragment"
-                            youngerThan1900Check := ← booleanMember? body "youngerThan1900Check" })
+                            youngerThan1900Check := ← inertYearCheck body })
   | "DateRangeType" =>
       pure (.dateRange { format := ← optionalString body "format"
                          separator := ← optionalString body "rangeSeparator" })
@@ -330,7 +330,8 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
           pure [{ path, labels := collapseRepertoire labels, walkRefused }]
   | "Rule" | "Computation" =>
       let declaration : ExecutableDeclaration :=
-        { group := parent, name, kind := if kind == "Rule" then .rule (ruleCode body) else .computation }
+        { group := parent, name, kind := ← (if kind == "Rule" then pure (.rule (ruleCode body))
+          else .computation <$> computationString? body "errorCode") }
       if let .rule .unreadable := declaration.kind then throw s!"rule {name} has an unreadable errorCode"
       let labels := declaration.notifications.filterMap (·.kind.label?) ++
         above.forRule.map (·.label) ++ repertoireIf annotated
@@ -445,7 +446,7 @@ private def groupElement (name : String) (repeatability : Nat) (sorts : List Str
     (elements : List String) : String :=
   "{\"type\":\"Group\",\"id\":\"" ++ name ++ "\",\"name\":\"" ++ name ++ "\",\"Group\":{\"repeatability\":" ++
     toString repeatability ++ ",\"sortFields\":[" ++
-    ",".intercalate (sorts.map fun sort => "{\"name\":\"" ++ sort ++ "\"}") ++ "],\"elements\":[" ++
+    ",".intercalate (sorts.map fun sort => "{\"name\":\"" ++ sort ++ "\",\"order\":\"ASC\"}") ++ "],\"elements\":[" ++
     ",".intercalate elements ++ "]}}"
 
 /-- A model with one root group `Form`, the short-name reference flag as given. -/
@@ -487,8 +488,8 @@ example :
    the nomination draws the role's unresolved class, whether the spelling is a plain name or a path
    (Locked: a12-dmkits GroupIndexAndSortReferenceLawsTest at 1124b523f, kernel 31.1.1, where 30.8.1 built no
    model). A spelling landing on a group, here a plain name that is a group of the declaring group even though
-   the short-name flag could bind a field of that name elsewhere, still builds none, and the whole model
-   reports the one unbuilt label and no class. -/
+   the short-name flag could bind a field of that name elsewhere, draws the same class on kernel 31.3.1, where
+   31.1.1 built no model (KF680). -/
 example :
     reported (nominationModel false [groupElement "Rows" 3 ["Nope"] [fieldElement "Key"]]) =
       some [("MVK_INVALID_SORT_FIELD", "/Form/Rows")] ∧
@@ -496,7 +497,7 @@ example :
       some [("MVK_INVALID_SORT_FIELD", "/Form/Rows")] ∧
     reported (nominationModel true [fieldElement "Sub",
       groupElement "Rows" 3 ["Sub"] [groupElement "Sub" 1 [] [fieldElement "X"]]]) =
-      some [("codeless:model-not-built", "")] := by
+      some [("MVK_INVALID_SORT_FIELD", "/Form/Rows")] := by
   native_decide
 
 /-! ## Locks on the DateRange separator default -/
