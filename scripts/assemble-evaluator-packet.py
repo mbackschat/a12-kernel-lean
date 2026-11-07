@@ -10,7 +10,7 @@ A request is paired with its artifact by the re-capture script's own `artifact_n
 import hashlib, importlib.util, json, os, re, subprocess, sys
 
 # The frozen inputs' kernel and the kernel the packet's artifacts were observed on; an upgrade edits these two.
-FROZEN, OBSERVED = "30.8.1", "31.1.1"
+FROZEN, OBSERVED = "30.8.1", "31.3.1"
 
 _recapture = importlib.util.spec_from_file_location(
     "recapture", os.path.join(os.path.dirname(os.path.abspath(__file__)), "recapture-kernel-evidence.py"))

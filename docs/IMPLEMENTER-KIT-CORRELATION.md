@@ -11,7 +11,7 @@
 | Reference semantics | `0.3.0` |
 | Protocol | `1` |
 | Manifest schema | `2` |
-| Kernel behavior | `31.1.1`, indexed by retained kernel 30.8.1 observations ([evidence status](EVIDENCE.md#evolution)) |
+| Kernel behavior | `31.3.1`, indexed by retained kernel 30.8.1 observations ([evidence status](EVIDENCE.md#evolution)) |
 | Owning language section | `§9` repetition, iteration, and `$` correlation |
 | Observable result | Ordered outer-row firing membership only |
 
@@ -204,7 +204,7 @@ lake build a12-kernel-reference checkCandidateConformance
 Expected output for the sample is:
 
 ```json
-{"firingRows":[2,3],"kernelBehaviorVersion":"31.1.1","outcome":"ok","protocolVersion":1}
+{"firingRows":[2,3],"kernelBehaviorVersion":"31.3.1","outcome":"ok","protocolVersion":1}
 ```
 
 Run the project regression and retained-evidence gates:

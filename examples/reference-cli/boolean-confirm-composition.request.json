@@ -1,6 +1,6 @@
 {
   "protocolVersion": 1,
-  "kernelBehaviorVersion": "31.1.1",
+  "kernelBehaviorVersion": "31.3.1",
   "operation": "flatValidation.evaluateFull",
   "model": {
     "fieldRefByShortNameAllowed": true,

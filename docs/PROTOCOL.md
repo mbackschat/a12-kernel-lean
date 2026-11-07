@@ -44,7 +44,7 @@ This is the flat-operation schematic, not a runnable request; `condition` and th
 ```json
 {
   "protocolVersion": 1,
-  "kernelBehaviorVersion": "31.1.1",
+  "kernelBehaviorVersion": "31.3.1",
   "operation": "flatValidation.evaluateFull",
   "model": {
     "fieldRefByShortNameAllowed": false,
@@ -58,7 +58,7 @@ This is the flat-operation schematic, not a runnable request; `condition` and th
 }
 ```
 
-`kernelBehaviorVersion` is a required compatibility assertion, not informational metadata. Protocol v1 rejects any value other than `31.1.1`, the kernel version the theory tracks since the [kernel 31.1.1 migration](PLAN.md#kernel-31-migration); it never silently falls forward to another kernel behavior version. A request asserting `30.8.1` is refused with `kernelBehaviorVersionMismatch`; that behaviour is built from the tag `kernel-30.8.1-final`.
+`kernelBehaviorVersion` is a required compatibility assertion, not informational metadata. Protocol v1 rejects any value other than `31.3.1`, the kernel version the theory tracks since the [kernel 31.3.1 migration](PLAN.md#kernel-313-migration); it never silently falls forward to another kernel behavior version. A request asserting `31.1.1` or `30.8.1` is refused with `kernelBehaviorVersionMismatch`; those behaviours are built from the tags `kernel-31.1.1-final` and `kernel-30.8.1-final`.
 
 The process reads at most 1 MiB plus one detection byte; oversized input is rejected before the remainder is allocated. Before ordinary JSON parsing, a flat lexical preflight tracks JSON nesting without constructing a syntax tree, rejects non-canonical JSON numbers, and limits nesting to 128 and numeric tokens to 16 characters. Every JSON number in a request is a canonical non-negative structural integer bounded by `9,007,199,254,740,991` (`2^53−1`) for portable JavaScript/TypeScript interchange. A12 Number values are not JSON numbers; they use the exact decimal strings described below.
 
@@ -144,7 +144,7 @@ Its operation-specific members have this outer shape:
 ```json
 {
   "protocolVersion": 1,
-  "kernelBehaviorVersion": "31.1.1",
+  "kernelBehaviorVersion": "31.3.1",
   "operation": "singleGroupCorrelation.firingRows",
   "model": {},
   "declaringGroup": ["Order"],
@@ -184,25 +184,25 @@ For runtime cells, the decoder accepts any canonical exact decimal supported by 
 A semantic result is successful even when it is `unknown`:
 
 ```json
-{"kernelBehaviorVersion":"31.1.1","outcome":"ok","protocolVersion":1,"verdict":{"polarity":"omission","tag":"fired"}}
-{"kernelBehaviorVersion":"31.1.1","outcome":"ok","protocolVersion":1,"verdict":{"tag":"notFired"}}
-{"kernelBehaviorVersion":"31.1.1","outcome":"ok","protocolVersion":1,"verdict":{"tag":"unknown"}}
+{"kernelBehaviorVersion":"31.3.1","outcome":"ok","protocolVersion":1,"verdict":{"polarity":"omission","tag":"fired"}}
+{"kernelBehaviorVersion":"31.3.1","outcome":"ok","protocolVersion":1,"verdict":{"tag":"notFired"}}
+{"kernelBehaviorVersion":"31.3.1","outcome":"ok","protocolVersion":1,"verdict":{"tag":"unknown"}}
 ```
 
 The correlation operation instead returns only ordered outer-row firing membership:
 
 ```json
-{"firingRows":[2,3],"kernelBehaviorVersion":"31.1.1","outcome":"ok","protocolVersion":1}
+{"firingRows":[2,3],"kernelBehaviorVersion":"31.3.1","outcome":"ok","protocolVersion":1}
 ```
 
 It deliberately omits selected inner rows, hidden three-valued truth, external message pointers or emission order, and VALUE/OMISSION polarity.
 
-The response envelope intentionally identifies protocol 1 and kernel behavior 31.1.1, not the executable semantics line. Use the exact binary's `--manifest` result and a binary or release digest as the 0.3.0/V2 compatibility pin.
+The response envelope intentionally identifies protocol 1 and kernel behavior 31.3.1, not the executable semantics line. Use the exact binary's `--manifest` result and a binary or release digest as the 0.3.0/V2 compatibility pin.
 
 A domain rejection uses a stable category/code pair, a JSON-location hint, and structured details. Public diagnostics never expose Lean constructor `repr` text:
 
 ```json
-{"diagnostic":{"at":"$.condition","category":"unsupported","code":"operator","details":{"operator":"less"}},"kernelBehaviorVersion":"31.1.1","outcome":"error","protocolVersion":1}
+{"diagnostic":{"at":"$.condition","category":"unsupported","code":"operator","details":{"operator":"less"}},"kernelBehaviorVersion":"31.3.1","outcome":"error","protocolVersion":1}
 ```
 
 The complete protocol-v1 category/code inventory is generated from the finite Lean `DiagnosticCode` enum into the manifest's `diagnostics` table; category cannot be paired with an arbitrary code. The response envelope, category, and code are compatibility identifiers. `at` and `details` are deterministic diagnostic aids, but ordinary consumers must tolerate additional detail members in a compatible implementation update instead of treating the current detail object as a second discriminant. A conformance suite pins each complete expected response for its exact suite identity, so candidate implementations must reproduce the current fixture details until that suite or its comparison policy changes. A future internal constructor must be explicitly classified before it can cross this boundary. The impossible checked-lowering result `incoherentCore` is an internal failure and therefore cannot masquerade as an ordinary unsupported request.
@@ -211,7 +211,7 @@ The complete protocol-v1 category/code inventory is generated from the finite Le
 
 The generated [`supported-fragment-v2.json`](../reference/supported-fragment-v2.json) is the current schema-2 closed positive support declaration mechanically compared with the CLI's `--manifest` output. Its `operations` array gives flat and correlation separate accepted sets and unsupported comparison lists; correlation separately declares finite ordinary-path, star-path, and cell-form sets plus whole-rule and operator-specific scale constraints. The shared diagnostics, limits, compatibility versions, and precise exclusions remain top-level. Decoder acceptance uses the same finite operation, comparison, path, field-kind, condition/`Having`, raw-cell, origin, and diagnostic classifiers that generate the manifest. Black-box probes guard sparse omission, operation-specific absolute/child-relative success, parent-relative/bare rejection, parent/nested relative stars, row topology, cell addresses, rejected causes, error/guard identity, and origin near misses. The known exclusions include concrete DSL and general DM-JSON/`Document` adaptation, general ordering and arithmetic beyond the named comparison cells, general repeatable evaluation, nested or multiple stars, cross-group correlation, general correlation consumers, filtered-result polarity, computation, partial validation, and message construction.
 
-The current support identity is generated directly from [`Support.lean`](../A12Kernel/Reference/Support.lean): reference semantics 0.3.0, protocol 1, manifest schema 2, kernel behavior 31.1.1, and the two V2 suite identities. The retired 0.2.0/V1 lineage and Rust qualification are not part of current source or process gates; use the archived experiment record (`docs/archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md` at `a050f150`) and its pinned Git revisions for historical inspection.
+The current support identity is generated directly from [`Support.lean`](../A12Kernel/Reference/Support.lean): reference semantics 0.3.0, protocol 1, manifest schema 2, kernel behavior 31.3.1, and the two V2 suite identities. The retired 0.2.0/V1 lineage and Rust qualification are not part of current source or process gates; use the archived experiment record (`docs/archived/REFERENCE-SEMANTICS-0.2.0-AND-RUST-EXPERIMENT.md` at `a050f150`) and its pinned Git revisions for historical inspection.
 
 ## Regression-checked sample data
 
