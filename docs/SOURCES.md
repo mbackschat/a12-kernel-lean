@@ -70,8 +70,8 @@ The `.st` files are mandatory review inputs whenever generated control flow matt
 
 The main reusable roots are:
 
-- runtime core: [`kernel-rt/kernel-core-runtime/.../_31_1/internal/core/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_31_1/internal/core/);
-- runtime format definitions: [`kernel-rt/kernel-core-runtime/.../_31_1/internal/formatdef/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_31_1/internal/formatdef/);
+- runtime core: [`kernel-rt/kernel-core-runtime/.../_31_3/internal/core/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_31_3/internal/core/);
+- runtime format definitions: [`kernel-rt/kernel-core-runtime/.../_31_3/internal/formatdef/`](../../a12-kernel/kernel-rt/kernel-core-runtime/src/main/java/com/mgmtp/a12/kernel/core/rt/_31_3/internal/formatdef/);
 - parser/static checks: [`kernel-tool/kernel-core-parser/.../check/`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/check/);
 - parse-tree creation/representation: [`kernel-tool/kernel-core-parser/.../parsebaum/`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/parsebaum/);
 - static diagnostic identities and their message text: [`ParserErrorTypesEnum`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/java/com/mgmtp/a12/kernel/core/parser/internal/error/ParserErrorTypesEnum.java) and [`error_messages_en.properties`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/resources/internal/vk_parser_error_messages/error_messages_en.properties), which is where an `MVK_*` code found in an envelope is resolved back to its raising gate;
@@ -79,8 +79,8 @@ The main reusable roots are:
 - condition grammar: [`GrammarOnly_ConditionParser.g4`](../../a12-kernel/kernel-tool/kernel-core-parser/src/main/antlr4/com/mgmtp/a12/kernel/core/parser/internal/grammar/gen/GrammarOnly_ConditionParser.g4), authoritative for surface spelling where an operator inventory is not;
 - codegen templates: [`kernel-tool/kernel-core-codegen*/src/main/resources/internal/templates/`](../../a12-kernel/kernel-tool/kernel-core-codegen/src/main/resources/internal/templates/);
 - codegen backing beans: [`kernel-tool/kernel-core-codegen/.../backingbeans/`](../../a12-kernel/kernel-tool/kernel-core-codegen/src/main/java/com/mgmtp/a12/kernel/core/codegen/internal/generator/backingbeans/);
-- immutable DocumentV2 API: [`kernel-md-document-v2`](../../a12-kernel/kernel-md/kernel-md-document-v2/src/main/java/com/mgmtp/a12/kernel/md/document/apiV2/immutable/);
-- runtime service/result assembly: [`kernel-md-runtime-service`](../../a12-kernel/kernel-md/kernel-md-runtime-service/src/main/java/com/mgmtp/a12/kernel/md/rt/);
+- immutable DocumentV2 API: [`kernel-md-document-v2`](../../a12-kernel/kernel-md-document-v2/src/main/java/com/mgmtp/a12/kernel/md/document/apiV2/immutable/);
+- runtime service/result assembly: [`kernel-md-facade`](../../a12-kernel/kernel-md-facade/src/main/java/com/mgmtp/a12/kernel/md/rt/);
 - model API and codegen parameters: [`kernel-md-documentmodel`](../../a12-kernel/kernel-md-documentmodel/src/main/java/com/mgmtp/a12/kernel/md/model/api/) and [`kernel-md-model`](../../a12-kernel/kernel-md/kernel-md-model/src/main/java/com/mgmtp/a12/kernel/md/model/).
 
 ## Clause-to-source drill map
