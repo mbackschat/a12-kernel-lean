@@ -49,6 +49,16 @@ def artifact_name(name):
     return "artifact" + re.sub(r"^[A-Za-z]*", "", name) if name.startswith("req") else None
 
 
+def produced_by(artifact, version):
+    """Whether an artifact names `version` as its runtime kernel: a file's existence alone once passed
+    staged 30.8.1 artifacts as 31.3.1 runs (2026-11-07)."""
+    try:
+        producer = json.load(open(artifact, encoding="utf-8")).get("producer", {})
+    except (OSError, json.JSONDecodeError, UnicodeDecodeError, AttributeError):
+        return False
+    return isinstance(producer, dict) and producer.get("kernel", {}).get("runtime") == version
+
+
 def runtime_requests(base):
     """Every kernelProbe request under base: a JSON object naming a model and rows."""
     for dirpath, _, files in os.walk(base):
@@ -70,13 +80,20 @@ def restamp(text, stamp):
 
 
 def copy(source, target, stamp=None):
+    """Copy source to target, restamping a model header when `stamp` is given; whether a stamp was replaced.
+    Every frozen file carrying a `modelVersion` is a model, so the content decides, never the name
+    (2026-11-07); any other file is copied byte for byte."""
     os.makedirs(os.path.dirname(target), exist_ok=True)
-    if stamp is None:
-        shutil.copyfile(source, target)
-        return True
-    text, count = restamp(open(source, encoding="utf-8").read(), stamp)
-    open(target, "w", encoding="utf-8").write(text)
-    return count == 1
+    if stamp is not None:
+        try:
+            text, count = restamp(open(source, encoding="utf-8").read(), stamp)
+        except UnicodeDecodeError:
+            count = 0
+        if count == 1:
+            open(target, "w", encoding="utf-8").write(text)
+            return True
+    shutil.copyfile(source, target)
+    return stamp is None
 
 
 # Four frozen requests name a model or document by the file name it had before it was retained; the
@@ -139,7 +156,7 @@ def runtime(args):
     pending = []
     for path, _ in runtime_requests(root(args.to, "local", "captures")):
         artifact = os.path.join(os.path.dirname(path), artifact_name(os.path.basename(path)))
-        if not os.path.exists(artifact):
+        if not produced_by(artifact, args.to):
             pending.append((path, artifact))
     if not pending:
         print("every request has its artifact")
@@ -187,10 +204,12 @@ def registered_batches():
     return re.findall(r'\("(captures/[^"]+)", "(captures/[^"]+)", "(captures/[^"]+)"\)', source)
 
 
-def stage(old, local, rel, stamp, models=()):
-    """Copy an input file into the local tree, restamping it when it is a model."""
-    is_model = rel in models or rel.endswith("_DM.json") or "model" in os.path.basename(rel).lower()
-    copy(os.path.join(old, rel), os.path.join(local, rel), stamp if is_model else None)
+def stage(old, local, rel, stamp):
+    """Copy an input file into the local tree, restamping it when it is a model, unless the tree already holds
+    it: `prepare` and `runtime` own what is there. Overwriting once put 71 frozen 30.8.1 artifacts and 13
+    models a name test missed, unrestamped, into the 31.3.1 tree (2026-11-07)."""
+    if not os.path.exists(os.path.join(local, rel)):
+        copy(os.path.join(old, rel), os.path.join(local, rel), stamp)
 
 
 def stage_directory(old, local, directory, stamp):
@@ -271,7 +290,7 @@ def static(args):
         batch = os.path.dirname(observations)
         cwd = os.path.join(local, batch)
         stage_directory(old, local, batch, args.stamp)
-        stage(old, local, model, args.stamp, models=(model,))
+        stage(old, local, model, args.stamp)
         model_arg = os.path.relpath(os.path.join(local, model), cwd)
         frozen = json.load(open(os.path.join(old, observations), encoding="utf-8"))
         if isinstance(frozen, dict) and "rows" in frozen:
@@ -311,7 +330,7 @@ def static(args):
                     named = os.path.normpath(os.path.join(batch, row_model)) if row_model else model
                     if row_model and not os.path.exists(os.path.join(old, named)):
                         named = os.path.normpath(os.path.join(os.path.dirname(model), row_model))
-                    stage(old, local, named, args.stamp, models=(named,))
+                    stage(old, local, named, args.stamp)
                     ops = [{"id": r["id"], "verb": "rule", "args": ["check", "--code", r["id"], "--field", r["field"],
                             "--group", r["group"], "--condition", r["condition"], "--message=en_US=" + r["message"]]}
                            for r in rows if r.get("model", "") == row_model]
@@ -435,12 +454,17 @@ def manifest(args):
     """Digest every request's artifact, paired by `artifact_name`: a leading-`artifact` filter left out the
     prefixed artifacts such as `rel-artifact-24.json` (2026-11-05)."""
     base = root(args.to, "local", "captures")
-    lines = []
+    lines, foreign = [], []
     for request, _ in runtime_requests(base):
         path = os.path.join(os.path.dirname(request), artifact_name(os.path.basename(request)))
         if os.path.exists(path):
+            if not produced_by(path, args.to):
+                foreign.append(os.path.relpath(path, base))
+                continue
             digest = hashlib.sha256(open(path, "rb").read()).hexdigest()
             lines.append(f"{digest}  {os.path.relpath(path, base)}")
+    if foreign:
+        sys.exit(f"{len(foreign)} artifacts were not produced by kernel {args.to}; re-run `runtime`:\n" + "\n".join(foreign))
     target = root(args.to, "RECAPTURE.sha256")
     open(target, "w", encoding="utf-8").write("\n".join(sorted(lines, key=lambda l: l[66:])) + "\n")
     print(f"{len(lines)} artifacts in {os.path.relpath(target, REPO)}")
