@@ -355,7 +355,7 @@ Out-of-range members follow [§1](#type-member-ranges) and bind nothing. With th
 
 **A nomination keeps the last segment of its spelling joined to the group's own path, wherever that path lands, and judges that short name against the group's own direct children.** `..` steps up one level from the group itself and every other segment descends; an index nomination and a sort nomination answer alike, each under its own class:
 
-- **A sort entry binds only as an object with both members.** Its `name` is a scalar, and its `order` binds as one of the constants `ASC` and `DESC`: the text `ASC`, `DESC`, `0` or `1` after leading characters at or below U+0020, or the integer `0` or `1`. Measured admitted: `" ASC"`, `"\tDESC"`, `"1"`, `" 1"`, `1`, `-0`. Measured leaving no model: an entry that is no object; an absent or `null` `order`; an absent, `null`, object or list `name`; and the orders `"asc"`, `"UP"`, `""`, `"ASC "`, `"01"`, `2`, `-1`, `1.0` and `true`. Other trailing-whitespace spellings are unmeasured.
+- **A sort entry binds only as an object with both members.** Its `name` is a scalar, and its `order` binds as one of the constants `ASC` and `DESC`: the text `ASC`, `DESC`, `0` or `1` once characters at or below U+0020 are trimmed from both ends, or the integer `0` or `1`. Measured admitted: `" ASC"`, `"\tDESC"`, `"ASC "`, `"DESC\n"`, `"1"`, `" 1"`, `1`, `-0`. Measured leaving no model: an entry that is no object; an absent or `null` `order`; an absent, `null`, object or list `name`; and the orders `"asc"`, `"UP"`, `""`, `"ASC"` followed by an em space, `"01"`, `2`, `-1`, `1.0` and `true`.
 
 | Spelling written in a group | Result |
 |---|---|

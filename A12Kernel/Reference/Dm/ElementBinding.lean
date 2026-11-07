@@ -168,17 +168,17 @@ private def refuseContainer (body : Json) (key : String) : Except String Unit :=
   | .ok (.obj _) | .ok (.arr _) => throw s!"model member {key} is a container"
   | _ => pure ()
 
-/-- A sort entry as kernel 31.3.1 binds it (a12-dmkits KF680): an object whose `name` is a scalar and whose
-`order` is one of the enum's two constants. The order is read as the measured rows admit it: `ASC`, `DESC`,
-`0` or `1` after leading characters at or below U+0020, or the integer `0` or `1`, `-0` included. `"asc"`,
-`"UP"`, `""`, `"ASC "`, `"01"`, `2`, `-1`, `1.0` and `true` are measured unreadable; reading trailing
-whitespace as part of the text is Lean's generalization from `"ASC "`, the one trailing row measured. -/
+/-- A sort entry as kernel 31.3.1 binds it (a12-dmkits KF680, amended at `1d6762340`): an object whose `name`
+is a scalar and whose `order` is one of the enum's two constants. The order text is trimmed at both ends of
+characters at or below U+0020, as Java's `trim` does, and must then be `ASC`, `DESC`, `0` or `1`; the integer
+`0` or `1`, `-0` included, binds too. `"ASC "` and `"DESC\n"` are measured admitted and `"ASC"` followed by an
+em space unreadable, so the trim stops at U+0020. -/
 private def bindSortEntry (entry : Json) : Except String Unit := do
   let .obj _ := entry | throw "sort entry is no object"
   requireValue entry "name"
   refuseContainer entry "name"
   let admitted := match entry.getObjVal? "order" with
-    | .ok (.str text) => ["ASC", "DESC", "0", "1"].contains (text.dropWhile fun char : Char => char.toNat ≤ 0x20).copy
+    | .ok (.str text) => ["ASC", "DESC", "0", "1"].contains (javaTrim text)
     | .ok (.num value) => value.exponent == 0 && (value.mantissa == 0 || value.mantissa == 1)
     | _ => false
   if !admitted then throw "sort entry order is unreadable"

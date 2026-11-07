@@ -1098,6 +1098,15 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
 
+<a id="src-inbound-2026-11-07b"></a>
+## Received 31.3.1 Letter L of 2026-11-07: a sort order is trimmed at both ends
+
+- `source`: Peer-session letter of 2026-11-07, `a12-kernel-lean-spec-corrections-2026-11-07b.md`, SHA-256 `537eb97dd2bb416b3464ac43742b59a9254217cad0ee9e52da361def7e576f59`. It corrects one row of [Letter J](#src-inbound-2026-11-07) §3, the unreadable order there being `"ASC"` followed by an em space.
+- `revision`: a12-dmkits `1d6762340`, clean, whose `GroupIndexAndSortReferenceLawsTest` adds the trailing-space and line-break rows.
+- `oracle`: kernel 31.3.1's model reader and consistency check through that test; reported by the peer, not run here.
+- `adopted`: [spec/01's sort entry](../../spec/01-data-model.md#index-and-sort-nomination-admission) and `ElementBinding.bindSortEntry`, with the [ordering-member locks](../../A12Kernel/Reference/Dm/OrderingMemberLocks.lean) admitting `"ASC "` and `"DESC\n"` and refusing the em-space row.
+- `sync`: inbound correction from a committed peer revision; no ledger entry.
+
 <a id="src-inbound-2026-11-07a"></a>
 ## Received 31.3.1 Letter K of 2026-11-07: what the 31.3.1 migrator does to the retained models
 
@@ -1115,7 +1124,7 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `revision`: a12-dmkits `505683610a0c57711fe59fb6ca70d315e6a2f2a1`, clean; the peer reports every named lock green at `c6893a848`, one release-tooling commit earlier.
 - `oracle`: kernel 31.3.1, the peer's `checkConsistency`, both-strategy runtime differentials, reader, serializer and typed-API rows as each row names; source readings at `a12-kernel` `6363abf`. Reported by the peer, not run here.
 - `state`: received; its rows are adopted batch by batch in the migration's `batches` key, and §10's mechanisms are source reading that moves no clause.
-- `adoption-n1-n5`: §1–§5 adopted 2026-11-07. Lean follows §3's rows where its stated mechanism does not: the letter says the order trims as Java's `trim` does, yet measures `"ASC "` unreadable beside an admitted `" ASC"`, so Lean strips leading characters only. §5's suppressed `MVK_ERROR_INVALID_ENUM_CALCULATION` is admitted at the check, which Lean does not follow until a runtime row says what such a computation stores ([SG8](../gaps/strings-and-messages.md#gap-sg8)).
+- `adoption-n1-n5`: §1–§5 adopted 2026-11-07. §3's sort-order row `"ASC "` was a transcription of `"ASC"` followed by an em space, which [Letter L](#src-inbound-2026-11-07b) corrects; Lean trims the order at both ends as Java's `trim` does. §5's suppressed `MVK_ERROR_INVALID_ENUM_CALCULATION` is admitted at the check, which Lean does not follow until a runtime row says what such a computation stores ([SG8](../gaps/strings-and-messages.md#gap-sg8)).
 - `sync`: inbound measurements from a committed peer revision; no ledger entry is created for them.
 
 <a id="src-inbound-2026-11-05e"></a>

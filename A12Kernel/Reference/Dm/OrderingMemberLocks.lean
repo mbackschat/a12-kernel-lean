@@ -223,9 +223,9 @@ private def sortEntryRows : List (String × Json × Verdict) :=
    ("an object name", entry [("name", Json.mkObj []), ("order", "ASC")], .noModel),
    ("a list name", entry [("name", Json.arr #[]), ("order", "ASC")], .noModel),
    ("an entry that is no object", (written "Items" "sortFields" (some (Json.arr #["Sku"]))).json, .noModel)] ++
-  (["asc", "UP", "", "ASC ", "01"].map fun text => (s!"order {text}", ordered (.str text), .noModel)) ++
+  (["asc", "UP", "", "ASC\u2003", "01"].map fun text => (s!"order {text}", ordered (.str text), .noModel)) ++
   (["2", "-1", "1.0", "true"].map fun text => (s!"order {text} unquoted", ordered (number text), .noModel)) ++
-  ([" ASC", "\tDESC", "1", " 1"].map fun text => (s!"order {text}", ordered (.str text), admitted)) ++
+  ([" ASC", "\tDESC", "ASC ", "DESC\n", "1", " 1"].map fun text => (s!"order {text}", ordered (.str text), admitted)) ++
   (["1", "-0"].map fun text => (s!"order {text} unquoted", ordered (number text), admitted))
 
 example : failures sortEntryRows = [] := by native_decide
