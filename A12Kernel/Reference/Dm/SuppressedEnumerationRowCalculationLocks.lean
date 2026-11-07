@@ -7,7 +7,7 @@ import A12Kernel.Reference.Dm.EntryFrameFixture
 /-! # A suppressed Enumeration calculation on a repeatable target and from `FirstFilledValue`
 
 The remaining carriers of the preamble that lifts `MVK_ERROR_INVALID_ENUM_CALCULATION`
-([spec/09 §4.3](../../spec/09-computations.md#43-number-string-enumeration-and-custom-targets)): a direct
+([spec/09 §4.3](../../../spec/09-computations.md#43-number-string-enumeration-and-custom-targets)): a direct
 field into a repeatable target, and `FirstFilledValue` into a fixed and a repeatable one. a12-dmkits KF298
 measures the runtime from a String field source on a fixed target only
 ([inbound record](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07)). The runtime rows
