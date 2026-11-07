@@ -1098,6 +1098,15 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
 
+<a id="src-inbound-2026-11-07"></a>
+## Received 31.3.1 Letter J of 2026-11-07: what kernel 31.3.1 changed, measured
+
+- `source`: Peer-session letter of 2026-11-07, `a12-kernel-lean-spec-corrections-2026-11-07.md`, SHA-256 `01aadea3e71ff84b0c3a641564b1dadb055a7930cd87736fb9c21cbcf636b4f3`, the first letter of the [kernel 31.3.1 migration](../PLAN.md#kernel-313-migration). The peer names it Letter J, a name this record already gives the [2026-11-05 key-read letter](#src-inbound-2026-11-05e); this project cites it as the 31.3.1 Letter J. It answers no ledger entry.
+- `revision`: a12-dmkits `505683610a0c57711fe59fb6ca70d315e6a2f2a1`, clean; the peer reports every named lock green at `c6893a848`, one release-tooling commit earlier.
+- `oracle`: kernel 31.3.1, the peer's `checkConsistency`, both-strategy runtime differentials, reader, serializer and typed-API rows as each row names; source readings at `a12-kernel` `6363abf`. Reported by the peer, not run here.
+- `state`: received; its rows are adopted batch by batch in the migration's `batches` key, and §10's mechanisms are source reading that moves no clause.
+- `sync`: inbound measurements from a committed peer revision; no ledger entry is created for them.
+
 <a id="src-inbound-2026-11-05e"></a>
 ## Reviewed Letters J and K of 2026-11-05: a field key's read joins its level for a message without proving its row
 

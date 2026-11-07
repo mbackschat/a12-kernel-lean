@@ -12,7 +12,7 @@
 - `oracle`: [Inbound provenance](sources/inbound-handbacks.md#src-inbound-2026-10-12) and the owning family checkpoints supply evidence. The [legacy profile disposition](sources/custom-field-probes.md#src-custom-legacy-profile) leaves no outstanding peer request; modern-route implementation and its mode/target distinctions are owned by [custom-field coverage](implementation/validation-messages-and-custom.md#cap-custom-field-validation).
 - `calibration`: K18 owns the remaining uncalibrated CustomCondition validation cell. [Construct evidence](CONFORMANCE-CONSTRUCTS.tsv) owns calibration labels; this evidence need is distinct from K01 and peer receipts do not create replay gains.
 - `sequence`: K21 checks semantic transport, K22 accepts conformance, then U01 implements the Rust interpreter, U02 repeats it cold on the rewritten spec, and U03 builds the SMT consumer. Concrete repository, dependency and public-contract choices retain their existing decision boundaries.
-- `active`: none. The [kernel 31.1.1 migration](#kernel-31-migration) closed its adoption batches and [first 31.1.1 measurement batch](sources/kernel-31-calibration-probes.md#src-first-kernel-31-capture) on 2026-11-04 and its re-capture on 2026-11-05. The [measured-divergence milestone](#measured-divergence-milestone) closed on 2026-10-31; Q2 waits for the owner's Q2-P1 profile decision.
+- `active`: the [kernel 31.3.1 migration](#kernel-313-migration), decided 2026-11-07. The [kernel 31.1.1 migration](#kernel-31-migration) closed its adoption batches and [first 31.1.1 measurement batch](sources/kernel-31-calibration-probes.md#src-first-kernel-31-capture) on 2026-11-04 and its re-capture on 2026-11-05. The [measured-divergence milestone](#measured-divergence-milestone) closed on 2026-10-31; Q2 waits for the owner's Q2-P1 profile decision.
 - `stop`: Stop the conformance phase at K22 and select U01. A genuine blocker keeps its task unchecked. Do not append an automatic conformance-tail programme or require the consumer products before K22.
 
 <a id="single-track-breadth-queue"></a>
@@ -228,6 +228,27 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 - `close`: every Letter A–E batch has landed. The owner decided on 2026-11-04 that the theory and protocol v1 assert kernel 31.1.1 while the frozen bundles keep 30.8.1, and that spec/SEMANTICS-MAP scopes the account to 31.1.1 with untouched clauses carried forward; both landed. The measurement checkout was re-pinned to `e62c2059d` for the [first 31.1.1 measurement batch](sources/kernel-31-calibration-probes.md#src-first-kernel-31-capture) on 2026-11-04, which measured the recorded calibration rows of SG5, SG19 and SG20; Lean agreed with each.
 - `next-upgrade`: ready as of 2026-11-05 by the [playbook's readiness check](KERNEL-UPGRADE-PLAYBOOK.md#0-check-readiness-before-the-decision): all 620 runtime requests with document rows have their 31.1.1 artifact except the five that build no model, `RECAPTURE.sha256` lists the 615, and every tool pairs requests through one rule. The `../a12-kernel` checkout's `main` and its last-fetched `origin/main` are both 31.1.1 (`eec9134`); whether a later release exists is unknown until the checkout is fetched, which this project does not do.
 - `replay`: the [population replay](CONFORMANCE-COVERAGE.md#axis-r--population-replay) of 2026-11-04 over the frozen 30.8.1 population matches 107668 of 109292 admitted instances. Its 1604 divergences, 20 faults and 10 newly refused rows were attributed to adopted deltas by classifying each diverging member's reads and checking representatives, not row by row: M8's temporal account (DST-gap resolution, the proleptic calendar, signed five-digit years, the leap-target assembly failure) and M7's unselected message value, partial group count and array refusal. The [31.1.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-31-recapture) of the same population on 2026-11-04 settled them: after its five corrections the replay finds no tier-1 divergence.
+
+<a id="kernel-313-migration"></a>
+### Kernel 31.3.1 migration — owner direction 2026-11-07
+
+- `decision`: the owner decided that both projects migrate from A12 2026.06-ext1 (kernel 31.1.1, DM 29.4.0) to 2026.06-ext2 (kernel 31.3.1, DM 29.8.0). a12-dmkits relayed it on 2026-11-07 with its [31.3.1 Letter J](sources/inbound-handbacks.md#src-inbound-2026-11-07), and the owner confirmed it in this repository's session the same day. The floor is single: one 31.3.1 account, not dual support. The [upgrade playbook](KERNEL-UPGRADE-PLAYBOOK.md) owns the routine.
+- `frozen`: tag `kernel-31.1.1-final` on `7dc020261` holds the last account that targets 31.1.1. Retained observations under `evidence/kernel-30.8.1/` and `evidence/kernel-31.1.1/` keep their version and their meaning.
+- `pin`: `../a12-kernel` is pinned at `6e6b3a6`, the 2026.06-ext2 release commit, by owner decision; the peer read source at `6363abf` on `fixes/2026.06-ext2-fixes`, whose six later commits touch build files and one structural-mapping class only. The measurement checkout moved to a12-dmkits `505683610` on 2026-11-07, whose launcher reports dmtool 0.15.0 and kernel 31.3.1 built and runtime.
+- `method`: as for 31.1.1, a clause moves only on a measured row; the letter's §10 mechanisms are source reading and move nothing. The re-capture runs first this time, so each batch compares against the population's 31.3.1 artifacts.
+- `models`: the re-capture restamps the frozen models 28.4.0 to 29.8.0, assuming the 31.3.1 migrator changes nothing else, since the four new members are optional; unverified until a12-dmkits migrates the retained probe models.
+- `owed`: none yet.
+- `batches`: risk-first, each adopting its letter rows into spec/ and Lean with its focused checks and one gate:
+  - [ ] `N1 relative walk` (§2): the model root as a turning point of every relative path, in conditions, messages, error targets and computed targets.
+  - [ ] `N2 number text cap` (§4): a stored Number's runtime text capped at fifteen digits, half up.
+  - [ ] `N3 inert year check` (§1): `youngerThan1900Check` bound but never checked or evaluated.
+  - [ ] `N4 computation code and preamble` (§5): `errorCode` and `additionalParserInformation`.
+  - [ ] `N5 sort entry` (§3): both members required and the order's enum binding.
+  - [ ] `N6 possible-cause filter` (§6): the filter's reader, duplicate and reference checks.
+  - [ ] `N7 possibly-causing entities` (§7): the message's cause groups.
+  - [ ] `N8 smaller corrections` (§8).
+- `next`: finish the re-capture (`prepare` and `runtime` are under way), replay it, then start N1.
+- `close`: the playbook's section 4.
 
 <a id="next-consumer-decision"></a>
 ### Next consumers — owner direction and open decision
