@@ -410,8 +410,9 @@ example : failures severityRows = [] := by native_decide
 /-! ## Empty versus absent
 
 Locked: a12-dmkits CheckerEmptyMemberAgreementTest at 1124b523f, kernel 31.1.1. The header's `modelVersion`
-and `locales` are no model when absent, where 30.8.1 built the model and failed its check; their empty
-spellings keep their classes. A hint entry's `locale` and `values` are no model when absent and admitted
+is no model when absent, where 30.8.1 built the model and failed its check; its empty spelling keeps its
+class. Absent `locales` read as the empty list on kernel 31.3.1 (31.3.1 Letter J §8), where 31.1.1 built no
+model. A hint entry's `locale` and `values` are no model when absent and admitted
 empty. The rows for `indexFieldName` and `includeConfig` are other steps'; the empty `precondition`
 is in [the message-text locks](MessageText31Locks.lean). -/
 
@@ -420,7 +421,7 @@ private def hintEntry (member : String) : List String :=
 
 private def emptyRows : List (String × Bool) := [
   ("modelVersion absent", noModel (with_ ["header", "modelVersion"] none)),
-  ("locales absent", noModel (with_ ["header", "locales"] none)),
+  ("locales absent", reads (with_ ["header", "locales"] none)),
   ("modelVersion empty", reads (with_ ["header", "modelVersion"] (some (literal "\"\"")))),
   ("locales empty", reads (with_ ["header", "locales"] (some (literal "[]")))),
   ("hint locale absent", noModel (with_ (hintEntry "locale") none)),

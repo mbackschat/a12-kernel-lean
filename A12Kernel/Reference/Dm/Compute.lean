@@ -255,8 +255,9 @@ private def alternativeGuard (resolve : String → Lowering α) : Option String 
 /-- The declaration a computation targets. Its path is relative to the computation element. -/
 def targetOf (language : Language) (model : FlatModel) (computation : DmComputation) :
     Lowering FlatFieldDecl := do
-  -- A target naming a group, its own included, fails the Kernel's build with no class
-  -- ([inbound](../../../docs/sources/inbound-handbacks.md#inbound-2026-09-26m-error-target-paths)).
+  -- A target naming a group, its own included, is one naming no field: the converter drops such a
+  -- computation with its not-found sentence on kernel 31.3.1 (`convertModel`; 31.3.1 Letter J §8), so this
+  -- arm answers only a caller that lowers a computation the reader never keeps.
   if (lexicalErrorPath computation.group computation.targetRelPath).any model.hasGroupPath then
     refuse "GroupTarget" computation.targetRelPath
   let parsedPath := parseModelPath language computation.targetRelPath

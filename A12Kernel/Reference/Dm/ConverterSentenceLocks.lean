@@ -295,9 +295,17 @@ private def rows : List (String × Json × List String) := [
     ["UNBUILT"],
   row "a root group with an empty name, holding a computation"
     { emptyRoot with elements := edits [withoutRule, withComputation "../Total" "1"] } ["UNBUILT"],
+  -- Kernel 31.3.1 builds no model for an empty reference below the empty-named root either, where 31.1.1
+  -- stated the root sentences (31.3.1 Letter J §8, a12-dmkits `CheckerEmptyMemberAgreementTest`).
   row "a root group with an empty name, its rule with an empty error path"
-    { emptyRoot with elements := edits [withoutRule, withRule "Pathless" "FieldFilled(Code)" ""] }
-    ["RK_ROOT_GROUP_NAME_MISSING", "RK_NAME_EMPTY", "RK_ERROR_ENTITY_EMPTY"],
+    { emptyRoot with elements := edits [withoutRule, withRule "Pathless" "FieldFilled(Code)" ""] } ["UNBUILT"],
+  row "a root group with an empty name, holding a computation with an empty target"
+    { emptyRoot with elements := edits [withoutRule, withComputation "" "1"] } ["UNBUILT"],
+  row "a root group with an empty name, its group indexed by an empty name"
+    { emptyRoot with elements := edits [withoutRule, withGroupMember "indexFieldName" ""] } ["UNBUILT"],
+  row "a root group with an empty name, its group sorted by an empty name"
+    { emptyRoot with elements := edits [withoutRule,
+      withGroupMember "sortFields" (Json.arr #[Json.mkObj [("name", ""), ("order", "ASC")]])] } ["UNBUILT"],
   row "a root group with an empty name, its group indexed by a field"
     { emptyRoot with elements := edits [withoutRule, withGroupMember "indexFieldName" "Label"] } ["UNBUILT"],
   row "a root group with an empty name, its group sorted by a field"
@@ -324,6 +332,11 @@ private def rows : List (String × Json × List String) := [
   row "a computation with an unresolvable target, beside a rule naming no field"
     { elements := edits [withComputation "../NoSuchTotal" "1", ghostRule] }
     ["RK_COMPUTED_FIELD_NOT_FOUND", "MVK_INVALID_ENTITY"],
+  -- A group target is a target naming no field on kernel 31.3.1, where 31.1.1 built no model (31.3.1 Letter J
+  -- §8, a12-dmkits `ComputedFieldTargetKindLawsTest`).
+  row "a computation into a repeatable group" { elements := withComputation "../Items" "1" }
+    ["RK_COMPUTED_FIELD_NOT_FOUND"],
+  row "a computation into its own group" { elements := withComputation ".." "1" } ["RK_COMPUTED_FIELD_NOT_FOUND"],
   row "a computation whose target is named with a space"
     { elements := edits [renamed "Total" " ", withComputation "../ " "1"] } ["UNBUILT"],
   row "a computation whose target lies in a group named with a space"

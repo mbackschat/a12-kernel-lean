@@ -135,8 +135,8 @@ def undeclaredLocaleBuildFailure (declared : List String) (entries : List (Strin
 `code` or a bare text, judged alike (header locale codes checkpoint,
 `docs/sources/model-structure-and-declaration-probes.md#src-header-locale-codes`). A code the parser
 refuses leaves the model unreadable; `declaredLocaleFailure?` judges what the build then refuses. A
-`locales` member that is no list leaves no model, while an absent or `null` one declares nothing here
-and costs the model its check (`bindModelFrame`, peer KF650). An entry that is neither a text nor an
+`locales` member that is no list leaves no model, while an absent or `null` one declares nothing, which
+the check refuses with its missing-language class on kernel 31.3.1 (`bindModelFrame`, peer KF650). An entry that is neither a text nor an
 object with a string `code` is outside the represented profile, since no row measures it. -/
 def headerLocales (json : Json) : Except String (List ParsedLocale) := do
   let header := (json.getObjVal? "header").toOption.getD (Json.mkObj [])

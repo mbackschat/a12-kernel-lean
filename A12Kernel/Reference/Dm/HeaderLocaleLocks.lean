@@ -114,15 +114,16 @@ example :
     modelClasses (model (Json.arr #[])) = some ["MVK_SUPP_LANGUAGES_MISSING"] := by
   native_decide
 
-/-- A `locales` member that is no list or is `null` leaves no model, while an entry with no string code is
-outside the represented profile. The `null` row is the readers' read failure for a model kernel 31.1.1 reads and
-then cannot build (the derived-row capture's `header-slots.json` and `mc-loc-null`), a stage these readers do not
-separate (`bindModelFrame`, SG9); kernel 30.8.1 built it and failed its check (peer KF650). -/
+/-- A `locales` member that is no list leaves no model, while an entry with no string code is outside the
+represented profile. A `null` member is the empty list on kernel 31.3.1 and draws its missing-language class
+(31.3.1 Letter J §8, peer KF650), where 31.1.1 read the model and could not build it (the derived-row
+capture's `header-slots.json` and `mc-loc-null`) and 30.8.1 built it and failed its check. -/
 example :
     verdict (model (Json.str "en_US")) = some .unreadable ∧
     verdict (model (Json.arr #[Json.mkObj [("code", toJson (5 : Nat))]])) = some .outsideProfile ∧
     verdict (model (Json.arr #[Json.mkObj []])) = some .outsideProfile ∧
-    verdict (model Json.null) = some .unreadable := by
+    verdict (model Json.null) = some .builds ∧
+    modelClasses (model Json.null) = some ["MVK_SUPP_LANGUAGES_MISSING"] := by
   native_decide
 
 /-- A rule's message answers the declared locale its parsed locale equals: "en_US" answers a declared

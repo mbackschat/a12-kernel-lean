@@ -247,7 +247,7 @@ The request adopts this sequencing and the two consumer objectives. It does not 
   - [x] `N5 sort entry` (§3): both members required and the order's enum binding.
   - [x] `N6 possible-cause filter` (§6): the filter's reader, duplicate and reference checks.
   - [ ] `N7 possibly-causing entities` (§7): the message's cause groups.
-  - [ ] `N8 smaller corrections` (§8).
+  - [x] `N8 smaller corrections` (§8), taken before N7 because it is independent and small.
 - `next`: N7. The [31.3.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-313-recapture) is done and `lake test` reads it; the population replay and the triggered cold review of N1–N8 run at the close.
 - `close`: the playbook's section 4.
 

@@ -32,7 +32,7 @@ def checkComputation (model : DmModel) (language : Language) (computation : DmCo
   | .ok checked => .ok checked
   | .error refusal =>
       let indexStage := refusal.kernelClass? == some KernelStaticDiagnostic.errorIndexAsCalculatedField.kernelCode
-      -- A group target has no generated rule to speak for it: its build fails without a class.
+      -- A group target has no generated rule to speak for it; the reader never keeps one (`targetOf`).
       let parseDefect := refusal.construct == "Syntax"
       if (refusal.kernelClass?.isSome && !indexStage && !parseDefect) || refusal.construct == "GroupTarget" then
         .error refusal

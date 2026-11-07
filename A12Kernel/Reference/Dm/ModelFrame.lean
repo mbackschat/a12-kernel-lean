@@ -20,12 +20,14 @@ a condition language naming a parsed locale other than the two supported, measur
 `supportedConditionLanguages` lists. The model builds and its check fails without a class, so they are a
 `FrameCheckFailure`, never a read failure.
 
-Kernel 31.1.1 reads a header whose `id`, `modelVersion` or `locales` is absent or `null` into a model it then
-cannot build, on the dmtool and the probe route alike (derived-row capture of 2026-11-04, `header-slots.json`;
-peer KF654, a12-dmkits `1124b523f`, `ModelHeaderSlotLawsTest` and `WorkspaceBlankTextDiffTest`). Each leaves no
+Kernel 31.1.1 reads a header whose `id` or `modelVersion` is absent or `null` into a model it then cannot
+build, on the dmtool and the probe route alike (derived-row capture of 2026-11-04, `header-slots.json`; peer
+KF654, a12-dmkits `1124b523f`, `ModelHeaderSlotLawsTest` and `WorkspaceBlankTextDiffTest`). Each leaves no
 model here as a read failure, as every member KF654 lists does in these readers, so they do not separate a model
 the Kernel cannot read from one it reads and cannot build (SG9). Kernel 30.8.1 admitted the `id` absent or `null`
-and built the other shapes to fail their check.
+and built the other shapes to fail their check. Kernel 31.3.1 reads absent or `null` `locales` as no locales,
+which the check then refuses with its class as it does an empty list (31.3.1 Letter J §8, peer KF650), where
+31.1.1 built no model.
 
 An integer number binds as its value's decimal text, measured for `5`; a token with a fraction or an
 exponent is outside the represented profile, since the Kernel keeps the token as written and Lean's
@@ -43,7 +45,7 @@ structure ModelFrame where
   info : Json
   /-- The model configuration, empty when absent. -/
   config : Json
-  /-- The declared locale entries; an absent or `null` member leaves no model. -/
+  /-- The declared locale entries; an absent or `null` member declares none. -/
   locales : Array Json
   /-- The header's `modelReferences` entries, empty when absent or `null`: a model naming one is expanded
   before its check (peer Letter E §4, source-read). -/
@@ -137,9 +139,9 @@ def bindModelFrame (json : Json) : Except String ModelFrame := do
   let some content ← frameObject json "content" | throw "model has no content"
   for key in ["modelType", "description"] do discard <| frameText header key
   discard <| frameText header "id" (nonNull := true)
-  for key in ["id", "modelVersion", "locales"] do requireMember header key
+  for key in ["id", "modelVersion"] do requireMember header key
   discard <| frameText header "modelVersion" (nonNull := true)
-  let locales ← frameList header "locales" (nonNull := true)
+  let locales ← frameList header "locales"
   for key in ["labels", "annotations"] do discard <| frameList header key
   let modelReferences := (← frameList header "modelReferences").getD #[]
   let info? ← frameObject content "modelInfo"

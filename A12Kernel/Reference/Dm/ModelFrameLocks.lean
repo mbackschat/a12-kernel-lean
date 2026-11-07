@@ -17,9 +17,11 @@ does ([check route](../../../docs/sources/model-structure-and-declaration-probes
 
 Kernel 31.1.1 changes four rows (peer KF654, a12-dmkits `1124b523f`, 2026-11-02; locked at
 `ModelHeaderSlotLawsTest`, `WorkspaceBlankTextDiffTest` and `CheckerEmptyMemberAgreementTest`): a header
-with no `id`, or one written `null`, and a header with no `modelVersion` or no `locales`, leave no model,
-where kernel 30.8.1 admitted the `id` and built the other two to fail their check. A `null` version and
-`null` locales leave no model as well, where 30.8.1 built both to fail their check. The Kernel reads each of
+with no `id`, or one written `null`, and a header with no `modelVersion`, leave no model, where kernel 30.8.1
+admitted the `id` and built the version to fail its check. A `null` version leaves no model as well, where
+30.8.1 built it to fail its check. Kernel 31.3.1 reads absent or `null` locales as an empty list, which builds
+and draws the check's missing-language class (31.3.1 Letter J §8, `CheckerModelFrameAgreementTest`), where
+31.1.1 built no model. The Kernel reads each of
 these headers and then cannot build it (derived-row capture of 2026-11-04, `header-slots.json`); `noModel`
 here does not separate that stage from a read failure (`bindModelFrame`).
 
@@ -113,8 +115,7 @@ private def rows : List (String × Json × Option Verdict) :=
   member ["header", "modelVersion"] (fun shape =>
     if shape == "absent" || shape == "null" then some .noModel else none) ++
   (["labels", "annotations", "modelReferences"].flatMap fun key => member ["header", key] (some <| list false ·)) ++
-  member ["header", "locales"] (fun shape =>
-    some (if shape == "absent" || shape == "null" then .noModel else list false shape)) ++
+  member ["header", "locales"] (some <| list false ·) ++
   member ["content", "typeDefinitions"] (some <| list true ·) ++
   member ["content", "modelConfig", "supportedCharacters"] (some <| list true ·) ++
   member ["content", "modelRoot", "rootGroups"] (some <| list true ·) ++

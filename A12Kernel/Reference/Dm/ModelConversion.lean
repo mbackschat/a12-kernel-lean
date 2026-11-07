@@ -34,20 +34,21 @@ stated once per holding group whatever the kinds, and a shared name once per kin
 
 A model that builds no validation model at all is `unbuilt`, measured for two compositions and not
 modelled by any mechanism: a root group whose `name` is present as exactly the empty text and holds, at
-any depth, a rule with an error path, a computation, a group with an index field or a group with sort
-fields; a kept computation whose target is a field the conversion dropped; and, on kernel 31.3.1, a
+any depth, a rule, a computation, a group with an index field or a group with sort fields, an empty
+reference in any of them included on kernel 31.3.1 (31.3.1 Letter J §8), where 31.1.1 built a rule with an
+empty error path; a kept computation whose target is a field the conversion dropped; and, on kernel 31.3.1, a
 computation whose target's leading `..` run climbs past the technical model root (a12-dmkits KF679,
 `../../../Customer/Name` from a computation in a root group; the same climb in an error target is
-unmeasured). That a rule with an empty
-error path, a blank, absent or `null` root name, only fields, or a rule in a sibling named root builds is
-measured too. That a target lying in a duplicate or blank-root group is unbuilt is derived, not measured.
+unmeasured). That a blank, absent or `null` root name, only fields, or a rule in a sibling named root
+builds is measured too. That a target lying in a duplicate or blank-root group is unbuilt is derived, not measured.
 
 Sentence paths are derived from the element each sentence is stated for, and no measurement observes
 them: the oracle compares sets of classes. A computed-field path is read lexically from the computation,
 `..` climbing from it to its group, as `lexicalErrorPath` reads an error path, plus the absolute spelling;
 a path spelled otherwise is left to the target resolution that refuses it. A path landing on a group or a
-rule counts as naming no field, and a name resolves to the first element of that name. Those three are
-derived, not measured. Peer names for the sentences, for comments only: `RK_ROOT_GROUP_NAME_MISSING`,
+rule counts as naming no field, measured for a fixed and a repeatable group on kernel 31.3.1 (31.3.1 Letter J
+§8) and for a rule, and a name resolves to the first element of that name. The lexical reading and the first
+element are derived, not measured. Peer names for the sentences, for comments only: `RK_ROOT_GROUP_NAME_MISSING`,
 `RK_ELEMENT_NAME_MISSING`, `RK_CHILD_NAME_DUPLICATE`, `RK_COMPUTED_FIELD_NOT_SPECIFIED`,
 `RK_COMPUTED_FIELD_NOT_FOUND`, `RK_TYPE_DEFINITION_NOT_FOUND`.
 -/
@@ -230,17 +231,13 @@ private def convertRoots (definitions : List String) (authored : List Json) (fue
     kept := kept.push (withChildren root body (← convertChildren definitions authored fuel [name] (groupChildren root)))
   pure kept
 
-/-- Whether a root group's authored subtree holds a rule with an error path, a computation, or a group
-ordering its rows. A group's index field counts when present and not `null`. -/
+/-- Whether a root group's authored subtree holds a rule, a computation, or a group ordering its rows. A
+group's index field counts when present and not `null`, the empty name included. -/
 private def holdsOrderedMember : Nat → Json → Bool
   | 0, _ => false
   | fuel + 1, element =>
       match kindOf element with
-      | some "Rule" =>
-          match (elementBody element "Rule").toOption.bind (·.getObjVal? "errorEntityRelPath" |>.toOption) with
-          | some (.str path) => !path.isEmpty
-          | _ => false
-      | some "Computation" => true
+      | some "Rule" | some "Computation" => true
       | some "Group" =>
           let body := (elementBody element "Group").toOption.getD (Json.mkObj [])
           let indexed := match body.getObjVal? "indexFieldName" with
