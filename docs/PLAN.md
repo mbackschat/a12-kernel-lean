@@ -246,9 +246,9 @@ The request adopts this sequencing and the two consumer objectives. It does not 
   - [x] `N4 computation code and preamble` (§5): `errorCode` and `additionalParserInformation`.
   - [x] `N5 sort entry` (§3): both members required and the order's enum binding.
   - [x] `N6 possible-cause filter` (§6): the filter's reader, duplicate and reference checks.
-  - [ ] `N7 possibly-causing entities` (§7): the message's cause groups.
+  - [x] `N7 possibly-causing entities` (§7): adopted into spec/01 and the spec/14 Q column; the Lean channel is [consumer-gated under SG10](gaps/strings-and-messages.md#gap-sg10), since `MessagePointer` names fields only.
   - [x] `N8 smaller corrections` (§8), taken before N7 because it is independent and small.
-- `next`: N7. The [31.3.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-313-recapture) is done and `lake test` reads it; the population replay and the triggered cold review of N1–N8 run at the close.
+- `next`: the close. The [31.3.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-313-recapture) is done and `lake test` reads it; the population replay and the triggered cold review of N1–N8 run at the close.
 - `close`: the playbook's section 4.
 
 <a id="next-consumer-decision"></a>

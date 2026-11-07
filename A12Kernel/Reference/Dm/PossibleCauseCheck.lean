@@ -24,8 +24,8 @@ namespace A12Kernel.Dm
 
 open A12Kernel
 
-/-- The operators whose group operand stays the group rather than naming its fields (a12-dmkits KF683's
-group-operand row, which KF682's candidate set shares by the peer's source reading). -/
+/-- The operators whose group operand stays the group rather than naming its fields: the `group` cells of
+[spec/14's Q column](../../../spec/14-operator-reference.md#referenced-entity-inventory). -/
 private def groupReadingCalls : List String :=
   ["GroupFilled", "GroupNotFilled", "AllGroupsFilled", "NoGroupFilled", "AtLeastOneGroupFilled",
     "NotAllGroupsFilled", "GroupsNotCollectivelyFilled", "NumberOfFilledGroups", "SumOfTerms"]
