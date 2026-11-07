@@ -11,16 +11,14 @@ private def fullDate : TemporalComponents := TemporalComponents.fullDate
 private def temporalTarget
     (id : FieldId) (name format : String)
     (kind : TemporalKind) (components : TemporalComponents)
-    (partialMode : TemporalPartialMode := .full)
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (partialMode : TemporalPartialMode := .full) : FlatFieldDecl := {
   id
   groupPath := ["Order"]
   name
   policy := { kind := .temporal kind components }
   temporalTargetPolicy := some {
     format
-    partialMode
-    youngerThan1900Check } }
+    partialMode } }
 
 private def checkedPolicyOf
     (model : FlatModel) (target : FieldId) :
@@ -39,56 +37,15 @@ private def errorOf
 /- The checked target exposes the exact declaration policy and the same model's zone. -/
 example :
     let target := temporalTarget 0 "Date" "dd.MM.yyyy"
-      .date fullDate .yearOptional true
+      .date fullDate .yearOptional
     let model : FlatModel := {
       fields := [target]
       timeZoneId := "Europe/Berlin" }
     checkedPolicyOf model 0 =
         some ({
           format := "dd.MM.yyyy"
-          partialMode := .yearOptional
-          youngerThan1900Check := true },
+          partialMode := .yearOptional },
           "Europe/Berlin") := by
-  native_decide
-
-/- **The opt-in pre-1900 check requires the declared format to carry a year.** The Kernel refuses a
-   year-free Date declaration carrying it outright — `MVK_ADDITIONAL_CHECK_INVALID`, whose own message
-   keys on the components rather than on the kind — so `MM-dd` and `HH:mm:ss` are illegal with the
-   guard set while `dd.MM.yyyy` is legal ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05c)).
-
-   This arm had admitted every one of them. It is an **over**-admission, the opposite direction from
-   the under-admissions the declared-kind sweep was finding, which is why that sweep could not have
-   surfaced it and why no case here flipped when the rule landed: none carried the combination. The
-   two controls hold one variable each — the guard off on the same year-free format, and the guard on
-   with a year present. -/
-example :
-    let yearless : TemporalComponents :=
-      { fullDate with year := false }
-    let policyOf (format : String) (kind : TemporalKind)
-        (components : TemporalComponents) (guard : Bool) :=
-      TemporalTargetPolicy.errorFor?
-        { format, partialMode := .full, youngerThan1900Check := guard }
-        kind components
-    policyOf "MM-dd" .date yearless true =
-        some .youngerThan1900RequiresYear ∧
-      policyOf "HH:mm:ss" .date TemporalComponents.time true =
-        some .youngerThan1900RequiresYear ∧
-      policyOf "MM-dd" .date yearless false = none ∧
-      policyOf "dd.MM.yyyy" .date fullDate true = none := by
-  native_decide
-
-/- The clock and stamp declarations carry no such property: kernel 31.1.1's reader reads the member past and
-   the check stays inert (spec/01 §1.1), so the DM reader builds no such policy. A policy constructed with
-   the flag is incoherent, which this arm refuses. -/
-example :
-    TemporalTargetPolicy.errorFor?
-        { format := "HH:mm:ss", partialMode := .full,
-          youngerThan1900Check := true } .time TemporalComponents.time =
-        some .youngerThan1900RequiresDate ∧
-      TemporalTargetPolicy.errorFor?
-        { format := "yyyy-MM-dd'T'HH:mm:ss", partialMode := .full,
-          youngerThan1900Check := true } .dateTime TemporalComponents.now =
-        some .youngerThan1900RequiresDate := by
   native_decide
 
 /- A non-temporal target reaches a distinct shape error without target policy. -/
@@ -111,8 +68,7 @@ example :
     checkedPolicyOf { fields := [target] } 0 =
       some ({
         format := "HH:mm:ss"
-        partialMode := .full
-        youngerThan1900Check := false },
+        partialMode := .full },
         "UTC") := by
   native_decide
 
@@ -129,10 +85,8 @@ example :
 
 private def fullDateModel
     (format zoneId : String)
-    (partialMode : TemporalPartialMode := .full)
-    (youngerThan1900Check : Bool := false) : FlatModel := {
-  fields := [temporalTarget 0 "Date" format .date fullDate
-    partialMode youngerThan1900Check]
+    (partialMode : TemporalPartialMode := .full) : FlatModel := {
+  fields := [temporalTarget 0 "Date" format .date fullDate partialMode]
   timeZoneId := zoneId }
 
 private def utcInstant?
@@ -205,14 +159,10 @@ example :
           nonempty := by decide }) := by
   native_decide
 
-/- The optional pre-1900 check retains the exact attempted target text; disabling it accepts the same attempt. -/
+/- A result before 1900 is accepted: only the universal Gregorian floor bounds a computed Date target. -/
 example :
     let instant := utcInstant? 1899 12 31 0 0 0
-    evaluateAt? (fullDateModel "dd.MM.yyyy" "UTC" .full true) instant =
-        some (.errored {
-          text := "31.12.1899"
-          nonempty := by decide } .before1900) ∧
-      evaluateAt? (fullDateModel "dd.MM.yyyy" "UTC") instant =
+    evaluateAt? (fullDateModel "dd.MM.yyyy" "UTC") instant =
         some (.accepted {
           text := "31.12.1899"
           nonempty := by decide }) := by
@@ -258,19 +208,6 @@ example :
         [none, none, none, none] ∧
       KernelStaticDiagnostic.kernelCode .invalidDateType =
         "MVK_INVALID_DATE_TYPE" := by
-  native_decide
-
-/- Partial-target rejection precedes ordinary basic checks, while the FULL target retains the exact pre-1900 attempt. -/
-example :
-    let instant := utcInstant? 1899 12 31 0 0 0
-    fullDateElabError?
-        (fullDateModel "dd.MM.yyyy" "UTC" .yearOptional true) =
-        some (.partialPrecision 0 .yearOptional) ∧
-      evaluateAt?
-          (fullDateModel "dd.MM.yyyy" "UTC" .full true) instant =
-        some (.errored {
-          text := "31.12.1899"
-          nonempty := by decide } .before1900) := by
   native_decide
 
 /- **A complete-Date target is admitted by its declared format alone, on all three declared kinds.**

@@ -92,8 +92,8 @@ private def flagProfiles : List (String × String × DateRangeYearInterpretation
 /- The pre-1900 check is bound but inert on kernel 31.3.1, so it no longer separates a sharing class: the
    checked month-pair range shares the first `FROM` declaration's dotted format as the unchecked one does
    (KF677, [31.3.1 Letter J](../../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §1; kernel 31.1.1 kept the checked one in its own class). -/
-example : ((nativeDeclaration 1 "MM" "/" .anchorStart true).bind (·.dateRangePolicy)).map
-    (·.youngerThan1900Check) = some false ∧
+example : (nativeDeclaration 1 "MM" "/" .anchorStart true).bind (·.dateRangePolicy) =
+    some { format := "MM", separator := "/", interpretationOfYear := some .anchorStart } ∧
     components (nativeRead flagProfiles 1 "03/10") = some ("01.03-01.10", 2000, 2000, 1) ∧
     components (nativeRead flagProfiles 2 "03/10") = some ("01.03-01.10", 2000, 2000, 1) ∧
     (nativeRead flagProfiles 1 "11/02").map (·.1) = some "01.11-01.02" := by native_decide

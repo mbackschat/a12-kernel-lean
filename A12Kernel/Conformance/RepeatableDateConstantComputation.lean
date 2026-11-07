@@ -14,11 +14,10 @@ namespace A12Kernel.Conformance.RepeatableDateConstantComputation
 open A12Kernel
 
 private def dateField (id : FieldId) (name : String) (groupPath : GroupPath)
-    (scope : List RepeatableLevel) (format : String := "yyyy-MM-dd")
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (scope : List RepeatableLevel) (format : String := "yyyy-MM-dd") : FlatFieldDecl := {
   id, name, groupPath, repeatableScope := scope
   policy := { kind := .temporal .date TemporalComponents.fullDate }
-  temporalTargetPolicy := some { format, partialMode := .full, youngerThan1900Check }
+  temporalTargetPolicy := some { format, partialMode := .full }
 }
 
 private def iso := dateField 1 "DIso" ["Probe", "Rows"] [10]
@@ -46,12 +45,9 @@ private def dateShapedTime : FlatFieldDecl := {
 
 private def note := dateField 4 "Note" ["Probe", "Store"] []
 
-/-- A target that opts into the additional pre-1900 check, for the delegation case below. -/
-private def guarded := dateField 5 "DGuarded" ["Probe", "Rows"] [10] "yyyy-MM-dd" true
-
 private def model : FlatModel := {
   fields := [iso, ger, year, yearMonth, compact, monthOnly, monthDay,
-    monthDayCompact, dayMonthCompact, note, guarded, dateShapedTime]
+    monthDayCompact, dayMonthCompact, note, dateShapedTime]
   repeatableGroups := [
     { level := 10, path := ["Probe", "Rows"], repeatability := some 3 }]
   timeZoneId := "UTC"
@@ -227,14 +223,8 @@ example : (match checkRepeatableDateConstantComputation model ["Probe"] note.id 
     | .ok _ => (false, false)) = (false, true) := by
   native_decide
 
-/- The declaration's own additional check is **delegated, not restated**: a target opting into the
-   pre-1900 check errors on a 1899 constant while retaining the exact attempted text, and the same
-   constant is accepted by the unguarded target beside it. Both outcomes are measured on this exact
-   constant carrier ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)); this case
-   additionally locks that the carrier reaches the shared check rather than carrying a copy of it. -/
-example : (outcome? ["Probe"] guarded.id old, outcome? ["Probe"] iso.id old) =
-    (some (.errored (stored "1899-12-31") .before1900),
-     some (.accepted (stored "1899-12-31"))) := by
+/- A 1899 constant is accepted: only the universal floor bounds the constant carrier's target. -/
+example : outcome? ["Probe"] iso.id old = some (.accepted (stored "1899-12-31")) := by
   native_decide
 
 end A12Kernel.Conformance.RepeatableDateConstantComputation

@@ -31,9 +31,7 @@ theorem checkedDateConstantTarget_accepted_rendersInTargetFormat
       · exact absurd accepted (by simp)
       · split at accepted
         · exact absurd accepted (by simp)
-        · split at accepted
-          · exact absurd accepted (by simp)
-          · exact (FullDateTargetOutcome.accepted.inj accepted).symm
+        · exact (FullDateTargetOutcome.accepted.inj accepted).symm
   | omittedComponent target =>
       simp only [hTarget, CheckedDateConstantTarget.evaluateCivil,
         CheckedOmittedComponentDateTarget.evaluateCivil, CheckedOmittedComponentDateTarget.evaluateParts] at accepted

@@ -9,37 +9,15 @@ namespace A12Kernel
     (checked : CheckedTemporalTargetPolicy model) :
     checked.timeZoneId = model.timeZoneId := rfl
 
-/-- The optional pre-1900 branch retains the renderer's exact attempted stored form. -/
-theorem fullDateTarget_evaluate_pre1900
-    (target : CheckedFullDateTarget model)
-    (instant : Instant) (date : FullDate)
-    (localDate : target.profile.localDate? instant = some date)
-    (check : target.checked.policy.youngerThan1900Check = true)
-    (before : date.before1900 = true) :
-    target.evaluate (.value instant) =
-      .ok (.errored (target.format.render date) .before1900) := by
-  have before' :
-      date.civil.Before FullDate.year1900Start.civil := by
-    simpa [FullDate.before1900, FullDate.before] using before
-  simp only [CivilDate.Before] at before'
-  simp [CheckedDateFormatTarget.evaluate, localDate,
-    CheckedDateFormatTarget.evaluateCivil, CheckedDateFormatTarget.evaluateParts,
-    FullDateTargetFormat.renderCivil, check, before',
-    FullDateTargetFormat.render]
-  rfl
-
-/-- Without the optional pre-1900 policy, a real civil result below the universal Date floor retains the renderer's exact attempted stored form. -/
+/-- A real civil result below the universal Date floor retains the renderer's exact attempted stored form. -/
 theorem fullDateTarget_evaluateCivil_beforeGregorianFloor
     (target : CheckedFullDateTarget model) (date : CivilDate)
-    (noAdditionalCheck :
-      target.checked.policy.youngerThan1900Check = false)
     (beforeFloor : date.Before CivilDate.gregorianFloor) :
     target.evaluateCivil date =
       .errored (target.format.renderCivil date) .beforeGregorianFloor := by
   simp only [CivilDate.Before] at beforeFloor
   simp [CheckedDateFormatTarget.evaluateCivil, CheckedDateFormatTarget.evaluateParts,
-    FullDateTargetFormat.renderCivil, noAdditionalCheck,
-    beforeFloor]
+    FullDateTargetFormat.renderCivil, beforeFloor]
 
 /-- Every executable computed-Date target carries the FULL-precision authoring certificate. -/
 @[simp] theorem checkedFullDateTarget_precisionFull

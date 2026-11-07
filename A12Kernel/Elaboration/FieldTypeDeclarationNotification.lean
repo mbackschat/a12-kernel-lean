@@ -54,7 +54,6 @@ inductive FieldTypeNotificationKind where
   | customNameMissing
   | customNameContent
   | optionalDateTypeInvalid
-  | additionalCheckInvalid
   | countOfValuesInvalid
   | internalValuesAndDisplayValues
   | internalValueMissing
@@ -80,7 +79,7 @@ def all : List FieldTypeNotificationKind :=
     patternInvalid, valueTooLong, valueTooShort, valuesDuplicate, supplementaryCharacter,
     fractDigitsMissing, fractDigitsInvalid, maxLengthTooBig, minLengthTooBig, maxLengthTooSmall,
     arityTooBig, minValueBiggerThanMaxValue, customNameMissing, customNameContent,
-    optionalDateTypeInvalid, additionalCheckInvalid, countOfValuesInvalid,
+    optionalDateTypeInvalid, countOfValuesInvalid,
     internalValuesAndDisplayValues, internalValueMissing, displayValuesDuplicate, internalValueInvalid,
     displayValueInvalid, categoryValueInvalid, lineBreak, sValueInvalid, dateFormatInvalid,
     dateRangeFormatInvalid, dateRangeFormatMissing, dateRangeSeparatorInvalid]
@@ -113,7 +112,6 @@ def label : FieldTypeNotificationKind → String
   | customNameMissing => "CUSTOM_FIELD_TYPE_CODENAME_MISSING"
   | customNameContent => "codeless:custom-name-content"
   | optionalDateTypeInvalid => "MVK_OPTIONAL_DATE_TYPE_INVALID"
-  | additionalCheckInvalid => "MVK_ADDITIONAL_CHECK_INVALID"
   | countOfValuesInvalid => "MVK_COUNT_OF_VALUES_INVALID"
   | internalValuesAndDisplayValues => "MVK_INTERNAL_VALUES_AND_DISPLAY_VALUES"
   | internalValueMissing => "MVK_INTERNAL_VALUE_MISSING"
@@ -189,7 +187,6 @@ structure CustomTypeDeclaration where
 structure DateTypeDeclaration where
   format : Option String := none
   partialMode : TemporalPartialMode := .full
-  youngerThan1900Check : Bool := false
   deriving Repr, DecidableEq
 
 /-- One display label of an Enumeration value for a locale. -/
@@ -238,7 +235,6 @@ structure TemporalTypeDeclaration where
 /-- A DateFragment body as authored: the format is the `formatOfFragment` member. -/
 structure DateFragmentTypeDeclaration where
   format : Option String := none
-  youngerThan1900Check : Bool := false
   deriving Repr, DecidableEq
 
 /-- A DateRange body as authored; an absent separator is `/`. -/
@@ -523,15 +519,11 @@ is admitted. -/
 private def formatRefused (declared : Option String) : Bool :=
   declared.any fun format => !temporalDeclarationFormatAdmitted format
 
-/-- A partial precision needs a complete pure date, and the year check needs a year. The two are asked
-of the shared policy gate one at a time with the other disabled, because the gate itself returns only
-its first defect and the Kernel reports both (`od-both`). -/
+/-- A partial precision needs a complete pure date. -/
 private def datePolicyNotifications (policy : TemporalTargetPolicy) : List FieldTypeNotification :=
   let components := TemporalComponents.ofFormat policy.format
-  raiseIf ({ policy with youngerThan1900Check := false }.errorFor? .date components ==
-      some .partialModeRequiresFullDate) .optionalDateTypeInvalid ++
-    raiseIf ({ policy with partialMode := .full }.errorFor? .date components ==
-      some .youngerThan1900RequiresYear) .additionalCheckInvalid
+  raiseIf (policy.errorFor? .date components == some .partialModeRequiresFullDate)
+    .optionalDateTypeInvalid
 
 /-- A Date's format gate, then the laws that read its components. A format outside the vocabulary binds
 nothing, as a member out of range does, so the component laws are silent beside it; no row measures the
@@ -540,23 +532,18 @@ private def dateNotifications (declaration : DateTypeDeclaration) : List FieldTy
   if formatRefused declaration.format then [.declared .dateFormatInvalid]
   else datePolicyNotifications {
     format := declaration.format.getD "yyyy-MM-dd"
-    partialMode := declaration.partialMode
-    youngerThan1900Check := declaration.youngerThan1900Check }
+    partialMode := declaration.partialMode }
 
 /-- A Time or DateTime body has the format gate alone (`tb-time-badfmt`, `tb-dt-badfmt`). -/
 private def temporalNotifications (declaration : TemporalTypeDeclaration) :
     List FieldTypeNotification :=
   raiseIf (formatRefused declaration.format) .dateFormatInvalid
 
-/-- A DateFragment's format gate, then the Date's pre-1900 law over its components. Its precision is
-not read: no row measures one on a fragment (`tb-frag-1900`, `tb-frag-1900-ok`). `judge` answers an
-absent or empty format before this runs. -/
+/-- A DateFragment has the format gate alone: its precision is not read, as no row measures one on a
+fragment. `judge` answers an absent or empty format before this runs. -/
 private def dateFragmentNotifications (declaration : DateFragmentTypeDeclaration) :
     List FieldTypeNotification :=
-  if formatRefused declaration.format then [.declared .dateFormatInvalid]
-  else datePolicyNotifications {
-    format := declaration.format.getD ""
-    youngerThan1900Check := declaration.youngerThan1900Check }
+  raiseIf (formatRefused declaration.format) .dateFormatInvalid
 
 /-- A DateRange is judged on the format the Kernel composes, `format ++ separator ++ format`, an absent
 format composing as the text `null` and an absent separator as `/`, and an empty member as an absent one

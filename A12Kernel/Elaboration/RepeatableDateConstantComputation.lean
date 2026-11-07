@@ -12,10 +12,8 @@ constant families do ([checkpoint](../../docs/sources/computation-placement-and-
 
 **The target's exact format is a rendering rather than a spelling-equality gate, but the target is not
 unchecked.** Its temporal component family and Base-Year state participate in admission, while its
-measured opt-in pre-1900 policy runs after rendering. One literal is admitted into `dd.MM.yyyy`,
-`yyyy-MM-dd`, and `yyyy` targets alike; a guarded ISO target then retains an attempted pre-1900 value
-as errored while its otherwise identical unguarded sibling accepts it
-([checkpoints](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)).
+Gregorian-floor gate runs after rendering. One literal is admitted into `dd.MM.yyyy`,
+`yyyy-MM-dd`, and `yyyy` targets alike.
 
 What decides admission is the **literal's own spelling**, upstream of this carrier: a token counts as
 a Date constant only when it is a double-quoted, zero-padded, calendar-*real* `DD.MM.YYYY`, so
@@ -25,7 +23,7 @@ therefore takes an already-classified `CivilDate` and owns no lexical gate; `spe
 
 The constant carries no zone and never becomes an `Instant`. It reaches the declaration's own
 `evaluateCivil`, which renders it in the target's declared format and applies that declaration's
-ordered pre-1900 and Gregorian-floor gates. A **component-omitting** target renders the same literal into its own declared component subset:
+Gregorian-floor gate. A **component-omitting** target renders the same literal into its own declared component subset:
 `yyyy` stores `2024`, `yyyy-MM` stores `2024-03`, and `yyyyMM` stores `202403`, the discarded
 components reported nowhere. That is one measured rule with the complete one, so the carrier admits
 both target shapes through a single dispatch rather than two carriers. The **yearless** `MM` and

@@ -42,8 +42,7 @@ private def date (declaration : DateTypeDeclaration) : FieldTypeDeclaration := .
 /-- A Time or DateTime body, which carries only a format. -/
 private def temporal (format : Option String) : FieldTypeDeclaration := .temporal { format }
 
-private def fragment (format : Option String) (youngerThan1900Check : Bool := false) :
-    FieldTypeDeclaration := .dateFragment { format, youngerThan1900Check }
+private def fragment (format : Option String) : FieldTypeDeclaration := .dateFragment { format }
 
 private def dateRange (format separator : Option String) : FieldTypeDeclaration :=
   .dateRange { format, separator }
@@ -342,21 +341,15 @@ example :
     labels (custom { name := some "S g" }) = ["codeless:custom-name-content"] := by
   native_decide
 
-/- Law 5, a partial Date precision needs a complete pure date format, an absent format is the
-   complete date, the year check needs a year, and the two co-report rather than the first masking the
-   second (od-1, od-twin, od-noformat, od-instant, od-both). -/
+/- Law 5, a partial Date precision needs a complete pure date format, and an absent format is the
+   complete date (od-1, od-twin, od-noformat, od-instant). -/
 example :
     labels (date { format := some "yyyy-MM", partialMode := .dayOptional }) =
       ["MVK_OPTIONAL_DATE_TYPE_INVALID"] ∧
     labels (date { format := some "yyyy-MM-dd", partialMode := .dayOptional }) = [] ∧
     labels (date { partialMode := .dayOptional }) = [] ∧
     labels (date { format := some "yyyy-MM-dd'T'HH:mm:ss", partialMode := .dayOptional }) =
-      ["MVK_OPTIONAL_DATE_TYPE_INVALID"] ∧
-    labels (date { format := some "MM-dd", youngerThan1900Check := true,
-                   partialMode := .dayOptional }) =
-      ["MVK_ADDITIONAL_CHECK_INVALID", "MVK_OPTIONAL_DATE_TYPE_INVALID"] ∧
-    labels (date { format := some "MM-dd", youngerThan1900Check := true }) =
-      ["MVK_ADDITIONAL_CHECK_INVALID"] := by
+      ["MVK_OPTIONAL_DATE_TYPE_INVALID"] := by
   native_decide
 
 /- Law 6, a type none of the classes concerns raises none. Kernel 30.8.1's one notification per
@@ -528,22 +521,18 @@ example :
     labels (temporal (some "")) = [modelNotBuiltLabel] ∧ labels (fragment (some "")) = [modelNotBuiltLabel] := by
   native_decide
 
-/- A refused format binds nothing, as a refused member does: the partial-precision and pre-1900 laws
-   that read the Date's components are silent beside it. No row measures the combination. -/
+/- A refused format binds nothing, as a refused member does: the partial-precision law that reads the
+   Date's components is silent beside it. No row measures the combination. -/
 example :
-    labels (date { format := some "yyyy/MM/dd", partialMode := .dayOptional, youngerThan1900Check := true })
+    labels (date { format := some "yyyy/MM/dd", partialMode := .dayOptional })
       = ["codeless:date-format-invalid"] := by
   native_decide
 
-/- Law 9, a DateFragment with the pre-1900 check needs a year in its format, by the Date law; its
-   precision is not read (tb-frag-1900, tb-frag-1900-ok). -/
+/- Law 9, a DateFragment has the format gate alone: its precision is not read. -/
 example :
-    labels (fragment (some "dd.MM.") (youngerThan1900Check := true)) =
-      ["MVK_ADDITIONAL_CHECK_INVALID"] ∧
-    labels (fragment (some "dd.MM.yyyy") (youngerThan1900Check := true)) = [] ∧
+    labels (fragment (some "dd.MM.yyyy")) = [] ∧
     labels (fragment (some "dd.MM.")) = [] ∧
-    labels (fragment (some "dd.MM") (youngerThan1900Check := true)) =
-      ["codeless:date-format-invalid"] := by
+    labels (fragment (some "dd.MM")) = ["codeless:date-format-invalid"] := by
   native_decide
 
 /- Law 10, a DateRange pair must be on the allowlist, an absent separator being `/` and an absent

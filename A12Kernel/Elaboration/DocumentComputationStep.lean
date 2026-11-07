@@ -42,8 +42,8 @@ document would read its stored rendering, a cleared one as empty, and an errored
 computed-dependency poison, which is the projection String and Number targets already make. The rendering
 read is what the Kernel shows on Berlin's repeated hour, where a dependent reads a computed DateTime at the
 offset its text denotes rather than at the instant computed
-([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-datetime-join)); a pre-1900
-Date the target retains as errored reaches its readers as poison under both presence tests
+([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-datetime-join)); a Date
+the target retains as errored reaches its readers as poison under both presence tests
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)), and so does an
 inverted DateRange the target retains as errored
 ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-date-range-join)). A

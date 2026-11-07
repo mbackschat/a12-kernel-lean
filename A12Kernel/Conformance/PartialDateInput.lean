@@ -17,15 +17,14 @@ namespace A12Kernel.Conformance.PartialDateInput
 open A12Kernel
 
 private def declaration (mode : TemporalPartialMode)
-    (before1900 : Bool := false) (format : String := "yyyy-MM-dd") : FlatFieldDecl := {
+    (format : String := "yyyy-MM-dd") : FlatFieldDecl := {
   id := 0
   groupPath := ["Order"]
   name := "P"
   policy := { kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy := some {
     format
-    partialMode := mode
-    youngerThan1900Check := before1900 }
+    partialMode := mode }
 }
 
 /-- The classified outcome projected to a decidable view: the admitted case's own value is checked
@@ -37,10 +36,10 @@ private inductive Outcome where
   deriving Repr, DecidableEq
 
 private def classify? (mode : TemporalPartialMode) (text : String)
-    (before1900 : Bool := false) (format : String := "yyyy-MM-dd") :
+    (format : String := "yyyy-MM-dd") :
     Option Outcome := do
   let checked ←
-    (certifyPartialDateInputField (declaration mode before1900 format)).toOption
+    (certifyPartialDateInputField (declaration mode format)).toOption
   pure <| match checked.classifyStored .utc text with
     | .presentEmpty => .empty
     | .rejected cause => .rejected cause
@@ -120,18 +119,13 @@ the value constructor and a `none` from it would otherwise read as unreality. Th
 one month later pins that the floor rather than the year is doing the work. -/
 example :
     classify? .dayOptional "1583-10-00" = some (.rejected .dateInvalid) ∧
-      classify? .dayOptional "1583-11-00" = some .admitted ∧
-      classify? .dayOptional "1583-11-00" (before1900 := true) =
-        some (.rejected .dateInvalid) := by
+      classify? .dayOptional "1583-11-00" = some .admitted := by
   native_decide
 
-/- The optional pre-1900 check moves the same boundary without changing the cause, so a consumer cannot
-tell the two thresholds apart from the cause alone — only from the declaration. -/
+/- The year 1900 is no boundary: only the universal floor bounds the position in time. -/
 example :
-    classify? .dayOptional "1899-12-00" (before1900 := true) =
-        some (.rejected .dateInvalid) ∧
-      classify? .dayOptional "1899-12-00" = some .admitted ∧
-      classify? .dayOptional "1900-01-00" (before1900 := true) = some .admitted := by
+    classify? .dayOptional "1899-12-00" = some .admitted ∧
+      classify? .dayOptional "1900-01-00" = some .admitted := by
   native_decide
 
 /- Empty text is present-empty at every precision: emptiness is not invalidity, and no component is

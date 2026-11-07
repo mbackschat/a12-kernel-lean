@@ -53,15 +53,6 @@ inductive TemporalPartialMode where
 inductive TemporalTargetPolicyError where
   | emptyFormat
   | partialModeRequiresFullDate
-  /-- The opt-in pre-1900 check on a declaration whose object carries no such property. The Kernel's
-  `TimeType` and `DateTimeType` declare only a format and annotations, and kernel 31.1.1's reader reads the
-  member past, so it stays inert (spec/01 §1.1); the DM reader therefore never builds this policy, and the
-  arm guards one constructed directly. -/
-  | youngerThan1900RequiresDate
-  /-- The opt-in pre-1900 check on a Date declaration whose format carries **no year**. The Kernel
-  refuses the model with `MVK_ADDITIONAL_CHECK_INVALID`, and its own message keys on the components —
-  *date fields without a year* — rather than on the kind. -/
-  | youngerThan1900RequiresYear
   deriving Repr, DecidableEq
 
 /-- Complete declaration-owned policy needed by stored partial-Date consumers and before a resolved temporal value can be rendered and checked as a computed target. The model time zone remains a separate model-wide input. -/
@@ -69,7 +60,6 @@ structure TemporalTargetPolicy where
   /-- Exact already-admitted format source, including component order, separators, and quoting. -/
   format : String
   partialMode : TemporalPartialMode := .full
-  youngerThan1900Check : Bool := false
   deriving Repr, DecidableEq
 
 /-- Static incoherence in one declaration-owned DateRange format policy. A refused pair is classified by an absent source where one is missing and by unsupported pair membership otherwise; no external Kernel diagnostic class is claimed for either. -/
@@ -96,7 +86,6 @@ structure DateRangeDeclarationPolicy where
   format : String
   separator : String
   interpretationOfYear : Option DateRangeYearInterpretation := none
-  youngerThan1900Check : Bool := false
   deriving Repr, DecidableEq
 
 /-- The separator the runtime splits a stored range at: an empty declared separator reads as `/` wherever the Kernel copies the model before checking or evaluating it (spec/05 §8.1). Static admission keeps the literal member, so a pair admitted only with its empty spelling stays distinguishable there. -/
@@ -164,31 +153,10 @@ def separator : DateRangeFormat → String
 
 end DateRangeFormat
 
-/-- Check only the cross-field invariants visible at the parser-independent flat boundary.
-
-A non-full partial mode belongs to a full Date declaration. The opt-in pre-1900 check belongs to a
-Date declaration **whose format carries a year**: the Kernel refuses a year-free one outright with
-`MVK_ADDITIONAL_CHECK_INVALID`, and its message keys on the components rather than on the kind
-([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-05c)). This arm admitted every year-free Date
-declaration with the guard set, which is an **over**-admission — a legal-looking model the Kernel
-rejects — and the opposite direction from the under-admissions the kind/format sweep was finding, so
-that sweep could not have surfaced it.
-
-**Keying on components rather than on the declared kind is measured, and the mechanism behind it is
-read.** This estate represents a DATE_FRAGMENT as `.date` carrying fragment components, so the two
-carriers cannot be told apart here — a collapse that was a representational bet until `kf276` swept
-the twelve admitted fragment formats and found the five year-free spellings refused and the seven
-year-bearing ones admitted, exactly as DATE behaves; the Kernel's own `TypeConverter.convertDateFragment`
-turns a fragment declaration into a Date declaration carrying the flag, which is why the agreement is
-structural rather than coincidental ([inbound](../../docs/sources/inbound-handbacks.md#inbound-2026-09-08)). A case
-naming a fragment format would vary nothing and is deliberately absent.
-
-The same finding puts DATE_RANGE on the other side: it takes the guard on all eight admitted
-`(format, separator)` pairs, the four year-free ones included, so the co-requirement belongs to these
-carriers and not to the check. That arm is unreachable here by typing — `DateRangeDeclarationPolicy`
-carries no such flag — which is what keeps this gate from the uniform over-refusal `spec/05` warns a
-consumer against, and which also leaves the range's measured runtime half unmodelled; see
-[`gaps/numeric-and-temporal.md`](../../docs/gaps/numeric-and-temporal.md). -/
+/-- Check only the cross-field invariants visible at the parser-independent flat boundary: a non-full partial
+mode belongs to a full Date declaration. Kernel 31.3.1 binds a declaration's
+`youngerThan1900Check` as a Boolean but never checks or evaluates it, so no policy owns it
+(spec/05 §4.1, spec/01 §1.1). -/
 def TemporalTargetPolicy.errorFor?
     (policy : TemporalTargetPolicy)
     (kind : TemporalKind) (components : TemporalComponents) :
@@ -198,9 +166,7 @@ def TemporalTargetPolicy.errorFor?
   else
     match kind with
     | .date =>
-        if policy.youngerThan1900Check && !components.year then
-          some .youngerThan1900RequiresYear
-        else if policy.partialMode == .full ||
+        if policy.partialMode == .full ||
             components == TemporalComponents.fullDate then
           none
         else
@@ -208,8 +174,6 @@ def TemporalTargetPolicy.errorFor?
     | .time | .dateTime =>
         if policy.partialMode != .full then
           some .partialModeRequiresFullDate
-        else if policy.youngerThan1900Check then
-          some .youngerThan1900RequiresDate
         else
           none
 

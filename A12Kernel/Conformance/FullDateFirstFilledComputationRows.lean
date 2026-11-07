@@ -9,11 +9,10 @@ open A12Kernel
 private def dateField (id : FieldId) (name : String)
     (groupPath : GroupPath) (scope : List RepeatableLevel)
     (format : String := "yyyy-MM-dd")
-    (partialMode : TemporalPartialMode := .full)
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (partialMode : TemporalPartialMode := .full) : FlatFieldDecl := {
   id, name, groupPath, repeatableScope := scope
   policy := { kind := .temporal .date TemporalComponents.fullDate }
-  temporalTargetPolicy := some { format, partialMode, youngerThan1900Check }
+  temporalTargetPolicy := some { format, partialMode }
 }
 
 private def source := dateField 1 "PromiseDate"
@@ -27,17 +26,15 @@ private def timeSource : FlatFieldDecl := {
   temporalTargetPolicy := some { format := "HH:mm:ss" }
 }
 private def target := dateField 4 "SelectedDate"
-  ["Projects", "Tasks"] [10, 30] "yyyy-MM-dd" .full true
+  ["Projects", "Tasks"] [10, 30]
 private def dottedTarget := dateField 5 "DottedTarget"
   ["Projects", "Tasks"] [10, 30] "dd.MM.yyyy"
-private def checkedSource := dateField 6 "CheckedSource"
-  ["Projects", "Choices"] [10, 20] "yyyy-MM-dd" .full true
 private def fixedTarget := dateField 7 "FixedDate" ["Summary"] []
 private def unrelated := dateField 8 "UnrelatedDate" ["Summary"] []
 
 private def model : FlatModel := {
   fields := [source, dottedSource, timeSource, target, dottedTarget,
-    checkedSource, fixedTarget, unrelated]
+    fixedTarget, unrelated]
   repeatableGroups := [
     { level := 10, path := ["Projects"], repeatability := some 5 },
     { level := 20, path := ["Projects", "Choices"], repeatability := some 3,
@@ -78,8 +75,6 @@ example : operation?.isSome = true ∧
     elabError? (checkFullDateFirstFilledComputation model
       ["Projects", "Tasks"] target.id (.star (siblingStar timeSource.name))) =
         some (.shape (.sourceCarrier timeSource.path)) ∧
-    (checkFullDateFirstFilledComputation model
-      ["Projects", "Tasks"] target.id (.star (siblingStar checkedSource.name))).isOk = true ∧
     elabError? (checkFullDateFirstFilledComputation model
       ["Summary"] fixedTarget.id (.star (siblingStar source.name))) =
         some (.shape (.site (.source (.resolve (.unknownRootGroup
@@ -150,7 +145,7 @@ private def input? : Option (CheckedDocument model) := document? [
 private def stored (text : String) (nonempty : text ≠ "" := by decide) :
     StoredDate := { text, nonempty }
 
-/- Every target row scans its own parent's sibling extent, and target rejection stays distinct from source poison. -/
+/- Every target row scans its own parent's sibling extent, and a malformed source is poison while a pre-1900 one stores (spec/05 §4.1). -/
 example : (do
     let operation ← operation?
     let input ← input?
@@ -162,9 +157,9 @@ example : (do
       (address target.id [3, 1], .noValue),
       (address target.id [4, 1], .poison .dateFormat),
       (address target.id [5, 1],
-        .errored (stored "1899-12-31") .before1900),
+        .accepted (stored "1899-12-31")),
       (address target.id [5, 2],
-        .errored (stored "1899-12-31") .before1900)] := by
+        .accepted (stored "1899-12-31"))] := by
   native_decide
 
 private structure ResultApplicationSummary where
@@ -214,18 +209,20 @@ private def resultApplicationSummary? : Option ResultApplicationSummary := do
     unrelatedState := applied (address unrelated.id [])
   }
 
-/- Result projection keeps exact errors and clears separate; application clears an existing errored destination but does not create an absent one. -/
+/- Result projection keeps values, changes and clears separate; application overwrites an existing destination, creates an absent one, and leaves an unread field alone. -/
 example : resultApplicationSummary? = some {
     values := [
       (address target.id [1, 1], "2024-06-15"),
       (address target.id [1, 2], "2024-06-15"),
-      (address target.id [2, 1], "2024-07-16")]
+      (address target.id [2, 1], "2024-07-16"),
+      (address target.id [5, 1], "1899-12-31"),
+      (address target.id [5, 2], "1899-12-31")]
     changes := [
       (address target.id [1, 2], "2024-06-15"),
-      (address target.id [2, 1], "2024-07-16")]
-    errors := [
-      (address target.id [5, 1], "1899-12-31", .before1900),
-      (address target.id [5, 2], "1899-12-31", .before1900)]
+      (address target.id [2, 1], "2024-07-16"),
+      (address target.id [5, 1], "1899-12-31"),
+      (address target.id [5, 2], "1899-12-31")]
+    errors := []
     cleared := [address target.id [3, 1], address target.id [4, 1]]
     residual := [.malformed]
     row11 := .presentValue (stored "2024-01-01")
@@ -233,8 +230,8 @@ example : resultApplicationSummary? = some {
     row21 := .presentValue (stored "2024-07-16")
     row31 := .presentEmpty
     row41 := .presentEmpty
-    row51 := .presentEmpty
-    row52 := .absent
+    row51 := .presentValue (stored "1899-12-31")
+    row52 := .presentValue (stored "1899-12-31")
     unrelatedState := .presentValue (stored "2024-04-01")
   } := by
   native_decide

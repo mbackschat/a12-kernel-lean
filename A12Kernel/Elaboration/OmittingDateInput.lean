@@ -211,7 +211,7 @@ position checks. Kernel `DateUtil.completeDateAndFormat` appends the Base Year o
 month are present; the fragment-limit grid (2026-10-04) separates that from runtime completion. The
 model zone's profile decides calendar reality, which is zone-dependent for a Julian leap day (spec/05 §4). -/
 def OmittingDateFormat.classifyStored (format : OmittingDateFormat) (profile : ModelZone.ConcreteProfile)
-    (baseYear : Option Int) (youngerThan1900Check : Bool) (text : String) :
+    (baseYear : Option Int) (text : String) :
     Except FullDateTargetError OmittingDateStoredValue := do
   let formatError := FullDateTargetError.renderingRejected .dateFormat
   let (parts, value) ← if format.carriesYear then do
@@ -222,8 +222,6 @@ def OmittingDateFormat.classifyStored (format : OmittingDateFormat) (profile : M
       let year := if format == .month then 1970 else baseYear.getD 2000
       pure (({ year, month := value.month, day := value.day } : DateParts), some value)
   if !profile.storedLabelReal parts then throw formatError
-  if youngerThan1900Check && parts.Before FullDate.year1900Start.civil.parts then
-    throw .before1900
   if parts.Before CivilDate.gregorianFloor.parts then throw .beforeGregorianFloor
   match value with
   | some value => pure (.yearless value)
@@ -241,9 +239,9 @@ def CheckedOmittingDateInputField.classifyStoredForModel
     (checked : CheckedOmittingDateInputField) (profile : ModelZone.ConcreteProfile)
     (baseYear : Option Int) (text : String) : OmittingDateInputCell :=
   if text.isEmpty then .presentEmpty
-  else match checked.format.classifyStored profile baseYear checked.policy.youngerThan1900Check text with
+  else match checked.format.classifyStored profile baseYear text with
     | .ok value => .admitted value
     | .error (.renderingRejected cause) => .rejected cause
-    | .error .before1900 | .error .beforeGregorianFloor => .rejected .dateInvalid
+    | .error .beforeGregorianFloor => .rejected .dateInvalid
 
 end A12Kernel

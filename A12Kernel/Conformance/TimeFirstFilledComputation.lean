@@ -10,8 +10,7 @@ private def timeField (id : FieldId) (groups : GroupPath) (name : String)
     (scope : List RepeatableLevel := [])
     (format : String := "HH:mm:ss")
     (components : TemporalComponents := TemporalComponents.time)
-    (partialMode : TemporalPartialMode := .full)
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (partialMode : TemporalPartialMode := .full) : FlatFieldDecl := {
   id
   groupPath := groups
   name
@@ -19,7 +18,6 @@ private def timeField (id : FieldId) (groups : GroupPath) (name : String)
   temporalTargetPolicy := some {
     format
     partialMode
-    youngerThan1900Check
   }
   repeatableScope := scope
 }
@@ -55,9 +53,6 @@ private def otherGroupTarget := timeField 9 ["Other"] "OtherTime"
 private def partialSource :=
   timeField 11 ["Cart", "Lines"] "PartialTime" [10] "HH:mm:ss"
     TemporalComponents.time .yearOptional
-private def checkedSource :=
-  timeField 12 ["Cart", "Lines"] "CheckedTime" [10] "HH:mm:ss"
-    TemporalComponents.time .full true
 
 /-- A **DATE**-declared target whose format and components are the clock's. Both halves matter: with
 a full-date component set beside the clock format the cell would be refusable for its components, so
@@ -273,7 +268,6 @@ example :
       (checked? target.id (star "IncompleteTime")).isNone = true ∧
       (checked? target.id (star "Date")).isNone = true ∧
       partialSource.temporalFirstFilledStarCarrier? = none ∧
-      checkedSource.temporalFirstFilledStarCarrier? = none ∧
       (checked? otherFormatTarget.id (star "Time")).isNone = true ∧
       (checkedAt? ["Cart", "Lines"] target.id (star "Time")).isSome = true ∧
       (checkedAt? [] target.id (star "Time")).isNone = true ∧

@@ -38,9 +38,8 @@ inductive TemporalFirstFilledStarCarrier where
 
     `DATE_RANGE` stays keyed on its kind, and correctly: it is the one kind whose format is
     allowlisted as a `(format, separator)` **pair** rather than as a bare format string, so its
-    profile genuinely cannot be read off a format alone. Scalar Date sources retain their pre-1900
-    policy for the input classifier; targets apply their own policy after rendering, as the K11
-    profile-completion capture separates source poison from target rejection
+    profile genuinely cannot be read off a format alone. Targets apply their own policy after
+    rendering, as the K11 profile-completion capture separates source poison from target rejection
     ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-target-profiles-k11)).
 
     A DateFragment is a component-omitting Date: its declared components are the ones its format
@@ -114,21 +113,6 @@ def TemporalFirstFilledStarCarrier.acceptsSource
     | some targetComponents, some sourceComponents => targetComponents == sourceComponents
     | _, _ => target == source
 
-/-- A target declaration as a carrier whose target policy owns the pre-1900 check reads it: that
-policy reports an earlier Date as errored rather than refusing the target, measured for a full-Date
-copy at a fixed target ([checkpoint](../../docs/sources/computation-scheduling-probes.md#src-document-step-join)),
-a Date constant at a repeatable one ([checkpoint](../../docs/sources/temporal-constant-and-base-year-probes.md#src-date-constant-pre-1900-target)),
-and this operation at a repeatable one ([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-full-date-repeatable-first-filled)).
-A source keeps the check for formal input classification before selection. -/
-def FlatFieldDecl.withoutBefore1900Check (declaration : FlatFieldDecl) : FlatFieldDecl :=
-  { declaration with temporalTargetPolicy :=
-      declaration.temporalTargetPolicy.map ({ · with youngerThan1900Check := false }) }
-
-/-- The target as a carrier reads it: without the pre-1900 check when its own policy owns it. -/
-def FlatFieldDecl.firstFilledTargetProfile (declaration : FlatFieldDecl)
-    (ownsBefore1900 : Bool) : FlatFieldDecl :=
-  if ownsBefore1900 then declaration.withoutBefore1900Check else declaration
-
 /-- The temporal `FirstFilledValue` carriers, one per family. -/
 inductive TemporalFirstFilledFamily where
   | time
@@ -140,13 +124,11 @@ inductive TemporalFirstFilledFamily where
 
 /-- The carrier family a target selects, read off its profile as every carrier reads it: by format
 and never by declared kind, so a DATE declared `HH:mm:ss` is a Time target as the Kernel measures it
-([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)). The
-pre-1900 check is set aside for family choice alone; the source classifier and target policy retain
-its phase-specific meaning. A declaration with no profile falls back on its declared kind, so the carrier
-that kind names states the refusal. -/
+([checkpoint](../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)). A declaration with no profile
+falls back on its declared kind, so the carrier that kind names states the refusal. -/
 def FlatFieldDecl.temporalFirstFilledFamily? (target : FlatFieldDecl) :
     Option TemporalFirstFilledFamily :=
-  match target.withoutBefore1900Check.temporalFirstFilledStarCarrier?, target.policy.kind with
+  match target.temporalFirstFilledStarCarrier?, target.policy.kind with
   | some .timeHms, _ => some .time
   | some .dateTimeIso, _ => some .dateTime
   | some (.fullDate _), _ => some .fullDate
@@ -175,10 +157,7 @@ structure CheckedTemporalFirstFilledSite (model : FlatModel) where
   site : CheckedFirstFilledSite model
   carrier : TemporalFirstFilledStarCarrier
   sourceProfile : TemporalFirstFilledStarCarrier
-  /-- Whether the carrier's target policy owns the target's pre-1900 check. -/
-  ownsBefore1900 : Bool
-  targetCarrier :
-    (site.target.firstFilledTargetProfile ownsBefore1900).temporalFirstFilledStarCarrier? = some carrier
+  targetCarrier : site.target.temporalFirstFilledStarCarrier? = some carrier
   sourceCarrier :
     site.source.declarations.all (·.temporalFirstFilledStarCarrier? == some sourceProfile) = true
   sourceAccepted : carrier.acceptsSource sourceProfile model.hasBaseYear = true
@@ -195,13 +174,12 @@ def referencesField (shape : CheckedTemporalFirstFilledSite model) (field : Fiel
 
 end CheckedTemporalFirstFilledSite
 
-/-- Place the target and source, then check both carriers against the target's own profile, read
-without the pre-1900 check when the calling carrier's target policy owns it. -/
+/-- Place the target and source, then check both carriers against the target's own profile. -/
 def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath)
-    (targetField : FieldId) (authored : SurfaceFirstFilledSource) (ownsBefore1900 : Bool := false) :
+    (targetField : FieldId) (authored : SurfaceFirstFilledSource) :
     Except TemporalFirstFilledSiteElabError (CheckedTemporalFirstFilledSite model) := do
   let site ← (checkFirstFilledSite model declaringGroup targetField authored).mapError .site
-  match hTarget : (site.target.firstFilledTargetProfile ownsBefore1900).temporalFirstFilledStarCarrier? with
+  match hTarget : site.target.temporalFirstFilledStarCarrier? with
   | none => throw (.targetCarrier site.target.path)
   | some carrier =>
     let first := (site.source.declarations.head?).getD site.target
@@ -214,7 +192,7 @@ def checkTemporalFirstFilledSite (model : FlatModel) (declaringGroup : GroupPath
           if let .list _ := site.source then
             if carrier.dateRangeComponents?.isSome then throw (.sourceShape site.target.path)
           if hExcludes : site.referencesWith site.targetField (·.forbidsTarget site.targetField) = false then
-            pure { site, carrier, sourceProfile, ownsBefore1900
+            pure { site, carrier, sourceProfile
                    targetCarrier := hTarget
                    sourceCarrier := hSource
                    sourceAccepted := hAccepted

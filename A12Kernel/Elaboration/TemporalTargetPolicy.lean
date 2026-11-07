@@ -255,14 +255,11 @@ inductive FullDateTargetEvaluationFault where
 
 namespace CheckedDateFormatTarget
 
-/-- Render one real civil result before applying the target's ordered additional-check and universal-floor gates. The attempted text survives either rejection. -/
+/-- Render one real civil result before applying the target's ordered universal-floor and format-round-trip gates. The attempted text survives either rejection. -/
 def evaluateParts (target : CheckedDateFormatTarget model)
     (parts : DateParts) : FullDateTargetOutcome :=
   let stored := target.format.renderParts parts
-  if target.checked.policy.youngerThan1900Check &&
-      parts.Before FullDate.year1900Start.civil.parts then
-    .errored stored .before1900
-  else if parts.Before CivilDate.gregorianFloor.parts then
+  if parts.Before CivilDate.gregorianFloor.parts then
     .errored stored .beforeGregorianFloor
   else if target.format.parseParts? target.profile stored.text == none then
     .errored stored (.renderingRejected .dateFormat)
@@ -373,7 +370,7 @@ from the expression's intermediate date (calendar-expression fragment-limit grid
 def evaluateParts (target : CheckedOmittedComponentDateTarget model sourceCarriesYear)
     (parts : DateParts) : FullDateTargetOutcome :=
   let stored := target.format.renderParts parts
-  match target.format.classifyStored target.profile model.baseYear target.checked.policy.youngerThan1900Check stored.text with
+  match target.format.classifyStored target.profile model.baseYear stored.text with
   | .ok _ => .accepted stored
   | .error cause => .errored stored cause
 

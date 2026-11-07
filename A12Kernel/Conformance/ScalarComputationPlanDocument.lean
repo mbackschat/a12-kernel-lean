@@ -3,8 +3,8 @@ import A12Kernel.Elaboration.TimeComputation
 
 /-! # Authored scalar plan locks: full-Date, Time and Enumeration steps at a join
 
-A full-Date copy `DC = [D0]`, a chained copy `DC2 = [DC]`, a copy `DCG = [D0]` into a target that refuses
-dates before 1900, the Time constructions `TC = Time(HoursFromTime(T0), MinutesFromTime(T0))` and
+A full-Date copy `DC = [D0]`, a chained copy `DC2 = [DC]`, a second copy `DCG = [D0]` that the fill guards
+`KDG` and `KNDG` and the difference `NDG` read, the Time constructions `TC = Time(HoursFromTime(T0), MinutesFromTime(T0))` and
 `TC2 = Time(NH, MinutesFromTime(T0))` over a computed Number `NH`, and the Enumeration copies `EC = [E0]`
 and `EC2 = [EC]` are whole-document steps of one authored plan. Number computations read them through
 `DifferenceInDays`, `HoursFromTime`, `FieldValueAsNumber`, and the two fill guards. The fixture is the second
@@ -42,14 +42,13 @@ private def ntId : FieldId := 20
 private def nhId : FieldId := 21
 private def nt2Id : FieldId := 22
 
-private def dateDeclaration (id : FieldId) (name : String) (youngerThan1900Check := false) :
-    FlatFieldDecl where
+private def dateDeclaration (id : FieldId) (name : String) : FlatFieldDecl where
   id
   groupPath := ["Fam"]
   name
   policy := { kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy :=
-    some { format := "dd.MM.yyyy", partialMode := .full, youngerThan1900Check }
+    some { format := "dd.MM.yyyy", partialMode := .full }
 
 private def timeDeclaration (id : FieldId) (name : String) : FlatFieldDecl where
   id
@@ -81,7 +80,7 @@ private def hourDeclaration : FlatFieldDecl :=
 private def model : FlatModel :=
   { fields := [
       dateDeclaration d0Id "D0", dateDeclaration dcId "DC", dateDeclaration dc2Id "DC2",
-      dateDeclaration dcgId "DCG" (youngerThan1900Check := true),
+      dateDeclaration dcgId "DCG",
       enumerationDeclaration e0Id "E0", enumerationDeclaration ecId "EC",
       enumerationDeclaration ec2Id "EC2",
       numberDeclaration n0Id "N0", numberDeclaration ndId "ND", numberDeclaration nd2Id "ND2",
@@ -248,14 +247,6 @@ example :
     values? dateFields inputs =
       some ["10.03.2024", "10.03.2024", "10.03.2024", "0", "0", "0", "5", "-"] ∧
     values? enumerationFields inputs = some ["1", "1", "1", "1", "5", "-"] := by
-  native_decide
-
-/- Row `g02`: a pre-1900 Date copies unchanged into the plain targets, while the guarded target retains it
-as errored and its readers see poison, so the difference and both guards clear. Reading the retained text
-would give `0` and fire the filled guard; reading it as empty would fire the unfilled one. -/
-example :
-    values? dateFields (inputs (d0 := some (dateCell d0Id "31.12.1899"))) =
-      some ["31.12.1899", "31.12.1899", "E 31.12.1899", "0", "0", "-", "-", "-"] := by
   native_decide
 
 /- Row `g05` and the first grid's `f02`: an absent Date clears every copy, and each cleared copy reads

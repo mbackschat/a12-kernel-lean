@@ -381,12 +381,11 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
       -- member the type body does not declare (spec/01 §1.1; kernel 31.1.1 rows `pp-*` of the declaration
       -- capture and `Y1850` of the derived-row capture, whose check stays inert).
       let partialSource := if typeName == "DateType" then str? body "datePrecision" else none
-      let youngerThan1900Check ← if typeName == "TimeType" || typeName == "DateTimeType" then pure false
-        else inertYearCheck body
+      if typeName != "TimeType" && typeName != "DateTimeType" then bindInertYearCheck body
       pure { base with
         policy := { kind := .temporal kind (TemporalComponents.ofFormat format) }
         temporalTargetPolicy := some {
-          format, partialMode := ← partialMode? partialSource, youngerThan1900Check } }
+          format, partialMode := ← partialMode? partialSource } }
   | "DateRangeType" =>
       let interpretationOfYear ← match str? body "interpretationOfYear" with
         | none => pure none
@@ -402,13 +401,13 @@ def readFieldType (id : FieldId) (groupPath : GroupPath) (name : String)
         | .error _ | .ok .null | .ok (.str "") => pure "/"
         | .ok (.str value) => pure value
         | .ok other => throw s!"rangeSeparator {other.compress}"
+      bindInertYearCheck body
       pure { base with
         policy := { kind := .dateRange }
         dateRangePolicy := some {
           format := format
           separator := separator
-          interpretationOfYear := interpretationOfYear
-          youngerThan1900Check := ← inertYearCheck body } }
+          interpretationOfYear := interpretationOfYear } }
   | "CustomFieldType" =>
       let customName ← body.getObjValAs? String "name"
       pure { base with customType := some {

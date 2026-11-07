@@ -113,15 +113,15 @@ example : [false, true].all (fun repeated =>
       some (if repeated then ["value 2024-02-29", "value 2024-02-29", "cleared"]
         else ["value 2024-02-29"])) := by native_decide
 
-private def downstreamRun (rejected : Bool) (leap : Bool := false) :
+private def downstreamRun (leap : Bool := false) :
     Option (Lowering (List ComputedOutcome)) := do
-  let format := if leap then "MM-dd" else if rejected then "yyyy-MM-dd" else "MM"
+  let format := if leap then "MM-dd" else "MM"
   let model : FlatModel := {
     timeZoneId := "UTC", baseYear := if leap then some 2023 else none
     fields := [
       { id := 1, name := "Value", groupPath := ["Form"]
         policy := { kind := .temporal .date (TemporalComponents.ofFormat format) }
-        temporalTargetPolicy := some { format, youngerThan1900Check := rejected } },
+        temporalTargetPolicy := some { format } },
       { id := 2, name := "Out", groupPath := ["Form"]
         policy := { kind := .number { scale := 0, signed := true } } }] }
   let dm : DmModel := {
@@ -136,19 +136,17 @@ private def downstreamRun (rejected : Bool) (leap : Bool := false) :
     group := ["Form"], name, targetRelPath := target, commonPrecondition := none
     alternatives := [{ precondition := none, operation }], errorCodesToSuppress := [] }
   let steps ← [definition "Consumer" "../Out" "MonthFromDate(Value)",
-      definition "Producer" "../Value" (if leap then "\"29.02.2024\""
-        else if rejected then "\"31.12.1899\"" else "\"05.03.\"")].mapM
+      definition "Producer" "../Value" (if leap then "\"29.02.2024\"" else "\"05.03.\"")].mapM
     fun computation => (lowerComputation model .english computation).toOption.map (·.2)
   pure (runComputations world prepared checked steps)
 
-private def downstream (rejected : Bool) : Option (List String) :=
-  (downstreamRun rejected).bind fun run => run.toOption.map (·.map (·.outcome))
+private def downstream : Option (List String) :=
+  (downstreamRun false).bind fun run => run.toOption.map (·.map (·.outcome))
 
 /- A dependent consumer does not rescue the leap call: the colliding target still fails assembly
 (spec/05 §3.1). -/
-example : downstream false = some ["value 03", "value 3"] ∧
-    downstream true = some ["errored 1899-12-31", "cleared"] ∧
-    (match downstreamRun false true with
+example : downstream = some ["value 03", "value 3"] ∧
+    (match downstreamRun true with
       | some (.error refusal) => refusal.construct == "ComputationRun" &&
           (refusal.detail.splitOn "duplicatePointer").length > 1
       | _ => false) = true := by native_decide

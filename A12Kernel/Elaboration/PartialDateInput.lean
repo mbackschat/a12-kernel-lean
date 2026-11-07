@@ -13,7 +13,7 @@ calendar question is `dateFormat`: a wrong component width or separator count, a
 unreal calendar date among the value's *present* components, including an impossible month standing
 beside an omitted day. An omission or position-in-time question is `dateInvalid`: a zero pattern that
 is not a monotone suffix, a suffix deeper than the declared precision allows, and an admitted value
-whose earliest completion falls below the universal Gregorian floor or the enabled pre-1900 boundary.
+whose earliest completion falls below the universal Gregorian floor.
 So calendar unreality is *not* grouped with the omission failures even though both reject a value the
 declaration could otherwise hold.
 
@@ -105,8 +105,7 @@ certificate. -/
 def CheckedPartialDateInputField.classifyStored
     (checked : CheckedPartialDateInputField) (profile : ModelZone.ConcreteProfile) (text : String) :
     PartialDateInputCell checked.mode :=
-  classifyPartialDateStored checked.format profile checked.mode
-    checked.policy.youngerThan1900Check text
+  classifyPartialDateStored checked.format profile checked.mode text
 
 /-- Whether the declaration admits `text` as a **partially** known value, the one a cell places as
 `Value.partialDate`; a fully known value places as a temporal value instead. -/

@@ -238,7 +238,6 @@ The request adopts this sequencing and the two consumer objectives. It does not 
 - `method`: as for 31.1.1, a clause moves only on a measured row; the letter's §10 mechanisms are source reading and move nothing. The re-capture runs first this time, so each batch compares against the population's 31.3.1 artifacts.
 - `models`: the re-capture restamps the frozen models 28.4.0 to 29.8.0; [Letter K](sources/inbound-handbacks.md#src-inbound-2026-11-07a) found the migrator changes nothing else except folding eight models' legacy suppression lists, which the Kernel's read folds anyway.
 - `owed`: none; the suppressed enumeration calculation is closed on every operation shape the gate refuses ([checkpoint](sources/kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes)).
-- `cleanup`: the temporal policies' `youngerThan1900Check` fields and the pre-1900 gates they enable are unreachable from DM-JSON once N3 lands; remove them, with the proofs that quantify over them, as their own change after the migration closes.
 - `batches`: risk-first, each adopting its letter rows into spec/ and Lean with its focused checks and one gate:
   - [x] `N1 relative walk` (§2): the model root as a turning point of every relative path, in conditions, messages, error targets and computed targets.
   - [x] `N2 number text cap` (§4): a stored Number's runtime text capped at fifteen digits, half up.

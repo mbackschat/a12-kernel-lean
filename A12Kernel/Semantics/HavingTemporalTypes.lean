@@ -26,7 +26,6 @@ structure HavingPartialDateSource where
   reference : HavingTemporalRef
   format : FullDateTargetFormat
   mode : TemporalPartialMode
-  youngerThan1900Check : Bool
   endpoint : ValueAsDateEndpoint
   deriving Repr, DecidableEq
 

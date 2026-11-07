@@ -30,15 +30,14 @@ structure CheckedFullDateFirstFilledComputation (model : FlatModel) where
   profile : ModelZone.ConcreteProfile
   profileMatches : ModelZone.ConcreteProfile.ofId? model.timeZoneId = some profile
 
-/-- Check the site's supported Date profiles and the target's own storage policy, including its pre-1900
-check. Year presence is compatible directly or through a declared Base Year; target spelling and
-stored precision are independent of the exact source-list profile (spec/05, K11 target-profile capture). -/
+/-- Check the site's supported Date profiles and the target's own storage policy. Year presence is
+compatible directly or through a declared Base Year; target spelling and stored precision are
+independent of the exact source-list profile (spec/05, K11 target-profile capture). -/
 def checkFullDateFirstFilledComputation
     (model : FlatModel) (declaringGroup : GroupPath) (targetField : FieldId)
     (authored : SurfaceFirstFilledSource) :
     Except FullDateFirstFilledComputationElabError (CheckedFullDateFirstFilledComputation model) := do
-  let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField authored
-    (ownsBefore1900 := true)).mapError .shape
+  let shape ← (checkTemporalFirstFilledSite model declaringGroup targetField authored).mapError .shape
   if dateCarrier : shape.carrier.dateYearPresence?.isSome = true then
     let targetPolicy ← (elaborateDateConstantTargetIn model shape.site.target.repeatableScope
       targetField (shape.sourceProfile.dateYearPresence?.getD true)).mapError .targetPolicy

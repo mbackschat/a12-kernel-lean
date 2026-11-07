@@ -29,12 +29,12 @@ example :
 
 /- Rejection retains the exact attempt even though application clears a present target. -/
 example :
-    (FullDateTargetOutcome.errored nextDate .before1900).projectDelta .empty =
-      some (.errored nextDate .before1900) := by
+    (FullDateTargetOutcome.errored nextDate .beforeGregorianFloor).projectDelta .empty =
+      some (.errored nextDate .beforeGregorianFloor) := by
   rfl
 
 example :
-    (FullDateTargetOutcome.errored nextDate .before1900).applyTo
+    (FullDateTargetOutcome.errored nextDate .beforeGregorianFloor).applyTo
       (.presentValue oldDate) = .presentEmpty := by
   rfl
 

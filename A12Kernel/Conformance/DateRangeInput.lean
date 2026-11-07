@@ -668,12 +668,11 @@ example :
   native_decide
 
 -- KF276 separates formal-check completion from endpoint completion: pure month
--- patterns ignore Base Year for both date-position checks, but still enforce order. The declared empty
+-- patterns ignore Base Year for the date-position check, but still enforce order. The declared empty
 -- separator reads as `/` (spec/05 §8.1), so both declarations split the same text.
 example : ["/", ""].all (fun separator =>
-    [1500, 1899, 1901].all (fun year => [false, true].all (fun flag =>
-      let policy : DateRangeDeclarationPolicy := {
-        format := "MM", separator, youngerThan1900Check := flag }
+    [1500, 1899, 1901].all (fun year =>
+      let policy : DateRangeDeclarationPolicy := { format := "MM", separator }
       let model : FlatModel := { fields := [], baseYear := some year, timeZoneId := "UTC" }
       let good := model.classifyRuntimeDateRange policy "06/09"
       let bad := model.classifyRuntimeDateRange policy "09/06"
@@ -681,21 +680,20 @@ example : ["/", ""].all (fun separator =>
         | .ok (.parsed (.dateRange (.exact range))) => range.start.parts.year == year
         | _ => false) && (match bad with
         | .ok (.rejected .dateRangeInvalid) => true
-        | _ => false)))) = true := by native_decide
+        | _ => false))) = true := by native_decide
 
 example : [("dd.MM", "-", "01.06-01.09"), ("MM-dd", "/", "06-01/09-01")].all
     (fun (format, separator, text) => [1500, 1899, 1901].all (fun year =>
-      [false, true].all (fun flag =>
-        let policy : DateRangeDeclarationPolicy := { format, separator, youngerThan1900Check := flag }
-        let model : FlatModel := { fields := [], baseYear := some year, timeZoneId := "UTC" }
-        let result := model.classifyRuntimeDateRange policy text
-        if year < 1583 || (flag && year < 1900) then
-          match result with
-          | .ok (.rejected .dateRangeTooEarly) => true
-          | _ => false
-        else match result with
-          | .ok (.parsed (.dateRange (.exact _))) => true
-          | _ => false))) = true := by native_decide
+      let policy : DateRangeDeclarationPolicy := { format, separator }
+      let model : FlatModel := { fields := [], baseYear := some year, timeZoneId := "UTC" }
+      let result := model.classifyRuntimeDateRange policy text
+      if year < 1583 then
+        match result with
+        | .ok (.rejected .dateRangeTooEarly) => true
+        | _ => false
+      else match result with
+        | .ok (.parsed (.dateRange (.exact _))) => true
+        | _ => false)) = true := by native_decide
 
 /- Yearless completion reads the proleptic calendar (spec/05 §2.7), so a month-only range ending in February of Base Year 1500 ends on the 28th; the hybrid calendar's Julian February had 29 days. Locked under UTC by a12-dmkits `StoredDateCalendarDiffTest.everyPreCutoverValueCountsOnTheProlepticCalendar` at `1124b523f`. -/
 example : (match FlatModel.classifyRuntimeDateRange

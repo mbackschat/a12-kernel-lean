@@ -8,26 +8,26 @@ identified by its rendered text at measurement and retained by name in the captu
 two keys render one sentence, the row names the one its code and declaration select. The rows separate
 the accounts a reimplementer gets wrong: one component reading for every format rather than a month
 check per format, a day-free format's month as a format defect, a clock failure as the date's day
-defect, and the pre-1900 check ahead of every component of a malformed date. -/
+defect. -/
 
 namespace A12Kernel.Conformance.FormalMessageKeys
 
 open A12Kernel
 
-private def omitting (format : OmittingDateFormat) (baseYear : Option Int) (check : Bool)
+private def omitting (format : OmittingDateFormat) (baseYear : Option Int)
     (text : String) : Option String :=
-  (format.messageKey? ModelZone.ConcreteProfile.utc baseYear check text).map (·.bundleKey)
+  (format.messageKey? ModelZone.ConcreteProfile.utc baseYear text).map (·.bundleKey)
 
 private def dateTime (text : String) : Option String :=
   match DateTimeTargetFormat.yearMonthDayTime.messageKey? ModelZone.ConcreteProfile.europeBerlin text with
   | .ok key => key.map (·.bundleKey)
   | .error _ => some "error"
 
-private def full (check : Bool) (format : FullDateInputFormat) (text : String) : Option String :=
-  (format.dateMessageKey? ModelZone.ConcreteProfile.utc .full check text).map (·.bundleKey)
+private def full (format : FullDateInputFormat) (text : String) : Option String :=
+  (format.dateMessageKey? ModelZone.ConcreteProfile.utc .full text).map (·.bundleKey)
 
 /- `Y`, `YM`, `YMc`, `Mo` and `YC`: a format without a day takes the format key for every refusal,
-   month `13` included, and the date keys only for a real date before 1900 or the floor. -/
+   month `13` included, and the date key only for a real date below the floor. -/
 example :
     [(OmittingDateFormat.year, "20x6", "DATUM_FORMAT"), (.year, "026", "DATUM_FORMAT"), (.year, "0000", "DATUM_FORMAT"),
       (.year, "1500", "DATUM"), (.year, "99999", "DATUM_FORMAT"), (.yearMonthDashed, "2026-13", "DATUM_FORMAT"),
@@ -36,8 +36,8 @@ example :
       (.yearMonthConcatenated, "202613", "DATUM_FORMAT"), (.yearMonthConcatenated, "202600", "DATUM_FORMAT"),
       (.yearMonthConcatenated, "20261", "DATUM_FORMAT"), (.month, "13", "DATUM_FORMAT"), (.month, "00", "DATUM_FORMAT"),
       (.month, "1", "DATUM_FORMAT"), (.month, "x1", "DATUM_FORMAT")].all
-      (fun (format, text, key) => omitting format none false text == some key) ∧
-    omitting .year none true "1850" = some "DATUM_ADDITIONAL_CHECK" ∧ omitting .year none true "2026" = none := by
+      (fun (format, text, key) => omitting format none text == some key) ∧
+    omitting .year none "2026" = none := by
   native_decide
 
 /- `MD`, `MDc`, `DMc` and `DMd` without a Base Year, then under Base Year 2025: a day-bearing format
@@ -54,13 +54,13 @@ example :
       (.dayMonthDotted, "30.02.", some "DATUM_TAG_FEHLER"), (.dayMonthDotted, "29.02.", none),
       (.dayMonthDotted, "01.13.", some "DATUM_MONAT_FEHLER"), (.dayMonthDotted, "31.04.", some "DATUM_TAG_FEHLER"),
       (.dayMonthDotted, "1.1.", some "DATUM_FORMAT"), (.dayMonthDotted, "30.02", some "DATUM_FORMAT")].all
-      (fun (format, text, key) => omitting format none false text == key) ∧
+      (fun (format, text, key) => omitting format none text == key) ∧
     [(OmittingDateFormat.monthDay, "02-29", some "DATUM_FEBRUAR_29_FEHLER"), (.monthDay, "02-30", some "DATUM_TAG_FEHLER"),
       (.monthDay, "13-01", some "DATUM_MONAT_FEHLER"), (.monthDay, "02-28", none),
       (.monthDayConcatenated, "0229", some "DATUM_FEBRUAR_29_FEHLER"), (.monthDayConcatenated, "1301", some "DATUM_MONAT_FEHLER"),
       (.dayMonthConcatenated, "2902", some "DATUM_FEBRUAR_29_FEHLER"), (.dayMonthConcatenated, "3104", some "DATUM_TAG_FEHLER"),
       (.dayMonthDotted, "29.02.", some "DATUM_FEBRUAR_29_FEHLER"), (.dayMonthDotted, "30.02.", some "DATUM_TAG_FEHLER")].all
-      (fun (format, text, key) => omitting format (some 2025) false text == key) := by
+      (fun (format, text, key) => omitting format (some 2025) text == key) := by
   native_decide
 
 /- `DT` and `DD`: a well-shaped label whose clock fails reads its date half, so a sound date takes the
@@ -85,18 +85,16 @@ example :
     clockFormatMessageKey? "10:00:00" = none := by
   native_decide
 
-/- `D1`, `D2` and `TD`: on a malformed complete date the pre-1900 check answers ahead of every
-   component and a zero part ahead of the check; the format decides, so a Time field declared
-   `yyyy-MM-dd` reads the same keys. These rows run the UTC profile, where a Julian leap day of 1500 is real
+/- `D1`, `D2` and `TD`: on a malformed complete date a zero part takes the format key; the format
+   decides, so a Time field declared `yyyy-MM-dd` reads the same keys. These rows run the UTC profile, where a Julian leap day of 1500 is real
    and below the floor; the capture ran Europe/Berlin, whose 31.1.1 key for it `DateFormalMessageKey` locks. -/
 example :
-    [("31.02.1850", "DATUM_ADDITIONAL_CHECK"), ("29.02.1899", "DATUM_ADDITIONAL_CHECK"), ("00.05.1850", "DATUM_FORMAT"),
-      ("1.1.1850", "DATUM_FORMAT"), ("31.13.1850", "DATUM_ADDITIONAL_CHECK")].all
-      (fun (text, key) => full true .dayMonthYearDots text == some key) ∧
+    [("00.05.1850", "DATUM_FORMAT"), ("1.1.1850", "DATUM_FORMAT")].all
+      (fun (text, key) => full .dayMonthYearDots text == some key) ∧
     [("1500-02-30", "DATUM_TAG_FEHLER"), ("1500-13-01", "DATUM_MONAT_FEHLER"), ("1500-02-29", "DATUM"),
       ("1000-01-01", "DATUM"), ("0000-01-01", "DATUM_FORMAT"), ("2026-13-01", "DATUM_MONAT_FEHLER"),
       ("2026-02-30", "DATUM_TAG_FEHLER"), ("10:00:00", "DATUM_FORMAT")].all
-      (fun (text, key) => full false .yearMonthDayDashes text == some key) := by
+      (fun (text, key) => full .yearMonthDayDashes text == some key) := by
   native_decide
 
 private def unsigned (scale : Nat) : NumField := { scale, signed := false }

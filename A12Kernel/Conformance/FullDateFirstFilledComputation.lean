@@ -9,8 +9,7 @@ open A12Kernel
 
 private def dateField (id : FieldId) (groups : GroupPath) (name : String)
     (scope : List RepeatableLevel := [])
-    (format : String := "yyyy-MM-dd")
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (format : String := "yyyy-MM-dd") : FlatFieldDecl := {
   id
   groupPath := groups
   name
@@ -18,7 +17,6 @@ private def dateField (id : FieldId) (groups : GroupPath) (name : String)
   temporalTargetPolicy := some {
     format
     partialMode := .full
-    youngerThan1900Check
   }
   repeatableScope := scope
 }
@@ -28,7 +26,7 @@ private def source := dateField 2 ["Cart", "Lines"] "PromiseDate" [10]
 private def dottedSource :=
   dateField 3 ["Cart", "Lines"] "DottedDate" [10] "dd.MM.yyyy"
 private def checkedSource :=
-  dateField 4 ["Cart", "Lines"] "CheckedDate" [10] "yyyy-MM-dd" true
+  dateField 4 ["Cart", "Lines"] "CheckedDate" [10] "yyyy-MM-dd"
 private def timeSource : FlatFieldDecl := {
   id := 5
   groupPath := ["Cart", "Lines"]
@@ -76,9 +74,9 @@ private def unsupportedFormatSource :=
   dateField 14 ["Cart", "Lines"] "UnsupportedSource" [10] "yyyy/MM/dd"
 private def checkedDottedSource :=
   dateField 15 ["Cart", "Lines"] "CheckedDottedSource" [10]
-    "dd.MM.yyyy" true
+    "dd.MM.yyyy"
 private def checkedDottedTarget :=
-  dateField 16 ["Cart"] "CheckedDottedTarget" [] "dd.MM.yyyy" true
+  dateField 16 ["Cart"] "CheckedDottedTarget" [] "dd.MM.yyyy"
 
 private def model : FlatModel := {
   fields := [
@@ -307,18 +305,14 @@ example :
     }] = some "VALUE|20.03.2024" := by
   native_decide
 
-/- A fixed target carrying the pre-1900 check takes its target policy's runtime branch, as a row
-target does: the last day of 1899 is an errored attempt, the first of 1900 a value, and the unchecked control
-stores the 1899 date. The fixed
+/- A fixed target stores a date on either side of 1900: only the universal floor bounds it. The fixed
 placement itself is external evidence pending ([SG6](../../docs/gaps/numeric-and-temporal.md#gap-sg6)). -/
 example :
     [signatureFor? checkedDottedTarget dottedSource [{
-        row := 1, stored := "31.12.1899", raw := .parsed (dateValue (-2209075200000) 1899 12 31) }],
-     signatureFor? checkedDottedTarget dottedSource [{
         row := 1, stored := "01.01.1900", raw := .parsed (dateValue (-2208988800000) 1900 1 1) }],
      signatureFor? dottedTarget dottedSource [{
         row := 1, stored := "31.12.1899", raw := .parsed (dateValue (-2209075200000) 1899 12 31) }]] =
-      [some "ERRORED", some "VALUE|01.01.1900", some "VALUE|31.12.1899"] := by
+      [some "VALUE|01.01.1900", some "VALUE|31.12.1899"] := by
   native_decide
 
 /- First-present and first-formal terminals both hide the suffix. Both order branches are now Kernel-calibrated on both codegen strategies at the [malformed-prefix checkpoint](../../docs/sources/evaluation-and-application-routes.md#src-first-filled-malformed-terminates-and-inventory-reports), including the separator that keeps them apart: an *empty* first row falls through and returns the second, so a malformed one terminating is a real asymmetry rather than an artifact of always taking the first row. The suffix is hidden from the VALUE only — the same checkpoint measures the eager operand inventory reporting a malformed suffix the scan never reached. -/
@@ -341,7 +335,7 @@ example :
       ] = some "POISON" := by
   native_decide
 
-/- The checked boundary admits the ISO and dotted source controls into either target spelling (K11 target-profile capture). A pre-1900-checked target is admitted, its target policy owning the check as at a row target, while checked sources retain their formal-input policy and unsupported formats remain excluded. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
+/- The checked boundary admits the ISO and dotted source controls into either target spelling (K11 target-profile capture). Unsupported formats remain excluded. Placement is unconstrained. Declaring at the source's own repeatable group puts the fixed target *above* the declaring group, which the checkpoint's `star-rowgroup` row measures as admitted: a star aggregate derives no iteration, so the Kernel's containment gate cannot fire. An unrepresentable declaring group is still refused. Varying the declaring group rather than the target's group keeps the fixture to one model root, as an authored A12 model is. -/
 example :
     (checked? target.id (star "PromiseDate")).isSome = true ∧
       (checked? target.id (star "DottedDate")).isSome = true ∧

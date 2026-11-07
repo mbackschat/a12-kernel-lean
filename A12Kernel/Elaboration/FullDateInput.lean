@@ -5,7 +5,7 @@ import A12Kernel.Semantics.ConstructedDateShift
 import A12Kernel.Semantics.TemporalTarget
 
 /-! # Checked full-Date stored input
-This capsule classifies full-precision stored Date text for the three measured complete formats. It preserves declared-format parsing, calendar reality, the universal Gregorian floor, the optional pre-1900 check, and model-zone midnight identity before the immutable checked document exposes a value. Partial precision, computed-target policy, wider format syntax, and other model zones remain separate. -/
+This capsule classifies full-precision stored Date text for the three measured complete formats. It preserves declared-format parsing, calendar reality, the universal Gregorian floor, and model-zone midnight identity before the immutable checked document exposes a value. Partial precision, computed-target policy, wider format syntax, and other model zones remain separate. -/
 
 namespace A12Kernel
 
@@ -98,9 +98,7 @@ def CheckedFullDateInputField.classifyStoredForModel
     match checked.format.parseParts? profile text with
     | none => pure (.rejected .dateFormat)
     | some parts =>
-        if decide (parts.Before CivilDate.gregorianFloor.parts) ||
-            (checked.policy.youngerThan1900Check &&
-              decide (parts.Before FullDate.year1900Start.civil.parts)) then
+        if decide (parts.Before CivilDate.gregorianFloor.parts) then
           pure (.rejected .dateInvalid)
         else
           match CivilDate.ofParts? parts with

@@ -7,7 +7,7 @@ The cell's own precision was enforced before selection; a mixed list's first dec
 not reclassify the selected cell under a different precision. Unknown year remains non-relevant. -/
 def firstFilledPartialDateResolution (format : FullDateTargetFormat) (profile : ModelZone.ConcreteProfile)
     (text : String) : Option ValueAsDateResolution :=
-  match classifyPartialDateStored format profile .yearOptional false text with
+  match classifyPartialDateStored format profile .yearOptional text with
   | .admitted value => some (value.value.resolve .firstDay)
   | _ => none
 

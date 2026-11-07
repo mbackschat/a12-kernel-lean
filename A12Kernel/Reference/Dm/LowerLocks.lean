@@ -634,10 +634,10 @@ example :
 /-- One DM date declaration read through the model reader, so the declared kind reaches the lowering
 only as the reader leaves it. -/
 private def readDate (id : FieldId) (name typeName formatKey format : String)
-    (groupPath : GroupPath := ["Xf"]) (scope : List RepeatableLevel := []) (before1900 := false) :
+    (groupPath : GroupPath := ["Xf"]) (scope : List RepeatableLevel := []) (declaresYearCheck := false) :
     FlatFieldDecl :=
   let body := (formatKey, Lean.Json.str format) ::
-    (if before1900 then [("youngerThan1900Check", Lean.Json.bool true)] else [])
+    (if declaresYearCheck then [("youngerThan1900Check", Lean.Json.bool true)] else [])
   let fieldJson := Lean.Json.mkObj [("fieldType", Lean.Json.mkObj [("type", typeName),
     (typeName, Lean.Json.mkObj body)])]
   (readFieldType id groupPath name scope fieldJson).toOption.getD
@@ -668,9 +668,8 @@ example :
 /- A temporal target's carrier is chosen by its profile, which the format decides, so a DATE declared
 `HH:mm:ss` is a Time target and a TIME declared `yyyy-MM-dd` a full-Date one, at a fixed target and at
 a row, as the [format-gate checkpoint](../../../docs/sources/repeatable-temporal-computation-probes.md#src-temporal-computed-target-gate-reads-format-not-kind)
-measures the target gate. A component-omitting Date target carrying the pre-1900 check shares the
-Date target policy and admits the operation, with any rejected rendering retained at runtime
-(spec/09). -/
+measures the target gate. A component-omitting Date target declaring `youngerThan1900Check`, which the
+reader binds but never evaluates, shares the Date target policy and admits the operation (spec/09). -/
 example :
     let rows : List RepeatableGroupDecl :=
       [{ level := 10, path := ["Xf", "Rows"], repeatability := some 3 },
@@ -683,7 +682,7 @@ example :
       readDate 4 "DayTime" "TimeType" "format" "yyyy-MM-dd",
       readDate 5 "D1" "DateType" "format" "yyyy-MM-dd",
       readDate 6 "D2" "DateType" "format" "yyyy-MM-dd",
-      readDate 7 "CheckedYear" "DateFragmentType" "formatOfFragment" "yyyy" (before1900 := true),
+      readDate 7 "CheckedYear" "DateFragmentType" "formatOfFragment" "yyyy" (declaresYearCheck := true),
       readDate 8 "Y1" "DateFragmentType" "formatOfFragment" "yyyy",
       readDate 9 "Y2" "DateFragmentType" "formatOfFragment" "yyyy",
       readDate 10 "Target" "DateType" "format" "HH:mm:ss" ["Xf", "Rows", "Tasks"] [10, 30],

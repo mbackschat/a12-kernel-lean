@@ -120,14 +120,13 @@ inductive ValueAsDateReadFault where
 
 namespace CheckedValueAsDateSource
 
-/-- Project raw stored text through the checked declaration policy, delegating the whole decision to the single partial-Date input owner so the cause cannot drift from the measured one. Each failure keeps its own cause: a wrong width or an unreal present component is the date-format finding, while a non-suffix zero pattern, a suffix deeper than the precision admits, and a below-floor or pre-1900 completion are the date finding. This replaced a uniform malformed finding, which was measurably wrong for every one of those inputs. -/
+/-- Project raw stored text through the checked declaration policy, delegating the whole decision to the single partial-Date input owner so the cause cannot drift from the measured one. Each failure keeps its own cause: a wrong width or an unreal present component is the date-format finding, while a non-suffix zero pattern, a suffix deeper than the precision admits, and a below-floor completion are the date finding. This replaced a uniform malformed finding, which was measurably wrong for every one of those inputs. -/
 def checkSourceRaw (checked : CheckedValueAsDateSource model)
     (raw : RawCell String) :
     CheckedCell (AdmittedPartiallyKnownDate checked.source.policy.partialMode) :=
   checkRawCellWith (fun text =>
     match classifyPartialDateStored checked.format checked.profile
-        checked.source.policy.partialMode
-        checked.source.policy.youngerThan1900Check text with
+        checked.source.policy.partialMode text with
     | .presentEmpty => .ok none
     | .rejected cause => .error cause
     | .admitted value => .ok (some value)) raw

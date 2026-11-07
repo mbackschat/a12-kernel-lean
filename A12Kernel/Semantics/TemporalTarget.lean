@@ -5,7 +5,7 @@ import A12Kernel.Semantics.Observation
 
 /-! # Bounded temporal computation targets
 
-This capsule owns bounded Time, full-Date, DateTime, and DateRange target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits three exact formats, the universal Date floor, and the optional pre-1900 check; the checked declaration layer admits only FULL precision for computation. DateTime admits the bounded standard whole-second formats and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. DateRange admits the exact ISO/slash and dotted-day/dash target profiles and renders through resolved full-Date endpoints while remaining outside scalar temporal indexing. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
+This capsule owns bounded Time, full-Date, DateTime, and DateRange target result domains. Time admits the kernel's exact whole-second format and remains a zone-free clock rather than acquiring the runtime transport date. Full Date admits three exact formats and the universal Date floor; the checked declaration layer admits only FULL precision for computation. DateTime admits the bounded standard whole-second formats and deliberately separates its rendered local wall label from the exact source instant, including any millisecond remainder. DateRange admits the exact ISO/slash and dotted-day/dash target profiles and renders through resolved full-Date endpoints while remaining outside scalar temporal indexing. Partially known input values, wider `SimpleDateFormat` syntax, and document application remain separate.
 -/
 
 namespace A12Kernel
@@ -270,7 +270,6 @@ inductive TemporalComputationResult where
 /-- Reachable basic target-check causes in the bounded computed-Date fragment. -/
 inductive FullDateTargetError where
   | beforeGregorianFloor
-  | before1900
   | renderingRejected (cause : BaseFormalCause)
   deriving Repr, DecidableEq
 
@@ -281,24 +280,6 @@ inductive FullDateTargetOutcome where
   | errored (attempted : StoredDate) (cause : FullDateTargetError)
   | poison (cause : FormalCause)
   deriving Repr, DecidableEq
-
-namespace FullDate
-
-/-- Inclusive lower bound used only when a Date declaration opts into the additional pre-1900 check. -/
-def year1900Start : FullDate :=
-  {
-    civil := {
-      parts := { year := 1900, month := 1, day := 1 }
-      real := by decide
-    }
-    admissible := by decide
-  }
-
-/-- Whether this already-admitted Date fails the optional pre-1900 target check. -/
-def before1900 (date : FullDate) : Bool :=
-  date.before year1900Start
-
-end FullDate
 
 /-- Exact whole-second DateTime declaration formats admitted by the executable target renderer. -/
 inductive DateTimeTargetFormat where

@@ -7,13 +7,12 @@ namespace A12Kernel.Conformance.FullDateInput
 open A12Kernel
 
 private def dateField (format : String)
-    (partialMode : TemporalPartialMode := .full)
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (partialMode : TemporalPartialMode := .full) : FlatFieldDecl := {
   id := 1
   groupPath := ["Policy"]
   name := "EffectiveDate"
   policy := { kind := .temporal .date TemporalComponents.fullDate }
-  temporalTargetPolicy := some { format, partialMode, youngerThan1900Check }
+  temporalTargetPolicy := some { format, partialMode }
 }
 
 private def classifyResult? (field : FlatFieldDecl) (zone text : String) :
@@ -100,9 +99,7 @@ example :
 example :
     classifyResult? (dateField "yyyy-MM-dd") "UTC" "1899-12-31" =
       (utcDate? 1899 12 31).map .inr ∧
-    classifyResult? (dateField "yyyy-MM-dd" .full true) "UTC" "1899-12-31" =
-      some (.inr (.rejected .dateInvalid)) ∧
-    classifyResult? (dateField "yyyy-MM-dd" .full true) "UTC" "1900-01-01" =
+    classifyResult? (dateField "yyyy-MM-dd") "UTC" "1900-01-01" =
       (utcDate? 1900 1 1).map .inr := by native_decide
 
 example : classifyResult? (dateField "yyyy-MM-dd") "UTC" "" =

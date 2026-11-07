@@ -50,18 +50,17 @@ def writtenDayMonth? : OmittingDateFormat → String → Option (Nat × Nat)
   | .year, _ | .yearMonthDashed, _ | .yearMonthConcatenated, _ | .month, _ => none
 
 /-- The key a stored component-omitting Date's text selects, or `none` when the classifier admits it.
-A real date before 1900 under the check and before the universal floor take the date keys. A refused
-day-bearing text is completed with the Base Year, `2000` when none is declared, before its component
-reading, so `02-29` takes the leap-day key only under a common Base Year. -/
+A real date below the universal floor takes the date key. A refused day-bearing text is completed with
+the Base Year, `2000` when none is declared, before its component reading, so `02-29` takes the
+leap-day key only under a common Base Year. -/
 def messageKey? (format : OmittingDateFormat) (profile : ModelZone.ConcreteProfile)
-    (baseYear : Option Int) (youngerThan1900Check : Bool) (text : String) : Option RuntimeFormalMessageKey :=
-  match format.classifyStored profile baseYear youngerThan1900Check text with
+    (baseYear : Option Int) (text : String) : Option RuntimeFormalMessageKey :=
+  match format.classifyStored profile baseYear text with
   | .ok _ => none
-  | .error .before1900 => some .textDatumAdditionalCheck
   | .error .beforeGregorianFloor => some .textDatum
   | .error (.renderingRejected _) =>
       match format.writtenDayMonth? text with
-      | some (writtenDay, writtenMonth) => some (DateParts.componentDefect youngerThan1900Check
+      | some (writtenDay, writtenMonth) => some (DateParts.componentDefect
           { year := baseYear.getD 2000, month := writtenMonth, day := writtenDay }).dateKey
       | none => some .textDatumFormat
 
@@ -78,7 +77,7 @@ private def refusalKey (format : DateTimeTargetFormat) (text : String) : Runtime
   match format.splitLabel? text with
   | some (dateText, timeText) =>
       match format.dateHalf.parseComponents? dateText with
-      | some parts => if clockShaped timeText then (parts.componentDefect false).dateKey else .textDatumFormat
+      | some parts => if clockShaped timeText then parts.componentDefect.dateKey else .textDatumFormat
       | none => .textDatumFormat
   | none => .textDatumFormat
 

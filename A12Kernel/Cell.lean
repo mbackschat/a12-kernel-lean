@@ -23,13 +23,13 @@ inductive FormalCause where
   | malformed                -- not well-formed for the field's type (bad date/number/…)
   | dateFormat               -- stored Date text does not match its declaration or a real calendar day
   | dateInvalid              -- the stored Date is rejected as a *date* rather than as a spelling:
-                             -- below the universal floor, below the enabled pre-1900 boundary, or a
-                             -- partially known value whose omission is deeper than the declared
-                             -- precision allows. One kernel code covers all three, so one cause here.
+                             -- below the universal floor, or a partially known value whose omission
+                             -- is deeper than the declared precision allows. One kernel code covers
+                             -- both, so one cause here.
   | dateRangeSeparator       -- the stored DateRange omits its effective runtime separator (spec/05 §8)
   | dateRangeFormat          -- one stored DateRange endpoint is lexically or calendrically malformed
   | dateRangeInvalid         -- both endpoints are valid, but start is after finish
-  | dateRangeTooEarly        -- formal completion violates the floor or enabled 1900 check (spec/05 §8)
+  | dateRangeTooEarly        -- formal completion violates the universal floor (spec/05 §8)
   | booleanToken             -- stored Boolean token outside exact lowercase `true` / `false`
   | confirmToken             -- stored Confirm token outside exact lowercase `true`
   | declaredConstraint       -- pattern / length / range / scale violation

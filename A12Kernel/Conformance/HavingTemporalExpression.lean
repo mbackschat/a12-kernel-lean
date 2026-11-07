@@ -203,8 +203,7 @@ private def partialRef : HavingTemporalRef := {
   origin := .inner
   field := { id := 1, kind := .date, components := TemporalComponents.fullDate } }
 private def partialSource (endpoint : ValueAsDateEndpoint) := source (.atom (.partialDate {
-  reference := partialRef, format := .yearMonthDayDashes, mode := .yearOptional,
-  youngerThan1900Check := false, endpoint }))
+  reference := partialRef, format := .yearMonthDayDashes, mode := .yearOptional, endpoint }))
 private def partialContext (text : String) : ResolvingCorrelationContext CorrelationRuntimeFault :=
   { base with read := fun _ _ => pure { rawPresent := true, parsed := some (.partialDate text), findings := [] } }
 
@@ -223,7 +222,7 @@ example : (partialSource .firstDay).wellFormed partialModel [10] [] = true ∧
     (partialSource .firstDay).wellFormed partialModel [] [10] = false ∧
     ({ partialSource .firstDay with core := .atom (.partialDate {
       reference := partialRef, format := .dayMonthYearDots, mode := .yearOptional,
-      youngerThan1900Check := false, endpoint := .firstDay }) }).wellFormed partialModel [10] [] = false := by native_decide
+      endpoint := .firstDay }) }).wellFormed partialModel [10] [] = false := by native_decide
 
 private def richAmount := shifted (.binary .add
   (.atom (.stringLength .inner { id := 2 }))

@@ -202,7 +202,7 @@ private def readAtom (profile : ModelZone.ConcreteProfile) (baseYear : Option In
       let cell ← context.read (frame.envAt reference.origin) reference.field.id
       match observeCell phase cell with
       | .value (.partialDate text) =>
-          match classifyPartialDateStored source.format profile source.mode source.youngerThan1900Check text with
+          match classifyPartialDateStored source.format profile source.mode text with
           | .presentEmpty => pure .notEvaluated
           | .rejected cause => pure (.unknown cause.toFormalCause)
           | .admitted value => match value.value.resolve source.endpoint with

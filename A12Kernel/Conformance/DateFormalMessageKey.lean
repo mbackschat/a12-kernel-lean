@@ -6,21 +6,21 @@ Each case is one row of the K22 message-key run
 ([checkpoint](../../docs/sources/domain-ingestion-probes.md#src-date-message-keys-k22)), whose key was
 identified by its rendered text at measurement and retained by name in the capture's `keys.json`. The
 rows separate the accounts a reimplementer gets wrong: the code alone, a calendar check before the
-spelling check, the month before the pre-1900 check, and one key for both range endpoints. -/
+spelling check, and one key for both range endpoints. -/
 
 namespace A12Kernel.Conformance.DateFormalMessageKey
 
 open A12Kernel
 
-private def dateIn (profile : ModelZone.ConcreteProfile) (mode : TemporalPartialMode) (check : Bool)
+private def dateIn (profile : ModelZone.ConcreteProfile) (mode : TemporalPartialMode)
     (format : FullDateInputFormat) (text : String) : Option String :=
-  (format.dateMessageKey? profile mode check text).map (·.bundleKey)
+  (format.dateMessageKey? profile mode text).map (·.bundleKey)
 
 /-- The rows below hold in both concrete zones unless a row names the zone-dependent Julian leap day. -/
 private def date := dateIn .utc
 
 private def range (text : String) : Option String :=
-  (FullDateInputFormat.yearMonthDayDashes.dateRangeMessageKey? .utc "/" false text).map (·.bundleKey)
+  (FullDateInputFormat.yearMonthDayDashes.dateRangeMessageKey? .utc "/" text).map (·.bundleKey)
 
 /- `D1`, a full `yyyy-MM-dd`: every syntactically sound unreal date selects a component key, and
    only a zero part, a short part or a non-digit the format key. -/
@@ -30,28 +30,24 @@ example :
       ("2026-04-31", "DATUM_TAG_FEHLER"), ("abc", "DATUM_FORMAT"), ("2026-1-01", "DATUM_FORMAT"),
       ("2026-00-10", "DATUM_FORMAT"), ("2026-03-00", "DATUM_FORMAT"), ("0000-03-10", "DATUM_FORMAT"),
       ("0999-01-01", "DATUM")].all
-      (fun (text, key) => date .full false .yearMonthDayDashes text == some key) := by
+      (fun (text, key) => date .full .yearMonthDayDashes text == some key) := by
   native_decide
 
 /- A cutover label is an ordinary proleptic day on 31.1.1 (spec/05 §4), so it fails as a date below the
    floor and no longer as the day's component: row `d1-11` of the k22 message-key capture, re-run on kernel
    31.1.1 under Europe/Berlin, where kernel 30.8.1 selected the day key. -/
-example : dateIn .europeBerlin .full false .yearMonthDayDashes "1582-10-10" = some "DATUM" := by native_decide
+example : dateIn .europeBerlin .full .yearMonthDayDashes "1582-10-10" = some "DATUM" := by native_decide
 
 /- Reality decides the class of a Julian leap day (spec/05 §4): real under UTC, so the floor's key, and
    unreal under Europe/Berlin, so the 29 February component key, measured on kernel 31.1.1 by row `D1-2` of
    the wider formal-key capture; the UTC half is unmeasured. -/
 example :
-    dateIn .utc .full false .yearMonthDayDashes "1500-02-29" = some "DATUM" ∧
-      dateIn .europeBerlin .full false .yearMonthDayDashes "1500-02-29" = some "DATUM_FEBRUAR_29_FEHLER" := by
+    dateIn .utc .full .yearMonthDayDashes "1500-02-29" = some "DATUM" ∧
+      dateIn .europeBerlin .full .yearMonthDayDashes "1500-02-29" = some "DATUM_FEBRUAR_29_FEHLER" := by
   native_decide
 
-/- `D2`, `dd.MM.yyyy` with the pre-1900 check: the check answers a real early date, and an unreal one
-   ahead of its month. -/
-example :
-    [("01.01.1899", "DATUM_ADDITIONAL_CHECK"), ("30.02.1899", "DATUM_ADDITIONAL_CHECK"),
-      ("31.04.2020", "DATUM_TAG_FEHLER"), ("13.13.1850", "DATUM_ADDITIONAL_CHECK")].all
-      (fun (text, key) => date .full true .dayMonthYearDots text == some key) := by
+/- `D2`, `dd.MM.yyyy`: the dotted spelling selects the same component keys. -/
+example : date .full .dayMonthYearDots "31.04.2020" = some "DATUM_TAG_FEHLER" := by
   native_decide
 
 /- `D3`–`D5`, the three partial precisions over `yyyy-MM-dd`: the omission table first, then the
@@ -67,7 +63,7 @@ example :
       (.yearOptional, "0000-00-05", "DATUM_JAHROPTIONAL_MONAT_ODER_TAG_ANGEGEBEN"),
       (.yearOptional, "2026-00-05", "DATUM_MONATOPTIONAL_TAG_ANGEGEBEN"),
       (.yearOptional, "0000-13-00", "DATUM_JAHROPTIONAL_MONAT_ODER_TAG_ANGEGEBEN")].all
-      (fun (mode, text, key) => date mode false .yearMonthDayDashes text == some key) := by
+      (fun (mode, text, key) => date mode .yearMonthDayDashes text == some key) := by
   native_decide
 
 /- `R1`, a `yyyy-MM-dd` range split at `/`: each endpoint selects its own component key, a missing
@@ -85,8 +81,8 @@ example :
 
 /- An admitted value selects no key, so the selection cannot fire where the formal check does not. -/
 example :
-    date .full false .yearMonthDayDashes "2026-02-28" = none ∧
-      date .dayOptional false .yearMonthDayDashes "2026-03-00" = none ∧
+    date .full .yearMonthDayDashes "2026-02-28" = none ∧
+      date .dayOptional .yearMonthDayDashes "2026-03-00" = none ∧
       range "2020-01-01/2020-01-01" = none := by
   native_decide
 

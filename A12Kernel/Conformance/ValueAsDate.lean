@@ -32,8 +32,7 @@ private def calendarDayOperand? (profile : ModelZone.ConcreteProfile)
 
 private def dayOptionalSource
     (partialMode : TemporalPartialMode := .dayOptional)
-    (format : String := "dd.MM.yyyy")
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (format : String := "dd.MM.yyyy") : FlatFieldDecl := {
   id := 0
   groupPath := ["Order"]
   name := "ApproxDate"
@@ -41,16 +40,14 @@ private def dayOptionalSource
     kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy := some {
     format
-    partialMode
-    youngerThan1900Check } }
+    partialMode } }
 
 private def modelWith
     (source : FlatFieldDecl := dayOptionalSource) : FlatModel := {
   fields := [source]
   timeZoneId := "Europe/Berlin" }
 
-private def dateTarget
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+private def dateTarget : FlatFieldDecl := {
   id := 1
   groupPath := ["Order"]
   name := "ComputedDate"
@@ -58,8 +55,7 @@ private def dateTarget
     kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy := some {
     format := "dd.MM.yyyy"
-    partialMode := .full
-    youngerThan1900Check } }
+    partialMode := .full } }
 
 private def modelWithTarget
     (source : FlatFieldDecl := dayOptionalSource)
@@ -296,20 +292,18 @@ example :
       iso.evaluateRaw (.parsed "2024-00-00") = .fired .value := by
   native_decide
 
-/- The exact floor and optional pre-1900 policy run after earliest completion; unknown year bypasses only the latter and remains non-relevant. -/
+/- The exact floor runs after earliest completion; an unknown year bypasses it and remains non-relevant. -/
 example :
     let floor := (date? 1583 11 1).get (by native_decide)
     let floorChecked := (elaborateValueAsDateComparison
       (modelWith) 0 .firstDay .equal floor).toOption.get (by native_decide)
     let modern := (date? 1900 1 1).get (by native_decide)
-    let additional := (elaborateValueAsDateComparison
-      (modelWith (dayOptionalSource .yearOptional
-        "dd.MM.yyyy" true))
+    let unknownYear := (elaborateValueAsDateComparison
+      (modelWith (dayOptionalSource .yearOptional "dd.MM.yyyy"))
       0 .firstDay .before modern).toOption.get (by native_decide)
     floorChecked.evaluateRaw (.parsed "00.10.1583") = .unknown ∧
       floorChecked.evaluateRaw (.parsed "00.11.1583") = .fired .value ∧
-      additional.evaluateRaw (.parsed "00.12.1899") = .unknown ∧
-      additional.evaluateRaw (.parsed "00.00.0000") = .unknown := by
+      unknownYear.evaluateRaw (.parsed "00.00.0000") = .unknown := by
   native_decide
 
 /- Width, separators, suffix legality, and calendar reality all fail before operation evaluation. -/
@@ -603,22 +597,15 @@ example :
         some (.poison .malformed) := by
   native_decide
 
-/- The always-on floor retains the exact attempted text; the optional pre-1900 check has earlier target-policy precedence. -/
+/- The always-on floor retains the exact attempted text. -/
 example :
     let ordinary := (elaborateValueAsDateShiftTarget
       (modelWithTarget) 0 1 .firstDay .days).toOption.get
         (by native_decide)
-    let additional := (elaborateValueAsDateShiftTarget
-      (modelWithTarget (target := dateTarget true))
-      0 1 .firstDay .days).toOption.get (by native_decide)
     (ordinary.evaluateRaw
         (.parsed "16.10.1583") (.value (-1))).toOption =
         some (.errored ⟨"15.10.1583", by decide⟩
-          .beforeGregorianFloor) ∧
-      (additional.evaluateRaw
-        (.parsed "16.10.1583") (.value (-1))).toOption =
-        some (.errored ⟨"15.10.1583", by decide⟩
-          .before1900) := by
+          .beforeGregorianFloor) := by
   native_decide
 
 /- A landing before the 1582 cutover is an ordinary proleptic label that the target's floor check marks

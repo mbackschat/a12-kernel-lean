@@ -40,13 +40,8 @@ private def nestedSource :=
   fragmentField 7 ["Review", "Rows", "Details"] "NestedMonth" [10, 20]
 private def yearTarget := fragmentField 8 ["Review"] "FirstYear" [] "yyyy"
 private def otherGroupTarget := fragmentField 9 ["Other"] "OtherMonth"
-private def checkedSource : FlatFieldDecl := {
-  fragmentField 10 ["Review", "Rows"] "CheckedYearMonth" [10] "yyyy-MM" with
-    temporalTargetPolicy := some {
-      format := "yyyy-MM"
-      youngerThan1900Check := true
-    }
-}
+private def checkedSource :=
+  fragmentField 10 ["Review", "Rows"] "CheckedYearMonth" [10] "yyyy-MM"
 private def yearMonthTarget :=
   fragmentField 11 ["Review"] "FirstYearMonth" [] "yyyy-MM"
 private def yearMonthSource :=
@@ -65,10 +60,8 @@ private def unsupportedTarget :=
 private def unsupportedSource :=
   fragmentField 19 ["Review", "Rows"] "UnsupportedSource" [10] "yyyy/MM"
 
-private def checkedYearTarget : FlatFieldDecl := {
-  fragmentField 17 ["Review"] "CheckedYear" [] "yyyy" with
-    temporalTargetPolicy := some { format := "yyyy", youngerThan1900Check := true }
-}
+private def checkedYearTarget :=
+  fragmentField 17 ["Review"] "CheckedYear" [] "yyyy"
 
 private def model : FlatModel := {
   fields := [
@@ -270,11 +263,8 @@ example :
       some (.accepted ⟨"03-20", by decide⟩) := by
   native_decide
 
-/- The shared target policy retains rejected rendering, rather than the retired token path's unconditional success (spec/09). -/
+/- A year-only target accepts its rendering at 1900: only the universal floor bounds it (spec/09). -/
 example :
-    resultFor? checkedYearTarget yearSource
-        (some ("1899", dateRaw 1899 1 1)) =
-      some (.errored ⟨"1899", by decide⟩ .before1900) ∧
     resultFor? checkedYearTarget yearSource
         (some ("1900", dateRaw 1900 1 1)) =
       some (.accepted ⟨"1900", by decide⟩) := by

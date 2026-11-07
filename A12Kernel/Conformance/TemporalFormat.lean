@@ -120,16 +120,14 @@ example :
 private def temporalTarget
     (id : FieldId) (name format : String)
     (kind : TemporalKind) (components : TemporalComponents)
-    (partialMode : TemporalPartialMode := .full)
-    (youngerThan1900Check : Bool := false) : FlatFieldDecl := {
+    (partialMode : TemporalPartialMode := .full) : FlatFieldDecl := {
   id
   groupPath := ["Order"]
   name
   policy := { kind := .temporal kind components }
   temporalTargetPolicy := some {
     format
-    partialMode
-    youngerThan1900Check } }
+    partialMode } }
 
 private def validationError (model : FlatModel) : Option ResolveError :=
   match model.validate with
@@ -165,15 +163,6 @@ example :
     validationError { fields := [target] } =
       some (.invalidTemporalTargetPolicy target.path
         .partialModeRequiresFullDate) := by
-  native_decide
-
-/- The opt-in pre-1900 check belongs only to Date declarations. -/
-example :
-    let target := temporalTarget 0 "ScheduledAt" "yyyy-MM-dd'T'HH:mm:ss"
-      .dateTime fullDateTime .full true
-    validationError { fields := [target] } =
-      some (.invalidTemporalTargetPolicy target.path
-        .youngerThan1900RequiresDate) := by
   native_decide
 
 /- A retained exact format source cannot be empty. -/

@@ -48,7 +48,7 @@ example : (CivilDate.ofYmd? 2024 13 1).isNone = true := by native_decide
 example : (CivilDate.ofYmd? 2024 1 0).isNone = true := by native_decide
 example : (CivilDate.ofYmd? 0 1 1).isNone = true ∧ (CivilDate.ofYmd? (-1) 1 1).isNone = true := by native_decide
 
-/- The always-on value floor is exact and is not the optional 1900 check. -/
+/- The value floor is exact, and 1900 is no boundary. -/
 example : (CivilDate.ofYmd? 1583 10 15).isSome = true := by native_decide
 example : (FullDate.ofYmd? 1583 10 15).isNone = true := by native_decide
 example : (FullDate.ofYmd? 1583 10 16).isSome = true := by native_decide

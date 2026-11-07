@@ -336,7 +336,6 @@ run_cmd do
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_left_computation_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_right_unavailable
 #print axioms A12Kernel.valueAsDateDayDifference_evaluate_nonRelevant_empty
-#print axioms A12Kernel.fullDateTarget_evaluate_pre1900
 #print axioms A12Kernel.partialMode_dayOptional_le_monthOptional
 #print axioms A12Kernel.timeInput_checkStored_singleCause
 #print axioms A12Kernel.dateTimeInput_classify_empty

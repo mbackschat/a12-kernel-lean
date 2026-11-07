@@ -15,8 +15,7 @@ private def source : FlatFieldDecl := {
     kind := .temporal .date TemporalComponents.fullDate }
   temporalTargetPolicy := some {
     format := "dd.MM.yyyy"
-    partialMode := .yearOptional
-    youngerThan1900Check := false } }
+    partialMode := .yearOptional } }
 
 private def model : FlatModel := {
   fields := [source]

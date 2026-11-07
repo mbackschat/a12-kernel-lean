@@ -149,9 +149,9 @@ example : (do
 
 /- Rejection is a computed-instance error, never a clear. -/
 example : (do
-    let view ← view? oldSource (.errored nextDate .before1900)
+    let view ← view? oldSource (.errored nextDate .beforeGregorianFloor)
     pure (view.withErrors, view.cleared)) =
-      some ([{ targetField := target.id, attempted := nextDate, cause := .before1900 }], []) := by
+      some ([{ targetField := target.id, attempted := nextDate, cause := .beforeGregorianFloor }], []) := by
   native_decide
 
 /- Quiet no-value and poison clear only a source-filled target. -/
@@ -186,7 +186,7 @@ example :
       let applied ← view.applyTo (destinationWith .absent) |>.toOption
       pure (applied target.id)) = some (.presentValue nextDate) ∧
     (do
-      let view ← view? oldSource (.errored nextDate .before1900)
+      let view ← view? oldSource (.errored nextDate .beforeGregorianFloor)
       let applied ← view.applyTo (destinationWith (.presentValue nextDate)) |>.toOption
       pure (applied target.id)) = some .presentEmpty ∧
     (do
@@ -205,7 +205,7 @@ example : (do
     let view := FullDateComputationRunView.fromOutcomes checked
       ([] : List FormalCause)
       [(target.id, .accepted nextDate),
-        (target.id, .errored nextDate .before1900)]
+        (target.id, .errored nextDate .beforeGregorianFloor)]
     pure (match view.applyTo (destinationWith .absent) with
       | .error error => some error
       | .ok _ => none)) =
@@ -278,7 +278,7 @@ example : (do
     let empty ← checked? { instantiatedRows := [], cells := [] }
     let view := FullDateComputationRunView.fromOutcomes empty
       ([] : List FormalCause)
-      [(99, .accepted nextDate), (99, .errored oldDate .before1900)]
+      [(99, .accepted nextDate), (99, .errored oldDate .beforeGregorianFloor)]
     pure (match view.applyToChecked checked with
       | .error (.duplicateActionTarget field) => field == 99
       | _ => false)) = some true := by

@@ -113,13 +113,15 @@ private def readDeclaration (fieldJson : Json) : Except String FieldTypeDeclarat
                       minLength := ← intMember? body "minLength"
                       maxLength := ← intMember? body "maxLength" })
   | "DateType" =>
-      pure (.date { format := ← optionalString body "format"
-                    partialMode := ← partialMode? (← optionalString body "datePrecision")
-                    youngerThan1900Check := ← inertYearCheck body })
+      let format ← optionalString body "format"
+      let partialMode ← partialMode? (← optionalString body "datePrecision")
+      bindInertYearCheck body
+      pure (.date { format, partialMode })
   | "TimeType" | "DateTimeType" => pure (.temporal { format := ← optionalString body "format" })
   | "DateFragmentType" =>
-      pure (.dateFragment { format := ← optionalString body "formatOfFragment"
-                            youngerThan1900Check := ← inertYearCheck body })
+      let format ← optionalString body "formatOfFragment"
+      bindInertYearCheck body
+      pure (.dateFragment { format })
   | "DateRangeType" =>
       pure (.dateRange { format := ← optionalString body "format"
                          separator := ← optionalString body "rangeSeparator" })

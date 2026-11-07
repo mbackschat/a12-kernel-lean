@@ -128,7 +128,7 @@ def wellFormed (source : HavingTemporalExpression) (model : FlatModel)
       | .partialDate source => (model.lookupUniqueId source.reference.field.id).toOption.any fun declaration =>
           (certifyPartialDateInputField declaration).toOption.any fun checked =>
             checked.field == source.reference.field && checked.format == source.format &&
-              checked.mode == source.mode && checked.policy.youngerThan1900Check == source.youngerThan1900Check
+              checked.mode == source.mode
       | .selection kind slots => kind.wellFormed model candidateLevels outerLevels slots
       | .field reference => (model.lookupUniqueId reference.field.id).toOption.any fun declaration =>
           declaration.fieldValueReadRefusal?.isNone && !(declaration.toTemporalTargetPolicy?.any (·.partialMode != .full))
@@ -158,7 +158,7 @@ private def resolveCore (model : FlatModel) (numeric : HavingNumericResolvers)
       let .ok checked := certifyPartialDateInputField declaration | throw .numericExpressionUnsupported
       pure (.atom (.partialDate {
         reference := { origin := reference.origin, field := checked.field }
-        format := checked.format, mode := checked.mode, youngerThan1900Check := checked.policy.youngerThan1900Check, endpoint }))
+        format := checked.format, mode := checked.mode, endpoint }))
   | .field reference => do
       let declaration ← resolve { origin := reference.origin, field := reference.field }
       let some field := declaration.toTemporalField? | throw .numericExpressionUnsupported

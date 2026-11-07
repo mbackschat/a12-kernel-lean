@@ -107,17 +107,16 @@ theorem dateRangeDeclarationPolicy_valid_sources
   unfold DateRangeDeclarationPolicy.admitted at hAdmitted
   split at hAdmitted <;> simp_all
 
-/-- A non-Date target can retain neither partial-date admission nor the Date-only pre-1900 check. -/
+/-- A non-Date target can retain no partial-date admission. -/
 theorem temporalTargetPolicy_valid_nonDate
     (policy : TemporalTargetPolicy)
     (kind : TemporalKind) (components : TemporalComponents)
     (notDate : kind ≠ .date)
     (valid : policy.errorFor? kind components = none) :
-    policy.partialMode = .full ∧ policy.youngerThan1900Check = false := by
+    policy.partialMode = .full := by
   cases kind <;> simp_all
   all_goals
     cases hPartialMode : policy.partialMode <;>
-      cases hAdditional : policy.youngerThan1900Check <;>
       by_cases hFormat : policy.format = "" <;>
       simp_all [TemporalTargetPolicy.errorFor?]
 
@@ -134,18 +133,7 @@ theorem temporalTargetPolicy_valid_partial
       · simp [TemporalTargetPolicy.errorFor?, hFormat] at valid
       by_cases hComponents : components = TemporalComponents.fullDate
       · exact ⟨rfl, hComponents⟩
-      · cases hCheck : policy.youngerThan1900Check with
-        | true =>
-            cases hYear : components.year with
-            | false =>
-                simp [TemporalTargetPolicy.errorFor?, hFormat, hCheck,
-                  hYear] at valid
-            | true =>
-                simp [TemporalTargetPolicy.errorFor?, hFormat, hCheck, hYear,
-                  notFull, hComponents] at valid
-        | false =>
-            simp [TemporalTargetPolicy.errorFor?, hFormat, hCheck, notFull,
-              hComponents] at valid
+      · simp [TemporalTargetPolicy.errorFor?, hFormat, notFull, hComponents] at valid
   | time =>
       by_cases hFormat : policy.format = "" <;>
         simp_all [TemporalTargetPolicy.errorFor?]

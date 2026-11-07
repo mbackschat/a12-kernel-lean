@@ -17,8 +17,7 @@ half, and an out-of-range clock in the time half — hour `24` included. A posit
 
 Both halves are decided as spelling before the floor is consulted, which is the ordering the partial-Date
 classifier measured for its own two causes; the interaction of a bad clock with a below-floor date is not
-itself measured, so this order is inherited rather than separately established. The optional pre-1900
-check cannot arise here, because the policy gate already refuses it on a DateTime declaration.
+itself measured, so this order is inherited rather than separately established.
 
 The date half's calendar reality is the full-Date classifier's account, reused rather than restated:
 the same component parser and the same model-zone reality test (`storedLabelReal`). Wider formats, other zones, and repeatable addressing stay with their

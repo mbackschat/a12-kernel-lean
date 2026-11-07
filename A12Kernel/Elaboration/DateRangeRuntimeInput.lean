@@ -4,15 +4,14 @@ import A12Kernel.Elaboration.Flat.Model
 namespace A12Kernel
 
 /-- Equality of shared runtime format classes within the admitted declaration profiles.
-Interpreted formats share by direction and additional-check flag, not spelling (spec/05 §8,
+Interpreted formats share by direction, not spelling (spec/05 §8,
 `CodeGenDateRangeTypeImpl` and `MetaGemeinsameFormate`). -/
 def DateRangeDeclarationPolicy.sharesRuntimeFormat
     (left right : DateRangeDeclarationPolicy) : Bool :=
-  left.youngerThan1900Check == right.youngerThan1900Check &&
-    match left.interpretationOfYear, right.interpretationOfYear with
-    | some a, some b => a == b
-    | none, none => left.format == right.format && left.runtimeSeparator == right.runtimeSeparator
-    | _, _ => false
+  match left.interpretationOfYear, right.interpretationOfYear with
+  | some a, some b => a == b
+  | none, none => left.format == right.format && left.runtimeSeparator == right.runtimeSeparator
+  | _, _ => false
 
 /-- The first model declaration in the field's shared format class supplies runtime policy.
 The original declaration remains the owner of static admission and document conversion. -/
@@ -52,20 +51,13 @@ def FlatModel.classifyRuntimeDateRange (model : FlatModel)
     | none => throw (.unsupportedPolicy effective.format effective.separator)
   let runtimeYear := if effective.interpretationOfYear.isSome then
       some (model.baseYear.getD 2000) else model.baseYear
+  -- KF276 and DateUtil.completeDateAndFormat: month-only formal parsing does
+  -- not take the year subsequently supplied to an endpoint consumer.
   let checkingPolicy := match format with
     | .yearlessMonth =>
         { effective with interpretationOfYear := none }
     | _ => effective
-  let raw ← classifyStoredDateRangeForModel model.timeZoneId runtimeYear checkingPolicy text
-  match format, raw with
-  -- KF276 and DateUtil.completeDateAndFormat: month-only formal parsing does
-  -- not take the year subsequently supplied to an endpoint consumer.
-  | .yearlessMonth, _ => pure raw
-  | _, .parsed (.dateRange (.exact range)) =>
-      if effective.youngerThan1900Check && range.start.parts.year < 1900 then
-        pure (.rejected .dateRangeTooEarly)
-      else pure raw
-  | _, _ => pure raw
+  classifyStoredDateRangeForModel model.timeZoneId runtimeYear checkingPolicy text
 
 /-- Complete an unconfigured label range for a computation's Date endpoints. Its source has
 already been observed; this positional completion is distinct from document conversion's

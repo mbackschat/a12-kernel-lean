@@ -21,7 +21,6 @@ namespace A12Kernel
 /-- Which component reading a calendar-unreal date fails, the detail the date keys split on. -/
 inductive DateComponentDefect where
   | format
-  | additionalCheck
   | month
   | february29
   | day
@@ -30,13 +29,11 @@ inductive DateComponentDefect where
 namespace DateParts
 
 /-- Classify a syntactically well-formed date the legacy calendar rejects. The order is the Kernel's
-and is not a calendar order: a zero component is a spelling defect before the pre-1900 check, which
-answers before the month, so with the check enabled `13.13.1850` selects the check, not the month
-(row `d2-3`). Only an exact 29 February is the leap-day defect; every other day defect, the October
-1582 gap day included (row `d1-11`), is the day's. -/
-def componentDefect (youngerThan1900 : Bool) (parts : DateParts) : DateComponentDefect :=
+and is not a calendar order: a zero component is a spelling defect before the month. Only an exact
+29 February is the leap-day defect; every other day defect, the October 1582 gap day included (row
+`d1-11`), is the day's. -/
+def componentDefect (parts : DateParts) : DateComponentDefect :=
   if parts.day == 0 || parts.month == 0 || parts.year == 0 then .format
-  else if youngerThan1900 && parts.year < 1900 then .additionalCheck
   else if 12 < parts.month then .month
   else if parts.day == 29 && parts.month == 2 then .february29
   else .day
@@ -54,16 +51,14 @@ namespace DateComponentDefect
 /-- The key a stored Date's component defect selects. -/
 def dateKey : DateComponentDefect → RuntimeFormalMessageKey
   | .format => .textDatumFormat
-  | .additionalCheck => .textDatumAdditionalCheck
   | .month => .textDatumMonatFehler
   | .february29 => .textDatumFebruar29Fehler
   | .day => .textDatumTagFehler
 
-/-- The key a DateRange endpoint's component defect selects: the range's own format and pre-1900
-keys, and an endpoint-specific key for each component. -/
+/-- The key a DateRange endpoint's component defect selects: the range's own format key, and an
+endpoint-specific key for each component. -/
 def rangeKey (endpoint : DateRangeEndpoint) : DateComponentDefect → RuntimeFormalMessageKey
   | .format => .textDatumBereichFormat
-  | .additionalCheck => .textDatumBereichDatumAdditionalCheck
   | .month => if endpoint == .start then .textDatumBereichStartMonatFehler else .textDatumBereichEndMonatFehler
   | .february29 =>
       if endpoint == .start then .textDatumBereichStartFebruar29Fehler else .textDatumBereichEndFebruar29Fehler
@@ -100,10 +95,10 @@ namespace FullDateInputFormat
 /-- The key a stored Date's text selects, or `none` when the text is an admitted date. A partially
 known declaration first meets its omission check, then reads an unknown day or month as `01` and an
 unknown year as `2000` for the remaining checks. Past the syntax gate a calendar-unreal date selects
-its component key; a real one fails only as a date, under the pre-1900 check when enabled and
-otherwise below the universal floor, and these two keys carry the code `datum`. -/
+its component key; a real one fails only as a date, below the universal floor, and this key carries the
+code `datum`. -/
 def dateMessageKey? (format : FullDateInputFormat) (profile : ModelZone.ConcreteProfile)
-    (mode : TemporalPartialMode) (youngerThan1900 : Bool) (text : String) : Option RuntimeFormalMessageKey :=
+    (mode : TemporalPartialMode) (text : String) : Option RuntimeFormalMessageKey :=
   match format.parseComponents? text with
   | none => some .textDatumFormat
   | some written =>
@@ -117,18 +112,16 @@ def dateMessageKey? (format : FullDateInputFormat) (profile : ModelZone.Concrete
               month := if written.month == 0 then 1 else written.month
               day := if written.day == 0 then 1 else written.day }
           if !profile.storedLabelReal parts then
-            some (parts.componentDefect youngerThan1900).dateKey
-          else if youngerThan1900 && decide (parts.Before FullDate.year1900Start.civil.parts) then
-            some .textDatumAdditionalCheck
+            some parts.componentDefect.dateKey
           else if decide (parts.Before CivilDate.gregorianFloor.parts) then some .textDatum
           else none
 
 /-- The key a stored DateRange's text selects, or `none` when both endpoints are admitted dates in
 order. A missing separator and a split that is not two nonempty endpoints select the range's format
-key; the start endpoint is read before the end. An inverted range answers before the date checks,
-which read the start alone: with the pre-1900 check enabled it alone decides, otherwise the floor. -/
+key; the start endpoint is read before the end. An inverted range answers before the date check,
+which reads the start alone against the floor. -/
 def dateRangeMessageKey? (format : FullDateInputFormat) (profile : ModelZone.ConcreteProfile)
-    (separator : String) (youngerThan1900 : Bool) (text : String) : Option RuntimeFormalMessageKey :=
+    (separator : String) (text : String) : Option RuntimeFormalMessageKey :=
   match text.splitOn separator with
   | [start, finish] =>
       if start.isEmpty || finish.isEmpty then some .textDatumBereichFormat
@@ -136,14 +129,10 @@ def dateRangeMessageKey? (format : FullDateInputFormat) (profile : ModelZone.Con
         match format.parseComponents? start, format.parseComponents? finish with
         | some first, some last =>
             if !profile.storedLabelReal first then
-              some ((first.componentDefect youngerThan1900).rangeKey .start)
+              some (first.componentDefect.rangeKey .start)
             else if !profile.storedLabelReal last then
-              some ((last.componentDefect youngerThan1900).rangeKey .finish)
+              some (last.componentDefect.rangeKey .finish)
             else if decide (last.Before first) then some .textDatumBereichNichtGueltig
-            else if youngerThan1900 then
-              if decide (first.Before FullDate.year1900Start.civil.parts) then
-                some .textDatumBereichDatumAdditionalCheck
-              else none
             else if decide (first.Before CivilDate.gregorianFloor.parts) then some .textDatumBereichDatum
             else none
         | _, _ => some .textDatumBereichFormat
