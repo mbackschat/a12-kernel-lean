@@ -1,5 +1,6 @@
 import A12Kernel.Elaboration.RepeatableStringConstantComputation
 import A12Kernel.Elaboration.AddressedEnumerationComputation
+import A12Kernel.Elaboration.SuppressedAddressedEnumerationCalculation
 import A12Kernel.Elaboration.FirstFilledAlternative
 import A12Kernel.Elaboration.ScalarCopyComputation
 import A12Kernel.Elaboration.ComputationNumericGuard
@@ -25,6 +26,8 @@ inductive CheckedRowComputationOperation (model : FlatModel) where
   | stringConstant (operation : CheckedRepeatableStringConstantComputation model)
   | enumeration (operation : CheckedAddressedEnumerationComputation model)
   | fixedEnumeration (operation : CheckedEnumerationComputationOperation model)
+  /-- A repeatable Enumeration target copied from a field whose preamble lifted the domain check. -/
+  | suppressedEnumeration (operation : CheckedSuppressedAddressedEnumerationCalculation model)
   | booleanConstant (operation : CheckedRepeatableBooleanConstantComputation model)
   | fixedBooleanConstant (operation : CheckedBooleanConstantComputation model)
   | temporalExpression (operation : CheckedTemporalExpressionComputation model)
@@ -42,6 +45,7 @@ def target : CheckedRowComputationOperation model → FieldId
   | .stringConstant operation => operation.checkedTarget.targetField
   | .enumeration operation => operation.target.field
   | .fixedEnumeration operation => operation.target.field
+  | .suppressedEnumeration operation => operation.target.field
   | .booleanConstant operation => operation.checkedTarget.targetField
   | .fixedBooleanConstant operation => operation.target.id
   | .dateRangeConstruction operation => operation.target.source.id
@@ -56,6 +60,7 @@ def scope : CheckedRowComputationOperation model → List RepeatableLevel
   | .stringConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .enumeration operation => operation.target.declaration.repeatableScope
   | .fixedEnumeration _ => []
+  | .suppressedEnumeration operation => operation.target.declaration.repeatableScope
   | .booleanConstant operation => operation.checkedTarget.declaration.repeatableScope
   | .fixedBooleanConstant _ => []
   | .dateRangeConstruction operation => operation.target.declaration.repeatableScope
@@ -68,7 +73,7 @@ def family : CheckedRowComputationOperation model → DocumentTargetFamily
   | .scalarCopy operation => operation.family
   | .firstFilled operation => operation.family
   | .stringExpression _ | .stringConstant _ => .string
-  | .enumeration _ | .fixedEnumeration _ => .enumeration
+  | .enumeration _ | .fixedEnumeration _ | .suppressedEnumeration _ => .enumeration
   | .booleanConstant _ | .fixedBooleanConstant _ => .boolean
   | .dateRangeConstruction _ => .dateRange
   | .temporalExpression operation => operation.family
@@ -83,6 +88,7 @@ def referencesField : CheckedRowComputationOperation model → FieldId → Bool
   | .stringConstant _, _ | .booleanConstant _, _ | .fixedBooleanConstant _, _ => false
   | .enumeration operation, field => operation.source.referencesField field
   | .fixedEnumeration operation, field => operation.source.referencesField field
+  | .suppressedEnumeration operation, field => operation.referencesField field
   | .dateRangeConstruction operation, field => operation.referencesField field
   | .temporalExpression operation, field => operation.expression.referencesField field
   | .dateLiteral _, _ => false
@@ -237,6 +243,9 @@ def evaluateAt (operation : CheckedRowComputationOperation model) (world : World
   | .enumeration operation =>
       let result ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       let outcome := result.result.asExactStringTargetOutcome
+      pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+  | .suppressedEnumeration operation =>
+      let outcome ← (operation.evaluateAtWithRead document.read environment).mapError .enumeration
       pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
   | .fixedEnumeration operation =>
       let context := document.indexedComputationContextAt environment

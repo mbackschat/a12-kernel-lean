@@ -81,24 +81,38 @@ def isRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target : 
       target.policy.kind == .enumeration && !path.segments.any (·.star)
   | _ => false
 
+/-- Whether an ordinary Enumeration elaboration was refused with the calculation's own class, the one
+refusal a preamble naming it lifts. -/
+private def drawsCalculationRefusal (result : Except ε α) (calculationRefusal : ε → Option CalculationRefusal) : Bool :=
+  match result with
+  | .error error => calculationRefusal error == some .invalidEnumCalculation
+  | .ok _ => false
+
 private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
     (target : FlatFieldDecl) (source : SurfaceEnumerationComputationSource) (suppressCalculation : Bool) :
     Lowering (CheckedRowComputationOperation model) := do
   -- A String source or out-of-domain Enumeration source is the calculation's own refusal on a fixed
   -- target (k22-static-s2-2026-10-24, `to4`, `to21`) and a repeatable one (k22-static-s3-2026-10-24,
-  -- `ud5`–`ud7`). A preamble naming that class admits such a field source into a fixed target, whose
+  -- `ud5`–`ud7`). A preamble naming that class admits such a field source into either target kind, whose
   -- domain then judges the attempt (spec/09 §4.3).
   if target.repeatableScope.isEmpty then
     if suppressCalculation then
       if let .field operand := source then
-        if let .error error := elaborateEnumerationComputation model group target.id source then
-          if error.calculationRefusal? == some .invalidEnumCalculation then
-            return .document (CheckedDocumentComputationStep.ofSuppressedEnumeration
-              (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
-                (elaborateSuppressedEnumerationCalculation model group target.id operand)))
+        if drawsCalculationRefusal (elaborateEnumerationComputation model group target.id source)
+            (·.calculationRefusal?) then
+          return .document (CheckedDocumentComputationStep.ofSuppressedEnumeration
+            (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
+              (elaborateSuppressedEnumerationCalculation model group target.id operand)))
     pure (.fixedEnumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
       (elaborateEnumerationComputation model group target.id source)))
   else
+    if suppressCalculation then
+      if let .field operand := source then
+        if drawsCalculationRefusal (checkAddressedEnumerationComputation model group target.id source)
+            (·.calculationRefusal?) then
+          return .suppressedEnumeration
+            (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
+              (elaborateSuppressedAddressedEnumerationCalculation model group target.id operand))
     pure (.enumeration (← elaboratedCalculation "EnumerationComputation" (·.calculationRefusal?)
       (checkAddressedEnumerationComputation model group target.id source)))
 
@@ -106,7 +120,8 @@ private def lowerEnumerationAlternative (model : FlatModel) (group : GroupPath)
 Enumeration target as the one-operand scan: the Kernel clears that target on a missing or duplicated
 key or a formally invalid selected cell exactly as the scan does ([checkpoint](../../../docs/sources/model-structure-and-declaration-probes.md#src-semantic-index-reads)). -/
 private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) (target : FlatFieldDecl)
-    (arguments : List Argument) (arity : EntityListArity := .manyRequired) (suppress : Bool := false) :
+    (arguments : List Argument) (arity : EntityListArity := .manyRequired) (suppress : Bool := false)
+    (suppressCalculation : Bool := false) :
     Lowering (CheckedFirstFilledAlternative model) := do
   let bindingGroup? := if arguments.any Argument.hasHaving then some target.groupPath else none
   if target.policy.kind == .string && target.customType.isNone then
@@ -114,6 +129,15 @@ private def lowerFirstFilledAlternative (model : FlatModel) (group : GroupPath) 
       (← lowerFirstFilledEntitySource model group arguments bindingGroup? suppress)))
   if target.policy.kind == .enumeration then
     let source ← lowerEnumerationFirstFilledSource model group arguments bindingGroup? suppress
+    -- A member outside the target's domain draws the calculation's own class on either target kind,
+    -- which a preamble naming it lifts (spec/09 §4.3).
+    if suppressCalculation && (if target.repeatableScope.isEmpty
+        then drawsCalculationRefusal (elaborateEnumerationFirstFilledComputation model group target.id source arity)
+          (·.calculationRefusal?)
+        else drawsCalculationRefusal (checkAddressedEnumerationFirstFilledComputation model group target.id source arity)
+          (·.calculationRefusal?)) then
+      return .suppressedEnumeration (← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
+        (elaborateSuppressedEnumerationFirstFilledComputation model group target.id source arity))
     if hFixed : target.repeatableScope = [] then
       let operation ← elaboratedEnumerationFirstFilled (·.calculationRefusal?)
         (elaborateEnumerationFirstFilledComputation model group target.id source arity)
@@ -147,7 +171,8 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
     (expression : Expr) (suppress : Bool := false) (suppressCalculation : Bool := false) :
     Lowering (CheckedRowComputationOperation model) := do
   if let .call "FirstFilledValue" arguments none none := expression then
-    return .firstFilled (← lowerFirstFilledAlternative model group target arguments (suppress := suppress))
+    return .firstFilled (← lowerFirstFilledAlternative model group target arguments (suppress := suppress)
+      (suppressCalculation := suppressCalculation))
   if target.policy.kind == .enumeration then
     if let .value reference@{ index := some _, filter := none, .. } := expression then
       -- Only a keyed column is a scalar read; a keyed star or group assigned directly draws
@@ -155,7 +180,8 @@ def lowerRowAlternativeOperation (model : FlatModel) (group : GroupPath) (target
       let .indexed _ _ ← lowerEntityOperand model group (.mk (.entity reference) none)
         | refuse "EnumerationComputation" "keyed extent"
       return .firstFilled (← lowerFirstFilledAlternative model group target
-        [.mk (.entity reference) none] (arity := .soleAllowed) (suppress := suppress))
+        [.mk (.entity reference) none] (arity := .soleAllowed) (suppress := suppress)
+        (suppressCalculation := suppressCalculation))
   if target.policy.kind == .boolean || target.policy.kind == .confirm || target.policy.kind == .dateRange then
     if let .value { path, index := none, category := none, filter := none } := expression then
       let some source := path.toFieldPath? | refuse "ScalarCopy" "source path"

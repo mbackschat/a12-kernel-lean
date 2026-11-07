@@ -18,6 +18,24 @@ its laws rely on.
 
 namespace A12Kernel
 
+namespace TokenComputationResult
+
+/-- The target's own judgement of one selected token once a preamble lifted the static domain check: a
+token it declares is stored, an empty text clears it, and any other text, a declared value's label
+included, leaves it errored. A rejected attempt's cause is never observed, since the Kernel reports no
+message for it; it is recorded as the pattern class an unrecognized token draws where a document cell is
+read. A poisoned selection poisons the target, as the ordinary projection has it. -/
+def judgedBy (target : CheckedEnumerationProjection) : TokenComputationResult → StringTargetOutcome
+  | .noValue => .noValue
+  | .poison cause => .poison cause
+  | .value token =>
+      if nonempty : token ≠ "" then
+        if target.declaration.literalAllowed target.projection token then .accepted { text := token, nonempty }
+        else .errored { text := token, nonempty } .pattern
+      else .noValue
+
+end TokenComputationResult
+
 /-- A fixed Enumeration target computed from a direct field whose tokens the target need not declare. -/
 structure CheckedSuppressedEnumerationCalculation (model : FlatModel) where
   target : CheckedEnumerationComputationTarget model
@@ -27,17 +45,13 @@ structure CheckedSuppressedEnumerationCalculation (model : FlatModel) where
 
 namespace CheckedSuppressedEnumerationCalculation
 
-/-- Judge one computation-phase source cell against the target's declared domain. A rejected attempt's
-cause is never observed, since the Kernel reports no message for it; it is recorded as the pattern class
-an unrecognized token draws where a document cell is read. -/
-def judge (target : CheckedEnumerationProjection) : ValueListCell .token → StringTargetOutcome
-  | .empty => .noValue
-  | .unknown cause => .poison cause
-  | .present token =>
-      if nonempty : token ≠ "" then
-        if target.declaration.literalAllowed target.projection token then .accepted { text := token, nonempty }
-        else .errored { text := token, nonempty } .pattern
-      else .noValue
+/-- Judge one computation-phase source cell against the target's declared domain. -/
+def judge (target : CheckedEnumerationProjection) (cell : ValueListCell .token) : StringTargetOutcome :=
+  let selected : TokenComputationResult := match cell with
+    | .empty => .noValue
+    | .unknown cause => .poison cause
+    | .present token => .value token
+  selected.judgedBy target
 
 def evaluate (operation : CheckedSuppressedEnumerationCalculation model) (context : FlatContext) :
     StringTargetOutcome :=

@@ -1,6 +1,7 @@
 import A12Kernel.Elaboration.DocumentComputationStep
 import A12Kernel.Elaboration.StringFirstFilledComputation
 import A12Kernel.Elaboration.AddressedEnumerationFirstFilledComputation
+import A12Kernel.Elaboration.SuppressedEnumerationFirstFilledComputation
 
 /-! # First-filled operations at one selected target instance
 
@@ -17,6 +18,8 @@ inductive CheckedFirstFilledAlternative (model : FlatModel) where
       (declaration : FlatFieldDecl) (sameField : declaration.id = operation.target.field)
       (fixed : declaration.repeatableScope = [])
   | addressedEnumeration (operation : CheckedAddressedEnumerationFirstFilledComputation model)
+  /-- A fixed or repeatable target whose preamble lifted the domain check. -/
+  | suppressedEnumeration (operation : CheckedSuppressedEnumerationFirstFilledComputation model)
   | boolean (operation : CheckedBooleanFirstFilledComputation model)
   | time (operation : CheckedTimeFirstFilledComputation model)
   | dateTime (operation : CheckedDateTimeFirstFilledComputation model)
@@ -41,6 +44,7 @@ def target : CheckedFirstFilledAlternative model → FlatFieldDecl
   | .string operation => operation.target
   | .fixedEnumeration _ declaration _ _ => declaration
   | .addressedEnumeration operation => operation.target.declaration
+  | .suppressedEnumeration operation => operation.target
   | .boolean operation => operation.target
   | .time operation => operation.target
   | .dateTime operation => operation.target
@@ -50,7 +54,7 @@ def target : CheckedFirstFilledAlternative model → FlatFieldDecl
 
 def family : CheckedFirstFilledAlternative model → DocumentTargetFamily
   | .string _ => .string
-  | .fixedEnumeration .. | .addressedEnumeration _ => .enumeration
+  | .fixedEnumeration .. | .addressedEnumeration _ | .suppressedEnumeration _ => .enumeration
   | .boolean _ => .boolean
   | .time _ => .time
   | .dateTime _ => .dateTime
@@ -61,6 +65,7 @@ def referencesWith : CheckedFirstFilledAlternative model → FieldId → (Correl
   | .string operation => operation.referencesWith
   | .fixedEnumeration operation _ _ _ => operation.referencesWith
   | .addressedEnumeration operation => operation.source.referencesWith
+  | .suppressedEnumeration operation => operation.referencesWith
   | .boolean operation => operation.referencesWith
   | .time operation => operation.referencesWith
   | .dateTime operation => operation.referencesWith
@@ -99,6 +104,10 @@ def evaluateAt (operation : CheckedFirstFilledAlternative model) (world : World)
         let entry ← (operation.evaluateAtWithRead (world := some world) document document.read environment).mapError .enumeration
         let outcome := entry.result.asExactStringTargetOutcome
         pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.target.projection outcome)
+    | .suppressedEnumeration operation =>
+        let outcome ← (operation.evaluateAtWithRead (world := some world) document document.read
+          environment).mapError (.enumeration ∘ .source)
+        pure (.enumeration outcome, DocumentComputationReadBack.enumeration operation.projection outcome)
     | .boolean operation =>
         let address ← targetAddress operation.target environment (.site ∘ .targetEnvironment)
         let entry ← (operation.evaluateAt (world := some world) document document.read address environment).mapError .site
