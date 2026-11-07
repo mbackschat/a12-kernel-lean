@@ -1,0 +1,27 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "9be4a28bde37520950bee8f1f719eb8a9e2266ccc908c521a94afdf3fa8c7dca",
+  "observations" : [ {
+    "id" : "ogt007",
+    "inputHash" : "f096bc1564469ba20cbb33069d07f018efc0d5084b221b6760c83696e6db971d",
+    "ok" : false,
+    "codes" : [ "RK_ERROR_FIELD_OUTSIDE_GROUP" ]
+  }, {
+    "id" : "ogt008",
+    "inputHash" : "a320be4b6df94c38af190327eb57338fba3bd213da9cd3e8aeb7f0f3f19cc131",
+    "ok" : false,
+    "codes" : [ "RK_ERROR_FIELD_OUTSIDE_GROUP" ]
+  }, {
+    "id" : "ogt009",
+    "inputHash" : "ce8acbd46b3ee3780baf6df8a5da00696fed38a6ea3dd5031be968ed65565a6a",
+    "ok" : false,
+    "codes" : [ "RK_ERROR_FIELD_OUTSIDE_GROUP" ]
+  } ]
+}

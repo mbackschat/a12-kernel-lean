@@ -1,0 +1,90 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "5a5a7f1c85d065dc0c3df3e661edc72258b1378ec6fc573f026450c630170512",
+  "observations" : [ {
+    "id" : "ctl-plain",
+    "inputHash" : "e0f4b35b4fb6b02bde11ec5dd87615b403cf05e9fe5156c2c48a06d73762439d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "witness-value",
+    "inputHash" : "1156bbc03d61b9a989c18fb768a9aebaa780c40698bb4ba152b505fae1f2191c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "de-Wert",
+    "inputHash" : "a23d040ad72d3f081f22722274d6292f03061a73619610143c99f87794650979",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "cap-Value",
+    "inputHash" : "d9fa889ca1716d3fec1bfe4e29eec0ceb80b536996c5d754ff78187a9fb9684f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "upper-keyword",
+    "inputHash" : "df737290f3985d698a6b9f6b812dd58f007effda4e5097a47d0ade8f322cefda",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "no-suffix",
+    "inputHash" : "db9945fe83e61374fdc0ddc26c8ed236a44f5ac3bd51bd611161e4a836da1440",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_PARAMETER" ]
+  }, {
+    "id" : "category-suffix",
+    "inputHash" : "189b33b06c869c889103ee1f16b45245e56d77915f91822cd135b57cd4e4b2e5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "FIELD_NO_ENUM" ]
+  }, {
+    "id" : "abs-path",
+    "inputHash" : "8f41099700f878cba544b41b84d069161ad75b6a3f69f4767447c7c5832964aa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "rel-path",
+    "inputHash" : "1c6ff5ef79986e774134dcace4e0b44f280e4b8c1a1510143a352fc502a07c5c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "nonexistent",
+    "inputHash" : "6a7b36980b18900e4329f2b01bcb7475fafb467cef8b3b2c020561b44369f927",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "nonindex-field",
+    "inputHash" : "b194b6716495755087e64a5de11c4b8bd23800ab98b4b90bfeae9921e7c83fcb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "off-path-error",
+    "inputHash" : "32b44c0bb6a401ddebc659cd7e437a0b99bcc171ba3bccb7a8bf9aea91f09384",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD" ]
+  }, {
+    "id" : "ctl-off-path",
+    "inputHash" : "2ad23d6ff2dfe403e9357cf1c130074d2b10d5e5b81af9cce0ec5646c9bb27b0",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

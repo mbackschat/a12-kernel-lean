@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "0b8fb4508a2fda9ea5c6474a1d92d549c024380babde2da7ff5ec5b7d7a04be9",
+  "observations" : [ {
+    "id" : "max-str-filtered",
+    "inputHash" : "dffc95e2e4db2fb8c05488f9f6ad27fe39b4f29e5be41f090a7d67c13455764d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "max-str-plain",
+    "inputHash" : "e334bd2aaa169b5c27bd372f9f87937d337c843b339eaf23d5561c0a3a5cf7a5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "max-num-liveness",
+    "inputHash" : "5631cd41f759745fc434403377625fbdecb6cb98c69b0d1d2f945937465ff534",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "bool-filtered",
+    "inputHash" : "07e51cde1238d99138f94d1cd85ff7c972ead9058e8d414b89f43dd58a1fc215",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "bool-plain",
+    "inputHash" : "eb323f50f7e29ace52ee65035add30a0c5f1d519e68181c29527f63211b4af3e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "confirm-filtered",
+    "inputHash" : "e02f1957cdc19654ee6f1999ea6e3646004205510b5307b7fcd1d598883e0841",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "confirm-plain",
+    "inputHash" : "e73d6c504755a19c1a69462dd73d53dbb0445560eaf4544abb502802983a7104",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "group-slot-filtered",
+    "inputHash" : "8f9219c0a608d9d0c0286686dd6d802462963bbe21114d9875b20ebbb3d899cb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  }, {
+    "id" : "group-slot-plain",
+    "inputHash" : "aa610d945486ae2560a52138b235b3e8da766b08a51667701c4da9cbba311f10",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "group-slot-num-only-filtered",
+    "inputHash" : "e178791ee091ec0f772000b364485c00b388e22946e00f270e47267d4e75f0e0",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_GROUPS_ALLOWED" ]
+  } ]
+}

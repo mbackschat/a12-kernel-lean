@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "9b759f6d54a0b10bc0861bdae689ef8576ff5cd7a1bb2a36b578a36f0fba19f1",
+  "observations" : [ {
+    "id" : "001|sw|no-directive-one-cmp",
+    "inputHash" : "557941e879a25b20d1f1255ff35196078d6d84d2456ff9439004b7829ef123fb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "002|sw|directive-one-cmp",
+    "inputHash" : "995d9877c5b18e1468abf147b971a80d037c816d317603f4a08c0b49b9af9e96",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "003|sw|directive-two-cmps",
+    "inputHash" : "7c5f4ccea39e1769cdbc2e9a94a525dcba7b06e265e5eb0bf3cfc539f83cc507",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "004|sw|no-directive-two-cmps",
+    "inputHash" : "f2ad0863683295de62f3a08389df6df76667121812870d511943118cf0a123f5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "005|sw|directive-covers-later",
+    "inputHash" : "252b757ff23a07a8a9be90f6344231c79ff7627f653d78fd3f0a4048eefd1acf",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "006|sw|bad-name",
+    "inputHash" : "ee9d920c99b28afad1e1bdcfe654910f2fe79b522849a004c62c501e2d87cf14",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_SUPPRESSED_WARNING" ]
+  }, {
+    "id" : "007|sw|bad-name-real-code",
+    "inputHash" : "b2a57a589cf2df0968d51646523055989cdb949db29833b6ab93b8750236f788",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_SUPPRESSED_WARNING" ]
+  }, {
+    "id" : "008|sw|same-scale-control",
+    "inputHash" : "8d00757087909008760b2c163b7779c9f306598abfad4f0d75e4540de6aeb791",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

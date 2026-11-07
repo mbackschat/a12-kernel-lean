@@ -1,0 +1,72 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "a8c77263be307df5d2cfb0731b3a8b2482a578e92443cc8e90cf975f6e9ff8ee",
+  "observations" : [ {
+    "id" : "sum-typedef-number",
+    "inputHash" : "d7132e378cf6d9f624a016ce72a58652a40163301fdfd91f5cdd632cf3dadece",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "sum-plain-number-control",
+    "inputHash" : "55499a022a010c33a501a0eff22260f8bcd60d43f58b9884336d1f2328234474",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "sum-typedef-string",
+    "inputHash" : "f6efaf084b68f5bcdeb8180d380f54f03b1b167cc8b668d28bdc9b47c71a406c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "sum-plain-string-control",
+    "inputHash" : "f057e51c271c9d4dcef4b27358fcd8a3a08ebc0c2078bfea0ba26d5c23836815",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "distinct-typedef-string-with-string",
+    "inputHash" : "9bf58ef3f80de8f8b4095625ce0a3acc7a8b3024ded9419b2a97e3a6e7476744",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "distinct-typedef-string-with-number",
+    "inputHash" : "a9c2d0e11323352a44245cf6673f4207cbd4f39660443fadb16cd2a2971dd42a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_STRING_ENUM_AND_NON_STRING_ENUM" ]
+  }, {
+    "id" : "distinct-plain-mixed-control",
+    "inputHash" : "67126ad7d9f7acbc340c4c19d13ad2b1a4ca9d026752ae101a7d317d9d74515b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_STRING_ENUM_AND_NON_STRING_ENUM" ]
+  }, {
+    "id" : "compare-typedef-number-to-literal",
+    "inputHash" : "7ab8394c516962360f467a1be62d9a68cd449fa462f29d875debb0e7f40307da",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "compare-typedef-string-to-literal",
+    "inputHash" : "b21f46fcee9288277750b92cab91142d896f415815de35470281e22a795a94fa",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  }, {
+    "id" : "compare-plain-string-to-literal-control",
+    "inputHash" : "0c828e9bf6ee269f4785bb1cca006e3ce095be4bec71822f12e5bf2d3c61cd93",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_COMPARISON" ]
+  } ]
+}

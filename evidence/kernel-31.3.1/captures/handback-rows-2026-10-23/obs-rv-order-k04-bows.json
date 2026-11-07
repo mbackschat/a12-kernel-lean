@@ -1,0 +1,18 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "dc513e55001d0539e2a2c1b7180fecddb18921dcd3452935e968cad3740e430f",
+  "observations" : [ {
+    "id" : "se4",
+    "inputHash" : "2f46854d33123c77acb9efbdd6c4c19c61bb57a1724dba19052aca1d82fc8d76",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

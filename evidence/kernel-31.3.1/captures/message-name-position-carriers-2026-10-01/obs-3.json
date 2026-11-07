@@ -1,0 +1,114 @@
+{
+ "producer": {
+  "source": {
+   "revision": "505683610a0c57711fe59fb6ca70d315e6a2f2a1"
+  }
+ },
+ "kernel": "30.8.1",
+ "observations": [
+  {
+   "id": "K10",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Top For Store/X For \"k\"$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "ILLEGAL_SEMANTIC_INDEX"
+   ],
+   "valid": false
+  },
+  {
+   "id": "K11",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Top For \"k1\" For \"k2\"$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+   ],
+   "valid": false
+  },
+  {
+   "id": "K12",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Top For Nope For \"k\"$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "INVALID_ENTITY"
+   ],
+   "valid": false
+  },
+  {
+   "id": "K13",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Top For Store/X$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "MVK_INDEX_FOR_ERROR_TEXT_INVALID"
+   ],
+   "valid": false
+  },
+  {
+   "id": "K14",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Nope For Store/X For \"k\"$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "INVALID_ENTITY"
+   ],
+   "valid": false
+  },
+  {
+   "id": "K15",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Top For Store/X For Nope$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "INVALID_ENTITY"
+   ],
+   "valid": false
+  },
+  {
+   "id": "K16",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Top For Store For \"k\"$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "ILLEGAL_SEMANTIC_INDEX"
+   ],
+   "valid": false
+  },
+  {
+   "id": "K17",
+   "model": "GroupAvailTwin_DM.json",
+   "field": "/Probe/Top",
+   "group": "/Probe",
+   "condition": "FieldFilled(Top) And FieldFilled(Store/X)",
+   "message": "Check $Top For Store/X For Top$.",
+   "verification": "KERNEL_CONFIRMED",
+   "codes": [
+    "ILLEGAL_SEMANTIC_INDEX"
+   ],
+   "valid": false
+  }
+ ]
+}

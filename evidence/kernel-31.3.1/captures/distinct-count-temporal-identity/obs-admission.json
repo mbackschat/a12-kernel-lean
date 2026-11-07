@@ -1,0 +1,24 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "ebf844a4ebe3684840d4b9440dbec63740fd3184e8a88ec87b110c2e0a5c7b49",
+  "observations" : [ {
+    "id" : "admit-cross-format",
+    "inputHash" : "e4e07c9ebebf49057aa4380dccb45e3a543411f38dc663f907bcea81ea6dd419",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "admit-same-format",
+    "inputHash" : "207dfd8a798c9e5ba0adf5e94c0f38dc9e9afbc2d6c955731094195c8cf1a237",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

@@ -1,0 +1,102 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "03ccf4893f05d1285baf86ad653ccb6b68cc11804a1a5f277f94b81e3fc2f35a",
+  "observations" : [ {
+    "id" : "B01",
+    "inputHash" : "fbd602e65381638b9c41b9447bfd8680d5057556d783fcd7701488d5f66533eb",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B02",
+    "inputHash" : "8e33a92e5085f61099ec41a47170b3cf266f9365d32c264bbc596bcd23134621",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_TYPE_INCONSISTENT" ]
+  }, {
+    "id" : "B03",
+    "inputHash" : "3f36fca8ffc1e937b5480cf2f6555a343e49fcec169b3ea8917437ba5ca96704",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B04",
+    "inputHash" : "f421c9a2b4ed636a39c0088065805381120f7c039463b89d13020b0d838b9a25",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B05",
+    "inputHash" : "82485dc6e45b1ded94055a21c933496788a7fddf59a493c48f297508e5edee85",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "B06",
+    "inputHash" : "7c23310c80d41d9679c45d8dbd80e0005863a1b1f2f8b56a64e14c245f512714",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B07",
+    "inputHash" : "a05e70c65609b76b8322f969180c459fd6f007c8394446372b9134d217ca912e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B08",
+    "inputHash" : "8060ff6b575dc7dd44a406f822cef4d24630eaca27a322ce3346ff28829aab3a",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B09",
+    "inputHash" : "5c5d92906e92b9007bad7f685caa9df3da1bf37ac203c332be3e16b97ca84b09",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_IN_RULEGROUP" ]
+  }, {
+    "id" : "B10",
+    "inputHash" : "a25129f2fa8098a2924e3ffc2ef413e30df200705f10885c02fe40bed8005f5d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B11",
+    "inputHash" : "d4cf49280d48616da08d27d6459d7f9ceae5f388d19b1d2256c78b338ae48107",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_POINT_IN_A12_MODEL" ]
+  }, {
+    "id" : "B12",
+    "inputHash" : "8788017eba3e8f987290333803c8dd029fac65a0e89c41879757ee6b736a3b15",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_PARAMSIZE_INVALID_2" ]
+  }, {
+    "id" : "B13",
+    "inputHash" : "b3811051bcec47eb9ae75fbc57fb8b12a6c247d81f3f8ef31725a6682b0f0836",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_ENTITY" ]
+  }, {
+    "id" : "B14",
+    "inputHash" : "e6235b4c53b0417b52abe2b4aa1183fb0574849fecaa5f7379898dd822d4b169",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_INDEX_FIELD" ]
+  }, {
+    "id" : "B15",
+    "inputHash" : "ac039578dd1863d2042aaa0649aa2043ecd304895baf9814db915db750911325",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_SEMANTIC_INDEX_CONTAINED_IN_INDEX" ]
+  } ]
+}

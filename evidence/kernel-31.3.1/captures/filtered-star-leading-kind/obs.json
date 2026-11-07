@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "0b8fb4508a2fda9ea5c6474a1d92d549c024380babde2da7ff5ec5b7d7a04be9",
+  "observations" : [ {
+    "id" : "str-filtered",
+    "inputHash" : "8bb6dafdf4d8f4b9e8947a497dbd7a159c6dcf6d61d524f1d28b1761023f4c50",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "str-plain",
+    "inputHash" : "50afcb5b83ffd76ef4c60231af782874b750f81150ecaf67a17ad2a5ff2a35a3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NOT_SORTABLE" ]
+  }, {
+    "id" : "date-filtered-vs-number",
+    "inputHash" : "499f0497e0b76de306c139c349a9d1a58def4ddbfa9dcc73973de351dce34419",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DATE_AND_NONDATE" ]
+  }, {
+    "id" : "date-plain-vs-number",
+    "inputHash" : "d3b337749a2208e6ceb0e11c8b3c1cd9ff9982c608aed13c778b9d5a24429611",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DATE_AND_NONDATE" ]
+  }, {
+    "id" : "number-filtered-liveness",
+    "inputHash" : "a0d0f740b859cbfec097d172b0a5906bb3eeefc3242b2d1d0a7285c201caa45b",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "number-plain-liveness",
+    "inputHash" : "f290268df758f26acb9524fd571ffb70017e6afe2131fea3150e4d2fc11e71c6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "date-filtered-vs-date",
+    "inputHash" : "033aae2eec4977f3b26b69d8b14ca0dca54699b0546fc1e88c5bb18e67dc19dd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "date-plain-vs-date",
+    "inputHash" : "c1d54cff30fcd6616515e57a622faf28b752960d396e08140ba3f8c507025853",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

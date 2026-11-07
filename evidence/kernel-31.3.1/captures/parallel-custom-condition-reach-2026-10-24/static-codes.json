@@ -1,0 +1,51 @@
+{
+ "kernel": "31.3.1",
+ "verb": "rule check",
+ "producer": {
+  "revision": "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.15.0",
+ "rows": {
+  "h1": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "h2": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "h3": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "h4": {
+   "admitted": true,
+   "codes": [],
+   "instrument": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "h5": {
+   "admitted": false,
+   "codes": [
+    "MVK_PARALLEL_ITERATION_INVALID"
+   ],
+   "instrument": []
+  },
+  "h6": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  }
+ }
+}

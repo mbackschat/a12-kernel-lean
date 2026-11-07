@@ -1,0 +1,58 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.15.0",
+    "kernel" : {
+      "builtAgainst" : "31.3.1",
+      "runtime" : "31.3.1"
+    },
+    "source" : {
+      "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "K16N_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "e03",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "fault" : {
+            "observation" : "validateFull",
+            "chain" : [
+              {
+                "type" : "com.mgmtp.a12.model.repository.FaultException",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]"
+              },
+              {
+                "type" : "java.lang.ArithmeticException",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]"
+              }
+            ]
+          }
+        },
+        {
+          "engine" : "kernel-java-static",
+          "fault" : {
+            "observation" : "validateFull",
+            "chain" : [
+              {
+                "type" : "com.mgmtp.a12.model.repository.FaultException",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]"
+              },
+              {
+                "type" : "java.lang.ArithmeticException",
+                "message" : "[redacted: Kernel message text, EUPL localisation resource]"
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}

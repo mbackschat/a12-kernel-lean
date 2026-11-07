@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "1650ba0ad62603f4e81caf7bf7c13b9e5858ec31d601c71b0f5f0bbd43c483ce",
+  "observations" : [ {
+    "id" : "nff-fixedbelow",
+    "inputHash" : "1a5a15b22893869c142845dd1227cc14dc2512655a079845b4e4f12694f883ed",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "alof-fixedbelow",
+    "inputHash" : "7cd46619da7d2d0480981599ca82158065194701a771f30e45ca6d4a767e0db1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "nff-fixedbelow-abs",
+    "inputHash" : "9d11719522c0a4230ff3d60d39902d1a8bd5202c91f31d4e6adebd74f471c91d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "alof-fixedbelow-abs",
+    "inputHash" : "ab7056c6bb8f795f98bd573c3a423a8fe9be3d79e704afd2d8ea446dd49590ae",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

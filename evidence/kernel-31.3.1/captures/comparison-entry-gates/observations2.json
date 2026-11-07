@@ -1,0 +1,84 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "0a2d60b6e9f473f87aaa4ab846ebd90826ec954dacd70f47077a916e31544f56",
+  "observations" : [ {
+    "id" : "datenumber",
+    "inputHash" : "e65e855580074d845cdc042a8a56f5b8af4e786e08e21d3d10649f3832da9405",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "numberdate",
+    "inputHash" : "0f4af87cdba748722a90b305e0375591124963a5b0cf844ed8bc750d9395435b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_CONST" ]
+  }, {
+    "id" : "groupdatenumber",
+    "inputHash" : "4de09238265183112492eabbcd49f259078c530bf8396731da6594a0f9b41519",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_CONST" ]
+  }, {
+    "id" : "numbergroupdate",
+    "inputHash" : "25b9a85e2d0dbc811e1433a48e36ab19129d13db31386b23831331762bcb3d6d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_CONST" ]
+  }, {
+    "id" : "nestedclock",
+    "inputHash" : "e682c552b2d0afba4462208cc759c4825dc3f39fdb4b7fa467dcb20fa207c1b7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "groupedliteral",
+    "inputHash" : "345097fdf7252bdaac022529185a7817c67ea34fcfce4c74d16b5716352ed594",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "temporalpattern",
+    "inputHash" : "0fa77990b4192623914c1760cba8e29c5d471a2d1f04b9e45e5064dcd7509151",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_PARAMETER_FOR_PATTERN_COMPARISON" ]
+  }, {
+    "id" : "violatedshape",
+    "inputHash" : "d13ac3baeeb488ee37be88fc262ebf72492f34f26d101877d3f84e7b8388ebd3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_PARAMETER_FOR_PATTERN_COMPARISON" ]
+  }, {
+    "id" : "violatedfield",
+    "inputHash" : "5e39963dc6bd606acb26ff7b3da768d4c635861be8987cfb7d6adedece99320b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_MISSING_CONST_IN_PATTERN_COMP" ]
+  }, {
+    "id" : "violatedtype",
+    "inputHash" : "0b4856cba137ce49304ed1ad27345cbee3e5fb006a5797775b4227d5cf8e4eac",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TYPE_FOR_PATTERN_COMPARISON" ]
+  }, {
+    "id" : "violatedcontrol",
+    "inputHash" : "583a1f00828c6c9c3f5d954e7e8f0b825731293b1574c6b99eeb495fc5857788",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "reversegroupclock",
+    "inputHash" : "9ba432025daedc28cb69f26afbc1593fd4b64cd1f1eb14f1406b798162232afd",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

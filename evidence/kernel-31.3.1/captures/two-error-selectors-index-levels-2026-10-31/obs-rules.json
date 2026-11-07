@@ -1,0 +1,42 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "78ab8212d1b21f7f0cf35c2ac9689aae2799f4e436f94fd4004764ecf313dd53",
+  "observations" : [ {
+    "id" : "r1",
+    "inputHash" : "a50765dc6aeebc066b8dbc1b789e8898b7681be86f4bf021d8b957b68de07002",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "r2",
+    "inputHash" : "ce6f111a24418c6a708ef8373609ca4f1cfda8a8e7a7afeca07ddb7cb4840b3f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_MULTIPLE_INDEX_FIELDS" ]
+  }, {
+    "id" : "r3",
+    "inputHash" : "7489c5d0cf362cb0cc210b14260234cf464b14409e3d055db7a6a0ae789256c5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_MULTIPLE_INDEX_FIELDS" ]
+  }, {
+    "id" : "r4",
+    "inputHash" : "605a6b16573361eeb1a1aabef8605db021ed53c13a729e86ef780bb53727929d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_MULTIPLE_INDEX_FIELDS" ]
+  }, {
+    "id" : "r5",
+    "inputHash" : "c34008bf32eaf6fc4626496f00131484327bb8bdd82af30fd1648f05da4dcaf8",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_MULTIPLE_INDEX_FIELDS" ]
+  } ]
+}

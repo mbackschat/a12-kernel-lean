@@ -1,0 +1,53 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "1ac454b90f5f7f57f1271f81811f8695756732c1928bb4fdce74ac443b960103",
+  "observations" : [ {
+    "id" : "by-ffv-ym-cross",
+    "inputHash" : "e75c9ff6d6fdb80ad1ce8942ea83042de6fc41569812afa1d77040da0a8cfb0e",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "by-ffv-ym-control",
+    "inputHash" : "f0ee7dc67b65a7a5823de004f9031e9e0185574a607fc29ae61cea8900bdd5e2",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "by-ffv-md-cross",
+    "inputHash" : "ac051eed2a1e8084ba939f86a99e71916ceb6d7d4251bf5c3c509e84450114f0",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "by-ffv-md-order-cross",
+    "inputHash" : "097d202660d26f0be70ebf93f4303c06fb8ba708d6fe383da1bf340b4871e7c8",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "by-min-ym-cross",
+    "inputHash" : "2df7488d37e4b48b170b68f1f6afb493ec212bd2eb722813cb2bc29a59d055fa",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "by-min-md-order-cross",
+    "inputHash" : "6fa64954421ba6f4bf5866746957bc76e2bb7335a0d41a29805798de8ef00c38",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "by-unique-ym-cross",
+    "inputHash" : "7bdde079b8d3fe15c96c5ec7e3a7668edffdf62f7d4454c5f764e232fceaba56",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED" ]
+  } ]
+}

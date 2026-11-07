@@ -1,0 +1,84 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "11d6d455015cf50369b12f433b38cbad31c1f2b61dbfef9f12773bcfde75cf33",
+  "observations" : [ {
+    "id" : "days-control-date-iso",
+    "inputHash" : "cebb99d8a7a319ba6fe8f25f5f2bba2cd1fb1e3c612a129137eb11ab25c7df06",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "days-date-as-clock",
+    "inputHash" : "3ec6b538938a7e27b0c89ea553e3b648d31ae2279625b54743c31c6e8a593d58",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "days-time-as-date",
+    "inputHash" : "c6f80ef81c9adc3521edeac1da9663fa493aab9a9eaf30acb59da2a636d6e84c",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "days-control-time-clock",
+    "inputHash" : "2416889f62cc37e579ff07f267194e55f3b9b45a72645835d02c31122acbf143",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "days-time-as-date-both",
+    "inputHash" : "67fcd867af029d05786402b1b874b6a1ec2e57fbc815cd72a7afda7273b6a8e6",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "days-stamp-as-date",
+    "inputHash" : "25adeef01d2bb2a13c2ee7d1553e44b5071a09418419af0f832eda85c4e04ee8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "hours-control-stamp-iso",
+    "inputHash" : "9aac890aabefd6b129f39fb565fdd9e92029b08cc07bba964d532438a88a93b7",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "hours-stamp-as-clock",
+    "inputHash" : "d227dad9e3427ba7f5aa83f3b00da92a44fd8a1d3483fbae1d2709b190ef3017",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_TIME" ]
+  }, {
+    "id" : "hours-date-as-stamp",
+    "inputHash" : "dd98e3a6a094ac45c655d32c7055d54f1fbceb2abe6b5e12825d7e05a1651327",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "hours-time-as-stamp",
+    "inputHash" : "56a6a0c45d19552e8dbb975fee3c5f6062b453d4bc85ae8f8c3c94a8ca8db146",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "hours-control-date-iso",
+    "inputHash" : "e4fb97b6fac4e642903893fc9ab00dc9b63702f883fdd7034fb2169ee00205a4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "hours-date-as-stamp-both",
+    "inputHash" : "f2cce1f722d54c974dff6b347153ff1e4b612a5137ba61f6d8df676be2a594ff",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

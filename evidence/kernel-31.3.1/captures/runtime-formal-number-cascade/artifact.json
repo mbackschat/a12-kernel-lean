@@ -1,0 +1,2604 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.15.0",
+    "kernel" : {
+      "builtAgainst" : "31.3.1",
+      "runtime" : "31.3.1"
+    },
+    "source" : {
+      "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FormalNum_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "v01",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v02",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v03",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "stelligkeitZuLang",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v04",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v05",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v06",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v07",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v08",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v09",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v10",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v11",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "v12",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v13",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v14",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v15",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuLang",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuvieleVorkommastellen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v16",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v17",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v18",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlIstNull",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v19",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlFalscheAnzahlNachkommastellen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "v20",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/MCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/MCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OC",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OC"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/OCSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/OCSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZFix2",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZFix2"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZNoZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZNoZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZOpt02",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZOpt02"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZPlain",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZPlain"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZSigned",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZSigned"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "FormalNum/ZVar13",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/ZVar13"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

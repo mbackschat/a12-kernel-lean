@@ -1,0 +1,168 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "cc346d443dc2d85b7b00df2dca6765637d0c6d61b5de53675447daca4721362d",
+  "observations" : [ {
+    "id" : "001|sg21|today|D-datefmt",
+    "inputHash" : "5d11ac897a604a0b4dd1ee58cdb69ec662e3981c1d7d4ba9b1d2297e78ea2a22",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "002|sg21|today|D-clockfmt",
+    "inputHash" : "9e0dfdfb0eeaa17bad52e4e374bb3017ee9227d147d78e904c1b6215876fc4b3",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "003|sg21|today|T-clockfmt",
+    "inputHash" : "930ca193fd0a3dc25c504474ecec1e6c5ce3c7e2b5d0eb12a61083d4ef63442b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "004|sg21|today|T-datefmt",
+    "inputHash" : "61222d6125e608a4472772a605fa281b2a3ac46e9c5ab91597572d5e32d9c0e9",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "005|sg21|now|D-datefmt",
+    "inputHash" : "b927eba5e721ec9deb8b7277614fd3b6be442f0cd39ac013cf64a512ccc50a78",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "006|sg21|now|D-clockfmt",
+    "inputHash" : "6d5bde3c578430e710d32e8dddd6f0daff2b0eba04bae2c4d17778bb18bb686b",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "007|sg21|now|T-clockfmt",
+    "inputHash" : "508253c3ffddaed45f2fa10ba39b4ce94b8e06cf7f2ac415849e13a1e4359a67",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "008|sg21|now|T-datefmt",
+    "inputHash" : "7f89156a02e1e35e83926ea24f0141db8b7324215049ffade410945c9be90b58",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "009|sg21|shift|D-datefmt",
+    "inputHash" : "65a9c082d2c875d115e2fc3f57b1ad869f90860085e7ed6d874e6f5145c720af",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "010|sg21|shift|D-clockfmt",
+    "inputHash" : "3d967c159427090f7bf01e775197d2facd803398e7581d2c12163aa025ca3649",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "011|sg21|shift|T-clockfmt",
+    "inputHash" : "c710f45a927c7993d8d2c9e0a40ab914a20beb9304625b2ac35b996859a662ab",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "012|sg21|shift|T-datefmt",
+    "inputHash" : "ecebe4054d7c633d6c24bab58b77d6ae21e594e50e9adae44956104041a18f01",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "013|sg21|datefromdt|D-datefmt",
+    "inputHash" : "4861fe1167562792c59af42c9b4941fce6ff17014c5eb4dfccb7bc97f710ac5c",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "014|sg21|datefromdt|D-clockfmt",
+    "inputHash" : "6211eb5c9440c30379a8a01b3e9ecef23ea36ca3dcc364b3f8cd12a34b3365b5",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "015|sg21|datefromdt|T-clockfmt",
+    "inputHash" : "0d02140f99a44dc38f90ea4c59ff7adc9324651f2e6bf90e217e4b6dd1d2c1a2",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "016|sg21|datefromdt|T-datefmt",
+    "inputHash" : "6adc1ef64504185ec7026a108f191d49b0fbf05bf9014f4a9549a7d37c1f6624",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "017|sg21|timefromdt|D-datefmt",
+    "inputHash" : "9b14baeaec78ebb4cf90a845e8db799996433e7fd05dd0986e4c033d45134c3d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "018|sg21|timefromdt|D-clockfmt",
+    "inputHash" : "8f70e3d1732f1bde868e195124e067cf73d394e1882ac758e19cf23293a9c7a2",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "019|sg21|timefromdt|T-clockfmt",
+    "inputHash" : "fd12eb4c1a11efc7f9269861eee876ce9c0bf6a4fb3d9e5ee7efdf0664a1e528",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "020|sg21|timefromdt|T-datefmt",
+    "inputHash" : "a302313ee8f5659417d6cd3762f7d0c4be175bc694c74de282dc40bd42ca7a40",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "021|sg21|firstfilled|D-datefmt",
+    "inputHash" : "99641e28f4bca28fb7f42c6e6133709294a6e51cdf929b7cece5cca292ad550d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "022|sg21|firstfilled|D-clockfmt",
+    "inputHash" : "dd540e0529f41ca3b785e9e45c2c17d0d3748ee1e17e3fae739aeac50868d887",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "023|sg21|firstfilled|T-clockfmt",
+    "inputHash" : "0b38bfaf9eaab09e727671c63c0ea64f3c44a49696a20e116af7983fab041840",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "024|sg21|firstfilled|T-datefmt",
+    "inputHash" : "086d58c88b306a2d02412a1b78ce77fef947c93bc8bb95645a9de8c83b98caf6",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "025|operand|datefromdt|src-datetime",
+    "inputHash" : "4861fe1167562792c59af42c9b4941fce6ff17014c5eb4dfccb7bc97f710ac5c",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "026|operand|datefromdt|src-date-kind-dt-format",
+    "inputHash" : "f2bf4d54ce56e3e3eac961011afced16b31b697a7cf173f8d198a1af646f419d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "027|operand|datefromdt|src-plain-date",
+    "inputHash" : "d5ffbe820c9335374ccb34a8e8f116d44a0d2695ece38bdac3201d8c4d521c59",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "028|operand|shift|src-date-kind-dt-format",
+    "inputHash" : "d5206f7f24959b02042daeb705eaf459afc0db3756e0e9c99773e577b77d94d6",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  } ]
+}

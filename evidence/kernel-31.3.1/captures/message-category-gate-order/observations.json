@@ -1,0 +1,96 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "f6dc87508657d1041621df23631fb2f5e84ff59dd67ca1ebe5487e68319acfe6",
+  "observations" : [ {
+    "id" : "plain",
+    "inputHash" : "7803a01708d79bee825e2c685882ac95501c18c626d0afcb2946698622935001",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ "RK_INVERTED_REQUIREDNESS" ]
+  }, {
+    "id" : "empty-unreferenced",
+    "inputHash" : "4ef3681a1bf79383b45a0f0b1a9ed16b6a55485dc2361927fdfdf5b2a775ebe5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "empty-referenced-string",
+    "inputHash" : "b735fa2d2d65886fad2caf3241b7799d18789e0a4580c9f78f3e126452a8839d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "empty-referenced-anchor",
+    "inputHash" : "cb42f5c16f4c48c442c6fc74017cc5b92cd1239f841958c1a36138c6fa6c78b4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "empty-unknown",
+    "inputHash" : "cc52cfd0bc4fd670f3c34a04fbaeaeda9a6e5f5454bda208631ae0dbde3f5e70",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "doubled-empty-unreferenced",
+    "inputHash" : "bbc246b6c44c9552759497e6e62e1ce76b352d82268f3dd6e4d31281b16bbbc4",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "doubled-empty-referenced",
+    "inputHash" : "361e8099025f205a4d7e1fc53bb507155c9179cfe43e2c73f4a16bc670d68510",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "doubled-empty-unknown",
+    "inputHash" : "529a27a2f9eb8b18fa454f9097e48c2bb66ff3527285430b4ebba0c9f32a73b9",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "keyed-empty-unreferenced",
+    "inputHash" : "07faf4bdc972bbd032313c263790dcdf053d1f9821e57f57779dff11b4ae15c5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "keyed-empty-unknown",
+    "inputHash" : "121049bc78132d5cf22c8a0cababf5e7999ebdef35df8f2404751fe77be0cbce",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "keyed-empty-referenced",
+    "inputHash" : "199093755618aef2140bffa9ae67c07587b5b50a738c302f79e3734b13e31a58",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "empty-absolute-unreferenced",
+    "inputHash" : "1c6d61b9e203c9d987c67b2079cf91ba90b74356fb12237c5912ad343a5fd636",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  }, {
+    "id" : "valid-enum-category",
+    "inputHash" : "dc8c90144356fb3ed37ab51258faf75d98da786dd96182e717d23c1f750f927d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "empty-enum-category",
+    "inputHash" : "19a6aa499a3d14b89eb88cb5007c6efa99498dbfb9f9455f528de019c506a8e3",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "NO_CATEGORY" ]
+  } ]
+}

@@ -1,0 +1,36 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "0a2d60b6e9f473f87aaa4ab846ebd90826ec954dacd70f47077a916e31544f56",
+  "observations" : [ {
+    "id" : "nested_day_now",
+    "inputHash" : "05dbb52f2cbde7f710da7ff5566d690628e98c0446f12c5d6c130f0df3cf1d96",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "nested_hour_now",
+    "inputHash" : "b769f4bd791e5fa25fc3cd531a8ab309320ac2cd92b09d2f2131b5586bb8f5c8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "nested_day_literal",
+    "inputHash" : "0df1024b0c6aa2426a7dae7359202b6750b022c7d4b33f2d0415dbec2750b6aa",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "nested_hour_literal",
+    "inputHash" : "6de5d9b48a57d0a992d507d996212a50ad7c2aec7846f4cc6784da467026c93d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

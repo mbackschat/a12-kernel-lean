@@ -1,0 +1,18 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "0a2d60b6e9f473f87aaa4ab846ebd90826ec954dacd70f47077a916e31544f56",
+  "observations" : [ {
+    "id" : "formattedclock",
+    "inputHash" : "9e0e5ba35a6eb8c08a93a658461d453ba494674d72842f4513f116a220f1cf1e",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_CONST" ]
+  } ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "17580af7c05440a8a2b2d1f96ce4e9754f18b3450946de49c43137f2fa1e0a17",
+  "observations" : [ {
+    "id" : "1-time-pair",
+    "inputHash" : "02da1300ed2954dd16e2c0de01e5e45462c4e1fdfe565da86a5333900e27b159",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-time-beside-timeonly-datetime",
+    "inputHash" : "98d268cf3d018ae751da5a69522407570bc1ec2923811cbf5b5eae36a75d4d84",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "3-instant-beside-timeonly-datetime",
+    "inputHash" : "6b2af5e2e17e066c345d04b5a148cd6e113f192f51a43072905f6f6fa0080570",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_DATEFORMATS_NOT_COMPATIBLE" ]
+  } ]
+}

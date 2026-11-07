@@ -1,0 +1,29 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "9414429f90c16fbb8efe415ac5af799ddf6dc6e13659520416304458e63b8b28",
+  "observations" : [ {
+    "id" : "601|shift-dt|target-DATE-kind-dt-format",
+    "inputHash" : "590f0dbac9a157c1c490d545a367c3979de82b9dbc679d2b9455e27132fcb0c9",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "602|shift-dt|target-datefmt-control",
+    "inputHash" : "7ac09f02ac2a78125bbf44ba049ba7b510ab3d31b735ec3d0398476b0de94a41",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  }, {
+    "id" : "603|shift-dt|target-clockfmt-control",
+    "inputHash" : "511c77f3039b4f8e2526f6f491a8f44d46bc5e0f3a04514a4d37632180062071",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_TO_DATE" ]
+  } ]
+}

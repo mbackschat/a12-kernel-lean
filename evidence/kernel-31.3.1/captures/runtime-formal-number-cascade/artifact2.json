@@ -1,0 +1,1196 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.15.0",
+    "kernel" : {
+      "builtAgainst" : "31.3.1",
+      "runtime" : "31.3.1"
+    },
+    "source" : {
+      "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FormalNum_DM.json",
+    "locale" : "en_US"
+  },
+  "rows" : [
+    {
+      "name" : "w01",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w02",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosMoney",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosMoney"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosMoney",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosMoney"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlMitVorzeichen",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w03",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w04",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w05",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w06",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w07",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w08",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w09",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w10",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuKlein",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlZuKurz",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w11",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w12",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/LeadZeroOk",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/LeadZeroOk"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/NoLeadZero",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/NoLeadZero"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOc",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOc"
+              ],
+              "fillToFix" : [ ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "FormalNum/PosOnly",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/PosOnly"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "w13",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "FormalNum/Capped",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "FormalNum/Capped"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -194,9 +194,51 @@ def stage(old, local, rel, stamp, models=()):
 
 
 def stage_directory(old, local, directory, stamp):
+    """Stage a batch directory with its subdirectories, which hold the computation specs its operations name
+    (the 31.3.1 run missed `specs/` when only the top level was staged)."""
     for name in os.listdir(os.path.join(old, directory)):
-        if os.path.isfile(os.path.join(old, directory, name)):
-            stage(old, local, os.path.join(directory, name), stamp)
+        rel = os.path.join(directory, name)
+        if os.path.isdir(os.path.join(old, rel)):
+            stage_directory(old, local, rel, stamp)
+        else:
+            stage(old, local, rel, stamp)
+
+
+def materialize_inline_specs(cwd, operations):
+    """Write each operation's inline `spec` to the spec file its arguments name and drop the member: dmtool
+    0.15.0 refuses an operation key other than `id`, `verb` and `args`, where 0.14.0 read an inline spec."""
+    path = os.path.join(cwd, operations)
+    ops = json.load(open(path, encoding="utf-8"))
+    if not isinstance(ops, list) or not any(isinstance(op, dict) and "spec" in op for op in ops):
+        return
+    for op in ops:
+        if isinstance(op, dict) and "spec" in op:
+            spec_file = next(a for a in op["args"] if a.endswith(".json"))
+            json.dump(op.pop("spec"), open(os.path.join(cwd, spec_file), "w", encoding="utf-8"))
+    json.dump(ops, open(path, "w", encoding="utf-8"), indent=1)
+
+
+def fold_legacy_suppression(cwd, model_path):
+    """Rewrite a computation spec's `errorCodesToSuppress` list as the `additionalParserInformation` preamble the
+    Kernel folds it into (a12-dmkits KF298): dmtool 0.15.0 refuses the list key in a spec, so the folded text
+    hands the Kernel the same computation."""
+    model = json.load(open(model_path, encoding="utf-8"))
+    language = model.get("content", {}).get("modelConfig", {}).get("conditionLanguage", {}).get("code", "en_US")
+    keyword = "@UnterdrueckeWarnung" if language.startswith("de") else "@SuppressWarning"
+    for directory, _, names in os.walk(cwd):
+        for name in names:
+            if not name.endswith(".json"):
+                continue
+            path = os.path.join(directory, name)
+            try:
+                spec = json.load(open(path, encoding="utf-8"))
+            except ValueError:
+                continue
+            if isinstance(spec, dict) and "computedField" in spec and "errorCodesToSuppress" in spec:
+                codes = spec.pop("errorCodesToSuppress")
+                if codes and "additionalParserInformation" not in spec:
+                    spec["additionalParserInformation"] = f"{keyword}({','.join(codes)})"
+                json.dump(spec, open(path, "w", encoding="utf-8"), indent=2)
 
 
 def envelope(dmtool, cwd, arguments):
@@ -220,6 +262,8 @@ def static(args):
     revision = subprocess.run(["git", "-C", checkout, "rev-parse", "HEAD"], capture_output=True, text=True).stdout.strip()
     before = sibling_state(checkout)
     tables, failed = {}, []
+    # The batch envelope names no version since dmtool 0.15.0; the launcher's first line does.
+    launcher_version = subprocess.run([dmtool, "--version"], capture_output=True, text=True).stdout.split()[1]
     for observations, model, operations in registered_batches():
         target = os.path.join(kept, observations)
         if os.path.exists(target) and observations not in tables:
@@ -236,15 +280,18 @@ def static(args):
             for result in env["data"]["results"]:
                 r = result.get("result", {})
                 codes = [d for d in r.get("diagnostics", []) if d.get("code")]
-                rows[result["id"]] = {"admitted": r.get("ok") is True,
+                # dmtool 0.15.0 answers a rule check `ok` with the Kernel's verdict in `valid`; 0.14.0 had only `ok`.
+                rows[result["id"]] = {"admitted": r.get("valid", r.get("ok")) is True,
                                       "codes": sorted({d["code"] for d in codes if d.get("source") == "KERNEL"}),
                                       "instrument": sorted({d["code"] for d in codes if d.get("source") != "KERNEL"})}
             dump_json({"kernel": args.to, "verb": frozen.get("verb"), "producer": {"revision": revision, "state": "CLEAN"},
-                       "dmtool": env.get("dmtool", frozen.get("dmtool")), "rows": rows}, target)
+                       "dmtool": env.get("dmtool", launcher_version), "rows": rows}, target)
         elif operations != observations:
             # The staged directory holds the frozen observations too; a stale copy must not pass as a run.
             if os.path.exists(os.path.join(local, observations)):
                 os.remove(os.path.join(local, observations))
+            materialize_inline_specs(cwd, os.path.basename(operations))
+            fold_legacy_suppression(cwd, os.path.join(local, model))
             subprocess.run([dmtool, "-m", model_arg, "batch", os.path.basename(operations),
                             "--observations=" + os.path.basename(observations)], cwd=cwd, capture_output=True, text=True)
             produced = os.path.join(local, observations)

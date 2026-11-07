@@ -1,0 +1,87 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "c6dbe9dc99dba8971ce090729fc2495dd507b686539bb2648e1c9c0c4cdce015",
+  "observations" : [ {
+    "id" : "ffv-star-cross",
+    "inputHash" : "b1b90037ce1c3fdcf9946be06c091f45e7073566f61031c70af587719976bff4",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "ffv-star-control",
+    "inputHash" : "50f114411d6efbb5312cb11b77775044c50ebc09a1342277cbacc3a5dceb2732",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ffv-group-cross",
+    "inputHash" : "e60c2a7000e85d5d806dfbadf4e0f06815b81bbf0c6c72476f45b8a5ada92f0d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "ffv-group-control",
+    "inputHash" : "293b3fcddf8131e98084e12745b34d57471bbe818029749282d95da83c52d155",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ffv-arity3-late-cross",
+    "inputHash" : "f08a028d572ed03e666b34a9a6f0c7a4125cdc5eddf1c7e579e2fb1f80b6c447",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "ffv-arity3-control",
+    "inputHash" : "eac104a49dd7cc889a68c57044ab0b14c21a78864a4a2275fc459c6868169d9a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "ffv-dotted-compact",
+    "inputHash" : "4d21de517c84e84e7703f6eeec87a18935346dad6229e6b0c54ef14d80f110d9",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "ffv-iso-compact",
+    "inputHash" : "f3ee18ba534ac271e44857d0a5f01064b541c3d4915b12cdcba133f8142c2b3c",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_VARYING_TYPES_NOT_ALLOWED" ]
+  }, {
+    "id" : "min-dotted-compact",
+    "inputHash" : "fe8751b5cbd00b0b327782f80d352081a9bc5c313dc322c26d5d09f2f7099212",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "min-iso-compact",
+    "inputHash" : "a22c30a37d89331e353bac62dc12a49100d420703ea6b8262886e5e9de9f1c81",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "min-star-cross",
+    "inputHash" : "a8926ef5965e1297a5a495ea65aa9fb07836ba83f2d683115ba801fb7a46d6b1",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "min-group-cross",
+    "inputHash" : "065421e17c0dab4d8f663ca5427de9704aea921a1c4fc122be0d1893b3b9c365",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "unique-dotted-compact",
+    "inputHash" : "bfd4ddcb4ee1201539d2f22f7c0fc718da67dbe085c3d35478c26be4745625c7",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_ONLY_STRING_ENUM_NUMBER_DATE_ALLOWED" ]
+  } ]
+}

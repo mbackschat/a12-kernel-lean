@@ -1,0 +1,77 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "a2015708e81e5636d6a2961cf36a4ebadc2fd2cfdd89d13353447c57bb07fb5a",
+  "observations" : [ {
+    "id" : "month0Plain",
+    "inputHash" : "0c4e06579bd3b9c313735011190fab5761f1df5490c834896e5fa58cb2275385",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "month0Suppressed",
+    "inputHash" : "81f634301b13997845faeec107f118669bd42d7c15b95b8efe0bf2d5ee5af242",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "month2Plain",
+    "inputHash" : "ddd0256415d1516506345f0ea4c2fca59086ca7efc88e2149a71955af8426aab",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "month2Suppressed",
+    "inputHash" : "14be5bebbff69f69ab20a5c1c56f2d39b8300489208d9882e2656ddfb8e33f1d",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "month4Plain",
+    "inputHash" : "ac911f45ed687506b971c8fb79acba70e14a718af45696deebe6b95a9acd36bc",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "month4Suppressed",
+    "inputHash" : "376398d9e5b1173475aa08c55e97a6b83ad845669cd635b36856d8632b6fd83a",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "missingYearPlain",
+    "inputHash" : "98286d2a00a5d26961ec7810f9cad9ff109f6607da42f9a9a797ac4f635b6e50",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "missingYearSuppressed",
+    "inputHash" : "859ae28a07e5b4b090a5a44d90ab005043f1f77514d36bbaa3bbdfc55b6a32f4",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_WRONG_DATE_FORMAT_FOR_OP" ]
+  }, {
+    "id" : "yearlessMonthSuppressed",
+    "inputHash" : "62391b0972bd3596446802a31654ce2d22e2dd060cc507f4a2da6ad35de369de",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "capableLiteral",
+    "inputHash" : "712163d6f0a5b918f38f884dc3e5794d221de3a42b15d024da7e77d4c1282996",
+    "ok" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "fieldPlain",
+    "inputHash" : "573f810ffc4e7e9a584ad4d3587e1ac3e2866d65e83084eb7ea0b73913d18f4d",
+    "ok" : false,
+    "valid" : false,
+    "codes" : [ "MVK_INVALID_COMPARE_DEC_PLACES" ]
+  }, {
+    "id" : "fieldSuppressed",
+    "inputHash" : "621fe38115ceb8e7ddb69510a5849aca9907cff4642866a6c3ea67539dd43481",
+    "ok" : true,
+    "codes" : [ ]
+  } ]
+}

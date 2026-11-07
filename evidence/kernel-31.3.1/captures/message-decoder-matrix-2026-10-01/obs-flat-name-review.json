@@ -1,0 +1,24 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "6b03ea3e78002b047662ad9ec8ef261ce2353858ec558de9aacbf9ccb4d618a6",
+  "observations" : [ {
+    "id" : "N30",
+    "inputHash" : "eb231fbb2189601baac71ec75b89e04b99923f308170d7592dc9b37124729302",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  }, {
+    "id" : "N31",
+    "inputHash" : "7251c6d97c01e38d96e96b1329466254b1be8ffa38a79b662fca2ecf4d6746b5",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_ENTITY" ]
+  } ]
+}

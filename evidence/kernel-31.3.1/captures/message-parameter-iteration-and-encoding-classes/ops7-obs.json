@@ -1,0 +1,60 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "3946ee2b8ab777c279455b4d0540d6b5534b10324713dd0b3e50e2937b62c444",
+  "observations" : [ {
+    "id" : "U10-group-agg-plain",
+    "inputHash" : "009982fd7d4b19392f2a2d165fb9c0342bfb31010e02a75da08c1b93b0d5978c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "U11-group-agg-group-index",
+    "inputHash" : "b71d0df141749931880f9e350ac1574559b2ba9800828f85fae9d7f53ebad395",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "U12-group-agg-own-group",
+    "inputHash" : "ceb4f9848085c81193640f1a91533ab0bb087dd0f0699b6c08272a5ef727a496",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_NO_NUMBER" ]
+  }, {
+    "id" : "V10-legal-key-plain",
+    "inputHash" : "9b1c27ec494b35f85771bddab56910d3dadef54ce35d9e7eef59c0f7e61d8474",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "V11-legal-key-group-index",
+    "inputHash" : "e40126354ae5e8d5ac0b1219ea192d21f21c6da805a8597e9376e2c79bf56a51",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "V12-legal-key-unkeyed-param",
+    "inputHash" : "4ceef6b7cd04633881d5f218d41cec5aec08d02beee036db2b752c736a9009d1",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "V13-legal-key-other-value",
+    "inputHash" : "054710041c1ef030154577160248aa744a152d55a0147e3b68a61545a49fbe83",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_GROUP" ]
+  }, {
+    "id" : "V14-legal-key-index-terminal",
+    "inputHash" : "a18e7bc4d2e86ee3111ed486698a923a3cfba617ebd086771ffca93204ea874c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_INDEX_FIELD_REP_ITER" ]
+  } ]
+}

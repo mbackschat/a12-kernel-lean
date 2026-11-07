@@ -1,0 +1,57 @@
+{
+ "kernel": "31.3.1",
+ "verb": "rule add --dry-run",
+ "producer": {
+  "revision": "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+  "state": "CLEAN"
+ },
+ "dmtool": "0.15.0",
+ "rows": {
+  "k1": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "k2": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "k3": {
+   "admitted": true,
+   "codes": [],
+   "instrument": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "k4": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "k5": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "k6": {
+   "admitted": true,
+   "codes": [],
+   "instrument": []
+  },
+  "k7": {
+   "admitted": true,
+   "codes": [],
+   "instrument": [
+    "RK_UNGUARDED_NUMBER_COMPARISON"
+   ]
+  },
+  "k8": {
+   "admitted": false,
+   "codes": [
+    "MVK_NEG_CONDITION_IN_ITERATION"
+   ],
+   "instrument": []
+  }
+ }
+}

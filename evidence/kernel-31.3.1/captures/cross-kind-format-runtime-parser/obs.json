@@ -1,0 +1,24 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "8699ea076cbbbdf98c46e4993cacda1429884128d5840d1023d9c7ea81cf955e",
+  "observations" : [ {
+    "id" : "1-date-clock-beside-time",
+    "inputHash" : "8369d37f2e7dfde16f841bccfa8a700c2936ff30cbe617fc1249d49222af68fe",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-time-pair-control",
+    "inputHash" : "459c0f7c60c92776463e16a81e14867d7f77135677e272d1fc371f5056148f6e",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "24d02a63363c81a7a0a7edf7d624d7830824a5aa671e72a5c846ec1bd0376b2e",
+  "observations" : [ {
+    "id" : "1-fixed-group",
+    "inputHash" : "c64c4c64c32814a5898746ef61291627cbbf59a36d04fd03ef2bb0557568f61d",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "2-starred-repeatable-group",
+    "inputHash" : "66d35d2a011c90850b07a2430b3816a902135d5183e84569f7efa5c8ac24ecc4",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "3-nested-subgroup-alone",
+    "inputHash" : "87035e1c2ffd848ac9d57a7f9df91d437330ac34279f9c54900094314737bfec",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  } ]
+}

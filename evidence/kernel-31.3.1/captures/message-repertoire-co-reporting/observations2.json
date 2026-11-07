@@ -1,0 +1,30 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "3946ee2b8ab777c279455b4d0540d6b5534b10324713dd0b3e50e2937b62c444",
+  "observations" : [ {
+    "id" : "repertoire-linebreak",
+    "inputHash" : "3d3989324dfd35670e2fea8e2e4acb6487ec71c93a591a318e7a3e23281c2aca",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_LINEBREAK" ]
+  }, {
+    "id" : "repertoire-control",
+    "inputHash" : "76ecbe5cea7eb425ed5bc8bd1b9a3982620ba35900df25578d52f2339d9991dc",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "INVALID_CHARACTERS" ]
+  }, {
+    "id" : "two-repertoire-characters",
+    "inputHash" : "f2302f5c33e30b0f6af709e5726b36a8e17ca7c73786c82d111286c4fc8d274f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ ]
+  } ]
+}

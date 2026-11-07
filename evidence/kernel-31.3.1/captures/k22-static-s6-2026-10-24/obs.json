@@ -1,0 +1,78 @@
+{
+  "schemaVersion" : 2,
+  "dmtool" : "0.15.0",
+  "kernelBuilt" : "31.3.1",
+  "kernelRuntime" : "31.3.1",
+  "source" : {
+    "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+    "state" : "CLEAN"
+  },
+  "model" : "004f0043f434bc59756a646bc6e29d754843feea6efb02673a811ec107f40783",
+  "observations" : [ {
+    "id" : "z1",
+    "inputHash" : "fc8aba1ecf580642e0fb5c33fe9713de3da9e9b2faa92f912ee5705fa71c6f0f",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "z2",
+    "inputHash" : "c34ffd01d7ab9ae4d5a36ac1cdcaf90ec4dd06b4943295e67fc3277a669d8b19",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "z3",
+    "inputHash" : "00cc541358906db0bd894e4f0cb91d523c9c672224dd0b5a7fb2dcb89c428728",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "z4",
+    "inputHash" : "7effdecc117d198d0ff53a7ca21e8ca1e35c375317e9ab7765bcc21ab7b0f285",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "z5",
+    "inputHash" : "abc78c097b59144289cb9568a9e54bb8b99868d2ddef3fa4060954f1b4393626",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "z6",
+    "inputHash" : "e0e8e95fa6a2b4ac899d9556539925a676bc5442a0bdadcc1550680dfbf7732b",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "z7",
+    "inputHash" : "4056488e7985255ed068384663e75167175b96d4315f0c8929440f337d6d235d",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_INDEX_VALUE_INVALID" ]
+  }, {
+    "id" : "z8",
+    "inputHash" : "da90f0274d55c3dcc0a05ef3a985156344e871ac6a66fff0845971b10ab31ec8",
+    "ok" : true,
+    "valid" : true,
+    "codes" : [ ]
+  }, {
+    "id" : "z9",
+    "inputHash" : "239d56caeda9dea20724c1b58d2ff2bc057e7d8e64223853531349680fdaa629",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "z10",
+    "inputHash" : "6b2cf2ac82e047c6a26e3622df13756e2d817e34b4cb5b6ac5f30d4f4caeab1c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  }, {
+    "id" : "z11",
+    "inputHash" : "7842ca9cb1f1013e41c2b3ee68aeef1e049093922b42e92087a532c6cb8cf64c",
+    "ok" : true,
+    "valid" : false,
+    "codes" : [ "MVK_UNEXPECTED_TOKEN" ]
+  } ]
+}
