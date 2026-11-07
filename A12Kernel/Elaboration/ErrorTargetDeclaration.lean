@@ -67,7 +67,7 @@ is admitted. The missing-declaration class is measured through a hand-edited mod
 whole-rule reference class has its own retained control. The two custom-slot classes are measured on
 kernel 31.3.1 through the possible-cause filter (a12-dmkits KF682,
 [inbound record](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §6); on 30.8.1 a model
-declaring the member did not deserialize. The remaining two have no witness through any route this
+declaring the differently named `customRefErrorEntitiesIfFilled` did not deserialize. The remaining two have no witness through any route this
 project currently has: the unknown-name class needs an error entity that resolves but is absent from
 the container, and the row-iteration class needs a non-A12 model
 ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)).

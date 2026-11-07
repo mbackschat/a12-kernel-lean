@@ -14,10 +14,13 @@ and whether the check runs at all.
 **The candidates come from the unexpanded condition.** A field read names its field. A group operand stays
 a group only where the operator reads it as one: the group-presence predicates, the group-list
 quantifiers, the filled-group count and a `SumOfTerms` iteration; elsewhere it names every field below it.
-A starred segment on the way to a field is not itself named. A `Having` body's references count, read from
-the rule's group as every operand is, and so does the index field a semantic index keys on, with a key
-written as a reference. `CurrentRepetition` names nothing. The join index field a parallel iteration adds
-is not read here: no row of the filter measures it.
+A starred segment on the way to a field is not itself named. A `Having` body's references count, as this
+theory's `Having` reading resolves them, from the rule's group; the Kernel also admits a body read naming a
+field of the filtered group without its prefix, which this theory refuses (gap SG20). So does the index field
+a semantic index keys on, with a key written as a reference. `CurrentRepetition` names nothing, and
+`RepetitionNotUnique`'s `@From` scope is read as a group: spec/14 states neither for the scope, so that
+reading is unmeasured. The join index field a parallel iteration adds is not read here: no row of the filter
+measures it.
 -/
 
 namespace A12Kernel.Dm
@@ -108,15 +111,18 @@ def possibleCauseCandidates (model : FlatModel) (language : Language) (rule : Dm
   pure ((expressionEntities model rule.group false text.body).map (possibleCauseRelPath rule.group)).eraseDups
 
 /-- The observed labels of the index and sort refusals the Kernel's model pass raises before it judges
-the filter: an index or sort field naming nothing, or one disqualified as a key. -/
+the filter: an index or sort field naming nothing, or one disqualified as a key. Only a sort field naming
+nothing is measured to withhold the check (KF682); the other members withhold by the same earlier-check
+reading, unmeasured. -/
 private def orderingGateLabels : List String :=
   (RowFieldRefusal.all.filter (·.isOrderingGate)).map (·.label)
 
 /-- **The reference classes of a rule's possible-cause filter**, in slot order, or the reason this
 account cannot judge the rule. The check does not run when the rule's own check draws a class, nor when
 an earlier check of the model pass refused the model: a refused index or sort nomination, read off the
-model, or one the host reports through `earlierModelCheckRefused`, such as an invalid time zone, whose
-legal set is the host's. A rule this account does not lower, without a class, is not judged. -/
+model, or one the caller reports through `earlierModelCheckRefused`. An invalid time zone is such a check:
+its legal set is the host's, so this theory never judges it, and a caller that does not judge it passes
+`false`. A rule this account does not lower, without a class, is not judged. -/
 def possibleCauseRefusals (model : DmModel) (language : Language) (rule : DmRule)
     (earlierModelCheckRefused : Bool := false) : Except String (List KernelStaticDiagnostic) := do
   let some filter := rule.possibleCauses | return []

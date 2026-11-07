@@ -205,17 +205,19 @@ def registered_batches():
 
 
 def stage(old, local, rel, stamp):
-    """Copy an input file into the local tree, restamping it when it is a model, unless the tree already holds
-    it: `prepare` and `runtime` own what is there. Overwriting once put 71 frozen 30.8.1 artifacts and 13
-    models a name test missed, unrestamped, into the 31.3.1 tree (2026-11-07)."""
-    if not os.path.exists(os.path.join(local, rel)):
-        copy(os.path.join(old, rel), os.path.join(local, rel), stamp)
+    """Copy an input file into the local tree, restamping it when it is a model."""
+    copy(os.path.join(old, rel), os.path.join(local, rel), stamp)
 
 
 def stage_directory(old, local, directory, stamp):
     """Stage a batch directory with its subdirectories, which hold the computation specs its operations name
-    (the 31.3.1 run missed `specs/` when only the top level was staged)."""
-    for name in os.listdir(os.path.join(old, directory)):
+    (the 31.3.1 run missed `specs/` when only the top level was staged). A runtime artifact is the `runtime`
+    step's output, never an input: staging one put 71 frozen 30.8.1 artifacts over the 31.3.1 run's (2026-11-07)."""
+    names = os.listdir(os.path.join(old, directory))
+    outputs = {artifact_name(name) for name in names} - {None}
+    for name in names:
+        if name in outputs:
+            continue
         rel = os.path.join(directory, name)
         if os.path.isdir(os.path.join(old, rel)):
             stage_directory(old, local, rel, stamp)
@@ -255,7 +257,7 @@ def fold_legacy_suppression(cwd, model_path):
                 continue
             if isinstance(spec, dict) and "computedField" in spec and "errorCodesToSuppress" in spec:
                 codes = spec.pop("errorCodesToSuppress")
-                if codes and "additionalParserInformation" not in spec:
+                if codes and not str(spec.get("additionalParserInformation") or "").strip():
                     spec["additionalParserInformation"] = f"{keyword}({','.join(codes)})"
                 json.dump(spec, open(path, "w", encoding="utf-8"), indent=2)
 

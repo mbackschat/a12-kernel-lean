@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.PossibleCauseCheck
 import A12Kernel.Reference.Dm.FieldTypeDeclarationRead
+import A12Kernel.Reference.Dm.ModelVerdictFixture
 
 /-! # A rule's possible-cause filter
 
@@ -26,11 +27,15 @@ private def group (parent name : String) (members : List (String × Json)) (elem
   Json.mkObj [("type", "Group"), ("id", .str s!"{parent}/{name}"), ("name", .str name),
     ("Group", Json.mkObj (members ++ [("elements", Json.arr elements.toArray)]))]
 
-/-- A rule `name` with error path `target`, `condition`, and `filter` as the member's JSON, if any. -/
-private def rule (parent name target condition : String) (filter : Option Json) : Json :=
+/-- A rule `name` with error path `target`, `condition`, `filter` as the member's JSON, if any, and an
+US-English message text, if any. -/
+private def rule (parent name target condition : String) (filter : Option Json) (message : Option String := none) :
+    Json :=
   Json.mkObj [("type", "Rule"), ("id", .str s!"{parent}/{name}"), ("name", .str name), ("Rule", Json.mkObj (
     [("errorCode", Json.str name), ("errorEntityRelPath", Json.str target), ("errorCondition", Json.str condition),
-      ("severity", "ERROR")] ++ (filter.map fun filter => [("filterForPossiblyCausingEntities", filter)]).getD []))]
+      ("severity", "ERROR")] ++ (filter.map fun filter => [("filterForPossiblyCausingEntities", filter)]).getD [] ++
+      (message.map fun text =>
+        [("errorMessage", Json.arr #[Json.mkObj [("locale", "en_US"), ("text", .str text)]])]).getD []))]
 
 /-- The carrier with `policyRules` in `/Policy`, `lineRules` in `/Policy/Lines`, and `sorts` as `Lines`'
 sort entries by name. -/
@@ -122,6 +127,16 @@ example :
       some ["Agent/Name"] := by
   native_decide
 
+/-- The model's whole static verdict carries the class, and its admitted twin carries none. -/
+example :
+    (modelVerdict (policyRow presence ["Rider"])).possibleCauses = [s!"Flagged: [{filledClass}]"] ∧
+    (modelVerdict (policyRow presence ["Premium"])).possibleCauses = [] := by
+  native_decide
+
+/-- The class names every failing entry once per occurrence, a repeat included. -/
+example : unreferenced (policyRow presence ["Rider", "Premium", "Rider"]) = some ["Rider", "Rider"] := by
+  native_decide
+
 /-- The rows above are judged: each rule's own check admits it, so its classes are the filter's alone. -/
 example :
     referenceClasses (lineRow "[Amount] > [../Premium]" ["Amount"]) = "" ∧
@@ -134,7 +149,8 @@ example :
 
 /-- The rule's own class withholds the check: an unresolved reference, an incomplete condition and an
 unreferenced error field. So does an earlier model check: a sort field naming nothing, and an invalid time
-zone, which the host reports. A sort field named twice and another rule's unresolved reference do not. -/
+zone, whose legal set is the host's and which the caller reports. A sort field named twice, the rule's own
+message parameter naming nothing and another rule's unresolved reference do not. -/
 example :
     referenceClasses (policyRow "FieldFilled(Nope)" ["Rider"]) = "" ∧
     referenceClasses (policyRow "FieldFilled(Premium) And" ["Rider"]) = "" ∧
@@ -144,8 +160,23 @@ example :
     referenceClasses (policyRow presence ["Rider"]) (earlierModelCheckRefused := true) = "" ∧
     referenceClasses (carrier [rule "/Policy" "Flagged" "../Premium" presence (some (filter (texts ["Rider"]) []))]
       [] ["Key", "Key"]) = filledClass ∧
+    referenceClasses (carrier [rule "/Policy" "Flagged" "../Premium" presence (some (filter (texts ["Rider"]) []))
+      (some "x $Nope$ y")] []) = filledClass ∧
     referenceClasses (carrier [rule "/Policy" "Flagged" "../Premium" presence (some (filter (texts ["Rider"]) [])),
       rule "/Policy" "Other" "../Premium" "FieldFilled(Nope)" none] []) = filledClass := by
+  native_decide
+
+/-- The message class the first rule draws, so the row above is not vacuous: its parameter is refused. -/
+private def messageClass (json : Json) : Option String := do
+  let dm ← (readModel json).toOption
+  let first ← dm.rules.head?
+  let .ok (.ordinary checked) := checkValidationRule dm .english first | none
+  match elaborateValidationMessageTemplate dm.flat .english (.rule checked) (first.messages.headD ("", "")).2 with
+  | .ok _ => some "admitted"
+  | .error error => (error.namedRuleDiagnostic?.map (·.kernelCode))
+
+example : messageClass (carrier [rule "/Policy" "Flagged" "../Premium" presence
+    (some (filter (texts ["Premium"]) [])) (some "x $Nope$ y")] []) = some "INVALID_ENTITY" := by
   native_decide
 
 /-- The metamodel's labels the model draws, `none` when no model is read. -/

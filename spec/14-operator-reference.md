@@ -386,7 +386,7 @@ A Q cell names what an operator contributes to the entities a rule's unexpanded 
 
 Q is `n/a` for an operator whose slots hold only conditions or `value` expressions, which contributes the union of what its operands contribute, and for `ValueNotConsistent`, which has no admitted witness. A filter body's operands and a semantic index's key field are added by the inventory itself, not by a cell.
 
-**Measured scope.** `group`: `GroupNotFilled` over a group and over a root group and `NumberOfFilledGroups` over a starred root group, measured through the possibly-causing groups, and `GroupFilled` through the possible-cause filter; the other group-list quantifiers and `SumOfTerms` are the peer's account. `fields`: `AllFieldsFilled(RuleGroup)`, `FirstFilledValue`, the date-range overlaps and the value lists, measured through the possibly-causing groups, and field operands throughout; a `fields` cell on any other operator taking a group operand is the peer's account, unmeasured. `none`: `CurrentRepetition`, the peer's source reading.
+**Measured scope.** `group`: `GroupNotFilled` over a group and over a root group and `NumberOfFilledGroups` over a starred root group, measured through the possibly-causing groups, and `GroupFilled` through the possible-cause filter; the other group-list quantifiers and `SumOfTerms` are the peer's account. `fields`: `AllFieldsFilled(RuleGroup)`, `FirstFilledValue`, the date-range overlaps and the value lists, measured through the possibly-causing groups, and field operands throughout; a `fields` cell on any other operator taking a group operand is the peer's account, unmeasured. `none`: unmeasured; it is the cell of every literal and clock or Base-Year constant, which take no entity operand, and of `CurrentRepetition` by the peer's source reading.
 
 ---
 
@@ -590,8 +590,8 @@ A `DateRange` constructor's endpoints and a bound extractor's operand are field 
 | `[F]` field read | `scalar read` | `poisons` | `field source` | `leaf seed` (Number); `not-given` (other kinds) | n/a | n/a | n/a | n/a | n/a | not stated; `full only` | `kind default` | `no lift` | `declared`; `none` (Number); n/a (other kinds) | `raw class` | n/a | `ordinary` | `fields` |
 | `[F For key]` / `Fuer` semantic-index read | `scalar read` | `poisons` | `field source` | `leaf seed` (Number); `not-given` (other kinds) | not stated | `selection` | not stated | key: String literal or `entity` | n/a | not stated; not stated | `kind default` | `no lift` | not stated; not stated (Number); n/a (other kinds) | `raw class` | n/a | `ordinary` | `fields` |
 | `[F -> Category]` category read | `scalar read` | `poisons` | `field source` | `not-given` | not stated | not stated | not stated | n/a | n/a | not stated; not stated | `kind default` | `no lift` | n/a | `own class` | n/a | `ordinary` | `fields` |
-| Number literal | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `no lift` | `authored`; `capable` | n/a | n/a | `no field` |
-| String, date, clock and date-time literal | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `no lift` | n/a | n/a | n/a | `no field` |
+| Number literal | n/a | n/a | `constant source` | `leaf seed` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `no lift` | `authored`; `capable` | n/a | n/a | `no field` | `none` |
+| String, date, clock and date-time literal | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | n/a | n/a | n/a | n/a | `no lift` | n/a | n/a | n/a | `no field` | `none` |
 | `True` / `Wahr`, `False` / `Falsch` | n/a | n/a | `constant source` | `not-given` | n/a | n/a | n/a | `none` | n/a | n/a | n/a | `no lift` | n/a | n/a | n/a | `no field` | `none` |
 
 A semantic-index key may itself carry a filter ([§9 §3](07-repetition-and-iteration.md#3-the-filter-having-the--correlation-and-aggregation)); what that filter does to the read's typing is not stated.
