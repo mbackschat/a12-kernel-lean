@@ -140,8 +140,8 @@ theorem customErrorEntityRefusals_length_le_two (hModel conditionParsed : Bool)
   · simp
   · exact Nat.le_trans (List.length_filterMap_le _ _) (by simp)
 
-/-- A condition that failed to parse suppresses both classes, because the check abandons before it
-compares anything. -/
+/-- A check that does not run reports neither class: the rule's own condition drew a class, or an
+earlier model check refused the model. -/
 theorem customErrorEntityRefusals_unparsed (hModel : Bool) (fromCondition : List String)
     (declaration : CustomErrorEntityDeclaration) :
     customErrorEntityRefusals hModel false fromCondition declaration = [] := by
@@ -154,7 +154,7 @@ theorem customErrorEntityRefusals_hModel_refuses_declared (fromCondition : List 
     KernelStaticDiagnostic.refErrorEntityIfFilledNotReferenced ∈
       customErrorEntityRefusals true true fromCondition declaration := by
   have hcandidates : unreferencedPaths (candidateRelpaths true fromCondition)
-      (declaration.slot .ifFilled) = declaration.ifFilled := by
+      (declaration.slot .ifFilled) = declaration.ifFilled.map possibleCauseSpelling := by
     simp [unreferencedPaths, candidateRelpaths, CustomErrorEntityDeclaration.slot]
   simp [customErrorEntityRefusals, hcandidates, CustomErrorEntitySlot.refusal,
     List.isEmpty_iff, h]

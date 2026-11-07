@@ -55,6 +55,8 @@ structure DmRule where
   /-- The authored message template per locale, in the member's order: a list's as written, an object's
   by key. -/
   messages : List (String × String) := []
+  /-- The possible-cause filter, `none` when the rule declares none (`readPossibleCauseFilter`). -/
+  possibleCauses : Option CustomErrorEntityDeclaration := none
   deriving Repr, Inhabited
 
 /-- One computation alternative: an optional precondition and the operation. -/
@@ -567,6 +569,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
   | "Rule" =>
       let code := ruleCode body
       let messages ← StateT.lift (localizedTextMember body "errorMessage")
+      let possibleCauses ← StateT.lift (readPossibleCauseFilter path.length body)
       modify fun state => { state with
         declarations := state.declarations.push { group := path, name, kind := .rule code }
         rules := state.rules.push {
@@ -575,7 +578,7 @@ private partial def readElement (path : GroupPath) (scope : List RepeatableLevel
         errorCode := match code with | .text value => value | .unreadable => ""
         condition := (str? body "errorCondition").getD ""
         severity := (str? body "severity").getD "ERROR"
-        messages } }
+        messages, possibleCauses } }
   | "Computation" =>
       let roundingMode ← StateT.lift (computationString? body "roundingMode")
       let errorCode ← StateT.lift (computationString? body "errorCode")

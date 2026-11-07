@@ -213,6 +213,7 @@ import A12Kernel.Reference.Dm.BooleanComparisonLocks
 import A12Kernel.Elaboration.StringContext
 import A12Kernel.Reference.Dm.LoneSurrogate
 import A12Kernel.Reference.Dm.ModelRootWalkLocks
+import A12Kernel.Reference.Dm.PossibleCauseFilterLocks
 import A12Kernel.Reference.Dm.NumberRenderCapLocks
 import A12Kernel.Reference.Dm.ComputationErrorCodeLocks
 

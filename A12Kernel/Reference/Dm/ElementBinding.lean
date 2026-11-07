@@ -1,5 +1,6 @@
 import Lean.Data.Json
 import A12Kernel.Elaboration.Enumeration
+import A12Kernel.Elaboration.ErrorTargetDeclaration
 import A12Kernel.Reference.Dm.MemberBinding
 import A12Kernel.Reference.Dm.ModelFrame
 
@@ -183,10 +184,52 @@ private def bindSortEntry (entry : Json) : Except String Unit := do
     | _ => false
   if !admitted then throw "sort entry order is unreadable"
 
-/-- Bind one element and, below a group, every element under it. `fuel` bounds the nesting depth. -/
-private def bindElement : Nat → Json → Except String Unit
-  | 0, _ => throw "model elements nest deeper than the model is long"
-  | fuel + 1, element => do
+/-- The DM-JSON member holding a rule's possible-cause filter, and its two lists in slot order. -/
+def possibleCauseFilterKey : String := "filterForPossiblyCausingEntities"
+
+def possibleCauseListKey : CustomErrorEntitySlot → String
+  | .ifFilled => "entitiesEnabledAsPossibleCauseIfFilled"
+  | .ifNotFilled => "entitiesEnabledAsPossibleCauseIfNotFilled"
+
+/-- One possible-cause entry's `relativePath` as its text: a string, or a number read as its text
+(a12-dmkits KF682, kernel 31.3.1). A Boolean is read as its text too, which no row measures. An entry
+that is no object, and a path that is absent, `null` or a container, leave no model. -/
+private def possibleCausePath (entry : Json) : Except String String := do
+  let .obj _ := entry | throw "possible-cause entry is no object"
+  match entry.getObjVal? "relativePath" with
+  | .ok (.str text) => pure text
+  | .ok (.num value) => pure value.toString
+  | .ok (.bool value) => pure (if value then "true" else "false")
+  | _ => throw "possible-cause entry has no readable relativePath"
+
+/-- A rule's possible-cause filter as kernel 31.3.1 reads it (a12-dmkits KF682): `none` when the member is
+absent or `null`, else both lists, an absent list empty. A filter that is no object, a list that is no
+list, `null` included, and an unreadable entry leave no model, and so does an absolute path or a leading
+`..` run climbing above the technical model root from the rule's group, `depth` levels below that root.
+An unknown key and an extra member of an entry are read past. -/
+def readPossibleCauseFilter (depth : Nat) (body : Json) : Except String (Option CustomErrorEntityDeclaration) := do
+  let filter ← match body.getObjVal? possibleCauseFilterKey with
+    | .error _ | .ok .null => return none
+    | .ok filter@(.obj _) => pure filter
+    | .ok _ => throw "possible-cause filter is no object"
+  let slot (slot : CustomErrorEntitySlot) : Except String (List String) := do
+    let entries ← match filter.getObjVal? (possibleCauseListKey slot) with
+      | .error _ => pure #[]
+      | .ok (.arr entries) => pure entries
+      | .ok _ => throw s!"possible-cause list {possibleCauseListKey slot} is no list"
+    entries.toList.mapM fun entry => do
+      let path ← possibleCausePath entry
+      if path.startsWith "/" then throw s!"possible-cause path {path} is absolute"
+      if depth < ((path.splitOn "/").takeWhile (· == "..")).length then
+        throw s!"possible-cause path {path} climbs above the model root"
+      pure path
+  pure (some { ifFilled := ← slot .ifFilled, ifNotFilled := ← slot .ifNotFilled })
+
+/-- Bind one element and, below a group, every element under it. `fuel` bounds the nesting depth, and
+`depth` is the element's own: the length of the group path holding it. -/
+private def bindElement : Nat → Nat → Json → Except String Unit
+  | 0, _, _ => throw "model elements nest deeper than the model is long"
+  | fuel + 1, depth, element => do
       discard <| frameText element "name"
       let some kind := (element.getObjValAs? String "type").toOption | pure ()
       let body ← elementBody element kind
@@ -195,7 +238,7 @@ private def bindElement : Nat → Json → Except String Unit
           discard <| primitiveIntMember? body "repeatability"
           if let .ok (.arr sorts) := body.getObjVal? "sortFields" then
             for sort in sorts do bindSortEntry sort
-          for child in ← groupElements body do bindElement fuel child
+          for child in ← groupElements body do bindElement fuel (depth + 1) child
       | "Field" =>
           for key in ["global", "transient"] do discard <| booleanMember? body key
           bindFieldType (← requireFieldType body)
@@ -203,6 +246,7 @@ private def bindElement : Nat → Json → Except String Unit
           for key in ["errorCode", "errorEntityRelPath", "errorCondition"] do requireValue body key
           for key in ["errorEntityRelPath", "errorCondition"] do refuseContainer body key
           bindSeverity body
+          discard <| readPossibleCauseFilter depth body
       | "Computation" =>
           requireValue body "computedFieldRelPath"
           if let .ok (.arr alternatives) := body.getObjVal? "computationAlternatives" then
@@ -217,6 +261,6 @@ def bindModelMembers (frame : ModelFrame) : Except String Unit := do
   discard <| booleanMember? frame.config "fieldRefByShortNameAllowed"
   for definition in frame.typeDefinitions do
     if let .ok fieldType := definition.getObjVal? "fieldType" then bindFieldType fieldType
-  for root in frame.rootGroups do bindElement frame.nestingFuel root
+  for root in frame.rootGroups do bindElement frame.nestingFuel 0 root
 
 end A12Kernel.Dm

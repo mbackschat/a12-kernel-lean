@@ -3,8 +3,10 @@ import A12Kernel.Elaboration.ErrorTargetDeclaration
 /-! # Locks on the error-target declaration gates
 
 The two cascade classes, the missing-declaration class, and the whole-rule reference class are
-measured against the real Kernel; the other four are source-derived and honestly unwitnessed
-([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)). The matrix separates the two
+measured against the real Kernel
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)); the
+two custom-slot classes are measured on kernel 31.3.1 by the peer and locked from DM-JSON in
+`PossibleCauseFilterLocks`, and the remaining two are source-derived and unwitnessed. The matrix separates the two
 declaration classes under lenience, the branch the overlapping reference roles decide, the cascade's
 model split and internal order, and the accumulating custom gate against the first-match-wins gates
 beside it.

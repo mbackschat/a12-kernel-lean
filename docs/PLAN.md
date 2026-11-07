@@ -245,10 +245,10 @@ The request adopts this sequencing and the two consumer objectives. It does not 
   - [x] `N3 inert year check` (§1): `youngerThan1900Check` bound but never checked or evaluated.
   - [x] `N4 computation code and preamble` (§5): `errorCode` and `additionalParserInformation`.
   - [x] `N5 sort entry` (§3): both members required and the order's enum binding.
-  - [ ] `N6 possible-cause filter` (§6): the filter's reader, duplicate and reference checks.
+  - [x] `N6 possible-cause filter` (§6): the filter's reader, duplicate and reference checks.
   - [ ] `N7 possibly-causing entities` (§7): the message's cause groups.
   - [ ] `N8 smaller corrections` (§8).
-- `next`: N6. The [31.3.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-313-recapture) is done and `lake test` reads it; the population replay and the triggered cold review of N1–N8 run at the close.
+- `next`: N7. The [31.3.1 re-capture](sources/kernel-31-calibration-probes.md#src-kernel-313-recapture) is done and `lake test` reads it; the population replay and the triggered cold review of N1–N8 run at the close.
 - `close`: the playbook's section 4.
 
 <a id="next-consumer-decision"></a>

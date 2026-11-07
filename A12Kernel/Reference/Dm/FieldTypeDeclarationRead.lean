@@ -11,7 +11,7 @@ The Kernel's consistency check judges every element, so this reader walks every 
 group of the converted model (`convertModel`) in document order and judges each element: a field's name and its type body
 after its type definition is resolved per referencing field (a definition no field references draws
 nothing, and one that two fields reference draws its notifications at both), a group's name,
-repeatability, sort fields and row-key nominations, a rule's or computation's name and error code, and
+repeatability, sort fields and row-key nominations, a rule's or computation's name and error code, a rule's possible-cause slots, and
 the supplementary scalars of an element's annotations. It reads only the members those laws consume, keeps
 integer members raw so a refused one stays visible, and binds every integer and boolean member as the
 Kernel does (`intMember?`, `primitiveIntMember?`, `booleanMember?`), after the one pass that binds every
@@ -333,8 +333,12 @@ private partial def judgeElement (environment : WalkEnvironment) (above : PathAb
         { group := parent, name, kind := ← (if kind == "Rule" then pure (.rule (ruleCode body))
           else .computation <$> computationString? body "errorCode") }
       if let .rule .unreadable := declaration.kind then throw s!"rule {name} has an unreadable errorCode"
+      -- The metamodel judges a rule's possible-cause slots whatever its condition and the model checks
+      -- report (a12-dmkits KF682); a computation carries no filter.
+      let slotLabels := ((← readPossibleCauseFilter parent.length body).map
+        customErrorEntityListRefusals).getD [] |>.map (·.label)
       let labels := declaration.notifications.filterMap (·.kind.label?) ++
-        above.forRule.map (·.label) ++ repertoireIf annotated
+        above.forRule.map (·.label) ++ slotLabels ++ repertoireIf annotated
       let messages := (localizedTextMember body "errorMessage").toOption.getD []
       let buildFailure := undeclaredLocaleBuildFailure environment.context.declaredLocales messages
       pure [{ path, labels := collapseRepertoire labels, buildFailure }]

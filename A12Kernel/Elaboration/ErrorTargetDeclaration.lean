@@ -34,10 +34,18 @@ classes and its own order, and the branch condition ignores the form references 
 condition with no references at all enters it too, whenever the whole-rule reference gate was
 satisfied by the `AnzahlAngegebenerUSB` escape rather than by a reference.
 
-**The two custom error-entity slots accumulate.** Unlike every gate above, they are not
-first-match-wins: a rule whose *if filled* and *if not filled* slots both hold an unreferenced path
-draws **both** classes in one run. Each slot reports **once**, carrying all of its offending paths, so
-the finding count is the number of offending slots and never the number of offending paths.
+**The two custom error-entity slots accumulate.** They are a rule's possible-cause filter, the
+DM-JSON member `filterForPossiblyCausingEntities` that kernel 31.3.1 reads ([spec/01 §3.1](../../spec/01-data-model.md#the-possible-cause-filter)). Unlike every
+gate above, they are not first-match-wins: a rule whose *if filled* and *if not filled* slots both hold
+an unreferenced path draws **both** classes in one run. Each slot reports **once**, carrying all of its
+offending paths, so the finding count is the number of offending slots and never the number of
+offending paths.
+
+**An entry is compared as text, after one spelling map.** The empty path becomes `./` and a path
+ending in `..` gains a trailing `/`; the result must equal the shortest relative path from the rule's
+group to an entity the condition references, spelled the same way. So `./Premium` and `Premium/` are
+refused beside a condition reading `Premium`. The same map decides the metamodel's duplicate classes,
+which judge each slot before any condition is read and are therefore never withheld.
 
 **Two carrier facts a consumer gets wrong.** The candidate paths come from the **unexpanded**
 condition, deliberately, so a reference that appears only after expansion does not count. And an
@@ -51,17 +59,18 @@ class, because the rule's own group binds the level
 ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)). A consumer that looks for the star
 finds nothing and admits the rule.
 
-**Evidence.** Four of the eight classes are measured. The two cascade classes are separated against
+**Evidence.** Six of the eight classes are measured. The two cascade classes are separated against
 each other and against two admitted controls on one model — form-only with a deeper plain iteration
 draws the plain class, form-only with a sibling indexed group draws the parallel one, the same
 parallel condition with a direct reference added is admitted, and form-only with no deeper iteration
 is admitted. The missing-declaration class is measured through a hand-edited model copy, and the
-whole-rule reference class has its own retained control. The remaining four have no witness through
-any route this project currently has: the unknown-name class needs an error entity that resolves but
-is absent from the container, the row-iteration class needs a non-A12 model, and the two custom-slot
-classes need a rule property the A12 model format does not carry — a model hand-edited to declare one
-fails DM-JSON deserialization outright, which is the measured denominator rather than a claim that no
-model can express it ([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)).
+whole-rule reference class has its own retained control. The two custom-slot classes are measured on
+kernel 31.3.1 through the possible-cause filter (a12-dmkits KF682,
+[inbound record](../../docs/sources/inbound-handbacks.md#src-inbound-2026-11-07) §6); on 30.8.1 a model
+declaring the member did not deserialize. The remaining two have no witness through any route this
+project currently has: the unknown-name class needs an error entity that resolves but is absent from
+the container, and the row-iteration class needs a non-A12 model
+([checkpoint](../../docs/sources/model-structure-and-declaration-probes.md#src-error-target-declaration)).
 
 The two model-kind guards in the cascade are spelled differently in the Kernel — one tests *not H
 model* and the other tests *is A12 model* — and those are the same predicate, so the cascade below
@@ -230,7 +239,7 @@ def CustomErrorEntitySlot.refusal : CustomErrorEntitySlot → KernelStaticDiagno
   | .ifFilled => .refErrorEntityIfFilledNotReferenced
   | .ifNotFilled => .refErrorEntityIfNotFilledNotReferenced
 
-/-- The relative paths a rule declares in the two slots. -/
+/-- The relative paths a rule declares in the two slots, as written. -/
 structure CustomErrorEntityDeclaration where
   ifFilled : List String := []
   ifNotFilled : List String := []
@@ -251,26 +260,76 @@ def parsesCondition (declaration : CustomErrorEntityDeclaration) : Bool :=
 
 end CustomErrorEntityDeclaration
 
+/-- The one spelling map an entry passes before any comparison: the empty path is the rule's own group,
+`./`, and a path ending in `..` names an ancestor and gains a trailing `/`, a name ending in `..`
+included, so `Premium..` and `Premium../` are one entry (a12-dmkits KF682, kernel 31.3.1). -/
+def possibleCauseSpelling (path : String) : String :=
+  if path.isEmpty then "./"
+  else if path.endsWith ".." then path ++ "/"
+  else path
+
+/-- The shortest relative path from the group `base` to the entity `target`, both as absolute name
+lists, in the spelling the entries are compared in: one `..` for each level of `base` below the deepest
+common ancestor, then the rest of `target`. A target on another root climbs through the technical model
+root, so `/Agent/Name` from `/Policy` is `../Agent/Name`. -/
+def possibleCauseRelPath (base target : List String) : String :=
+  let common := ((base.zip target).takeWhile fun (left, right) => left == right).length
+  possibleCauseSpelling ("/".intercalate (List.replicate (base.length - common) ".." ++ target.drop common))
+
 /-- The candidate relative paths the condition offers. An H model offers none, which refuses every
 declared path there regardless of the condition. -/
 def candidateRelpaths (hModel : Bool) (fromCondition : List String) : List String :=
   if hModel then [] else fromCondition
 
-/-- The declared paths no candidate matches. Membership is exact string equality against the
-candidate set, so two spellings of one entity are two different answers. -/
+/-- The declared paths no candidate matches, in declared order and spelled, repeats included: the
+class's message names exactly these. Membership is string equality after the spelling map, so two
+spellings of one entity are two different answers. -/
 def unreferencedPaths (candidates declared : List String) : List String :=
-  declared.filter fun path => !candidates.contains path
+  (declared.map possibleCauseSpelling).filter fun path => !candidates.contains path
 
 /-- **The custom error-entity gate, which accumulates.** Both slots report in one run, in slot order,
-and each reports once however many of its paths offend. A condition that failed to parse suppresses
-both, because the check abandons before comparing. -/
-def customErrorEntityRefusals (hModel conditionParsed : Bool) (fromCondition : List String)
+and each reports once however many of its paths offend. `judged` is false when the check does not
+run: the rule's own condition drew a class, or an earlier model check refused the model. -/
+def customErrorEntityRefusals (hModel judged : Bool) (fromCondition : List String)
     (declaration : CustomErrorEntityDeclaration) : List KernelStaticDiagnostic :=
-  if !conditionParsed then []
+  if !judged then []
   else
     let candidates := candidateRelpaths hModel fromCondition
     [CustomErrorEntitySlot.ifFilled, CustomErrorEntitySlot.ifNotFilled].filterMap fun slot =>
       if (unreferencedPaths candidates (declaration.slot slot)).isEmpty then none
       else some slot.refusal
+
+/-- A judgement the metamodel makes of one slot before any condition is read. -/
+inductive CustomErrorEntityListRefusal where
+  /-- An entry repeats another of the same slot once both are spelled. -/
+  | duplicate (slot : CustomErrorEntitySlot)
+  /-- The slot holds more entries than the metamodel's index admits; codeless. -/
+  | capacity (slot : CustomErrorEntitySlot)
+  deriving Repr, DecidableEq
+
+/-- The most entries one slot holds without the codeless capacity notification: 1 000 draw none and
+1 001 draw it (a12-dmkits KF682, kernel 31.3.1). -/
+def customErrorEntityCapacity : Nat := 1000
+
+namespace CustomErrorEntityListRefusal
+
+/-- The Kernel's code, or the observed label of the codeless capacity notification. -/
+def label : CustomErrorEntityListRefusal → String
+  | .duplicate .ifFilled => "CUSTOM_REF_ERROR_ENTITY_IF_FILLED_DUPLICATE"
+  | .duplicate .ifNotFilled => "CUSTOM_REF_ERROR_ENTITY_IF_NOT_FILLED_DUPLICATE"
+  | .capacity .ifFilled => "codeless:possible-cause-if-filled-capacity"
+  | .capacity .ifNotFilled => "codeless:possible-cause-if-not-filled-capacity"
+
+end CustomErrorEntityListRefusal
+
+/-- **The metamodel's slot judgements**, which no condition class or model check withholds. A slot
+repeating a spelled entry reports its duplicate class once, however many repeats it holds, and one
+past the capacity its codeless notification; the multiplicity of the duplicate class is unmeasured. -/
+def customErrorEntityListRefusals (declaration : CustomErrorEntityDeclaration) :
+    List CustomErrorEntityListRefusal :=
+  [CustomErrorEntitySlot.ifFilled, CustomErrorEntitySlot.ifNotFilled].flatMap fun slot =>
+    let entries := (declaration.slot slot).map possibleCauseSpelling
+    (if entries.eraseDups.length == entries.length then [] else [.duplicate slot]) ++
+      (if entries.length ≤ customErrorEntityCapacity then [] else [.capacity slot])
 
 end A12Kernel
