@@ -154,7 +154,7 @@ The grammar gives `#Zeile` and the German-only form constructs no production; th
 | a `.*` segment suffix | raised on the walked step (concrete syntax §3.1) | `MVK_POINT_IN_A12_MODEL` |
 | a `*` on a `..` step, `..*/Budget` | check | `MVK_INVALID_WILDCARD_REL` ([§10 §1](08-paths-and-references.md#1-absolute-relative-and-short-name-references)) |
 | an unresolved name, an operator's operand gate | check at its production's close | the check's class |
-| a preamble name other than the supported code | check | `MVK_INVALID_SUPPRESSED_WARNING` |
+| a preamble name other than a supported code | check | `MVK_INVALID_SUPPRESSED_WARNING` |
 | a rule whose condition does not reference its error field | check after the whole text | `MVK_ERROR_FIELD_NOT_REFERENCED` |
 
 At one arithmetic node the checks run operand typing (the exponent's scale included) first, then the division walk, then the power rule ([§5 §4.2](04-numbers-and-decimals.md#42-division-and-power-shape)).
@@ -436,7 +436,7 @@ Sources: [list reads](../docs/sources/inbound-handbacks.md#inbound-2026-09-26h-l
 | `ValueNotConsistent` | `WertNichtKonsistent` | condition call |
 | `To` | `Zu` | separator |
 
-The language-neutral `In` family is a separator. The category counts are closed: 2 connectives, 6 comparators, 28 condition calls, 1 custom condition, 54 operation calls, 5 constants, 2 argument keywords, 3 modifiers, 1 separator besides `In`, 1 entity and 1 directive. The `SumOfTerms` pair is a kernel 31.1.1 addition, measured in English only; its German spelling is read from the 31.1.1 lexer.
+The language-neutral `In` family is a separator. The category counts are closed: 2 connectives, 6 comparators, 28 condition calls, 1 custom condition, 54 operation calls, 5 constants, 2 argument keywords, 3 modifiers, 1 separator besides `In`, 1 entity and 1 directive. The `SumOfTerms` pair is measured in English only; its German spelling is source reading.
 
 **The German-only constructs are the H-model form constructs.** They have no English twin and no row in the operator reference. In an English model each lexes as a name; written as a whole condition, the constructs of the table's first six rows and its three `Zeile…` rows are measured to draw `MVK_UNEXPECTED_TOKEN` there, and the other four are unmeasured. In a German model each is a keyword, and every measured one is refused by a class that depends on the construct and its position (concrete syntax §3.1):
 

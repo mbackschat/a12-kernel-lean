@@ -58,7 +58,7 @@ A document over this model might instantiate three `LineItem` rows; `LineItem*/Q
 
 The kernel does two things over (model, document) ([data model §3](01-data-model.md#3-rules-and-computations)):
 
-1. **Validation** runs the model's **rules** and produces a set of structured **messages**, each with a severity, a message *type*, an error field address, `referenced` and `fillToFix` pointer sets and interpolated text ([data model §3.1](01-data-model.md#31-rules-validation)).
+1. **Validation** runs the model's **rules** and produces a set of structured **messages**, each with a severity, a message *type*, an error field address, `referenced` and `fillToFix` pointer sets, its possibly-causing groups and interpolated text ([data model §3.1](01-data-model.md#31-rules-validation)).
 2. **Computation** runs the model's **computation rules** and produces a result for the computed fields, which a separate apply step writes ([data model §4.3](01-data-model.md#43-the-compute--apply--validate-flow)).
 
 Both are written in the **same** expression language ([§11](09-computations.md)). They differ in how they treat a formally invalid cell: validation excludes it, computation is poisoned by it ([§3 B.6](02-logic-and-formal-errors.md#b6-validation-excludes-computation-poisons)).
