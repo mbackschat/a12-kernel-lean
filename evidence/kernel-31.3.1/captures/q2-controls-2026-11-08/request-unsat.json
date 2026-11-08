@@ -1,0 +1,52 @@
+{
+ "model": "QUnsat_DM.json",
+ "clock": "2026-11-08T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "noroot",
+   "documentInline": {}
+  },
+  {
+   "name": "emptyroot",
+   "documentInline": {
+    "Probe": {}
+   }
+  },
+  {
+   "name": "blank",
+   "documentInline": {
+    "Probe": {
+     "B": ""
+    }
+   }
+  },
+  {
+   "name": "true",
+   "documentInline": {
+    "Probe": {
+     "B": "true"
+    }
+   }
+  },
+  {
+   "name": "false",
+   "documentInline": {
+    "Probe": {
+     "B": "false"
+    }
+   }
+  },
+  {
+   "name": "invalid",
+   "documentInline": {
+    "Probe": {
+     "B": "maybe"
+    }
+   }
+  }
+ ]
+}

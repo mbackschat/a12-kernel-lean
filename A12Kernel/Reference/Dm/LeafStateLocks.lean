@@ -34,7 +34,7 @@ private def model : FlatModel := {
     { id := 4, name := "B", groupPath := form, policy.kind := .boolean },
     { id := 5, name := "C", groupPath := form, policy.kind := .confirm },
     { id := 6, name := "E", groupPath := form, policy.kind := .enumeration,
-      enumeration := some { storedTokens := ["A", "Z"] } },
+      enumeration := some { storedTokens := ["A", "Z"], categories := [{ name := "Band", tokens := ["Lo", "Hi"] }] } },
     { id := 7, name := "S", groupPath := form, policy.kind := .string, stringPolicy := { maxLength := some 3 } },
     { id := 8, name := "T", groupPath := form, policy.kind := .string, stringPolicy := { maxLength := some 3 } },
     { id := 9, name := "GX", groupPath := ["Form", "G"], policy.kind := .number { scale := 0, signed := true } },
@@ -163,6 +163,35 @@ example : overStates "[N] < 5" "N" "3" = [some true, some true, some false, some
 
 /-- An operand read through arithmetic keeps the Number default. -/
 example : overStates "Abs([N]) == 0" "N" "5" = [some true, some true, some false, some false] := by
+  native_decide
+
+/-- The tolerance comparisons read an empty side as `0` and fire strictly outside the band. -/
+example : overPairs "[N] DiffersWithToleranceRange1 [M]" [(filled, .empty), (filled, .invalid), (.value "1", .empty)] =
+    [some true, some false, some false] := by native_decide
+
+/-- Rounding, `RangeAsNumber` and the operand-list extrema keep the Number default; an empty `RangeAsNumber`
+source reads a fillable `0`. -/
+example : ["RoundDown([N]) == 0", "RoundUp([N]) == 0", "RoundAccounting([N]) == 0"].all (fun condition =>
+      overStates condition "N" "5" == [some true, some true, some false, some false]) ∧
+    overStates "RangeAsNumber(S, 1, 2) == 0" "S" "12" = [some true, some true, some false, some false] ∧
+    overPairs "Min([N], [M]) == 0" [(.empty, filled), (.invalid, filled), (filled, filled)] =
+      [some true, some false, some false] ∧
+    overPairs "Max([N], [M]) == 5" [(.empty, filled), (.invalid, filled), (.value "7", filled)] =
+      [some true, some false, some false] := by native_decide
+
+/-- A reached division-by-zero or invalid-power domain failure makes the comparison not fire under either
+polarity (spec/04 §3), through a `RoundAccounting` wrapper the scale gate requires; each nonzero twin fires.
+-/
+example : overPairs "RoundAccounting([N] / [M], 0) == 0" [(.value "0", .value "0"), (.value "0", filled)] =
+      [some false, some true] ∧
+    overPairs "RoundAccounting([N] / [M], 0) != 0" [(filled, .value "0"), (filled, .value "1")] =
+      [some false, some true] ∧
+    ["RoundAccounting([N] ^ -1, 0) == 0", "RoundAccounting([N] ^ -1, 0) != 0"].map
+        (fun condition => fires condition (document [("N", .value "0")])) = [some false, some false] ∧
+    fires "RoundAccounting([N] ^ -1, 0) != 0" (document [("N", .value "1")]) = some true := by native_decide
+
+/-- A category read inherits the Enumeration cell's state: empty is not evaluated, invalid unavailable. -/
+example : overStates "[E -> Band] == \"Hi\"" "E" "Z" = [some false, some false, some false, some true] := by
   native_decide
 
 /-! ## Value-list predicates over the Enumeration `E` and the literal `"A"` -/

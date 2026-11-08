@@ -1,0 +1,107 @@
+{
+ "header": {
+  "id": "QWarn_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "QWarn_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/B",
+        "name": "B",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType",
+          "BooleanType": {}
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/QNone",
+        "name": "QNone",
+        "Rule": {
+         "errorEntityRelPath": "../B",
+         "errorCode": "QNone",
+         "errorCondition": "FieldNotFilled(B)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "QNone"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/QTrue",
+        "name": "QTrue",
+        "Rule": {
+         "errorEntityRelPath": "../B",
+         "errorCode": "QTrue",
+         "errorCondition": "[B] == True",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "QTrue"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/QFalse",
+        "name": "QFalse",
+        "Rule": {
+         "errorEntityRelPath": "../B",
+         "errorCode": "QFalse",
+         "errorCondition": "[B] == False",
+         "severity": "WARNING",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "QFalse"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

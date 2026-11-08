@@ -137,3 +137,14 @@ Measurements this repository takes on kernel 31.1.1 and 31.3.1 through the [meas
 - `limits`: the probe route reports the message set and not the Kernel's own validity call, so that a WARNING-only document passes it is read from the message severities, not observed; one locale, root fields only.
 - `bytes`: [capture](../../evidence/kernel-31.3.1/captures/severity-channel-2026-11-08/), rendered message text redacted; [manifest](../../evidence/kernel-31.3.1/captures/severity-channel-2026-11-08/MANIFEST.sha256) SHA-256 `c6810976c83fea7656ff60cdf29011e38d9babe0233c3e3b4307a4631cf502c9`.
 - `sync`: [SPEC-2026-11-08-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-08-01).
+
+<a id="src-accepted-sample-controls"></a>
+#### On kernel 31.3.1 the three accepted-sample controls answer over every state of their one Boolean field: one model rejects every document, its sibling accepts `false`, and a WARNING twin reports `false` as WARNING, measured 2026-11-08
+
+- `producer`: a12-dmkits `505683610a0c57711fe59fb6ca70d315e6a2f2a1`, the [measurement checkout](cross-layer-routes.md#src-measurement-checkout-route) clean before and after, the primary checkout clean too; dmtool `0.15.0`, Kernel `31.3.1` built and runtime; one `:adapter:kernelProbe` request per model observing `validateFull`, both engines agreeing on every row, `source.state: CLEAN`.
+- `models`: `QUnsat_DM`, `QSat_DM` and `QWarn_DM`, authored by hand in DM 29.8.0 format: a root `Probe` with the Boolean `B`, the ERROR rules `QNone` `FieldNotFilled(B)` and `QTrue` `[B] == True`, and `QFalse` `[B] == False` as ERROR, absent and WARNING respectively.
+- `runtime`: over no root, an empty root and `B` present-empty, `true`, `false` and `maybe`, every model reports `QNone` on the first three, `QTrue` on `true` and `feldJaNeinFalsch` as ERROR on `maybe`; on `false` `QUnsat_DM` reports `QFalse` as ERROR, `QSat_DM` nothing and `QWarn_DM` `QFalse` as WARNING.
+- `local`: the replay matches all 96 lines of the three requests; the [control locks](../../A12Kernel/Reference/Dm/AcceptedSampleControlLocks.lean) hold each model's acceptance under both relations of [spec/10 §2](../../spec/10-validation-and-polarity.md#2-severity-is-metadata).
+- `limits`: the six documents are exhaustive only because `B` is the models' sole field; one locale.
+- `bytes`: [capture](../../evidence/kernel-31.3.1/captures/q2-controls-2026-11-08/), rendered message text redacted; [manifest](../../evidence/kernel-31.3.1/captures/q2-controls-2026-11-08/MANIFEST.sha256) SHA-256 `b1a5295fe290c5e52933ef0f523e41ac29dae993eb5ae5eae62e18dddfbac788`.
+
