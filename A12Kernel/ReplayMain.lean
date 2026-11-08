@@ -104,6 +104,7 @@ import A12Kernel.Reference.Dm.DocumentNumberLocks
 import A12Kernel.Reference.Dm.NegateLocks
 import A12Kernel.Reference.Dm.LowerLocks
 import A12Kernel.Reference.Dm.NumericFieldFormLocks
+import A12Kernel.Reference.Dm.LeafStateLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
 import A12Kernel.Reference.Dm.ModelComputationLocks
 import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
