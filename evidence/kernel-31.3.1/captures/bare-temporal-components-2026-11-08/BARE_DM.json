@@ -1,0 +1,203 @@
+{
+ "header": {
+  "id": "BARE_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "BARE_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rental",
+     "name": "Rental",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rental/Start",
+        "name": "Start",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rental/PickupTime",
+        "name": "PickupTime",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b1",
+        "name": "b1",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "b1",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(9)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b2",
+        "name": "b2",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "b2",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(\"9\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b3",
+        "name": "b3",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "b3",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(\"09\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b4",
+        "name": "b4",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "b4",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(9, \"30\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b5",
+        "name": "b5",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "b5",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(\"9\", 30)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b6",
+        "name": "b6",
+        "Rule": {
+         "errorEntityRelPath": "../Start",
+         "errorCode": "b6",
+         "errorCondition": "FieldFilled(Start) And [Start] < Date(1, 2, 2020)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b7",
+        "name": "b7",
+        "Rule": {
+         "errorEntityRelPath": "../Start",
+         "errorCode": "b7",
+         "errorCondition": "FieldFilled(Start) And [Start] < Date(\"1\", \"2\", \"2020\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/b8",
+        "name": "b8",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "b8",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(\"9\", \"30\", 15)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

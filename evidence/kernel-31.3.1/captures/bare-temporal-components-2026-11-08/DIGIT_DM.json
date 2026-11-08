@@ -1,0 +1,150 @@
+{
+ "header": {
+  "id": "DIGIT_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "DIGIT_DM"
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Rental",
+     "name": "Rental",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Rental/Start",
+        "name": "Start",
+        "Field": {
+         "fieldType": {
+          "type": "DateType",
+          "DateType": {
+           "format": "yyyy-MM-dd"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rental/PickupTime",
+        "name": "PickupTime",
+        "Field": {
+         "fieldType": {
+          "type": "TimeType",
+          "TimeType": {
+           "format": "HH:mm:ss"
+          }
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Rental/1",
+        "name": "1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "maxLength": 2,
+           "positivesOnly": true
+          }
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/d1",
+        "name": "d1",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "d1",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(1)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/d2",
+        "name": "d2",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "d2",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(\"9\", 1)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/d3",
+        "name": "d3",
+        "Rule": {
+         "errorEntityRelPath": "../Start",
+         "errorCode": "d3",
+         "errorCondition": "FieldFilled(Start) And [Start] < Date(1, \"02\", \"2020\")",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Rental/d4",
+        "name": "d4",
+        "Rule": {
+         "errorEntityRelPath": "../PickupTime",
+         "errorCode": "d4",
+         "errorCondition": "FieldFilled(PickupTime) And [PickupTime] < Time(9)",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "m"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

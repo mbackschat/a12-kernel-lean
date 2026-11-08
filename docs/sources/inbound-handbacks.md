@@ -1098,6 +1098,16 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
 
+<a id="src-inbound-2026-11-08"></a>
+## Received the 2026-11-08 handback: a bare number in a `Time` or `Date` component is a name
+
+- `source`: Peer-session message of 2026-11-08, carried in the session and kept as no file, framed as a delta against this repository's `6d754c056`. It answers no ledger entry.
+- `revision`: a12-dmkits `2c6869c8fe78a0e864c044bef3ad5c8ef4562224`, clean, whose `UnquotedConstantCorrectiveTest`, added in `f8453c07fb6038f081ac303513b78c213ed36073`, locks `Time(9)` refused `MVK_INVALID_ENTITY` and `Time("9")` admitted; the peer reports `Time("09")`, `Time(9, "30")`, `Time("9", 30)` and both `Date` rows as measured without a lock.
+- `oracle`: kernel 31.3.1's static rule check through dmtool, as reported by the peer. This project re-measured every row, extended them by the third `Time` position and settled the peer's hypothesis that the token is read as a name with a field named `1` ([checkpoint](kernel-31-calibration-probes.md#src-bare-temporal-components)).
+- `adopted`: [spec/05 §3.2](../../spec/05-dates-and-time.md#32-time-and-the-clock-anchor) and [concrete syntax §2](../../spec/12-concrete-syntax.md#2-literals) gain the `Time` positions; Lean already agreed. The message says neither `Date` paragraph states what a bare number draws, but [spec/05 §3.1](../../spec/05-dates-and-time.md#31-date) already did, from the [constructed-Date comparison measurement](temporal-and-message-probes.md#src-temporal-construction-route).
+- `not-adopted`: §4's notice changes dmtool surfaces only: a field `kind` spelling, a modify warning, the `model describe` card and the `MVK_INVALID_ENTITY` corrective. It moves no clause, and this project's measurement models are authored as JSON.
+- `sync`: inbound measurement from a committed peer revision, re-measured here; no ledger entry.
+
 <a id="src-inbound-2026-11-07b"></a>
 ## Received 31.3.1 Letter L of 2026-11-07: a sort order is trimmed at both ends
 

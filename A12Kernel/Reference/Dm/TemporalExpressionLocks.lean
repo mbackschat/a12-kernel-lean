@@ -3,6 +3,7 @@ import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.LowerValidation
 import A12Kernel.Reference.Dm.Parser
+import A12Kernel.Reference.Dm.ParallelValidation
 
 namespace A12Kernel.Dm.TemporalExpressionLocks
 
@@ -692,5 +693,43 @@ example : runRows "FieldFilled(Stamp2) And DifferenceInDays(Due1,Today) == 1"
     temporalRows [("Amount", "DifferenceInDays(Due1,Today)", none)]
       [sourceRow false, sourceRow true] "Europe/Berlin" 1711924200000 =
       some ["Order/Rows/Amount:value 1", "Order/Rows[2]/Amount:value -29"] := by native_decide
+
+/-! ## A bare number in a constructor component is a name
+
+An unquoted digit run in a `Time` or `Date` component position is read as an entity name, so where no entity
+carries it the rule draws the name class, at every `Time` position as at the `Date` day; the quoted spellings are
+admitted (Kernel 31.3.1, rules `b1`–`b8` and `d1`–`d4` of the
+[bare-component batch](../../../docs/sources/kernel-31-calibration-probes.md#src-bare-temporal-components)).
+-/
+
+private def bareComponentClass (errorField condition : String) (flat : FlatModel := model) : String :=
+  let dm : DmModel := { flat, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
+  let rule : DmRule := {
+    group := ["Order"], name := "Bare", errorCode := "BARE", severity := "ERROR"
+    errorEntityRelPath := "../" ++ errorField, condition }
+  match checkValidationRule dm .english rule with
+  | .ok _ => "admitted"
+  | .error refusal => refusal.kernelClass?.getD s!"unclassified {refusal.detail}"
+
+example : [("Clock", "Time(9)", "MVK_INVALID_ENTITY"), ("Clock", "Time(\"9\")", "admitted"),
+    ("Clock", "Time(\"09\")", "admitted"), ("Clock", "Time(9, \"30\")", "MVK_INVALID_ENTITY"),
+    ("Clock", "Time(\"9\", 30)", "MVK_INVALID_ENTITY"), ("Clock", "Time(\"9\", \"30\", 15)", "MVK_INVALID_ENTITY"),
+    ("Due1", "Date(1, 2, 2020)", "MVK_INVALID_ENTITY"), ("Due1", "Date(\"1\", \"2\", \"2020\")", "admitted")].all
+    (fun (field, constructor, expected) =>
+      bareComponentClass field s!"FieldFilled({field}) And [{field}] < {constructor}" == expected) = true := by
+  native_decide
+
+/-- A Number field named `1` that fits a `Time` component: the same digit run now resolves to it, in the
+first `Time` position, a later one and the `Date` day, while `9` still names nothing (rules `d1`–`d4`). -/
+private def digitNamedModel : FlatModel := { model with fields := model.fields ++ [
+  { id := 93, name := "1", groupPath := ["Order"], policy := { kind := .number { scale := 0, signed := false } },
+    numericTargetConstraints := { maxStoredLength := some 2 } }] }
+
+example : [("Clock", "Time(1)", "admitted"), ("Clock", "Time(\"9\", 1)", "admitted"),
+    ("Due1", "Date(1, \"02\", \"2020\")", "admitted"), ("Clock", "Time(9)", "MVK_INVALID_ENTITY")].all
+    (fun (field, constructor, expected) =>
+      bareComponentClass field s!"FieldFilled({field}) And [{field}] < {constructor}" digitNamedModel ==
+        expected) = true := by
+  native_decide
 
 end A12Kernel.Dm.TemporalExpressionLocks

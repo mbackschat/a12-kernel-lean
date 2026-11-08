@@ -53,7 +53,7 @@ Sources: [inbound 2026-09-21 corrections](../docs/sources/inbound-handbacks.md#i
 
 ## 2. Literals
 
-**A literal's kind is fixed by its own spelling before any context reads it.** An unquoted digit run is a number literal where the grammar expects a value, and a name where it expects a name — a digit-only `CustomCondition` name ([§14](11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch)) and a bare numeric token in a `Date` component, which is read as an entity name ([§6 §3](05-dates-and-time.md#3-constructing-dates-and-checking-validity)); a double-quoted literal is a date, an omitted-year date, a clock, a date-time or a String by its content alone; `True` and `False` are keywords. The kinds, their meaning and the quoted shapes are owned by the chapters linked below; this table holds the remaining spelling rules.
+**A literal's kind is fixed by its own spelling before any context reads it.** An unquoted digit run is a number literal where the grammar expects a value, and a name where it expects a name — a digit-only `CustomCondition` name ([§14](11-messages-and-custom.md#part-b--14-customcondition--the-escape-hatch)) and a bare numeric token in a `Date` or `Time` component, which is read as an entity name ([§6 §3](05-dates-and-time.md#3-constructing-dates-and-checking-validity)); a double-quoted literal is a date, an omitted-year date, a clock, a date-time or a String by its content alone; `True` and `False` are keywords. The kinds, their meaning and the quoted shapes are owned by the chapters linked below; this table holds the remaining spelling rules.
 
 | Literal | Written | Spelling rule |
 |---|---|---|

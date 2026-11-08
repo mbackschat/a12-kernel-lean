@@ -1,0 +1,46 @@
+{
+ "BARE_DM": {
+  "b1": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "b2": [
+   "admitted"
+  ],
+  "b3": [
+   "admitted"
+  ],
+  "b4": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "b5": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "b6": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "b7": [
+   "admitted"
+  ],
+  "b8": [
+   "MVK_INVALID_ENTITY"
+  ]
+ },
+ "DIGIT_DM": {
+  "d1": [
+   "admitted"
+  ],
+  "d2": [
+   "admitted"
+  ],
+  "d3": [
+   "admitted"
+  ],
+  "d4": [
+   "MVK_INVALID_ENTITY"
+  ],
+  "model": [
+   "MVK_PATH_INVALID",
+   "MVK_NAME_STARTS_WITH_DIGIT_A12_DV"
+  ]
+ }
+}
