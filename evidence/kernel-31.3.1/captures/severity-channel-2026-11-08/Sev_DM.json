@@ -1,0 +1,118 @@
+{
+ "header": {
+  "id": "Sev_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Sev_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/SevErr",
+        "name": "SevErr",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "SevErr",
+         "errorCondition": "FieldFilled(A) And [A] > 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "SevErr"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/SevWarn",
+        "name": "SevWarn",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "SevWarn",
+         "errorCondition": "FieldFilled(A) And [A] > 5",
+         "severity": "WARNING",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "SevWarn"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/SevInfo",
+        "name": "SevInfo",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "SevInfo",
+         "errorCondition": "FieldFilled(W)",
+         "severity": "INFO",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "SevInfo"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

@@ -37,6 +37,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-08-01"></a>
+### SPEC-2026-11-08-01 — Every built-in finding reports ERROR, a WARNING or INFO rule reports its own severity, and error-free and message-free acceptance follow
+
+- `status`: pending
+- `canonical`: [spec/10 §2](../spec/10-validation-and-polarity.md#2-severity-is-metadata)'s built-in severity and acceptance paragraphs.
+- `delta`: States that a formal finding, `mandatoryField` and `uniqueIndex` report ERROR, measures that WARNING and INFO rules fire as their ERROR twin does with their own severity, and defines error-free and message-free acceptance over full validation's message set, which a firing WARNING or INFO rule separates.
+- `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [severity channel](sources/kernel-31-calibration-probes.md#src-severity-channel).
+- `acceptance`: a12-dmkits' interpreter reports the same severities on the same rows, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-11-07-02"></a>
 ### SPEC-2026-11-07-02 — A tolerance band refuses a String, Date or Custom target, behind the preamble, syntax and names and ahead of the kind comparison and the self-read
 

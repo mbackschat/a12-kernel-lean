@@ -1,0 +1,50 @@
+{
+ "model": "Sev_DM.json",
+ "clock": "2026-11-08T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "none",
+   "documentInline": {
+    "Probe": {
+     "A": 1
+    }
+   }
+  },
+  {
+   "name": "warn",
+   "documentInline": {
+    "Probe": {
+     "A": 7
+    }
+   }
+  },
+  {
+   "name": "both",
+   "documentInline": {
+    "Probe": {
+     "A": 12
+    }
+   }
+  },
+  {
+   "name": "formal",
+   "documentInline": {
+    "Probe": {
+     "A": "x"
+    }
+   }
+  },
+  {
+   "name": "info",
+   "documentInline": {
+    "Probe": {
+     "W": 1
+    }
+   }
+  }
+ ]
+}

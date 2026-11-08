@@ -25,6 +25,14 @@ A rule's severity (**ERROR / WARNING / INFO**) is metadata on the resulting mess
 
 > **Non-normative implementation note.** Keep severity out of the evaluation core entirely — attach it to the emitted message. "Document valid?" = "no emitted message has severity ERROR".
 
+**Every built-in finding is ERROR.** A formal finding and the generated `mandatoryField` and `uniqueIndex` findings report severity ERROR, so each makes the document invalid.
+
+**Two acceptance relations follow over full validation's message set**, built-in findings included: a document is *error-free* when no message has severity ERROR, and *message-free* when it has no message at all. A firing WARNING or INFO rule separates them, and a document either relation accepts holds no not-check-relevant cell, since each producer of that state in [§3 B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state) reports a built-in finding.
+
+Measured scope: a WARNING and an INFO rule fire as their ERROR twin does and report their own severity, and a formal finding reports ERROR; every built-in finding in the retained 31.3.1 evidence reports ERROR. The Kernel's own validity call is not observed on a WARNING-only document.
+
+Sources: [severity channel](../docs/sources/kernel-31-calibration-probes.md#src-severity-channel).
+
 ---
 
 ## 3. Every fired message is typed — VALUE vs OMISSION ⚠⚠
