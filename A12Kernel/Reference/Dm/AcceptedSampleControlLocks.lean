@@ -7,9 +7,9 @@ import A12Kernel.Reference.Dm.Replay
 
 The [retained capture](../../../evidence/kernel-31.3.1/captures/q2-controls-2026-11-08/MANIFEST.sha256)
 holds three DM 29.8.0 models over one root `Probe` with one Boolean field `B`. Each carries the ERROR
-rules `FieldNotFilled(B)` and `[B] == True`; `QUnsat_DM` adds `[B] == False` as ERROR, `QWarn_DM` as
-WARNING, and `QSat_DM` omits it. Under spec/10 §2's relations `QUnsat_DM` accepts no document,
-`QSat_DM` accepts the document holding `false`, and `QWarn_DM` accepts that document only error-free.
+rules `FieldNotFilled(B)` and `[B] == True`; `QUnsat_DM.json` adds `[B] == False` as ERROR, `QWarn_DM.json` as
+WARNING, and `QSat_DM.json` omits it. Under spec/10 §2's relations `QUnsat_DM.json` accepts no document,
+`QSat_DM.json` accepts the document holding `false`, and `QWarn_DM.json` accepts that document only error-free.
 
 The six documents are exhaustive for these models. `B` is the only field, so a document's verdicts
 depend only on `B`'s cell, which is absent, empty, not check-relevant, `true` or `false` (spec/02 §A.3
@@ -52,16 +52,16 @@ private def acceptance (third : Option String) (doc : Json) : Option (Bool × Bo
     pure (messages.map fun _ => severity)
   pure (findings == 0 && fired.flatten.isEmpty, findings == 0 && !fired.flatten.contains "ERROR")
 
-/-- `QUnsat_DM` accepts no document under either relation. -/
+/-- `QUnsat_DM.json` accepts no document under either relation. -/
 example : documents.map (acceptance (some "ERROR")) = List.replicate 6 (some (false, false)) := by
   native_decide
 
-/-- `QSat_DM` accepts exactly the `false` document. -/
+/-- `QSat_DM.json` accepts exactly the `false` document. -/
 example : documents.map (acceptance none) =
     [some (false, false), some (false, false), some (false, false), some (false, false), some (true, true),
       some (false, false)] := by native_decide
 
-/-- `QWarn_DM` accepts the `false` document error-free only. -/
+/-- `QWarn_DM.json` accepts the `false` document error-free only. -/
 example : documents.map (acceptance (some "WARNING")) =
     [some (false, false), some (false, false), some (false, false), some (false, false), some (false, true),
       some (false, false)] := by native_decide
