@@ -17,7 +17,7 @@ identically and no rule observes the difference. The matrix is the Q2-P2 accepta
 Which nonempty values are filled rather than not check-relevant is each kind's admitted set: for a
 decimal-valued Number the conjunction spec/04 §4.8 states, locked here against the cascade, and for
 the other kinds the clauses of spec/06 and spec/02 §A.3, locked through the document route (Q2-P3).
-The acceptance relations of spec/10 §2 close the module (Q2-P4). -/
+Bounded repetition (Q2-P5) and the acceptance relations of spec/10 §2 (Q2-P4) close the module. -/
 
 namespace A12Kernel.Dm.LeafStateLocks
 
@@ -41,8 +41,11 @@ private def model : FlatModel := {
     { id := 10, name := "RN", groupPath := rows, repeatableScope := [10],
       policy.kind := .number { scale := 0, signed := true } },
     { id := 11, name := "RS", groupPath := rows, repeatableScope := [10], policy.kind := .string,
-      stringPolicy := { maxLength := some 3 } }]
-  repeatableGroups := [{ level := 10, path := rows, repeatability := some 3 }] }
+      stringPolicy := { maxLength := some 3 } },
+    { id := 12, name := "WN", groupPath := ["Form", "Wide"], repeatableScope := [11],
+      policy.kind := .number { scale := 0, signed := true } }]
+  repeatableGroups := [{ level := 10, path := rows, repeatability := some 3 },
+    { level := 11, path := ["Form", "Wide"], repeatability := some 6 }] }
 
 private def world : World := { now := { epochMillis := 0 } }
 
@@ -61,21 +64,23 @@ private def Cell.member (name : String) : Cell → Option (String × Json)
   | .value text => some (name, .str text)
 
 /-- A root `Form` holding `Anchor = 1`, the named root cells, an optional `G` instance and the
-`Rows` rows, each a list of named cells. -/
+`Rows` and `Wide` rows, each a list of named cells. -/
 private def document (cells : List (String × Cell)) (group : List (String × Cell) := [])
-    (rowCells : List (List (String × Cell)) := []) : Json :=
+    (rowCells : List (List (String × Cell)) := []) (wideCells : List (List (String × Cell)) := []) : Json :=
   let members := fun (named : List (String × Cell)) => named.filterMap fun (name, cell) => cell.member name
+  let rowsOf := fun (name : String) (shape : List (List (String × Cell))) =>
+    if shape.isEmpty then [] else [(name, Json.arr (shape.map (Json.mkObj ∘ members)).toArray)]
   let root := [("Anchor", Json.str "1")] ++ members cells
     ++ (if group.isEmpty then [] else [("G", Json.mkObj (members group))])
-    ++ (if rowCells.isEmpty then [] else [("Rows", Json.arr (rowCells.map (Json.mkObj ∘ members)).toArray)])
+    ++ rowsOf "Rows" rowCells ++ rowsOf "Wide" wideCells
   Json.mkObj [("Form", Json.mkObj root)]
 
-/-- Whether the rule `FieldFilled(Anchor) And condition`, reporting on `Anchor` from `Form`, fires
-over `doc`; `none` when the model check refuses the rule or the document does not read. The rule must
+/-- How many messages the rule `FieldFilled(Anchor) And condition`, reporting on `Anchor` from `Form`,
+fires over `doc`; `none` when the model check refuses the rule or the document does not read. The rule must
 reference its error field (`MVK_ERROR_FIELD_NOT_REFERENCED`), and `Anchor` is always filled, so the
 prefix is TRUE and the leaf alone decides. A `target` instead reports on that path with the bare
 `condition`, for a leaf that must bind the target's repeatable level. -/
-private def fires (condition : String) (doc : Json) (target : Option String := none) : Option Bool := do
+private def messageCount (condition : String) (doc : Json) (target : Option String := none) : Option Nat := do
   let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
   let input ← (readDocument dm doc).toOption
   if !input.refusals.isEmpty then none
@@ -90,7 +95,10 @@ private def fires (condition : String) (doc : Json) (target : Option String := n
       severity := "ERROR" }
   let checkedRule ← (checkValidationRule dm .english rule world).toOption
   let messages ← (runValidationRule world validated checkedRule).toOption
-  pure !messages.isEmpty
+  pure messages.length
+
+private def fires (condition : String) (doc : Json) (target : Option String := none) : Option Bool :=
+  (messageCount condition doc target).map (· > 0)
 
 /-- The four states of one root cell, in the order absent, empty, not-check-relevant, filled. -/
 private def overStates (condition field filled : String) : List (Option Bool) :=
@@ -307,6 +315,31 @@ example : [("S", "abc"), ("S", "abcd"), ("S", " ab"), ("S", "ab "), ("S", "a\nb"
       some true, some true, some false, some false,
       some true, some true, some true, some false,
       some true, some true, some false] := by native_decide
+
+/-! ## Bounded repetition (Q2-P5)
+
+A sample's `k` rows of a group, `0 ≤ k ≤` its declared repeatability, are its instantiated rows, and a
+blank one is content (spec/03 §A.4). They do not bound where a rule fires: an ordinary rule walks the
+rule iteration domain of spec/07 §1.3, every declared slot while the declared product is at most 5, and
+above it coordinate 1 plus the coordinates some group occupies. Each rule here reports on its group's
+field, so it iterates that group. -/
+
+private def rowsCount (shape : List (List (String × Cell))) : Option Nat :=
+  messageCount "[Rows/RN] < 5" (document [] [] shape) (some "Rows/RN")
+
+/-- `Rows` declares 3 slots, a product of 3: with no row, with a blank row and with a present-empty `RN`
+the rule fires at all three declared slots, each read as `0`; of three filled rows only one is below 5. -/
+example : [[], [[]], [[("RN", Cell.empty)]], [[("RN", .value "9")], [("RN", .value "1")], [("RN", .value "9")]]].map
+      rowsCount = [some 3, some 3, some 3, some 1] := by native_decide
+
+private def wideCount (wide : List (List (String × Cell))) (rows : List (List (String × Cell)) := []) : Option Nat :=
+  messageCount "[Wide/WN] < 5" (document [] [] rows wide) (some "Wide/WN")
+
+/-- `Wide` declares 6 slots, a product above 5: with no row only coordinate 1 is visited, two blank rows
+are two coordinates, filled rows fire where they are below 5, and three `Rows` rows occupy coordinates
+`Wide` lacks, widening its domain to three. -/
+example : [wideCount [], wideCount [[], []], wideCount [[("WN", .value "9")], [("WN", .value "1")], [("WN", .value "1")]],
+      wideCount [] [[], [], []]] = [some 1, some 2, some 2, some 3] := by native_decide
 
 /-! ## Acceptance relations (Q2-P4)
 
