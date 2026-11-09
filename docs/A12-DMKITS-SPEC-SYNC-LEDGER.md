@@ -37,6 +37,16 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 ## Current queue
 
+<a id="spec-2026-11-09-01"></a>
+### SPEC-2026-11-09-01 — A decimal-valued Number reaches the missing-separator refusal when the fifteen-digit cap leaves no room for a required place, and its admitted set uses the effective integer-digit cap
+
+- `status`: pending
+- `canonical`: [spec/04 §4.8](../spec/04-numbers-and-decimals.md#48-the-formal-check-of-a-stored-value)'s admitted-set paragraph and the lexical-checks paragraph after it.
+- `delta`: Withdraws the statement that a decimal-valued read text never lacks a required separator: `123456789012345` on a field requiring two places reads at scale 0 and reports `zahlOhneDezimalTrenner`. The admitted set's integer-digit bullet now names the effective cap, a declared `maxIntegerDigits` or else the amount trait's `15 − maxFractionalDigits`, which spec/09's fit order already states.
+- `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [formal-domain checkpoint](sources/kernel-31-calibration-probes.md#src-q2-formal-domain).
+- `acceptance`: a12-dmkits' reader reports the same three codes on the captured rows, or records why its account differs.
+- `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+
 <a id="spec-2026-11-08-01"></a>
 ### SPEC-2026-11-08-01 — Every built-in finding reports ERROR, a WARNING or INFO rule reports its own severity, and error-free and message-free acceptance follow
 

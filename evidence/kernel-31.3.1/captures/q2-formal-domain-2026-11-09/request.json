@@ -1,0 +1,14 @@
+{
+ "model": "Dom_DM.json",
+ "clock": "2026-11-09T10:00:00Z",
+ "locale": "en_US",
+ "observe": ["validateFull"],
+ "rows": [
+  {"name": "separator", "documentInline": {"Probe": {"P2": 123456789012345}}},
+  {"name": "separatorControl", "documentInline": {"Probe": {"P2": 1234567890123.45}}},
+  {"name": "amountCap", "documentInline": {"Probe": {"AM": 12345678901234}}},
+  {"name": "amountCapControl", "documentInline": {"Probe": {"AM": 1234567890123}}},
+  {"name": "carry", "documentInline": {"Probe": {"C": 99999999999999.95}}},
+  {"name": "carryControl", "documentInline": {"Probe": {"C": 99999999999999.94}}}
+ ]
+}

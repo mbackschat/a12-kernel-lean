@@ -2,7 +2,6 @@ import Lean.Data.Json
 import A12Kernel.Reference.Dm.Document
 import A12Kernel.Reference.Dm.Validate
 import A12Kernel.Reference.Dm.Replay
-import A12Kernel.Semantics.NumericInput
 
 /-! # The cell states of the scalar kinds and the leaf verdicts over them
 
@@ -14,10 +13,9 @@ strong-Kleene and the language has no negation (spec/02 §A.1, §A.2), so a leaf
 compose identically and no rule observes the difference. The matrix is the Q2-P2 acceptance set of
 [the plan](../../../docs/PLAN.md#q2-preparation-checklist).
 
-Which nonempty values are filled rather than not check-relevant is each kind's admitted set: for a
-decimal-valued Number the conjunction spec/04 §4.8 states, locked here against the cascade, and for
-the other kinds the clauses of spec/06 and spec/02 §A.3, locked through the document route (Q2-P3).
-Bounded repetition (Q2-P5) closes the module; the acceptance relations (Q2-P4) are locked against
+Which nonempty values are filled rather than not check-relevant is each kind's admitted set, locked
+in [the formal-domain locks](FormalDomainLocks.lean) (Q2-P3). Bounded repetition (Q2-P5) closes the
+module; the acceptance relations (Q2-P4) are locked against
 retained Kernel rows in [the control locks](AcceptedSampleControlLocks.lean). -/
 
 namespace A12Kernel.Dm.LeafStateLocks
@@ -280,71 +278,6 @@ example : overStates "Length(S) == 0" "S" "ab" = [some true, some true, some fal
 example : overStates "FieldValueAsString(N) == \"5\"" "N" "5" = [some false, some false, some false, some true] ∧
     overStates "RangeAsString(S, 1, 2) == \"ab\"" "S" "abc" = [some false, some false, some false, some true] := by
   native_decide
-
-/-! ## Admitted sets (Q2-P3)
-
-The decimal-valued Number set is spec/04 §4.8's conjunction over the read text, compared with the
-cascade over every declaration–value pair below. -/
-
-/-- spec/04 §4.8's admitted-set conjunction, written from the clause rather than from the cascade. -/
-private def admittedDecimal (info : NumField) (c : NumericTargetConstraints) (v : NumericInputDecimal) : Bool :=
-  let read := v.formalReadStored c.minFractionalDigits
-  let r := read.scale
-  let n := (toString (read.unscaled.natAbs / decimalFactor r)).length
-  let length := (if read.unscaled < 0 then 1 else 0) + n + (if r > 0 then r + 1 else 0)
-  n + r ≤ 15 &&
-    (read.unscaled ≥ 0 || info.signed) &&
-    (!c.fractionalDigitsChecked || (c.minFractionalDigits ≤ r && r ≤ info.scale)) &&
-    c.maxIntegerDigits.all (n ≤ ·) &&
-    (read.unscaled != 0 || c.zeroAllowed) &&
-    c.minStoredLength.all (· ≤ length) && c.maxStoredLength.all (length ≤ ·) &&
-    c.minimum.all (· ≤ read.amount) && c.maximum.all (read.amount ≤ ·)
-
-private def numberDeclarations : List (NumField × NumericTargetConstraints) := [
-  ({ scale := 0, signed := true }, {}),
-  ({ scale := 2, signed := true }, { minFractionalDigits := 2 }),
-  ({ scale := 2, signed := true }, {}),
-  ({ scale := 10, signed := true }, { minFractionalDigits := 10 }),
-  ({ scale := 14, signed := true }, {}),
-  ({ scale := 0, signed := false }, { zeroAllowed := false, amount := true }),
-  ({ scale := 0, signed := true }, { maxIntegerDigits := some 3 }),
-  ({ scale := 2, signed := true }, { minFractionalDigits := 2, minStoredLength := some 5, maxStoredLength := some 6 }),
-  ({ scale := 2, signed := true }, { minimum := some 1, maximum := some (555 / 100) }),
-  ({ scale := 0, signed := true }, { fractionalDigitsChecked := false })]
-
-/-- `(unscaled, scale)`: zero, signs, a negative scale, trailing zeros, the fifteen-digit cap and its
-rounding, a rounding carry into a new integer digit, a value that rounds to zero, bound edges. -/
-private def numberValues : List NumericInputDecimal :=
-  [(0, 0), (5, 0), (-5, 0), (250, 0), (25000, 2), (1, -5), (12345, 0), (123456, 0), (999995, 3), (125, 3),
-    (-1, 3), (1555, 3), (556, 2), (5555, 3), (12345678901234567, 7), (5, 1), (1000, 0), (9999, 0),
-    (1234567890123456, 0), (100, 2), (-100, 2)].map fun (unscaled, scale) => { unscaled, scale }
-
-example : numberDeclarations.all (fun (info, c) => numberValues.all (fun v =>
-    admittedDecimal info c v == (c.checkFormalRead info (.decimal v)).toBool)) := by native_decide
-
-/-- The set is not vacuous: every declaration-specific row the decimal read text can reach refuses some
-pair, and some pair is admitted. -/
-example : [NumericFormalReadError.totalDigitsTooLong, .negativeNotAllowed, .decimalSeparatorForbidden,
-      .fractionalDigitsOutOfRange, .integerDigitsTooLong, .zeroNotAllowed, .textTooShort, .textTooLong,
-      .belowMinimum, .aboveMaximum].all (fun error => numberDeclarations.any (fun (info, c) =>
-        numberValues.any (fun v => match c.checkFormalRead info (.decimal v) with
-          | .error refused => refused == error
-          | .ok _ => false))) &&
-    numberDeclarations.any (fun (info, c) => numberValues.any (fun v => (c.checkFormalRead info (.decimal v)).toBool)) := by
-  native_decide
-
-/-- The other kinds through the document route: an admitted text fires `FieldFilled`, a refused one
-leaves the cell not check-relevant. Strings: the length bound, both blanks, a line break and a
-character outside the default set; tokens are case-folded by the reader only for Boolean and Confirm. -/
-example : [("S", "abc"), ("S", "abcd"), ("S", " ab"), ("S", "ab "), ("S", "a\nb"), ("S", "😀"),
-      ("E", "A"), ("E", "Z"), ("E", "B"), ("E", "a"),
-      ("B", "true"), ("B", "false"), ("B", "TRUE"), ("B", "yes"),
-      ("C", "true"), ("C", "TRUE"), ("C", "false")].map (fun (field, text) =>
-        fires s!"FieldFilled({field})" (document [(field, .value text)])) =
-    [some true, some false, some false, some false, some false, some false,
-      some true, some true, some false, some false,
-      some true, some true, some true, some false,
-      some true, some true, some false] := by native_decide
 
 /-! ## Bounded repetition (Q2-P5)
 

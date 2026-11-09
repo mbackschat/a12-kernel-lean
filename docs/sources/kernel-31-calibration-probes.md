@@ -138,6 +138,17 @@ Measurements this repository takes on kernel 31.1.1 and 31.3.1 through the [meas
 - `bytes`: [capture](../../evidence/kernel-31.3.1/captures/severity-channel-2026-11-08/), rendered message text redacted; [manifest](../../evidence/kernel-31.3.1/captures/severity-channel-2026-11-08/MANIFEST.sha256) SHA-256 `7eae0968e132c58f04063e38c0a9b4a3dae434ba3a32c77ab780adfa626c3f20`.
 - `sync`: [SPEC-2026-11-08-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-08-01).
 
+<a id="src-q2-formal-domain"></a>
+#### On kernel 31.3.1 a decimal-valued Number refuses a missing required separator when the fifteen-digit cap leaves it no room, the amount trait caps integer digits at `15 − maxFractionalDigits`, and a rounding carry can exceed the fifteen-digit total, measured 2026-11-09
+
+- `producer`: a12-dmkits `505683610a0c57711fe59fb6ca70d315e6a2f2a1`, the [measurement checkout](cross-layer-routes.md#src-measurement-checkout-route) clean before and after, the primary checkout clean too; dmtool `0.15.0`, Kernel `31.3.1` built and runtime; one `:adapter:kernelProbe` request observing `validateFull`, both engines agreeing on every row, `source.state: CLEAN`.
+- `model`: `Dom_DM`, authored by hand in DM 29.8.0 format: a root `Probe` with the Numbers `P2` (two fractional places required), `AM` (at most two, amount trait) and `C` (at most two), and no rule.
+- `runtime`: JSON-number documents. `P2 = 123456789012345` reports `zahlOhneDezimalTrenner` and `1234567890123.45` nothing; `AM = 12345678901234` reports `zahlZuvieleVorkommastellen` and `1234567890123` nothing; `C = 99999999999999.95`, read at one place as `100000000000000.0`, reports `stelligkeitZuLang`, and `99999999999999.94` nothing. Every code is ERROR.
+- `local`: the [formal-domain locks](../../A12Kernel/Reference/Dm/FormalDomainLocks.lean) read the retained bytes and match every row's code through the reader's cascade, and compare spec/04 §4.8's conjunction with the cascade and the document route on twelve declarations.
+- `limits`: one locale, root fields only, decimal-valued placements only.
+- `bytes`: [capture](../../evidence/kernel-31.3.1/captures/q2-formal-domain-2026-11-09/), rendered message text redacted; [manifest](../../evidence/kernel-31.3.1/captures/q2-formal-domain-2026-11-09/MANIFEST.sha256) SHA-256 `f193961f2ea1b39d90689631eabff15c7d7232cc0dd8fb3115ef82559edb20bc`.
+- `sync`: [SPEC-2026-11-09-01](../A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-09-01).
+
 <a id="src-accepted-sample-controls"></a>
 #### On kernel 31.3.1 the three accepted-sample controls answer over every state of their one Boolean field: one model rejects every document, its sibling accepts `false`, and a WARNING twin reports `false` as WARNING, measured 2026-11-08
 
