@@ -86,7 +86,7 @@ For an assurance drill, use the row’s linked owner, then the matching [`Proofs
 
 | Column | Lean owner |
 |---|---|
-| V, C — unavailable read | no single owner: [`CellObservation`](../A12Kernel/Cell.lean) carries unavailability and poison, and each operator's evaluator applies its consumer class; [`LeafStateLocks.lean`](../A12Kernel/Reference/Dm/LeafStateLocks.lean) locks V with N and B for every leaf over the scalar kinds the [Q2 profile](PLAN.md#q2-preparation-checklist) admits, against absent, empty, not-check-relevant and filled cells |
+| V, C — unavailable read | no single owner: [`CellObservation`](../A12Kernel/Cell.lean) carries unavailability and poison, and each operator's evaluator applies its consumer class; [`LeafStateLocks.lean`](../A12Kernel/Reference/Dm/LeafStateLocks.lean) locks V with N for every leaf over the scalar kinds the [Q2 profile](PLAN.md#q2-preparation-checklist) admits, against absent, empty, not-check-relevant and filled cells, and B and T for each class spec/03 §A.4 and spec/14 measure |
 | E — classification enablement | `ValidationConditionLeaf.requiresClassificationPass` in [`ValidationCondition/Core.lean`](../A12Kernel/Elaboration/ValidationCondition/Core.lean) |
 | P — polarity class | [`NumericFillability.lean`](../A12Kernel/Semantics/NumericFillability.lean) for arithmetic, [`NumericAggregate.lean`](../A12Kernel/Semantics/NumericAggregate.lean) and [`FieldFillQuantifier.lean`](../A12Kernel/Semantics/FieldFillQuantifier.lean) for aggregates and counts, [`ScalarEquality.lean`](../A12Kernel/Semantics/ScalarEquality.lean) for the not-given rule |
 | F — `Having` filter effect | the `Having*` modules under [`Semantics/`](../A12Kernel/Semantics/), one per carrier |
