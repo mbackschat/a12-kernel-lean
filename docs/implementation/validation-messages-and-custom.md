@@ -12,6 +12,14 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 - `assurance`: E/P closed for admitted rules; selected C/X
 - `remains`: Complete message providers: [SG10](../SEMANTICS-GAPS.md#sg10--message-construction-and-formal-output-integration)
 
+<a id="cap-severity-and-acceptance"></a>
+#### Severity and acceptance
+
+- `boundary`: [spec/10 §2](../../spec/10-validation-and-polarity.md#2-severity-is-metadata)'s message-free and error-free relations over every model rule and the built-in findings of the full-validation document, each rule message carrying its own severity and every built-in finding counting as ERROR
+- `owner`: [`SampleAcceptance.lean`](../../A12Kernel/Reference/Dm/SampleAcceptance.lean)
+- `assurance`: E: [control locks](../../A12Kernel/Reference/Dm/AcceptedSampleControlLocks.lean) compare every row of the retained [controls](../sources/kernel-31-calibration-probes.md#src-accepted-sample-controls) and [severity channel](../sources/kernel-31-calibration-probes.md#src-severity-channel) captures with the Kernel's message severities; C on those rows
+- `remains`: `uniqueIndex` severity is calibrated only by the local re-capture population, and the Kernel's own validity call is unobserved
+
 <a id="cap-ordinary-once-repeatable-execution"></a>
 #### Ordinary/once/repeatable execution
 

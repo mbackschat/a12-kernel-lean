@@ -1,0 +1,172 @@
+{
+ "header": {
+  "id": "Sev2_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "Sev2_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/W",
+        "name": "W",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/Probe/R",
+        "name": "R",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {}
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor",
+          "errorMessage": [
+           {
+            "locale": "en_US",
+            "text": "ReqR"
+           }
+          ]
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/TwinErr",
+        "name": "TwinErr",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "TwinErr",
+         "errorCondition": "FieldFilled(A) And [A] > 5",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TwinErr"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/TwinWarn",
+        "name": "TwinWarn",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "TwinWarn",
+         "errorCondition": "FieldFilled(A) And [A] > 5",
+         "severity": "WARNING",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TwinWarn"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/TwinInfo",
+        "name": "TwinInfo",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "TwinInfo",
+         "errorCondition": "FieldFilled(A) And [A] > 5",
+         "severity": "INFO",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TwinInfo"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/OnlyInfoW",
+        "name": "OnlyInfoW",
+        "Rule": {
+         "errorEntityRelPath": "../W",
+         "errorCode": "OnlyInfoW",
+         "errorCondition": "FieldFilled(W) And [W] > 100",
+         "severity": "INFO",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "OnlyInfoW"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/OnlyWarnR",
+        "name": "OnlyWarnR",
+        "Rule": {
+         "errorEntityRelPath": "../R",
+         "errorCode": "OnlyWarnR",
+         "errorCondition": "FieldFilled(R) And [R] > 100",
+         "severity": "WARNING",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "OnlyWarnR"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

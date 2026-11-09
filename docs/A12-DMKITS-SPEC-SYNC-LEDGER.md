@@ -42,7 +42,7 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 
 - `status`: pending
 - `canonical`: [spec/10 §2](../spec/10-validation-and-polarity.md#2-severity-is-metadata)'s built-in severity and acceptance paragraphs.
-- `delta`: States that a formal finding, `mandatoryField` and `uniqueIndex` report ERROR, measures that WARNING and INFO rules fire as their ERROR twin does with their own severity, and defines error-free and message-free acceptance over full validation's message set, which a firing WARNING or INFO rule separates.
+- `delta`: States that a formal finding, `mandatoryField` and `uniqueIndex` report ERROR, measures that a condition authored as ERROR, WARNING and INFO fires all three with their own severities and that a formal finding and `mandatoryField` report ERROR on a field whose only rule is INFO or WARNING, and defines error-free and message-free acceptance over full validation's message set, which a firing WARNING or INFO rule separates.
 - `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [severity channel](sources/kernel-31-calibration-probes.md#src-severity-channel).
 - `acceptance`: a12-dmkits' interpreter reports the same severities on the same rows, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.

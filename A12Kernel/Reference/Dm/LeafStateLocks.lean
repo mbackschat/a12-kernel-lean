@@ -9,15 +9,16 @@ import A12Kernel.Semantics.NumericInput
 Each admitted condition leaf over a Number, Boolean, Confirm, Enumeration or String field without a
 pattern, read against an absent, an empty, a not-check-relevant and a filled cell. The verdict
 follows the leaf's spec/14 cells V (unavailable read), N (empty read) and B (content gate) with the
-consumer classes of spec/02 §B.2. A case observes one bit, whether the rule fires: the validation
-connectives are two-valued (spec/02 §A.1) and monotone, so a leaf's UNKNOWN and FALSE compose
-identically and no rule observes the difference. The matrix is the Q2-P2 acceptance set of
+consumer classes of spec/02 §B.2. A case observes one bit, whether the rule fires: `And` and `Or` are
+strong-Kleene and the language has no negation (spec/02 §A.1, §A.2), so a leaf's UNKNOWN and FALSE
+compose identically and no rule observes the difference. The matrix is the Q2-P2 acceptance set of
 [the plan](../../../docs/PLAN.md#q2-preparation-checklist).
 
 Which nonempty values are filled rather than not check-relevant is each kind's admitted set: for a
 decimal-valued Number the conjunction spec/04 §4.8 states, locked here against the cascade, and for
 the other kinds the clauses of spec/06 and spec/02 §A.3, locked through the document route (Q2-P3).
-Bounded repetition (Q2-P5) and the acceptance relations of spec/10 §2 (Q2-P4) close the module. -/
+Bounded repetition (Q2-P5) closes the module; the acceptance relations (Q2-P4) are locked against
+retained Kernel rows in [the control locks](AcceptedSampleControlLocks.lean). -/
 
 namespace A12Kernel.Dm.LeafStateLocks
 
@@ -369,35 +370,5 @@ are two coordinates, filled rows fire where they are below 5, and three `Rows` r
 `Wide` lacks, widening its domain to three. -/
 example : [wideCount [], wideCount [[], []], wideCount [[("WN", .value "9")], [("WN", .value "1")], [("WN", .value "1")]],
       wideCount [] [[], [], []]] = [some 1, some 2, some 2, some 3] := by native_decide
-
-/-! ## Acceptance relations (Q2-P4)
-
-spec/10 §2's error-free and message-free acceptance over the root cells' built-in findings and two
-rules on `N`, an ERROR rule firing above 10 and a WARNING rule firing above 5. -/
-
-/-- `(message-free, error-free)` over `doc`; a built-in finding is ERROR. -/
-private def acceptance (doc : Json) : Option (Bool × Bool) := do
-  let dm : DmModel := { flat := model, rules := [], computations := [], conditionLanguage := "en_US", refusals := [] }
-  let input ← (readDocument dm doc).toOption
-  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
-  let checked ← (checkDocument prepared "en_US" input.data).toOption
-  let validated ← checked.fullValidationDocument.toOption
-  let findings ← (model.fields.filter (·.repeatableScope.isEmpty)).mapM fun field =>
-    (validated.read { field := field.id, path := [] }).toOption.map (·.findings.length)
-  let fired ← [("[N] > 10", "ERROR"), ("[N] > 5", "WARNING")].mapM fun (condition, severity) => do
-    let text := s!"FieldFilled(Anchor) And {condition}"
-    let rule : DmRule :=
-      { group := form, name := severity, errorCode := severity, errorEntityRelPath := "../Anchor", condition := text
-        severity := severity }
-    let checkedRule ← (checkValidationRule dm .english rule world).toOption
-    let messages ← (runValidationRule world validated checkedRule).toOption
-    pure (messages.map fun _ => severity)
-  let builtin := findings.any (· > 0)
-  pure (!builtin && fired.flatten.isEmpty, !builtin && !fired.flatten.contains "ERROR")
-
-/-- Nothing fires at 1; at 7 only the WARNING rule fires, so only error-free acceptance holds; at 12 the
-ERROR rule fires; a malformed value is a built-in finding, rejected by both. -/
-example : [Cell.value "1", .value "7", .value "12", .invalid].map (fun cell => acceptance (document [("N", cell)])) =
-    [some (true, true), some (false, true), some (false, false), some (false, false)] := by native_decide
 
 end A12Kernel.Dm.LeafStateLocks

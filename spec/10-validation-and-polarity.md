@@ -29,7 +29,7 @@ A rule's severity (**ERROR / WARNING / INFO**) is metadata on the resulting mess
 
 **Two acceptance relations follow over full validation's message set**, built-in findings included: a document is *error-free* when no message has severity ERROR, and *message-free* when it has no message at all. A firing WARNING or INFO rule separates them, and a document either relation accepts holds no not-check-relevant cell, since each producer of that state in [§3 B.3](02-logic-and-formal-errors.md#b3-what-puts-a-cell-in-the-third-state) reports a built-in finding.
 
-Measured scope: a WARNING and an INFO rule fire as their ERROR twin does and report their own severity, and a formal finding reports ERROR; every built-in finding in the retained 31.3.1 evidence reports ERROR. The Kernel's own validity call is not observed on a WARNING-only document.
+Measured scope: one condition authored three times, as ERROR, WARNING and INFO, fires all three on the same row with their own severities; a formal finding and `mandatoryField` report ERROR on a field whose only rule is INFO or WARNING; and every message of the local 31.3.1 re-capture population reports ERROR. `uniqueIndex` is measured only in that population. The Kernel's own validity call is not observed on a WARNING-only document.
 
 Sources: [severity channel](../docs/sources/kernel-31-calibration-probes.md#src-severity-channel).
 

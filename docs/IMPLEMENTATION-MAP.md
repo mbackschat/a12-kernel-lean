@@ -587,6 +587,8 @@ Each stable anchor remains here as a compatibility entry point. Follow its link 
 - [§14 custom conditions](implementation/validation-messages-and-custom.md#14--custom-conditions)
 <a id="cap-whole-rule-semantics"></a>
 - [Whole-rule semantics](implementation/validation-messages-and-custom.md#cap-whole-rule-semantics)
+<a id="cap-severity-and-acceptance"></a>
+- [Severity and acceptance](implementation/validation-messages-and-custom.md#cap-severity-and-acceptance)
 <a id="cap-ordinary-once-repeatable-execution"></a>
 - [Ordinary/once/repeatable execution](implementation/validation-messages-and-custom.md#cap-ordinary-once-repeatable-execution)
 <a id="cap-partial-validation"></a>

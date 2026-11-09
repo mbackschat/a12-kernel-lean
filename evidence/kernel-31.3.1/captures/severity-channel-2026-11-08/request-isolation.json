@@ -1,0 +1,53 @@
+{
+ "model": "Sev2_DM.json",
+ "clock": "2026-11-08T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "control",
+   "documentInline": {
+    "Probe": {
+     "A": 1,
+     "R": 1
+    }
+   }
+  },
+  {
+   "name": "twin",
+   "documentInline": {
+    "Probe": {
+     "A": 7,
+     "R": 1
+    }
+   }
+  },
+  {
+   "name": "infoFormal",
+   "documentInline": {
+    "Probe": {
+     "W": "x",
+     "R": 1
+    }
+   }
+  },
+  {
+   "name": "warnRequired",
+   "documentInline": {
+    "Probe": {
+     "A": 1
+    }
+   }
+  },
+  {
+   "name": "warnRequiredFormal",
+   "documentInline": {
+    "Probe": {
+     "R": "x"
+    }
+   }
+  }
+ ]
+}
