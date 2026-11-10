@@ -1098,6 +1098,18 @@ Deleted from this hub; the records' full text is `docs/archived/SOURCES-INBOUND-
 - `not-adopted`: a tree bucket, and where the absent token falls among stored values, stay unmeasured.
 - `sync`: inbound additions from a committed peer revision; no ledger entry is created for them.
 
+<a id="src-inbound-2026-11-10"></a>
+## Reviewed the 2026-11-10 handback: SPEC-2026-11-07-01, -07-02, -08-01 and -09-01 reconciled, one by a checker fix
+
+- `source`: Peer-session message of 2026-11-10 from the a12-dmkits session, carried by the owner and kept as no file. It answers `SPEC-2026-11-07-01`, `SPEC-2026-11-07-02`, `SPEC-2026-11-08-01` and `SPEC-2026-11-09-01`.
+- `revision`: a12-dmkits `8b290c30b4288daf266c8e083f8d4ea5d20dc093` on `main`, read with `git` only, with `8cc671cd0` an ancestor; `NumberFormalDomainDiffTest`, `RuleSeverityChannelDiffTest`, `CheckerComputationGateGridAgreementTest`, `EnumComputationSuppressedShapesDiffTest`, `consistency.EnumComputationSourceTest` and KF681, KF684, KF685, KF298 and KF411 exist there, each finding change inside `505683610..8b290c30b`.
+- `oracle`: kernel 31.3.1, both strategies and the peer's interpreter, or `checkConsistency` and the peer's checker, through those locks on the peer's own-domain models; reported by the peer, not run here. The row counts the message gives, 36 shapes, 13 checker disagreements and 7 runtime documents, are the peer's and were not recounted.
+- `review`: A HIGH reconciliation on 2026-11-10 read the four findings' diffs and the locks' rows against each entry's acceptance condition, and ran KF681's eleven rows, three beyond the [formal-domain capture](kernel-31-calibration-probes.md#src-q2-formal-domain), through Lean's reader and cascade: every row agreed, and the three new ones are locked in [`FormalDomainLocks`](../../A12Kernel/Reference/Dm/FormalDomainLocks.lean). KF684, KF685 and the KF298 and KF411 extensions state the same verdicts as this project's [severity](kernel-31-calibration-probes.md#src-severity-channel), [tolerance-band](kernel-31-calibration-probes.md#src-tolerance-band-target-kinds), [precedence](kernel-31-calibration-probes.md#src-computation-precedence) and [suppressed-shape](kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes) checkpoints.
+- `limit`: Lean's own divergences on the precedence batch's `t2`, `u2`, `f1`, `f3`, `f5`, `f6`, `j1` and `j3`, which that checkpoint records, are unchanged and stay with [SG4](../gaps/keystone.md#gap-sg4) and [SG8](../gaps/strings-and-messages.md#gap-sg8).
+- `adopted`: no clause changes: spec/04 §4.8, spec/10 §2 and spec/09 §1.4 and §4.3 already state every row. The peer's checker defect is its own and moves no clause.
+- `not-adopted`: KF684's formal row, where a formally invalid field draws no rule over it, is spec/02's unknown verdict, which the entry did not carry.
+- `sync`: the four entries are accepted at the revision above; no new ledger entry.
+
 <a id="src-inbound-2026-11-08"></a>
 ## Received the 2026-11-08 handback: a bare number in a `Time` or `Date` component is a name
 

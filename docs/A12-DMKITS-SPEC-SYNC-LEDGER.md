@@ -40,42 +40,50 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-11-09-01"></a>
 ### SPEC-2026-11-09-01 — A decimal-valued Number reaches the missing-separator refusal when the fifteen-digit cap leaves no room for a required place, and its admitted set uses the effective integer-digit cap
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/04 §4.8](../spec/04-numbers-and-decimals.md#48-the-formal-check-of-a-stored-value)'s admitted-set paragraph and the lexical-checks paragraph after it.
 - `delta`: Withdraws the statement that a decimal-valued read text never lacks a required separator: `123456789012345` on a field requiring two places reads at scale 0 and reports `zahlOhneDezimalTrenner`. The admitted set's integer-digit bullet now names the effective cap, a declared `maxIntegerDigits` or else the amount trait's `15 − maxFractionalDigits`, which spec/09's fit order already states.
 - `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [formal-domain checkpoint](sources/kernel-31-calibration-probes.md#src-q2-formal-domain).
 - `acceptance`: a12-dmkits' reader reports the same three codes on the captured rows, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8b290c30b4288daf266c8e083f8d4ea5d20dc093`.
+- `disposition`: Reconciled and measured: the peer's interpreter already reported both strategies' codes on the captured rows, and its lock adds rows beyond this capture, one required place leaving `123456789012345` no room, fourteen integer digits padding short of two required places and the amount trait's cap at up to three places (`NumberFormalDomainDiffTest`, KF681 extended); Lean's cascade gives every row of that matrix its code, the three new ones locked in [`FormalDomainLocks`](../A12Kernel/Reference/Dm/FormalDomainLocks.lean) ([reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-10)).
 
 <a id="spec-2026-11-08-01"></a>
 ### SPEC-2026-11-08-01 — Every built-in finding reports ERROR, a WARNING or INFO rule reports its own severity, and error-free and message-free acceptance follow
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/10 §2](../spec/10-validation-and-polarity.md#2-severity-is-metadata)'s built-in severity and acceptance paragraphs.
 - `delta`: States that a formal finding, `mandatoryField` and `uniqueIndex` report ERROR, measures that a condition authored as ERROR, WARNING and INFO fires all three with their own severities and that a formal finding and `mandatoryField` report ERROR on a field whose only rule is INFO or WARNING, and defines error-free and message-free acceptance over full validation's message set, which a firing WARNING or INFO rule separates.
 - `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [severity channel](sources/kernel-31-calibration-probes.md#src-severity-channel).
 - `acceptance`: a12-dmkits' interpreter reports the same severities on the same rows, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8b290c30b4288daf266c8e083f8d4ea5d20dc093`.
+- `disposition`: Reconciled and measured: the peer's interpreter already reported each rule's own severity, and ERROR for a formal finding and `mandatoryField` on a field whose only rule is INFO or WARNING, both strategies agreeing (`RuleSeverityChannelDiffTest`, KF684); `uniqueIndex` is outside the peer's matrix, so its ERROR severity rests on this project's population evidence alone ([reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-10)).
 
 <a id="spec-2026-11-07-02"></a>
 ### SPEC-2026-11-07-02 — A tolerance band refuses a String, Date or Custom target, behind the preamble, syntax and names and ahead of the kind comparison and the self-read
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/09 §1.4](../spec/09-computations.md#14-wrong-kind-constants-and-field-sources)'s tolerance-band bullet.
 - `delta`: Extends the String row to Date targets under every rounding mode and to Custom targets under `Exact`, orders the tolerance class ahead of the kind class a String target reading a Number meets unbanded and ahead of the self-read, and behind the preamble, the operation's syntax and its names; kernel 31.3.1's new `MVK_ERROR_INVALID_FIELDTYPE`, whose source branch the tolerance gate pre-empts, has no admitted witness on those kinds.
 - `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [tolerance-band kinds](sources/kernel-31-calibration-probes.md#src-tolerance-band-target-kinds) and the [precedence batch](sources/kernel-31-calibration-probes.md#src-computation-precedence).
 - `acceptance`: a12-dmkits' checker gives the same classes on the same grid, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8b290c30b4288daf266c8e083f8d4ea5d20dc093`.
+- `disposition`: Reconciled and measured: the peer's checker already gave the Kernel's class on the tolerance grid and the precedence rows, `MVK_ERROR_INVALID_FIELDTYPE` on none (`CheckerComputationGateGridAgreementTest`, KF685) ([reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-10)).
 
 <a id="spec-2026-11-07-01"></a>
 ### SPEC-2026-11-07-01 — The Enumeration calculation gate judges an operation's shape, so its preamble admits every String-valued operation and the target judges the text
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/09 §4.3](../spec/09-computations.md#43-number-string-enumeration-and-custom-targets)'s Enumeration bullets and §1.4's keyed-String note.
 - `delta`: Extends the KF298 account from a copied text to every operation the gate refuses: a concatenation, `FieldValueAsString`, a keyed String column, a String or mixed `FirstFilledValue` list and a starred String walk, on fixed and repeatable targets, and a copy and a `FirstFilledValue` list on key-joined ones, each refused without the preamble and admitted with it, the target judging the text; a first-filled scan judges the selected member without falling through; a first-filled list naming its own target answers the self-read either way; the generated rule still fires where a non-empty operation text differs from the stored target, and an empty one fires nothing.
 - `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, [suppressed calculation shapes](sources/kernel-31-calibration-probes.md#src-suppressed-enum-calculation-shapes), both strategies, and the [precedence batch](sources/kernel-31-calibration-probes.md#src-computation-precedence).
 - `acceptance`: a12-dmkits' checker refuses and its interpreter judges the same shapes, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `8b290c30b4288daf266c8e083f8d4ea5d20dc093`.
+- `disposition`: Reconciled with a peer fix: the checker ignored the preamble and stayed silent on the concatenation, `FieldValueAsString`, starred-walk and row-concatenation shapes, and now gives the Kernel's verdict on every row (`EnumComputationSource.kt`, `CheckerComputationGateGridAgreementTest`, `EnumComputationSourceTest`); the interpreter already matched both strategies at runtime, a first-filled scan not falling past a filled undeclared value included (`EnumComputationSuppressedShapesDiffTest`; KF298 and KF411 amended) ([reviewed evidence](sources/inbound-handbacks.md#src-inbound-2026-11-10)).
 
 <a id="spec-2026-11-05-05"></a>
 ### SPEC-2026-11-05-05 — A relative error target of names only names a child of the rule element, and the Java map order resizes a small table at a bucket's eighth key

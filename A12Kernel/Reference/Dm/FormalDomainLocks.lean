@@ -206,6 +206,25 @@ example : (capturedCodes
       (true, ["Probe/AM:zahlZuvieleVorkommastellen"]), (true, []),
       (true, ["Probe/C:stelligkeitZuLang"]), (true, [])] := by native_decide
 
+/-- The cascade's code for one decimal on one declaration, `none` when it is admitted. -/
+private def cascadeCode (d : NumberDecl) (unscaled scale : Int) : Option (Option String) := do
+  let (info, c) ← d.dm.bind field
+  pure (match c.checkFormalRead info (.decimal { unscaled, scale }) with
+    | .error error => some error.errorCode
+    | .ok _ => none)
+
+/-- The rows a12-dmkits measured beyond the capture above when it reconciled SPEC-2026-11-09-01, on
+kernel 31.3.1 with both strategies (KERNEL-FINDINGS KF681 at a12-dmkits `8b290c30b`): one required place
+leaves `123456789012345` no room, fourteen integer digits pad short of two required places, and the
+amount trait's cap at up to three places is twelve integer digits. -/
+example : [cascadeCode { minF := some 1, maxF := some 1 } 123456789012345 0,
+      cascadeCode { minF := some 2, maxF := some 2 } 12345678901234 0,
+      cascadeCode { minF := some 2, maxF := some 2 } 123456789012345 2,
+      cascadeCode { maxF := some 3, amount := true } 1234567890123 0,
+      cascadeCode { maxF := some 3, amount := true } 123456789012 0] =
+    [some (some "zahlOhneDezimalTrenner"), some (some "zahlFalscheAnzahlNachkommastellen"), some none,
+      some (some "zahlZuvieleVorkommastellen"), some none] := by native_decide
+
 /-! ## The other kinds through the document route -/
 
 private def kindModel : DmModel :=
