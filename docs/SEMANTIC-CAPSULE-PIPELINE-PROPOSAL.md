@@ -198,6 +198,11 @@ Request a new external operation only when a real semantic family needs an obser
 
 This rule governs the *form* an upstream request takes; which channel carries it is decided by [the ledger's kinds of entry](A12-DMKITS-SPEC-SYNC-LEDGER.md#entry-kinds-and-routing). Simple, isolated upstream changes receive a paste-ready prompt. A cross-project capability or retirement with architecture and lifecycle consequences receives a temporary proposal document under this repository's `docs/` until accepted. It must name the audited a12-dmkits revision, exact source mechanism, required versioned bytes, producer/consumer responsibility, compatibility and retirement effects, separating tests where relevant, acceptance gates, and handback format.
 
+Every acceptance gate, control answer, mutation seam and required input or output form in such a proposal cites the Lean lock or retained measurement that [discharges it](TESTING-KERNEL-PROBES.md#verify-claims-before-measurement-or-publication); a statement without one is dropped or marked unverified before hand-off. Two forms are easy to get wrong:
+
+- **A mutation seam** cites a fixture on which the mutant's answer is necessarily wrong: the correct semantics answers UNSAT while the mutant accepts some document, so replay rejects whatever witness it returns, or a settled SAT answer turns UNSAT under the mutant. Two documents the two semantics judge differently do not suffice, and a seam the theory proves unobservable, such as collapsing a leaf's UNKNOWN to not-fired, is no seam.
+- **A restriction** on what the consumer emits or reads is checked on the forms it excludes, including the form the A12 product itself writes. If a reader in this repository accepts an excluded form, the restriction contradicts it. A restriction copied from `spec/` inherits that clause's measured members, not its wording.
+
 After acceptance, durable producer facts move into a12-dmkits' live owners when the capability remains current, or into its archived documentation when the capability is retired; this project's evidence/current-state owners retain only their local consequences. The temporary cross-project proposal is then archived or deleted according to [`DOC-DISCIPLINE.md`](DOC-DISCIPLINE.md); it must not remain a second live upstream specification.
 
 ## Stop conditions
