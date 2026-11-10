@@ -40,9 +40,11 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-11-10-01"></a>
 ### SPEC-2026-11-10-01 — A document may write a value as a native `true`, `false` or `null`, and a Boolean field reads native `true` and `false` as its tokens
 
-- `status`: pending
+- `status`: accepted
 - `canonical`: [spec/01 §2.3](../spec/01-data-model.md#23-reading-a-document-from-json)'s unquoted-value bullet.
 - `delta`: Withdraws the statement that every unquoted document value must be a JSON number, which contradicted the same section's dropped boolean and `null` members: the JSON literals `true`, `false` and `null` are read, and a Boolean field takes native `true` and `false` as its tokens; whether a `null` field is absent or present-empty stays unmeasured. Test data generator witnesses for `test-data-v1` write a Boolean value natively.
 - `basis`: Kernel 30.8.1 at a12-dmkits `ad4d5ff64`, [Boolean first-filled checkpoint](sources/evaluation-and-application-routes.md#src-firstfilled-string-boolean-runtime), re-run on kernel 31.3.1 at a12-dmkits `505683610` ([re-capture](sources/kernel-31-calibration-probes.md#src-kernel-313-recapture)).
 - `acceptance`: a12-dmkits' document reader reads native `true` and `false` on a Boolean field as its tokens and reads a document carrying `null`, or records why its account differs.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
+- `reviewed a12-dmkits revision`: `327f1c061ecd2ff7217ba0808d1d693975ffb81a`, on its local `feature/q2` branch.
+- `disposition`: Reconciled without a peer fix: a12-dmkits' document reader already read native `true` and `false` on a Boolean field as its tokens and read a document carrying `null` on a declared field, each against the Kernel's document serializer and dynamic-Groovy full validation, the quoted twins writing back the same native literals (`A12JsonIngressDiffTest.nativeBooleanTokensAndNullReadThroughBothDocumentReaders`); whether a `null` field is absent or present-empty stays unmeasured, and test data generator witnesses write no `null`.
