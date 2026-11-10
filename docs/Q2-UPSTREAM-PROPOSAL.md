@@ -38,7 +38,7 @@ Each result names the profile `accepted-sample-v1`, kernel `31.3.1`, DM `29.8.0`
    - `QSat_DM` is SAT under both relations.
    - `QWarn_DM` is SAT under error-free acceptance and UNSAT under message-free acceptance.
 2. **Witness agreement.** Every SAT witness is accepted by the interpreter's replay. The control witnesses are also run on kernel 31.3.1 through the existing `:adapter:kernelProbe` route and accepted there.
-3. **Seeded mutations.** One mutant of the encoder at each named seam is killed by a control or a replay disagreement. The seams are: an empty read substituted where it is not, UNKNOWN collapsed to FALSE where a negation-free composition would show it, a WARNING rule counted as an error, an instantiated-only scan where the domain is declared, and a dropped conjunct of a field kind's admitted set.
+3. **Seeded mutations.** One mutant of the encoder at each named seam is killed by a control or a replay disagreement. The seams are: an empty read substituted where it is not, a WARNING rule counted as an error, an instantiated-only scan where the domain is declared, and a dropped conjunct of a field kind's admitted set. Collapsing a leaf's UNKNOWN to not-fired is no seam: no composed rule observes it ([spec/02 §A.1](../spec/02-logic-and-formal-errors.md#a1-connectives-are-two-valued-parentheses-are-mandatory), proved as [`evalVerdict_collapseUnknown`](../A12Kernel/Proofs/ConditionTree.lean)), so its mutant cannot be killed.
 4. **Fail-closed profile.** Each feature Q2-P1 names as excluded has one fixture refused as `unsupported` under that name.
 
 ## Compatibility and retirement
