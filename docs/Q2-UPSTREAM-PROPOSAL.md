@@ -4,7 +4,7 @@
 
 ## Request
 
-The owner, as a12-dmkits' owner, adopts SMT-grade accepted-sample generation. That adoption is the reopen condition of Q2 in a12-dmkits' [FEATURE-GAPS](../../a12-rulekit/docs/FEATURE-GAPS.md#4-deferred--out-of-scope--wont-build), read at a12-dmkits `44e45be6e`. The question is **∃ document. Accepted(model, document)** under the profile `accepted-sample-v1`, for kernel 31.3.1 and DM 29.8.0. The code, the solver dependency and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
+The owner, as a12-dmkits' owner, adopts SMT-grade accepted-sample generation. That adoption is the reopen condition of Q2 in a12-dmkits' [FEATURE-GAPS](../../a12-rulekit/docs/FEATURE-GAPS.md#4-deferred--out-of-scope--wont-build), read at a12-dmkits `44e45be6e` and unchanged at `0db083976`. The question is **∃ document. Accepted(model, document)** under the profile `accepted-sample-v1`, for kernel 31.3.1 and DM 29.8.0. The code, the solver dependency and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
 
 ## The contract, by pointer
 
@@ -19,7 +19,7 @@ Each item is closed in this repository with its acceptance evidence; the pointer
 | Bounded repetition and the rule iteration domain | [spec/07 §1.3](../spec/07-repetition-and-iteration.md#13-evaluation-domains), [spec/01 §2.3](../spec/01-data-model.md#23-reading-a-document-from-json) | [`LeafStateLocks.lean`](../A12Kernel/Reference/Dm/LeafStateLocks.lean) |
 | Separating controls | [Q2-P6](PLAN.md#q2-preparation-checklist), [controls checkpoint](sources/kernel-31-calibration-probes.md#src-accepted-sample-controls) | [`AcceptedSampleControlLocks.lean`](../A12Kernel/Reference/Dm/AcceptedSampleControlLocks.lean) |
 
-Two outbound corrections touching this contract, [SPEC-2026-11-08-01](https://github.com/mbackschat/a12-kernel-lean/blob/1acebbaf8dc9cccc8c19f1d061292a3f9bc43e97/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-08-01) and [SPEC-2026-11-09-01](https://github.com/mbackschat/a12-kernel-lean/blob/1acebbaf8dc9cccc8c19f1d061292a3f9bc43e97/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-09-01), are accepted at a12-dmkits `8b290c30b`, whose interpreter already agreed on their rows.
+The two corrections this contract carried outbound, the severity channel and the Number admitted set, are reconciled: a12-dmkits' interpreter at `8b290c30b` agrees on their rows (KF684 and KF681, [reviewed handback](sources/inbound-handbacks.md#src-inbound-2026-11-10)), so no ledger entry is open against this contract.
 
 ## Responsibilities
 
