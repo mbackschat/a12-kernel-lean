@@ -48,7 +48,7 @@ The following names and locations form the intentional reader-facing surface. Th
 - [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) — current self-contained 0.3.0/V2 capability handovers;
 - [`IMPLEMENTER-KIT-EVALUATOR.md`](IMPLEMENTER-KIT-EVALUATOR.md) — the U01 evaluator handover that travels in the frozen packet.
 - [`IMPLEMENTER-KIT-SMT.md`](IMPLEMENTER-KIT-SMT.md) — the U03 SMT-analysis handover, read at the theory commit U03 pins.
-- [`Q2-UPSTREAM-PROPOSAL.md`](Q2-UPSTREAM-PROPOSAL.md) — the temporary Q2 accepted-sample request to a12-dmkits, deleted once accepted.
+- [`Q2-UPSTREAM-PROPOSAL.md`](Q2-UPSTREAM-PROPOSAL.md) — the temporary Q2 test data generator request to a12-dmkits, deleted once accepted.
 
 The remaining documents are public technical or maintainer surfaces. They may be consolidated, split, or reorganized when doing so makes their single ownership clearer, provided links and stable reader paths remain intact.
 

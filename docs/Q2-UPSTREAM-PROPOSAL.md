@@ -1,10 +1,10 @@
-# Q2 accepted-sample generation in a12-dmkits
+# Q2 test data generator in a12-dmkits
 
 > **Status:** temporary upstream proposal, item Q2-P7 of the [Q2 preparation checklist](PLAN.md#q2-preparation-checklist), carried to a12-dmkits by the owner under the [upstream engagement rule](SEMANTIC-CAPSULE-PIPELINE-PROPOSAL.md#upstream-engagement-rule). Once a12-dmkits accepts it, its durable facts move into a12-dmkits' owners and this file is deleted.
 
 ## Request
 
-The owner, as a12-dmkits' owner, adopts SMT-grade accepted-sample generation. That adoption is the reopen condition of Q2 in a12-dmkits' [FEATURE-GAPS](../../a12-rulekit/docs/FEATURE-GAPS.md#4-deferred--out-of-scope--wont-build), read at a12-dmkits `44e45be6e` and unchanged at `0db083976`. The question is **∃ document. Accepted(model, document)** under the profile `accepted-sample-v1`, for kernel 31.3.1 and DM 29.8.0. The code, the solver dependency and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
+The owner, as a12-dmkits' owner, adopts a **test data generator**: SMT-grade generation of documents the model accepts, which a12-dmkits' feature gaps call accepted-sample generation. That adoption is the reopen condition of Q2 in a12-dmkits' [FEATURE-GAPS](../../a12-rulekit/docs/FEATURE-GAPS.md#4-deferred--out-of-scope--wont-build), read at a12-dmkits `44e45be6e` and unchanged at `0db083976`. The question is **∃ document. Accepted(model, document)** under the profile `accepted-sample-v1`, for kernel 31.3.1 and DM 29.8.0. The code, the solver dependency and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
 
 ## The contract, by pointer
 
