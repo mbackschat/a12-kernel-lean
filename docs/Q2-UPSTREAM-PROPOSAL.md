@@ -4,7 +4,7 @@
 
 ## Request
 
-The owner, as a12-dmkits' owner, adopts a **test data generator**: SMT-grade generation of documents the model accepts, which a12-dmkits' feature gaps call accepted-sample generation. That adoption is the reopen condition of Q2 in a12-dmkits' [FEATURE-GAPS](../../a12-rulekit/docs/FEATURE-GAPS.md#4-deferred--out-of-scope--wont-build), read at a12-dmkits `44e45be6e` and unchanged at `0db083976`. The question is **∃ document. Accepted(model, document)** under the profile `accepted-sample-v1`, for kernel 31.3.1 and DM 29.8.0. The code, the solver dependency and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
+The owner, as a12-dmkits' owner, adopts a **test data generator**: SMT-grade generation of documents the model accepts, which a12-dmkits' feature gaps call accepted-sample generation. That adoption is the reopen condition of Q2 in a12-dmkits' [FEATURE-GAPS](../../a12-rulekit/docs/FEATURE-GAPS.md#4-deferred--out-of-scope--wont-build), read at a12-dmkits `44e45be6e` and unchanged at `0db083976`. The question is **∃ document. Accepted(model, document)** under the profile `test-data-v1`, for kernel 31.3.1 and DM 29.8.0. The code, the solver dependency and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
 
 ## The contract, by pointer
 
@@ -29,7 +29,7 @@ The two corrections this contract carried outbound, the severity channel and the
 
 ## Versioned bytes of a result
 
-Each result names the profile `accepted-sample-v1`, kernel `31.3.1`, DM `29.8.0`, the a12-dmkits revision, the solver and its version, the acceptance relation, and the label. A SAT result adds the witness as canonical Document JSON ([spec/01 §2.3](../spec/01-data-model.md#23-reading-a-document-from-json)) and the interpreter's message set for it. An UNSAT result adds the declared capacities it assumed.
+Each result names the profile `test-data-v1`, kernel `31.3.1`, DM `29.8.0`, the a12-dmkits revision, the solver and its version, the acceptance relation, and the label. A SAT result adds the witness as canonical Document JSON ([spec/01 §2.3](../spec/01-data-model.md#23-reading-a-document-from-json)) and the interpreter's message set for it. An UNSAT result adds the declared capacities it assumed.
 
 ## Acceptance gates
 
