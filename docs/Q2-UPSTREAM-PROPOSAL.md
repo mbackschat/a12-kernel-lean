@@ -19,7 +19,7 @@ Each item is closed in this repository with its acceptance evidence; the pointer
 | Bounded repetition and the rule iteration domain | [spec/07 §1.3](../spec/07-repetition-and-iteration.md#13-evaluation-domains), [spec/01 §2.3](../spec/01-data-model.md#23-reading-a-document-from-json) | [`LeafStateLocks.lean`](../A12Kernel/Reference/Dm/LeafStateLocks.lean) |
 | Separating controls | [Q2-P6](PLAN.md#q2-preparation-checklist), [controls checkpoint](sources/kernel-31-calibration-probes.md#src-accepted-sample-controls) | [`AcceptedSampleControlLocks.lean`](../A12Kernel/Reference/Dm/AcceptedSampleControlLocks.lean) |
 
-Two outbound corrections touching this contract, [SPEC-2026-11-08-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-08-01) and [SPEC-2026-11-09-01](A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-09-01), are accepted at a12-dmkits `8b290c30b`, whose interpreter already agreed on their rows.
+Two outbound corrections touching this contract, [SPEC-2026-11-08-01](https://github.com/mbackschat/a12-kernel-lean/blob/1acebbaf8dc9cccc8c19f1d061292a3f9bc43e97/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-08-01) and [SPEC-2026-11-09-01](https://github.com/mbackschat/a12-kernel-lean/blob/1acebbaf8dc9cccc8c19f1d061292a3f9bc43e97/docs/A12-DMKITS-SPEC-SYNC-LEDGER.md#spec-2026-11-09-01), are accepted at a12-dmkits `8b290c30b`, whose interpreter already agreed on their rows.
 
 ## Responsibilities
 
