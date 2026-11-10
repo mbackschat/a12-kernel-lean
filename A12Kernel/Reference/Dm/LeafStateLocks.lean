@@ -413,4 +413,16 @@ are two coordinates, filled rows fire where they are below 5, and three `Rows` r
 example : [wideCount [], wideCount [[], []], wideCount [[("WN", .value "9")], [("WN", .value "1")], [("WN", .value "1")]],
       wideCount [] [[], [], []]] = [some 1, some 2, some 2, some 3] := by native_decide
 
+/-- The kill fixture for the instantiated-only seam of the Q2 proposal's gate 3: a rule every slot fails,
+an empty read as `0` and a value on one side of 5 or the other. In both regimes it fires on a document
+with no row, so with `Anchor` absolute-required no document is accepted, while a scan of instantiated
+rows alone accepts one with `Anchor` filled and no row, and replay rejects that witness. -/
+example : [[], [[]], [[("RN", .value "9")]], [[("RN", .value "1")], [("RN", .empty)], [("RN", .value "9")]]].map
+      (fun shape => messageCount "[Rows/RN] < 5 Or [Rows/RN] >= 5" (document [] [] shape) (some "Rows/RN")) =
+      [some 3, some 3, some 3, some 3] := by native_decide
+
+example : [[], [[("WN", .value "9")]], [[("WN", .value "1")], []]].map
+      (fun shape => messageCount "[Wide/WN] < 5 Or [Wide/WN] >= 5" (document [] [] [] shape) (some "Wide/WN")) =
+      [some 1, some 1, some 2] := by native_decide
+
 end A12Kernel.Dm.LeafStateLocks
