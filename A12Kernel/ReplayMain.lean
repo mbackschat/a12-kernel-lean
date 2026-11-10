@@ -107,6 +107,7 @@ import A12Kernel.Reference.Dm.NumericFieldFormLocks
 import A12Kernel.Reference.Dm.LeafStateLocks
 import A12Kernel.Reference.Dm.AcceptedSampleControlLocks
 import A12Kernel.Reference.Dm.FormalDomainLocks
+import A12Kernel.Reference.Dm.SampleFormCompletenessLocks
 import A12Kernel.Reference.Dm.ComputationGuardLocks
 import A12Kernel.Reference.Dm.ModelComputationLocks
 import A12Kernel.Reference.Dm.ComputationPredicateGuardLocks
