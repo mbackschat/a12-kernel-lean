@@ -48,6 +48,36 @@ for document in "${operational_documents[@]}"; do
   done < <(awk '{ line = $0; count = gsub(/;/, ";", line); if (count > 4) print NR "\t" count }' "$document")
 done
 
+# The plan and the temporary upstream proposals follow the same keyed-bullet rule but sat outside the
+# ceiling above, and on 2026-11-10/11 the Q2-P1 checklist line grew from 3,990 to 6,689 characters
+# over eight commits, each appending a refusal or constraint to one sentence, with nothing firing.
+# Their older long lines are not split retroactively, so this is a ratchet: a line over 1000
+# characters passes only when the range base held a line with the same first 60 characters that was
+# at least as long. A new or changed long line fails; an old one may only shrink.
+ratchet_range="${A12_REVISION_RANGE:-HEAD~1..HEAD}"
+ratchet_base="${ratchet_range%%..*}"
+if ! git rev-parse --verify --quiet "${ratchet_base}^{commit}" >/dev/null; then
+  echo "documentation hygiene guard: range base ${ratchet_base} is unresolvable, so the plan line ratchet did NOT run; deepen the checkout or set A12_REVISION_RANGE" >&2
+else
+  for document in docs/PLAN.md docs/*-UPSTREAM-PROPOSAL.md; do
+    [[ -f "$document" ]] || continue
+    while IFS=$'\t' read -r line_number line_length; do
+      [[ -z "$line_number" ]] && continue
+      echo "${document}:${line_number}: line has ${line_length} characters, past the 1000-character ceiling and longer than at ${ratchet_base}; split it into keyed sub-bullets instead of appending" >&2
+      failed=true
+    done < <(awk '
+      FILENAME == ARGV[1] {
+        if (length($0) > 1000) { key = substr($0, 1, 60); if (length($0) > base[key]) base[key] = length($0) }
+        next
+      }
+      length($0) > 1000 {
+        key = substr($0, 1, 60)
+        if (!(key in base) || length($0) > base[key]) print FNR "\t" length($0)
+      }
+    ' <(git show "${ratchet_base}:${document}" 2>/dev/null || true) "$document")
+  done
+fi
+
 status_owners=(
   docs/IMPLEMENTATION-MAP.md
   docs/implementation/*.md
