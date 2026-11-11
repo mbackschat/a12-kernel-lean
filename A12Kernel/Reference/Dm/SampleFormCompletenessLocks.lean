@@ -13,8 +13,8 @@ emitted spelling reads as intended is replay's and the Kernel run's to settle.
 
 The sweep is finite: the declarations and inputs below. A native number reaches the reader as its
 decimal-node text, scientific below an adjusted exponent of −6 (spec/01 §2.3), so the inputs include a
-native zero and a native nonzero amount past that bound; an exponent written in the document reaches
-the reader as the quoted text it converts like. The rows follow Lean's reader where the Kernel's
+native zero and a native nonzero amount past that bound; a native exponent, not representable in Lean's
+`Json.num`, reaches the reader as the quoted text it converts like, such as `0E+3`. The rows follow Lean's reader where the Kernel's
 reading is unmeasured (spec/01 §2.3): a field's `null` read as present-empty; a native Boolean or
 number on a field of another kind read as its text; the token folds beyond ASCII case and scales past
 the represented profile, which no input here reaches; a string or Boolean at a repeatable key, a document
@@ -99,8 +99,9 @@ private def number (name : String) (scale : Nat) (signed : Bool)
 
 /-- Declarations covering each Number constraint the profile admits: scale, sign, a fixed and a
 variable fractional range, the leading-zero permission with and without length bounds, the measured
-`001.20` case, an integer-digit cap with value bounds, the amount trait and a forbidden zero; and the
-four other kinds. Only the leading-zero permission selects a storage regime, the others decide
+`001.20` case, an integer-digit cap with value bounds, the amount trait, a forbidden zero, and the
+`-1` minimum beside a zero maximum that arms no fractional check, with and without leading zeros; and
+the four other kinds. Only the leading-zero permission selects a storage regime, the others decide
 which inputs are formal errors. -/
 private def declarations : List FlatFieldDecl := [
   number "Whole" 0 true,
@@ -115,6 +116,8 @@ private def declarations : List FlatFieldDecl := [
     { leadingZerosAllowed := true, maxIntegerDigits := some 2, maxStoredLength := some 5,
       minimum := some 0, maximum := some 50 },
   number "Amount" 2 false { leadingZerosAllowed := true, amount := true, zeroAllowed := false },
+  number "Unchecked" 0 true { fractionalDigitsChecked := false },
+  number "UncheckedLeadZero" 0 true { fractionalDigitsChecked := false, leadingZerosAllowed := true },
   { id := 1, name := "Flag", groupPath := form, policy.kind := .boolean },
   { id := 1, name := "Ack", groupPath := form, policy.kind := .confirm },
   { id := 1, name := "Text", groupPath := form, policy.kind := .string },
@@ -132,7 +135,7 @@ private def inputs : List Json := [
   .str "", .str "12", .str "+12", .str "-0", .str "1.20", .str "1.2000", .str "1e1", .str "1E+3",
   .str "0e5", .str "00e1", .str "٣", .str "٠٣", .str "0012", .str "001.20", .str "+007", .str "-00",
   .str "00.5", .str "-0012", .str "abc", .str "1,5", .str "true", .str "TRUE", .str "True", .str "false",
-  .str "FALSE", .str "A", .str "x", .str " 12", .str "12 ", .str "0012 ", .str "007.50"]
+  .str "FALSE", .str "A", .str "x", .str " 12", .str "12 ", .str "0012 ", .str "007.50", .str "0E+3", .str "0e-7"]
 
 private def rows : GroupPath := ["Form", "Rows"]
 
@@ -225,7 +228,9 @@ example : declarations.flatMap (fun declaration =>
     [("LeadZero", "\"0012\""), ("LeadZero", "\"-0012\""), ("LeadZeroCents", "\"001.20\""),
       ("LeadZeroCents", "\"007.50\""), ("Weight", "\"001.20\""), ("Weight", "\"007.50\""),
       ("Capped", "\"00.5\""), ("Amount", "\"0012\""), ("Amount", "\"001.20\""),
-      ("Amount", "\"00.5\""), ("Amount", "\"007.50\"")] := by
+      ("Amount", "\"00.5\""), ("Amount", "\"007.50\""), ("UncheckedLeadZero", "\"0012\""),
+      ("UncheckedLeadZero", "\"001.20\""), ("UncheckedLeadZero", "\"00.5\""),
+      ("UncheckedLeadZero", "\"-0012\""), ("UncheckedLeadZero", "\"007.50\"")] := by
   native_decide
 
 example : declarations.all (fun declaration => inputs.all (covered true declaration)) = true := by
