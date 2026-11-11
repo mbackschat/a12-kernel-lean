@@ -12,9 +12,11 @@ the bound member left out.
 The [captures](../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/MANIFEST.sha256) hold
 four controls, each in full and without each of its removable constraints, every model over every cell
 state of its fields: two Boolean fields' five states each and a missing root, or a Number's absent, empty
-and malformed states, a fraction, its declared range and values outside it. These are exhaustive for the
-answers locked here, since every verdict depends only on those cells and a Number outside its declared
-range or scale draws a formal finding (spec/04 §4.8). Each model's rows agree with the Kernel's on both
+and malformed states, a fraction, its declared range and values outside it. Every verdict depends only on
+those cells. A Boolean's states are all listed. For the Number, a subset found UNSAT keeps the rule,
+`maxValue` and the required role, under which every value up to 5 fires the rule and every other draws a
+formal finding (spec/04 §4.8), while a subset lacking one of them is SAT on a listed document; so the
+answers locked here hold beyond the listed values. Each model's rows agree with the Kernel's on both
 strategies, the reduced models are this module's own removals of the full one, and every subset of a
 control's constraints is then judged from the full model by Lean alone. -/
 
@@ -99,7 +101,7 @@ private def xRequiredAll : List Constraint := [.required "A", .rule "ATrue", .ru
 
 private def xBoundAll : List Constraint := [.rule "NLow", .bound "N" "maxValue", .bound "N" "minValue", .required "N"]
 
-/-- `XUnrelated_DM.json` and each single removal agree with the Kernel on every row, and each retained
+/-- `XUnrelated.json` and each single removal agree with the Kernel on every row, and each retained
 reduced model is this module's removal from the full one. -/
 example :
     (agreed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XUnrelated.json") (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/request-XUnrelated.json")
@@ -117,7 +119,7 @@ example :
       (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/artifact-XUnrelated-without-rule-BTrue.json")).isSome ∧
     parsed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XUnrelated-without-rule-BTrue.json") == (parsed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XUnrelated.json")).map (remove · (.rule "BTrue")) := by native_decide
 
-/-- `XDisjoint_DM.json` and each single removal agree with the Kernel on every row, and each retained
+/-- `XDisjoint.json` and each single removal agree with the Kernel on every row, and each retained
 reduced model is this module's removal from the full one. -/
 example :
     (agreed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XDisjoint.json") (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/request-XDisjoint.json")
@@ -141,7 +143,7 @@ example :
       (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/artifact-XDisjoint-without-rule-BFalse.json")).isSome ∧
     parsed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XDisjoint-without-rule-BFalse.json") == (parsed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XDisjoint.json")).map (remove · (.rule "BFalse")) := by native_decide
 
-/-- `XRequired_DM.json` and each single removal agree with the Kernel on every row, and each retained
+/-- `XRequired.json` and each single removal agree with the Kernel on every row, and each retained
 reduced model is this module's removal from the full one. -/
 example :
     (agreed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XRequired.json") (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/request-XRequired.json")
@@ -156,7 +158,7 @@ example :
       (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/artifact-XRequired-without-rule-AFalse.json")).isSome ∧
     parsed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XRequired-without-rule-AFalse.json") == (parsed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XRequired.json")).map (remove · (.rule "AFalse")) := by native_decide
 
-/-- `XBound_DM.json` and each single removal agree with the Kernel on every row, and each retained
+/-- `XBound.json` and each single removal agree with the Kernel on every row, and each retained
 reduced model is this module's removal from the full one. -/
 example :
     (agreed (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/XBound.json") (include_str "../../../evidence/kernel-31.3.1/captures/q2p9-controls-2026-11-11/request-XBound.json")
