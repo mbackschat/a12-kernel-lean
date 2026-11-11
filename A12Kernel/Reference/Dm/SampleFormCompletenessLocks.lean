@@ -5,16 +5,20 @@ import A12Kernel.Reference.Dm.Document
 Q2's question is whether some document the model accepts exists, so the sample form a12-dmkits
 emits must not exclude an accepted document: an excluded field input that the reader admits must
 either draw a formal error, which no accepted document carries, or be read exactly as some input
-inside the form. These locks sweep the reader's field-input branches for every field kind in the
-`test-data-v1` profile and check that, so a restriction of the form is checked on the class of
-inputs the reader takes rather than on the cases its author recalled.
+inside the form. These locks check that for one form meeting Q2-P1's constraints, over field inputs
+selecting each conversion and storage-regime branch listed below for every field kind in the
+`test-data-v1` profile, so a restriction is checked on a class of inputs rather than on the cases its
+author recalled. They check completeness only: an over-admitting form would still pass, and whether an
+emitted spelling reads as intended is replay's and the Kernel run's to settle.
 
 The sweep is finite: the declarations and inputs below. A native number reaches the reader as its
 decimal-node text, scientific below an adjusted exponent of −6 (spec/01 §2.3), so the inputs include a
 native zero and a native nonzero amount past that bound; an exponent written in the document reaches
-the reader as the quoted text it converts like. The structural rows follow Lean's reader where the
-Kernel's reading is unmeasured (spec/01 §2.3): a string or Boolean at a repeatable key, a document
-`id` of `false`, a string or a number, an undeclared member of a row other than a string and one at
+the reader as the quoted text it converts like. The rows follow Lean's reader where the Kernel's
+reading is unmeasured (spec/01 §2.3): a field's `null` read as present-empty; a native Boolean or
+number on a field of another kind read as its text; the token folds beyond ASCII case and scales past
+the represented profile, which no input here reaches; a string or Boolean at a repeatable key, a document
+`id` of `false`, a string, a number or a nonempty object, an undeclared member of a row other than a string and one at
 the root other than a string, all read as omitted or not read at all; an object at a repeatable key
 and a non-object at a fixed group's key, refused as unrepresented; and `{}` for a fixed group with no
 placed field, which Lean reads as the omitted group but for one group occurrence, a fact only
