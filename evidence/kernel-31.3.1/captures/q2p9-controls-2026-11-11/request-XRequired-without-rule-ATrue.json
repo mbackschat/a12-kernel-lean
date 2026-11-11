@@ -1,0 +1,52 @@
+{
+ "model": "XRequired-without-rule-ATrue.json",
+ "clock": "2026-11-11T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "noroot",
+   "documentInline": {}
+  },
+  {
+   "name": "A-absent",
+   "documentInline": {
+    "Probe": {}
+   }
+  },
+  {
+   "name": "A-empty",
+   "documentInline": {
+    "Probe": {
+     "A": ""
+    }
+   }
+  },
+  {
+   "name": "A-true",
+   "documentInline": {
+    "Probe": {
+     "A": true
+    }
+   }
+  },
+  {
+   "name": "A-false",
+   "documentInline": {
+    "Probe": {
+     "A": false
+    }
+   }
+  },
+  {
+   "name": "A-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe"
+    }
+   }
+  }
+ ]
+}

@@ -225,6 +225,7 @@ import A12Kernel.Reference.Dm.PossibleCauseFilterLocks
 import A12Kernel.Reference.Dm.NumberRenderCapLocks
 import A12Kernel.Reference.Dm.ComputationErrorCodeLocks
 import A12Kernel.Reference.Dm.CapturedHavingScopeLocks
+import A12Kernel.Reference.Dm.ExplainedUnsatControlLocks
 
 /-! # A12Kernel.ReplayMain — replay retained `kernelProbe` requests through Lean
 

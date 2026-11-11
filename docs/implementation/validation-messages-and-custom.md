@@ -16,8 +16,8 @@ Record keys and the `L`/`C`/`X`/`Q` assurance letters are defined once in the [h
 #### Severity and acceptance
 
 - `boundary`: [spec/10 §2](../../spec/10-validation-and-polarity.md#2-severity-is-metadata)'s message-free and error-free relations over every model rule and the built-in findings of the full-validation document, each rule message carrying its own severity and every built-in finding counting as ERROR
-- `owner`: [`SampleAcceptance.lean`](../../A12Kernel/Reference/Dm/SampleAcceptance.lean)
-- `assurance`: E: [control locks](../../A12Kernel/Reference/Dm/AcceptedSampleControlLocks.lean) compare every row of the retained [controls](../sources/kernel-31-calibration-probes.md#src-accepted-sample-controls) and [severity channel](../sources/kernel-31-calibration-probes.md#src-severity-channel) captures with the Kernel's message severities; C on those rows
+- `owner`: [`SampleAcceptance.lean`](../../A12Kernel/Reference/Dm/SampleAcceptance.lean); [`SampleAcceptanceCapture.lean`](../../A12Kernel/Reference/Dm/SampleAcceptanceCapture.lean) compares it with a retained capture's rows
+- `assurance`: E: [control locks](../../A12Kernel/Reference/Dm/AcceptedSampleControlLocks.lean) compare every row of the retained [controls](../sources/kernel-31-calibration-probes.md#src-accepted-sample-controls) and [severity channel](../sources/kernel-31-calibration-probes.md#src-severity-channel) captures with the Kernel's message severities; C on those rows. [Explained-UNSAT locks](../../A12Kernel/Reference/Dm/ExplainedUnsatControlLocks.lean) do the same for [Q2-P9's controls](../sources/kernel-31-calibration-probes.md#src-q2p9-explained-unsat-controls) and judge every subset of their removable constraints
 - `remains`: `uniqueIndex` severity is calibrated only by the local re-capture population, and the Kernel's own validity call is unobserved
 
 <a id="cap-ordinary-once-repeatable-execution"></a>

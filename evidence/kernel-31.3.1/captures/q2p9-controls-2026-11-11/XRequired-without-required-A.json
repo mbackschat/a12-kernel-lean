@@ -1,0 +1,90 @@
+{
+ "header": {
+  "id": "XRequired_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "XRequired_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/Probe/A",
+        "name": "A",
+        "Field": {
+         "fieldType": {
+          "type": "BooleanType",
+          "BooleanType": {}
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/ATrue",
+        "name": "ATrue",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "ATrue",
+         "errorCondition": "[A] == True",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "ATrue"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/AFalse",
+        "name": "AFalse",
+        "Rule": {
+         "errorEntityRelPath": "../A",
+         "errorCode": "AFalse",
+         "errorCondition": "[A] == False",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "AFalse"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

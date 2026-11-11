@@ -1,0 +1,116 @@
+{
+ "model": "XBound.json",
+ "clock": "2026-11-11T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "noroot",
+   "documentInline": {}
+  },
+  {
+   "name": "N-absent",
+   "documentInline": {
+    "Probe": {}
+   }
+  },
+  {
+   "name": "N-empty",
+   "documentInline": {
+    "Probe": {
+     "N": ""
+    }
+   }
+  },
+  {
+   "name": "N-text",
+   "documentInline": {
+    "Probe": {
+     "N": "x"
+    }
+   }
+  },
+  {
+   "name": "N-fraction",
+   "documentInline": {
+    "Probe": {
+     "N": 0.5
+    }
+   }
+  },
+  {
+   "name": "N-minus1",
+   "documentInline": {
+    "Probe": {
+     "N": -1
+    }
+   }
+  },
+  {
+   "name": "N-0",
+   "documentInline": {
+    "Probe": {
+     "N": 0
+    }
+   }
+  },
+  {
+   "name": "N-1",
+   "documentInline": {
+    "Probe": {
+     "N": 1
+    }
+   }
+  },
+  {
+   "name": "N-2",
+   "documentInline": {
+    "Probe": {
+     "N": 2
+    }
+   }
+  },
+  {
+   "name": "N-3",
+   "documentInline": {
+    "Probe": {
+     "N": 3
+    }
+   }
+  },
+  {
+   "name": "N-4",
+   "documentInline": {
+    "Probe": {
+     "N": 4
+    }
+   }
+  },
+  {
+   "name": "N-5",
+   "documentInline": {
+    "Probe": {
+     "N": 5
+    }
+   }
+  },
+  {
+   "name": "N-6",
+   "documentInline": {
+    "Probe": {
+     "N": 6
+    }
+   }
+  },
+  {
+   "name": "N-10",
+   "documentInline": {
+    "Probe": {
+     "N": 10
+    }
+   }
+  }
+ ]
+}

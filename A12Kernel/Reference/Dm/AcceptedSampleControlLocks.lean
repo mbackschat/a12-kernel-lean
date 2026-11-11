@@ -1,13 +1,10 @@
 import Lean.Data.Json
-import A12Kernel.Reference.Dm.SampleAcceptance
-import A12Kernel.Reference.Dm.LoneSurrogate
+import A12Kernel.Reference.Dm.SampleAcceptanceCapture
 
 /-! # The accepted-sample controls (Q2-P6) and the severity channel against retained Kernel rows
 
-Each lock reads a retained 31.3.1 capture's model, request and artifact bytes, computes every row's
-[`sampleAcceptance`](SampleAcceptance.lean), and compares it with the acceptance the Kernel's messages
-imply: message-free when a row has none, error-free when none reports ERROR. The model and documents are
-therefore the captured ones, not transcriptions, and the artifact's severities are the oracle.
+Each lock compares every row of a retained 31.3.1 capture with the Kernel's acceptance through
+[`SampleAcceptanceCapture`](SampleAcceptanceCapture.lean).
 
 The [controls](../../../evidence/kernel-31.3.1/captures/q2-controls-2026-11-08/MANIFEST.sha256) are
 three models over one Boolean field `B` carrying the ERROR rules `FieldNotFilled(B)` and `[B] == True`;
@@ -21,44 +18,7 @@ INFO, and formal and `mandatoryField` findings on fields whose only rule is INFO
 
 namespace A12Kernel.Dm.AcceptedSampleControlLocks
 
-open Lean
-
-private def world : World := { now := { epochMillis := 0 } }
-
-/-- The acceptance the Kernel's messages imply for one artifact row, `none` when the engines disagree. -/
-private def kernelAcceptance (row : Json) : Option SampleAcceptance := do
-  if (row.getObjValAs? Bool "enginesAgree").toOption != some true then none
-  let engines ← (row.getObjValAs? (Array Json) "engines").toOption
-  let engine ← engines[0]?
-  let messages ← (engine.getObjValAs? (Array Json) "messages").toOption
-  let severities := messages.toList.map fun message => (message.getObjValAs? String "severity").toOption
-  pure { messageFree := messages.isEmpty, errorFree := severities.all (· != some "ERROR") }
-
-/-- Each request row's Lean and Kernel acceptance, in request order. -/
-private def rows (modelText requestText artifactText : String) :
-    Option (List (Option SampleAcceptance × Option SampleAcceptance)) := do
-  let dm ← ((parseModelJson modelText).bind (readModel ·)).toOption
-  let request ← (Json.parse requestText).toOption
-  let artifact ← (Json.parse artifactText).toOption
-  let locale := (request.getObjValAs? String "locale").toOption.getD "en_US"
-  let requested ← (request.getObjValAs? (Array Json) "rows").toOption
-  let observed ← (artifact.getObjValAs? (Array Json) "rows").toOption
-  requested.toList.mapM fun row => do
-    let name ← (row.getObjValAs? String "name").toOption
-    let document ← (row.getObjVal? "documentInline").toOption
-    let kernel := (observed.find? fun o => (o.getObjValAs? String "name").toOption == some name).bind
-      kernelAcceptance
-    pure (sampleAcceptance world dm document locale, kernel)
-
-/-- `(message-free, error-free)` per row when every row is decided on both sides and Lean agrees with the
-Kernel; `none` otherwise. -/
-private def agreed (modelText requestText artifactText : String) : Option (List (Bool × Bool)) := do
-  let rows ← rows modelText requestText artifactText
-  rows.mapM fun (lean, kernel) => do
-    let lean ← lean
-    let kernel ← kernel
-    if lean != kernel then none
-    pure (lean.messageFree, lean.errorFree)
+open SampleAcceptanceCapture
 
 /-- `QUnsat_DM.json` accepts no document under either relation. -/
 example : agreed (include_str "../../../evidence/kernel-31.3.1/captures/q2-controls-2026-11-08/QUnsat_DM.json")

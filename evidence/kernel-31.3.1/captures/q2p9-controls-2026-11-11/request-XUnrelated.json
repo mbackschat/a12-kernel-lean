@@ -1,0 +1,228 @@
+{
+ "model": "XUnrelated.json",
+ "clock": "2026-11-11T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "noroot",
+   "documentInline": {}
+  },
+  {
+   "name": "A-absent.B-absent",
+   "documentInline": {
+    "Probe": {}
+   }
+  },
+  {
+   "name": "A-absent.B-empty",
+   "documentInline": {
+    "Probe": {
+     "B": ""
+    }
+   }
+  },
+  {
+   "name": "A-absent.B-true",
+   "documentInline": {
+    "Probe": {
+     "B": true
+    }
+   }
+  },
+  {
+   "name": "A-absent.B-false",
+   "documentInline": {
+    "Probe": {
+     "B": false
+    }
+   }
+  },
+  {
+   "name": "A-absent.B-invalid",
+   "documentInline": {
+    "Probe": {
+     "B": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-empty.B-absent",
+   "documentInline": {
+    "Probe": {
+     "A": ""
+    }
+   }
+  },
+  {
+   "name": "A-empty.B-empty",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "B": ""
+    }
+   }
+  },
+  {
+   "name": "A-empty.B-true",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "B": true
+    }
+   }
+  },
+  {
+   "name": "A-empty.B-false",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "B": false
+    }
+   }
+  },
+  {
+   "name": "A-empty.B-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "B": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-true.B-absent",
+   "documentInline": {
+    "Probe": {
+     "A": true
+    }
+   }
+  },
+  {
+   "name": "A-true.B-empty",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "B": ""
+    }
+   }
+  },
+  {
+   "name": "A-true.B-true",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "B": true
+    }
+   }
+  },
+  {
+   "name": "A-true.B-false",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "B": false
+    }
+   }
+  },
+  {
+   "name": "A-true.B-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "B": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-false.B-absent",
+   "documentInline": {
+    "Probe": {
+     "A": false
+    }
+   }
+  },
+  {
+   "name": "A-false.B-empty",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "B": ""
+    }
+   }
+  },
+  {
+   "name": "A-false.B-true",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "B": true
+    }
+   }
+  },
+  {
+   "name": "A-false.B-false",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "B": false
+    }
+   }
+  },
+  {
+   "name": "A-false.B-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "B": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-invalid.B-absent",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-invalid.B-empty",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "B": ""
+    }
+   }
+  },
+  {
+   "name": "A-invalid.B-true",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "B": true
+    }
+   }
+  },
+  {
+   "name": "A-invalid.B-false",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "B": false
+    }
+   }
+  },
+  {
+   "name": "A-invalid.B-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "B": "maybe"
+    }
+   }
+  }
+ ]
+}
