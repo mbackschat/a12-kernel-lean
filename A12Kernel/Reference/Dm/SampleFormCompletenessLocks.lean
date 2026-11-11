@@ -15,8 +15,8 @@ The sweep is finite: the declarations and inputs below. A native number reaches 
 decimal-node text, scientific below an adjusted exponent of −6 (spec/01 §2.3), so the inputs include a
 native zero and a native nonzero amount past that bound; a native exponent, not representable in Lean's
 `Json.num`, reaches the reader as the quoted text it converts like, such as `0E+3`. The rows follow Lean's reader where the Kernel's
-reading is unmeasured (spec/01 §2.3): a field's `null` read as present-empty; a native Boolean or
-number on a field of another kind read as its text; the token folds beyond ASCII case and scales past
+reading is unmeasured (spec/01 §2.3): a field's `null` read as present-empty; a native Boolean on a
+field other than a Boolean or Confirm and a native number on a non-Number field read as text; the token folds beyond ASCII case and scales past
 the represented profile, which no input here reaches; a string or Boolean at a repeatable key, a document
 `id` of `false`, a string, a number or a nonempty object, an undeclared member of a row other than a string and one at
 the root other than a string, all read as omitted or not read at all; an object at a repeatable key

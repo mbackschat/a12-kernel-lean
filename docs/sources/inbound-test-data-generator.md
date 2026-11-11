@@ -2,6 +2,21 @@
 
 [Source registry](../SOURCES.md) owns authority and drill routing. Handbacks from a12-dmkits' test data generator work on Q2 ([plan](../PLAN.md#q2-preparation-checklist)), each with its reviewed revision and claim limits; earlier handbacks stay in [the general shard](inbound-handbacks.md).
 
+<a id="src-inbound-2026-11-11b"></a>
+## Reviewed the 2026-11-11b Q2 progress handback: retained sign, fraction, zero and amount text, the seven-place native zero and the native Confirm
+
+- `source`: Peer handback `a12-kernel-lean-spec-corrections-2026-11-11b.md`, carried by the owner and kept as no file, answering the measurement rows requested with the sample-form contract at `3b6476091`; a progress handback, not Q2-P7's terminal one.
+- `revision`: a12-dmkits `11c888c0ad504ed7616d0f1aff8d30286f6befed` on `feature/q2`, read with `git` only, with `7464111db` an ancestor; KF688 and the nine models, requests and kernel artifacts under `test-data-generator/evidence/sample-form-2026-11-11/` exist there, each artifact recording dmtool 0.16.0, kernel 31.3.1 and the clean producer `7464111db`.
+- `oracle`: kernel 31.3.1, both strategies, through `:adapter:kernelProbe` on the peer's own-domain models, every field allowing leading zeros; read here from the committed artifacts, not rerun.
+- `review`: A HIGH reconciliation on 2026-11-11 read all 22 rows' request documents, declarations and both strategies' codes. Lean's document route agreed on every row before any change, and [`NumberLengthLocks`](../../A12Kernel/Reference/Dm/NumberLengthLocks.lean) now locks them.
+- `signs-and-total`: native `-12` and retained `-0012` pass. Under an integer cap of 2 retained `-01` passes and `-001` reports `zahlZuvieleVorkommastellen`. On two places `00.50` and the fifteen-digit `0000000000000.50` pass, and the sixteen-digit neighbour reports `stelligkeitZuLang`.
+- `zero`: retained `0000` and native `0` pass, and both report `zahlIstNull` where zero is forbidden. Native `0` and `0.000000` pass, and native `0.0000000` reports `zahlHatUngueltigeZeichen`, also on a seven-place field where native `0` and retained `00.0000000` pass.
+- `amount`: on the `amount` trait at two places `0000000000001.00` passes and `00000000000001.00` reports `stelligkeitZuLang`. At up to two places `0000000000001` passes and `00000000000001` reports `zahlZuvieleVorkommastellen`.
+- `confirm`: a Confirm in a fixed group passes with native `true` and reports `feldJaFalsch` with native `false`.
+- `limit`: every Number row allows leading zeros; other compositions of sign, fraction and zero with the caps are not measured.
+- `adopted`: [spec/04](../../spec/04-numbers-and-decimals.md#document-ingestion) states the native zero's kept node text and §4.8 the retained rows; [spec/01 §2.3](../../spec/01-data-model.md#23-reading-a-document-from-json) the native Confirm tokens; [Q2-P1](../PLAN.md#q2-preparation-checklist)'s constraints cite them.
+- `sync`: no ledger entry; the clauses already held where Lean read them and the peer's evidence measures them.
+
 <a id="src-inbound-2026-11-11a"></a>
 ## Reviewed the 2026-11-11a Q2 progress handback: retained Number text keeps its length, is read by amount and counts every digit
 

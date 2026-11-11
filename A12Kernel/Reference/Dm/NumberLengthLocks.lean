@@ -148,4 +148,66 @@ example :
     [none, none, some .totalDigitsTooLong, none, none, some .integerDigitsTooLong, none, none, none] := by
   native_decide
 
+/-- The first formal error of one document value on a lone `Parcel/Weight` Number, read through the
+document route, so a native number reaches the cascade as its decimal-node text. -/
+private def documentError (info : NumField) (constraints : NumericTargetConstraints)
+    (json : Lean.Json) : Option (Option NumericFormalReadError) := do
+  let declaration : FlatFieldDecl := {
+    id := 1, name := "Weight", groupPath := ["Parcel"], policy.kind := .number info,
+    numericTargetConstraints := constraints }
+  let stored ← storedText? json
+  let cell ← (classifyStored { fields := [declaration] } declaration { field := 1, path := [] }
+    stored).toOption
+  let input := match cell.numericDecimal with
+    | some value => NumericStoredInput.decimal value
+    | none => .text cell.stored
+  pure (match constraints.checkFormalRead info input with | .ok _ => none | .error error => some error)
+
+-- a12-dmkits KF688 at 11c888c0a: on kernel 31.3.1, fields allowing leading zeros, retained signed,
+-- fractional, zero and amount-trait text counts every written digit, and a native zero with seven
+-- places reaches the cascade as unreadable `0E-7` text while native `0` and retained `00.0000000` pass.
+example :
+    let whole : NumField := { scale := 0, signed := true }
+    let cents : NumField := { scale := 2, signed := true }
+    let seven : NumField := { scale := 7, signed := true }
+    let lead : NumericTargetConstraints := { leadingZerosAllowed := true }
+    let native (mantissa : Int) (exponent : Nat) : Lean.Json := .num { mantissa, exponent }
+    let amountFixed : NumericTargetConstraints :=
+      { lead with minFractionalDigits := 2, amount := true, maxIntegerDigits := some 13 }
+    let amountVariable : NumericTargetConstraints :=
+      { lead with amount := true, maxIntegerDigits := some 13 }
+    let zeroSeven : NumericTargetConstraints :=
+      { lead with minFractionalDigits := 7, minStoredLength := some 9, minimum := some 0,
+                  maximum := some 0 }
+    [documentError whole lead (native (-12) 0), documentError whole lead (.str "-0012"),
+      documentError whole { lead with maxIntegerDigits := some 2 } (.str "-01"),
+      documentError whole { lead with maxIntegerDigits := some 2 } (.str "-001"),
+      documentError cents { lead with minFractionalDigits := 2 } (.str "00.50"),
+      documentError cents { lead with minFractionalDigits := 2 } (.str "0000000000000.50"),
+      documentError cents { lead with minFractionalDigits := 2 } (.str "00000000000000.50"),
+      documentError whole lead (.str "0000"), documentError whole lead (native 0 0),
+      documentError whole lead (native 0 6), documentError whole lead (native 0 7),
+      documentError whole { lead with zeroAllowed := false } (.str "0000"),
+      documentError whole { lead with zeroAllowed := false } (native 0 0),
+      documentError cents amountFixed (.str "0000000000001.00"),
+      documentError cents amountFixed (.str "00000000000001.00"),
+      documentError cents amountVariable (.str "0000000000001"),
+      documentError cents amountVariable (.str "00000000000001"),
+      documentError seven zeroSeven (native 0 0), documentError seven zeroSeven (native 0 7),
+      documentError seven zeroSeven (.str "00.0000000")] =
+    [some none, some none, some none, some (some .integerDigitsTooLong), some none, some none,
+      some (some .totalDigitsTooLong), some none, some none, some none, some (some .malformed),
+      some (some .zeroNotAllowed), some (some .zeroNotAllowed), some none,
+      some (some .totalDigitsTooLong), some none, some (some .integerDigitsTooLong), some none,
+      some (some .malformed), some none] := by
+  native_decide
+
+-- KF688's Confirm rows: in a fixed group native `true` is a filled Confirm and native `false` its formal error.
+example :
+    let ack : FlatFieldDecl := { id := 1, name := "Ack", groupPath := ["Parcel"], policy.kind := .confirm }
+    [Lean.Json.bool true, .bool false].map (fun json => (storedText? json).bind fun stored =>
+      ((classifyStored { fields := [ack] } ack { field := 1, path := [] } stored).toOption.map (·.raw))) =
+    [some (.parsed (.conf true)), some (.rejected .confirmToken)] := by
+  native_decide
+
 end A12Kernel.Dm.NumberLengthLocks
