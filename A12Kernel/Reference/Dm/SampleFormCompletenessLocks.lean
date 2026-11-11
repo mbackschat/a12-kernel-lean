@@ -7,7 +7,10 @@ emits must not exclude an accepted document: an excluded field input that the re
 either draw a formal error, which no accepted document carries, or be read exactly as some input
 inside the form. These locks sweep the reader's field-input branches for every field kind in the
 `test-data-v1` profile and check that, so a restriction of the form is checked on the class of
-inputs the reader takes rather than on the cases its author recalled.
+inputs the reader takes rather than on the cases its author recalled. The sweep is finite: every
+JSON scalar kind with texts selecting each conversion and storage-regime branch, against declarations
+covering each Number constraint; Lean's `Json.num` carries only plain notation, so an exponent
+reaches the reader as the quoted text it converts like.
 -/
 
 namespace A12Kernel.Dm.SampleFormCompletenessLocks
@@ -42,7 +45,10 @@ private def retainedLeadingZeroShape (text : String) : Bool :=
 private def inForm (retained : Bool) (declaration : FlatFieldDecl) : Json → Bool
   | .str "" => true
   | .num _ => match declaration.policy.kind with | .number _ => true | _ => false
-  | .bool _ => match declaration.policy.kind with | .boolean | .confirm => true | _ => false
+  | .bool value => match declaration.policy.kind with
+    | .boolean => true
+    | .confirm => value
+    | _ => false
   | .str text => match declaration.policy.kind with
     | .string | .enumeration => true
     | .number _ => retained && declaration.numericTargetConstraints.leadingZerosAllowed &&
@@ -77,9 +83,11 @@ private def number (name : String) (scale : Nat) (signed : Bool)
   { id := 1, name, groupPath := form, policy.kind := .number { scale, signed },
     numericTargetConstraints := constraints }
 
-/-- One declaration per reader branch the profile admits: Number scale, sign, minimum scale and
-the leading-zero permission with and without a length bound, the measured `001.20` case among them,
-and the four other kinds. -/
+/-- Declarations covering each Number constraint the profile admits: scale, sign, a fixed and a
+variable fractional range, the leading-zero permission with and without length bounds, the measured
+`001.20` case, an integer-digit cap with value bounds, the amount trait and a forbidden zero; and the
+four other kinds. Only the leading-zero permission selects a storage regime, the others decide
+which inputs are formal errors. -/
 private def declarations : List FlatFieldDecl := [
   number "Whole" 0 true,
   number "Unsigned" 0 false,
@@ -88,6 +96,11 @@ private def declarations : List FlatFieldDecl := [
   number "LeadZero" 0 true { leadingZerosAllowed := true },
   number "LeadZeroCents" 2 true { minFractionalDigits := 2, leadingZerosAllowed := true },
   number "Weight" 2 true { minFractionalDigits := 2, leadingZerosAllowed := true, minStoredLength := some 6 },
+  number "Range" 3 true { minFractionalDigits := 1 },
+  number "Capped" 2 true
+    { leadingZerosAllowed := true, maxIntegerDigits := some 2, maxStoredLength := some 5,
+      minimum := some 0, maximum := some 50 },
+  number "Amount" 2 false { leadingZerosAllowed := true, amount := true, zeroAllowed := false },
   { id := 1, name := "Flag", groupPath := form, policy.kind := .boolean },
   { id := 1, name := "Ack", groupPath := form, policy.kind := .confirm },
   { id := 1, name := "Text", groupPath := form, policy.kind := .string },
@@ -105,7 +118,7 @@ private def inputs : List Json := [
   .str "", .str "12", .str "+12", .str "-0", .str "1.20", .str "1.2000", .str "1e1", .str "1E+3",
   .str "0e5", .str "00e1", .str "٣", .str "٠٣", .str "0012", .str "001.20", .str "+007", .str "-00",
   .str "00.5", .str "-0012", .str "abc", .str "1,5", .str "true", .str "TRUE", .str "True", .str "false",
-  .str "FALSE", .str "A", .str "x"]
+  .str "FALSE", .str "A", .str "x", .str " 12", .str "12 ", .str "0012 ", .str "007.50"]
 
 private def rows : GroupPath := ["Form", "Rows"]
 
@@ -146,10 +159,25 @@ example : [("Rows", Json.null), ("Rows", .str "x"), ("Rows", .num 1), ("Rows", .
       .asWithout, .asWithout] := by
   native_decide
 
+-- An object or an array of objects at a field key reads as the omitted field (spec/01 §2.3).
+example : [Json.mkObj [], .mkObj [("x", .str "y")], .arr #[], .arr #[.mkObj []]].all (fun value =>
+      match readDocument structural (.mkObj [("Form", .mkObj [("Note", value)])]),
+          readDocument structural (.mkObj [("Form", .mkObj [])]) with
+      | .ok read, .ok omitted => read.refusals.isEmpty && read.data == omitted.data
+      | _, _ => false) = true := by
+  native_decide
+
+-- A fixed group is an object; a scalar, `null` or array at its key is refused as unrepresented,
+-- its Kernel reading unmeasured (spec/01 §2.3).
+example : [Json.str "x", .null, .num 1, .bool true, .arr #[], .arr #[.mkObj []]].map
+      (fun value => structuralReading (.mkObj [("Form", value)])) =
+    [.refused, .refused, .refused, .refused, .refused, .refused] := by
+  native_decide
+
 -- The form writes no document-level `id`: every other `id` reads as none or leaves the document unread.
-example : [Json.null, .bool true, .str "s", .num 1, .mkObj [("x", .num 1)], .arr #[.mkObj []]].map
+example : [Json.null, .bool true, .bool false, .str "s", .num 1, .mkObj [("x", .num 1)], .arr #[.mkObj []]].map
       (fun value => structuralReading (withForm [] [("id", value)])) =
-    [.unread, .unread, .asWithout, .asWithout, .asWithout, .asWithout] := by
+    [.unread, .unread, .unread, .asWithout, .asWithout, .asWithout, .asWithout] := by
   native_decide
 
 -- Without the retained leading-zero clause the form loses exactly the texts a field allowing leading
@@ -159,7 +187,9 @@ example : declarations.flatMap (fun declaration =>
       (inputs.filter fun json => !covered false declaration json).map fun json =>
         (declaration.name, json.compress)) =
     [("LeadZero", "\"0012\""), ("LeadZero", "\"-0012\""), ("LeadZeroCents", "\"001.20\""),
-      ("Weight", "\"001.20\"")] := by
+      ("LeadZeroCents", "\"007.50\""), ("Weight", "\"001.20\""), ("Weight", "\"007.50\""),
+      ("Capped", "\"00.5\""), ("Amount", "\"0012\""), ("Amount", "\"001.20\""),
+      ("Amount", "\"00.5\""), ("Amount", "\"007.50\"")] := by
   native_decide
 
 example : declarations.all (fun declaration => inputs.all (covered true declaration)) = true := by
