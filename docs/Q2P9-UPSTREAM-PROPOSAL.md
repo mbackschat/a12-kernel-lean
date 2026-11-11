@@ -8,6 +8,8 @@ The owner, as a12-dmkits' owner, adds **contradiction detection** to the test da
 
 This is that generator's question asked from its UNSAT side, not a new analysis: profile `test-data-v1`, kernel 31.3.1, DM 29.8.0, both acceptance relations, the encoder, solver protocol, interpreter replay and model check are the test data generator's as handed back at a12-dmkits `166530750a756574558f396b1b7097733b6b0c44`, unchanged in meaning: `model generate-test-data` keeps its semantics and result bytes. Their code may change, for instance to guard each removable constraint with an assumption literal and solve with `check-sat-assuming`; an interpreter fix re-pins the catalog check against kernel 31.3.1 and is reported.
 
+By owner decision of 2026-11-11 it extends the test data generator and takes no fresh gap ID: the feature gaps' rule of a fresh ID per contradiction analysis serves analyses that ask a different question, such as Q1 and Q3, and this one asks Q2's.
+
 The code and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
 
 ## The contract, by pointer
