@@ -7,10 +7,18 @@ emits must not exclude an accepted document: an excluded field input that the re
 either draw a formal error, which no accepted document carries, or be read exactly as some input
 inside the form. These locks sweep the reader's field-input branches for every field kind in the
 `test-data-v1` profile and check that, so a restriction of the form is checked on the class of
-inputs the reader takes rather than on the cases its author recalled. The sweep is finite: every
-JSON scalar kind with texts selecting each conversion and storage-regime branch, against declarations
-covering each Number constraint; Lean's `Json.num` carries only plain notation, so an exponent
-reaches the reader as the quoted text it converts like.
+inputs the reader takes rather than on the cases its author recalled.
+
+The sweep is finite: the declarations and inputs below. A native number reaches the reader as its
+decimal-node text, scientific below an adjusted exponent of −6 (spec/01 §2.3), so the inputs include a
+native zero and a native nonzero amount past that bound; an exponent written in the document reaches
+the reader as the quoted text it converts like. The structural rows follow Lean's reader where the
+Kernel's reading is unmeasured (spec/01 §2.3): a string or Boolean at a repeatable key, a document
+`id` of `false`, a string or a number, an undeclared member of a row other than a string and one at
+the root other than a string, all read as omitted or not read at all; an object at a repeatable key
+and a non-object at a fixed group's key, refused as unrepresented; and `{}` for a fixed group with no
+placed field, which Lean reads as the omitted group but for one group occurrence, a fact only
+over-repetition findings consult and rows within their repeatability never draw.
 -/
 
 namespace A12Kernel.Dm.SampleFormCompletenessLocks
@@ -44,7 +52,9 @@ private def retainedLeadingZeroShape (text : String) : Bool :=
 /-- Q2-P1's sample form for one field's value; an absent field is an omitted key. -/
 private def inForm (retained : Bool) (declaration : FlatFieldDecl) : Json → Bool
   | .str "" => true
-  | .num _ => match declaration.policy.kind with | .number _ => true | _ => false
+  | .num value => match declaration.policy.kind with
+    | .number _ => value.mantissa != 0 || value.exponent ≤ 6
+    | _ => false
   | .bool value => match declaration.policy.kind with
     | .boolean => true
     | .confirm => value
@@ -65,7 +75,7 @@ private def candidates (json : Json) : List Json :=
         let plain := value.storedNumber
         some (Json.num { mantissa := plain.unscaled, exponent := plain.scale })
     | _ => none
-  decimal.toList ++ [.bool true, .bool false, .str ""] ++ ((storedText? json).map Json.str).toList
+  decimal.toList ++ [.num 0, .bool true, .bool false, .str ""] ++ ((storedText? json).map Json.str).toList
 
 /-- Whether an input the reader admits is excluded from the form without loss. -/
 private def covered (retained : Bool) (declaration : FlatFieldDecl) (json : Json) : Bool :=
@@ -114,7 +124,7 @@ conversion with plus, exponent, non-ASCII digits and trailing zeros, the retaine
 failed conversion, and Boolean and Confirm tokens in other cases. -/
 private def inputs : List Json := [
   .null, .bool true, .bool false,
-  native 0 0, native 0 2, native 12 0, native (-12) 0, native 12 1, native 120 2, native 12000 4,
+  native 0 0, native 0 2, native 0 10, native 1 7, native 12 0, native (-12) 0, native 12 1, native 120 2, native 12000 4,
   .str "", .str "12", .str "+12", .str "-0", .str "1.20", .str "1.2000", .str "1e1", .str "1E+3",
   .str "0e5", .str "00e1", .str "٣", .str "٠٣", .str "0012", .str "001.20", .str "+007", .str "-00",
   .str "00.5", .str "-0012", .str "abc", .str "1,5", .str "true", .str "TRUE", .str "True", .str "false",
@@ -165,6 +175,28 @@ example : [Json.mkObj [], .mkObj [("x", .str "y")], .arr #[], .arr #[.mkObj []]]
           readDocument structural (.mkObj [("Form", .mkObj [])]) with
       | .ok read, .ok omitted => read.refusals.isEmpty && read.data == omitted.data
       | _, _ => false) = true := by
+  native_decide
+
+-- An undeclared member of a row or of the root, of any kind, reads as its absence.
+example :
+    let row (members : List (String × Json)) : Json :=
+      withForm [("Rows", .arr #[.mkObj ([("Item", .str "b")] ++ members)])]
+    [Json.bool true, .null, .num 1, .arr #[], .mkObj []].all (fun value =>
+      match readDocument structural (row [("X", value)]), readDocument structural (row []) with
+      | .ok read, .ok without => read.refusals.isEmpty && read.data == without.data
+      | _, _ => false) &&
+    [Json.bool true, .num 1, .arr #[], .mkObj []].all (fun value =>
+      structuralReading (withForm [] [("Other", value)]) == .asWithout) = true := by
+  native_decide
+
+-- An empty fixed group written `{}` differs from its omission by one group occurrence only.
+example :
+    (match readDocument structural (.mkObj [("Form", .mkObj [])]), readDocument structural (.mkObj []) with
+    | .ok written, .ok omitted =>
+        written.data.cells == omitted.data.cells &&
+        written.data.instantiatedRows == omitted.data.instantiatedRows &&
+        written.data.groupOccurrences.length == omitted.data.groupOccurrences.length + 1
+    | _, _ => false) = true := by
   native_decide
 
 -- A fixed group is an object; a scalar, `null` or array at its key is refused as unrepresented,

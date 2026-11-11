@@ -115,7 +115,9 @@ private def formalRead (info : NumField) (constraints : NumericTargetConstraints
   constraints.checkFormalRead info input
 
 -- a12-dmkits KF686 at 79a7171c8: on kernel 31.3.1 retained `001.20` meets a six-character minimum
--- that native `1.20`, native `1.2000` and converted `"1.20"` miss, and a rule reads its amount 1.2.
+-- that native `1.20`, native `1.2000` and converted `"1.20"` miss. The decimals stand for the three
+-- converted inputs, and the amount checked is the cascade's; a rule reading a retained amount is the
+-- `0012` case above.
 example :
     let info : NumField := { scale := 2, signed := true }
     let weight (minimum : Nat) : NumericTargetConstraints := {
