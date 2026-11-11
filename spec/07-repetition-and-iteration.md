@@ -22,6 +22,7 @@ The model to hold: **iteration produces a set of repetition contexts** (the `Env
 - An ordinary unstarred reference contributes its repeatable path.
 - A starred operand contributes only the already-bound repeatable prefix strictly above its first `*`; the starred level and every level below it are reopened by that operand rather than added to the surrounding rule iteration (§4).
 - Candidate-local references inside `Having` belong to the operand-local traversal rather than to the surrounding rule scope (§3).
+- A `$`-marked read inside `Having` is a captured read of the rule's own environment and contributes its repeatable path as an ordinary reference does, so a rule whose only reference to a repeatable level is such a read iterates that level (§1.4). Measured on a filtered `Sum` and a filtered `NumberOfFilledFields`, alone and beside an ordinary read of the same level, with both groups declaring 3 and 6 rows; other filtered carriers are unmeasured.
 - A semantic-index operand replaces only its selected level: its payload binds its ordinary ancestor levels, the selected level is not ordinary iteration, and a field-valued key retains its own authored scope (§1.4).
 - Compatible nested references select the deepest ordinary nonparallel path. Incompatible sibling or cross-branch paths require the separate parallel-iteration construction of §2; they are not merged positionally.
 - **The error entity alone is not an anchor.** A rule whose error field sits deeper-repeatable than its condition references keeps the references' scope; the error field does not deepen iteration on its own.
@@ -37,7 +38,7 @@ Two bounded cases fix where a message lands when the scope does not cover the wh
 
 Error-field membership and the per-level reference checks of §1.5 still apply in both cases. Omitting `[1]` in a rendered projection does not turn an address into a declaration pointer; the exact/message-pointer distinction is [`01-data-model.md §2.1`](01-data-model.md#21-repetition-contexts-the-iteration-environment). Rule placement remains irrelevant.
 
-Sources: [iteration-domain and ancestor-error controls](../docs/sources/evaluation-and-application-routes.md#src-validation-iteration-domain), [inbound 2026-10-02 rule buckets](../docs/sources/inbound-handbacks.md#inbound-2026-10-02-rule-buckets), [rule-bucket empty-gate checkpoint](../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate).
+Sources: [iteration-domain and ancestor-error controls](../docs/sources/evaluation-and-application-routes.md#src-validation-iteration-domain), [inbound 2026-10-02 rule buckets](../docs/sources/inbound-handbacks.md#inbound-2026-10-02-rule-buckets), [rule-bucket empty-gate checkpoint](../docs/sources/group-list-and-capacity-probes.md#src-rule-bucket-empty-gate), [inbound 2026-11-11e](../docs/sources/inbound-test-data-generator.md#src-inbound-2026-11-11e).
 
 ### 1.2 The document the rule iterates
 
