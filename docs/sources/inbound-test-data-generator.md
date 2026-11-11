@@ -2,6 +2,18 @@
 
 [Source registry](../SOURCES.md) owns authority and drill routing. Handbacks from a12-dmkits' test data generator work on Q2 ([plan](../PLAN.md#q2-preparation-checklist)), each with its reviewed revision and claim limits; earlier handbacks stay in [the general shard](inbound-handbacks.md).
 
+<a id="src-inbound-2026-11-11c"></a>
+## Reviewed the 2026-11-11c Q2 blocker handback: a power whose magnitude leaves the host decimal range fails the rule
+
+- `source`: Peer handback `a12-kernel-lean-spec-corrections-2026-11-11c.md`, carried by the owner and kept as no file; a blocker handback under Q2-P7's stop rule for a measured semantic disagreement, not the terminal one.
+- `revision`: a12-dmkits `b334b0e73da9693e31815d8f532c7df619e0f740` on `feature/q2`, read with `git` only, with `2b7f51557fbca634ce7f0209a3c5bf3e1ddbfb6c` an ancestor; KF690, IG191 and `test-data-generator/evidence/power-scale-2026-11-11/` exist there, and the SHA-256 of both kernel artifacts matches the handback: `kernel-negative.json` `e9b96ec01402a97503b60e2143b4714e439fc42266ce7500356729528164911f`, `kernel-positive.json` `90745786c544ee8b1da5af13970fba1694ffd1ddeb2c0195e97e27af02c28ff7`.
+- `oracle`: kernel 31.3.1, both strategies, full validation, through `:adapter:kernelProbe` on dmtool 0.16.0 at the clean producer `2b7f51557`; read here from the committed artifacts, not rerun.
+- `rows`: required `Amount` (up to three places, range 0.001 to 1000) and `Exponent` (scale 0, range 1000 to 1001) in a fixed group, and one ERROR rule on `Amount` comparing `{{[Amount] ^ [Exponent]} ^ [Exponent]} ^ [Exponent]` with zero, once under `<` and once under `>`. `Amount` 1000 and 0.001 with `Exponent` 1000 fail the rule under both comparisons, with an overflow and an underflow. `Amount` 1 keeps the ordinary verdict, firing only under `>`, and `Exponent` 1001 fires neither.
+- `failure`: one ERROR VALUE message at `Amount` with the rule's code, the kernel's built-in evaluation-error text and empty referenced and fill-to-fix sets.
+- `review`: A HIGH reconciliation on 2026-11-11 checked spec/04 §3, which had no such failure, and the Lean power, which has no host-range failure outcome and holds its rounded values as rationals. A JDK run at precision 50 confirmed the host scale trace the handback reports. A 15-digit base keeps its scale in range through two powers by 1000. Every retained text with two powers is a legality-probe text, of a rule or of a computation operation, and none a model file. A fresh HIGH cold review and implementer dry run of the adoption led to tightening its wording and the refusal's scope.
+- `adopted`: [spec/04 §3](../../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive) states the failure and its measured scope, and [spec/10 §3.1](../../spec/10-validation-and-polarity.md#31-truth-testing-and-message-classification) lists it among the runtime failures. Lean's omission is [SG5](../gaps/numeric-and-temporal.md#gap-sg5). [Q2-P1](../PLAN.md#q2-preparation-checklist) refuses a power whose base contains a power, by owner decision of 2026-11-11.
+- `sync`: no ledger entry; the correction is a12-dmkits' own measurement, and their interpreter's exception is their open IG191.
+
 <a id="src-inbound-2026-11-11b"></a>
 ## Reviewed the 2026-11-11b Q2 progress handback: retained sign, fraction, zero and amount text, the seven-place native zero and the native Confirm
 
