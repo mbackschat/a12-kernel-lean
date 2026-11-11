@@ -1,6 +1,6 @@
 # Inbound handback provenance
 
-[Source registry](../SOURCES.md) owns authority and drill routing. The retained handbacks and historical Git stubs below preserve their original receipts and claim limits.
+[Source registry](../SOURCES.md) owns authority and drill routing. The retained handbacks and historical Git stubs below preserve their original receipts and claim limits. Handbacks on a12-dmkits' test data generator (Q2) from 2026-11-11 on are in [their own shard](inbound-test-data-generator.md), since this one reached its size bound.
 
 <a id="inbound-2026-10-09-reconciliation"></a>
 ## 2026-10-09 ledger reconciliation

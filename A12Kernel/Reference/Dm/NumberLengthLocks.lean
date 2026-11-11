@@ -110,4 +110,40 @@ example :
           (·.raw)) == some expected) = true := by
   native_decide
 
+private def formalRead (info : NumField) (constraints : NumericTargetConstraints)
+    (input : NumericStoredInput) : Except NumericFormalReadError (String × Rat) :=
+  constraints.checkFormalRead info input
+
+-- a12-dmkits KF686 at 79a7171c8: on kernel 31.3.1 retained `001.20` meets a six-character minimum
+-- that native `1.20`, native `1.2000` and converted `"1.20"` miss, and a rule reads its amount 1.2.
+example :
+    let info : NumField := { scale := 2, signed := true }
+    let weight (minimum : Nat) : NumericTargetConstraints := {
+      minFractionalDigits := 2, leadingZerosAllowed := true, minimum := some (6 / 5),
+      maximum := some (6 / 5), minStoredLength := some minimum, maxStoredLength := some 6 }
+    let inputs : List NumericStoredInput := [.text "001.20", .decimal { unscaled := 120, scale := 2 },
+      .decimal { unscaled := 12000, scale := 4 }, .decimal { unscaled := 120, scale := 2 }]
+    inputs.map (fun input => (formalRead info (weight 4) input).toOption) =
+        [some ("001.20", 6 / 5), some ("1.20", 6 / 5), some ("1.20", 6 / 5), some ("1.20", 6 / 5)] ∧
+    inputs.map (fun input => match formalRead info (weight 6) input with
+        | .ok _ => none | .error error => some error) =
+        [none, some .textTooShort, some .textTooShort, some .textTooShort] := by
+  native_decide
+
+-- a12-dmkits KF687 at 79a7171c8: on kernel 31.3.1 retained leading zeros count as digits toward the
+-- fifteen-digit total and the integer-digit cap, measured on positive integer text of amount 1 only.
+example :
+    let info : NumField := { scale := 0, signed := true }
+    let one (cap : Option Nat) : NumericTargetConstraints := {
+      leadingZerosAllowed := true, minimum := some 1, maximum := some 1, maxIntegerDigits := cap }
+    let errorOf (cap : Option Nat) (input : NumericStoredInput) :=
+      match formalRead info (one cap) input with | .ok _ => none | .error error => some error
+    let native : NumericStoredInput := .decimal { unscaled := 1, scale := 0 }
+    [errorOf none native, errorOf none (.text "000000000000001"),
+      errorOf none (.text "0000000000000001"),
+      errorOf (some 2) native, errorOf (some 2) (.text "01"), errorOf (some 2) (.text "001"),
+      errorOf (some 3) native, errorOf (some 3) (.text "01"), errorOf (some 3) (.text "001")] =
+    [none, none, some .totalDigitsTooLong, none, none, some .integerDigitsTooLong, none, none, none] := by
+  native_decide
+
 end A12Kernel.Dm.NumberLengthLocks
