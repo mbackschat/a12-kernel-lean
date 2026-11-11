@@ -6,7 +6,7 @@
 
 The owner, as a12-dmkits' owner, adds **contradiction detection** to the test data generator: when the generator answers `solverReportedUnsatWithinBounds`, it can also name an explanation, a set of the model's own constraints that conflict. SME's Rule Contradiction Detection does the same from SME's own generator, by a12-dmkits' reading of SME 12.5.2 recorded in its feature gaps at `802b930fe0ab1edec13d7b1f19437dfa0cd3069f`, whose contradiction-analysis family that SME feature inspired.
 
-This is that generator's question asked from its UNSAT side, not a new analysis: profile `test-data-v1`, kernel 31.3.1, DM 29.8.0, both acceptance relations, the encoder, solver protocol, interpreter replay and model check are the test data generator's as handed back at a12-dmkits `166530750a756574558f396b1b7097733b6b0c44`, unchanged in meaning: `model generate-test-data` keeps its semantics and result bytes. Their code may change, for instance to guard each removable constraint with an assumption literal and solve with `check-sat-assuming`; an interpreter fix re-pins the catalog check against kernel 31.3.1 and is reported.
+This is that generator's question asked from its UNSAT side, not a new analysis: profile `test-data-v1`, kernel 31.3.1, DM 29.8.0, both acceptance relations, the encoder, solver protocol, interpreter replay and model check are the test data generator's as handed back at a12-dmkits `166530750a756574558f396b1b7097733b6b0c44`, unchanged in meaning: `model generate-test-data` keeps its semantics and result bytes. Their code may change, for instance to steer the search with an unsat core; an interpreter fix re-pins the catalog check against kernel 31.3.1 and is reported.
 
 By owner decision of 2026-11-11 it extends the test data generator and takes no fresh gap ID: the feature gaps' rule of a fresh ID per contradiction analysis serves analyses that ask a different question, such as Q1 and Q3, and this one asks Q2's.
 
@@ -27,8 +27,10 @@ In short: the removable constraints are a model's authored rules, each field's a
 
 ## Responsibilities
 
-- **a12-dmkits** computes an explanation for a model it answered `solverReportedUnsatWithinBounds` under one relation. The search method is its own; an unsat core over one assumption per removable constraint, shrunk by removing one member at a time, is one route. Every reduced model it solves passes the whole admission it applies to its input. It screens each removable constraint up front by removing it alone from the input model; one whose removal admission refuses joins the fixed part. Each member's reported witness is accepted by the interpreter's replay on that member's final reduced model, `S` without it, whether re-solved there or found earlier and replayed there; a set is reported only when all of them are.
-- **No set is reported unverified.** When a solver answer during the search is neither SAT nor UNSAT, a replay rejects a witness or the model check refuses a reduced model, the result names no set and says which of the three occurred.
+- **a12-dmkits** computes an explanation for a model it answered `solverReportedUnsatWithinBounds` under one relation.
+- **The search method is a12-dmkits' own**, but `S`'s UNSAT and every reported witness come from the generator run on the rewritten reduced model: an assumption literal guarding a constraint is not its removal, since the encoder also reads declared bounds outside the domain constraint. An unsat core may steer the search, and shrinking by removing one member at a time is one route. When the fixed part alone accepts no document, the explanation is the empty set.
+- **Admission and witnesses.** Every reduced model it solves passes the whole admission it applies to its input. It screens each removable constraint up front by removing it alone from the input model; one whose removal admission refuses joins the fixed part. Each member's reported witness is accepted by the interpreter's replay on that member's final reduced model, `S` without it; a witness found earlier that this replay rejects is replaced by solving that model, and a set is reported only when every final model's own witness is accepted.
+- **No set is reported unverified.** When a solver answer during the search is neither SAT nor UNSAT, a replay rejects a final model's own witness or the model check refuses a reduced model, the result names no set and says which of the three occurred.
 - **This repository** owns the semantics in `spec/` and the contract in Q2-P9, and answers a semantic disagreement through its normal route. It writes no a12-dmkits code.
 
 ## Public surface
@@ -37,7 +39,7 @@ Recommended, a12-dmkits deciding: a verb of its own beside `model generate-test-
 
 ## Versioned bytes of a result
 
-The test data generator's result for the same model and relation, and in addition either the explanation or the reason none was produced. The explanation lists each member by its kind, `rule`, `required` or `bound`, and its element path in the expanded model, a bound also naming its member, so a bound a type definition declares is one constraint per field; for each member the witness its removal admitted; the kinds this profile keeps fixed; and every constraint admission fixed, by identity. It names its own contract revision, the one this proposal is handed off at. A model the generator does not answer `solverReportedUnsatWithinBounds` gets the generator's result alone. The row bounds are the generator's UNSAT bounds, and an explanation found below a group's declared repeatability conflicts only within them. A result names an explanation, never the explanation. The byte layout is a12-dmkits'.
+The test data generator's result for the same model and relation, and in addition either the explanation or the reason none was produced. The explanation lists each member by its kind, `rule`, `required` or `bound`, and its element path in the expanded model, a bound also naming its member, so a bound a type definition declares is one constraint per field; for each member the witness its removal admitted; and every constraint admission fixed, by identity. It names its own contract revision, the one this proposal is handed off at. A model the generator does not answer `solverReportedUnsatWithinBounds` gets the generator's result alone. The row bounds are the generator's UNSAT bounds, and an explanation found below a group's declared repeatability conflicts only within them. A result names an explanation, never the explanation. The byte layout is a12-dmkits'.
 
 ## Acceptance gates
 
@@ -47,7 +49,7 @@ The test data generator's result for the same model and relation, and in additio
 
 ## Handback
 
-The committed a12-dmkits revision and the one command that runs gates 1 to 3. Per control and relation: the explanation and its removal witnesses. The mutation kill table. Any semantic disagreement as an a12-dmkits finding with its kernel measurement, which this repository records as inbound provenance rather than as another outbound entry.
+The committed a12-dmkits revision and the one command that runs gates 1 to 3, together with the test data generator's gates 1 to 4 still passing at that revision; a moved mutation anchor may be updated if its named seam is still killed. Per control and relation: the explanation and its removal witnesses. The mutation kill table. Any semantic disagreement as an a12-dmkits finding with its kernel measurement, which this repository records as inbound provenance rather than as another outbound entry.
 
 ## Excluded
 
