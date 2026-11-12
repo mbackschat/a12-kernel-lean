@@ -177,11 +177,10 @@ example : [true, false].all (fun strict =>
     inhabited (full (include_str "../../../evidence/kernel-31.3.1/captures/q2p10-controls-2026-11-12/FRowBound-GoalY.json"))
       (documents (include_str "../../../evidence/kernel-31.3.1/captures/q2p10-controls-2026-11-12/request-FRowBound-GoalY.json")) strict) = true := by native_decide
 
-/-- The goal on `Y` written unstarred, `NumberOfFilledFields(Rows/Y) == 0`, would read one row at a time;
-the Kernel's model check refuses that model with `MVK_PARAMSIZE_INVALIDN` (the
-[checkpoint](../../../docs/sources/kernel-31-calibration-probes.md#src-q2p10-fillability-controls)), and
-Lean refuses its goal rule with the same class, so a goal iterating the group gets a refusal where `Y` is
-filled. -/
+/-- The goal on `Y` written unstarred, `NumberOfFilledFields(Rows/Y) == 0`, counts one unstarred field
+only, below the operand arity; the Kernel's model check refuses that model with `MVK_PARAMSIZE_INVALIDN`
+(the [checkpoint](../../../docs/sources/kernel-31-calibration-probes.md#src-q2p10-fillability-controls)),
+and Lean refuses its goal rule with the same class, so this goal rule is refused where `Y` is filled. -/
 example : (do
     let dm ← (parsed (include_str "../../../evidence/kernel-31.3.1/captures/q2p10-controls-2026-11-12/FRowBound-GoalYUnstarred.json")).bind (readModel · |>.toOption)
     let language ← Language.ofCode? dm.conditionLanguage
