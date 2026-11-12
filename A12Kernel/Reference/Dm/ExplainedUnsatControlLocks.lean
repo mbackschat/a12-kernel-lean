@@ -52,18 +52,28 @@ private def named (element : Json) (kind name : String) : Bool :=
   (element.getObjValAs? String "type").toOption == some kind &&
     (element.getObjValAs? String "name").toOption == some name
 
-/-- The model without one constraint. -/
+/-- Apply `change` to the root group's elements and, recursively, to every nested group's, so a control
+may declare a field inside a repeatable group. -/
+private partial def deep (change : Array Json → Array Json) (elements : Array Json) : Array Json :=
+  (change elements).map fun element =>
+    if (element.getObjValAs? String "type").toOption == some "Group" then
+      modify element "Group" fun body => modify body "elements" fun
+        | .arr inner => .arr (deep change inner)
+        | other => other
+    else element
+
+/-- The model without one constraint, which every control names uniquely. -/
 def remove (model : Json) : Constraint → Json
-  | .rule name => mapElements (·.filter fun element => !named element "Rule" name) model
-  | .required field => mapElements (·.map fun element =>
-      if named element "Field" field then modify element "Field" (withoutKey · "requirednessConfig") else element) model
-  | .bound field member => mapElements (·.map fun element =>
+  | .rule name => mapElements (deep (·.filter fun element => !named element "Rule" name)) model
+  | .required field => mapElements (deep (·.map fun element =>
+      if named element "Field" field then modify element "Field" (withoutKey · "requirednessConfig") else element)) model
+  | .bound field member => mapElements (deep (·.map fun element =>
       if named element "Field" field then
         modify element "Field" fun body => modify body "fieldType" fun type =>
           match type.getObjValAs? String "type" with
           | .ok kind => modify type kind (withoutKey · member)
           | .error _ => type
-      else element) model
+      else element)) model
 
 /-- The model keeping, of the removable constraints `all`, only `kept`. -/
 def keeping (model : Json) (all kept : List Constraint) : Json :=

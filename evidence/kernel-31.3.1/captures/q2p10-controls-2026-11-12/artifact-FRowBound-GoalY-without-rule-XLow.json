@@ -1,0 +1,1003 @@
+{
+  "schemaVersion" : 1,
+  "producer" : {
+    "dmtoolVersion" : "0.15.0",
+    "kernel" : {
+      "builtAgainst" : "31.3.1",
+      "runtime" : "31.3.1"
+    },
+    "source" : {
+      "revision" : "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+      "state" : "CLEAN"
+    }
+  },
+  "request" : {
+    "model" : "FRowBound-GoalY-without-rule-XLow.json",
+    "locale" : "en_US",
+    "clock" : "2026-11-12T10:00:00Z"
+  },
+  "rows" : [
+    {
+      "name" : "noroot",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "norows",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "rows-none",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-absent",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-empty",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-text",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlHatUngueltigeZeichen",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-fraction",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlHatDezimalTrenner",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-minus1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuKlein",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-0",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-2",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-3",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-4",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-5",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-6",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-10",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row2-X-1.X-absent",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row2-X-1.X-1",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row2-X-1.X-10",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows[2]/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[2]/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "GoalY",
+              "field" : "Probe/Rows/Y",
+              "severity" : "ERROR",
+              "type" : "OMISSION_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "/Probe[1]/Rows[0]/Y"
+              ],
+              "fillToFix" : [
+                "/Probe[1]/Rows[0]/Y"
+              ]
+            },
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows[2]/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows[2]/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-Y-true",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [ ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [ ]
+        }
+      ]
+    },
+    {
+      "name" : "row1-X-10.Y-true",
+      "enginesAgree" : true,
+      "engines" : [
+        {
+          "engine" : "kernel-groovy-dynamic",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        },
+        {
+          "engine" : "kernel-java-static",
+          "messages" : [
+            {
+              "code" : "zahlZuGross",
+              "field" : "Probe/Rows/X",
+              "severity" : "ERROR",
+              "type" : "VALUE_ERROR",
+              "message" : "[redacted: Kernel message text, EUPL localisation resource]",
+              "referenced" : [
+                "Probe/Rows/X"
+              ],
+              "fillToFix" : [ ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,250 @@
+{
+ "model": "FRowBound.json",
+ "clock": "2026-11-12T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "noroot",
+   "documentInline": {}
+  },
+  {
+   "name": "norows",
+   "documentInline": {
+    "Probe": {}
+   }
+  },
+  {
+   "name": "rows-none",
+   "documentInline": {
+    "Probe": {
+     "Rows": []
+    }
+   }
+  },
+  {
+   "name": "row1-X-absent",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-empty",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": ""
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-text",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": "x"
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-fraction",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 0.5
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-minus1",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": -1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-0",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 0
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-1",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-2",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 2
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-3",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 3
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-4",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 4
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-5",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 5
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-6",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 6
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-10",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 10
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row2-X-1.X-absent",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 1
+      },
+      {}
+     ]
+    }
+   }
+  },
+  {
+   "name": "row2-X-1.X-1",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 1
+      },
+      {
+       "X": 1
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row2-X-1.X-10",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 1
+      },
+      {
+       "X": 10
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-Y-true",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "Y": true
+      }
+     ]
+    }
+   }
+  },
+  {
+   "name": "row1-X-10.Y-true",
+   "documentInline": {
+    "Probe": {
+     "Rows": [
+      {
+       "X": 10,
+       "Y": true
+      }
+     ]
+    }
+   }
+  }
+ ]
+}

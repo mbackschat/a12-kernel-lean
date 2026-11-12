@@ -1,0 +1,228 @@
+{
+ "model": "FForbidden-GoalC.json",
+ "clock": "2026-11-12T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "noroot",
+   "documentInline": {}
+  },
+  {
+   "name": "A-absent.C-absent",
+   "documentInline": {
+    "Probe": {}
+   }
+  },
+  {
+   "name": "A-absent.C-empty",
+   "documentInline": {
+    "Probe": {
+     "C": ""
+    }
+   }
+  },
+  {
+   "name": "A-absent.C-true",
+   "documentInline": {
+    "Probe": {
+     "C": true
+    }
+   }
+  },
+  {
+   "name": "A-absent.C-false",
+   "documentInline": {
+    "Probe": {
+     "C": false
+    }
+   }
+  },
+  {
+   "name": "A-absent.C-invalid",
+   "documentInline": {
+    "Probe": {
+     "C": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-empty.C-absent",
+   "documentInline": {
+    "Probe": {
+     "A": ""
+    }
+   }
+  },
+  {
+   "name": "A-empty.C-empty",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "C": ""
+    }
+   }
+  },
+  {
+   "name": "A-empty.C-true",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "C": true
+    }
+   }
+  },
+  {
+   "name": "A-empty.C-false",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "C": false
+    }
+   }
+  },
+  {
+   "name": "A-empty.C-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": "",
+     "C": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-true.C-absent",
+   "documentInline": {
+    "Probe": {
+     "A": true
+    }
+   }
+  },
+  {
+   "name": "A-true.C-empty",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "C": ""
+    }
+   }
+  },
+  {
+   "name": "A-true.C-true",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "C": true
+    }
+   }
+  },
+  {
+   "name": "A-true.C-false",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "C": false
+    }
+   }
+  },
+  {
+   "name": "A-true.C-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": true,
+     "C": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-false.C-absent",
+   "documentInline": {
+    "Probe": {
+     "A": false
+    }
+   }
+  },
+  {
+   "name": "A-false.C-empty",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "C": ""
+    }
+   }
+  },
+  {
+   "name": "A-false.C-true",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "C": true
+    }
+   }
+  },
+  {
+   "name": "A-false.C-false",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "C": false
+    }
+   }
+  },
+  {
+   "name": "A-false.C-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": false,
+     "C": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-invalid.C-absent",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe"
+    }
+   }
+  },
+  {
+   "name": "A-invalid.C-empty",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "C": ""
+    }
+   }
+  },
+  {
+   "name": "A-invalid.C-true",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "C": true
+    }
+   }
+  },
+  {
+   "name": "A-invalid.C-false",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "C": false
+    }
+   }
+  },
+  {
+   "name": "A-invalid.C-invalid",
+   "documentInline": {
+    "Probe": {
+     "A": "maybe",
+     "C": "maybe"
+    }
+   }
+  }
+ ]
+}
