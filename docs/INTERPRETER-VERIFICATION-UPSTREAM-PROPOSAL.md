@@ -39,6 +39,7 @@ One entry per request, naming its path relative to its root, `lean` for the extr
 | `refusedKernel` | that oracle stops otherwise |
 | `refusedInterpreter` | loading the model or the clock stops it |
 | `noRows` | it ends before handling any row because it has none |
+| `refusedOther` | any other stage stops it before its first row, the bindings check and the reading of the model or rows included; the stage is named |
 
 A `refused…` reason carries the fully qualified class of the outermost throwable, or the token `Timeout` or `ProcessExit` when the time limit or the run process ending before recording that stage's result stopped it; after either token the run resumes in a fresh process at the next request.
 
@@ -47,11 +48,11 @@ Every other request has, for each of its rows, one outcome for the call `full`, 
 | Outcome | When | Carries |
 |---|---|---|
 | `unsupported` | the support audit, `DmInterpreter.validate` on the row's document as at `d2ac4c039`, returns a non-empty `unsupported` list; recorded on each call of the row; no other unsupported list is read, and an assertion elsewhere that nothing is declined is a `raise` | each entry's `rulePath` |
-| `raise` | a `Throwable` escapes a side's handling of the call; when the audit raises, exceeds its limit or ends the process, that class or token is the interpreter side of each call of the row, and the run continues with the `full` kernel side; a side exceeding its limit is `Timeout`, and the run process ending before recording a running side's result is `ProcessExit` on that side, call and row, the run then resuming in a fresh process at the next side, call or row | the side, `kernel`, `interpreter` or `both`, and for each raising side the fully qualified class of the outermost throwable or the token `Timeout` or `ProcessExit`, without a message |
+| `raise` | a `Throwable` escapes a side's handling of the call, or the comparison of the call's two results raises, exceeds its limit or ends the process, recorded with side `comparison`; when the audit raises, exceeds its limit or ends the process, that class or token is the interpreter side of each call of the row, and the run continues with the `full` kernel side; a side exceeding its limit is `Timeout`, and the run process ending before recording a running side's result is `ProcessExit` on that side, call and row, the run then resuming in a fresh process at the next side, call or row | the side, `kernel`, `interpreter`, `both` or `comparison`, and for each raising side the fully qualified class of the outermost throwable or the token `Timeout` or `ProcessExit`, without a message |
 | `diff` | a compared channel disagrees | each disagreeing line as the comparison prints it, with its channel and side |
 | `ok` | otherwise | nothing more |
 
-A side the run cannot record for any other reason, such as a request stage that stops when a resumed process repeats it, is a `raise` with the token `ProcessExit`, or `Timeout` when its limit was exceeded, so every row and call keeps one outcome; tables may then differ between implementations only on such sides. A rule failure the kernel reports as a message is a message and compares as one. A model that does not declare `en_US` is not stopped before its rows; they end as the rules above meet them.
+A side the run cannot record for any other reason, such as a request stage that stops when a resumed process repeats it, is a `raise` with the token `Timeout` when any limit, of a stage or of a side, was exceeded, and `ProcessExit` otherwise, so every row and call keeps one outcome; tables may then differ between implementations only on such sides. A rule failure the kernel reports as a message is a message and compares as one. A model that does not declare `en_US` is not stopped before its rows; they end as the rules above meet them.
 
 ## Acceptance gates
 
