@@ -38,16 +38,16 @@ One entry per request, naming its path relative to its root, `lean` for the extr
 | `modelRefused` | the consistency oracle raises exactly `KernelRuntimeProbe.Refused` |
 | `refusedKernel` | that oracle stops otherwise |
 | `refusedInterpreter` | loading the model or the clock stops it |
-| `noRows` | it has no rows |
+| `noRows` | it ends before handling any row because it has none |
 
-A `refused…` reason carries the fully qualified class of the outermost throwable, or the token `Timeout` or `ProcessExit` when the time limit or a dying run process stopped that stage.
+A `refused…` reason carries the fully qualified class of the outermost throwable, or the token `Timeout` or `ProcessExit` when the time limit or the run process ending before recording that stage's result stopped it.
 
-Every other request has, for each of its rows, one outcome for the call `full`, which covers `validateFull` and the computation together, and, when the row names `relevant`, an empty list included, one for the call `partial`. Both sides are run for every row and call whatever the other side does. The outcome is the first that applies:
+Every other request has, for each of its rows, one outcome for the call `full`, which covers `validateFull` and the computation together, and, when the row names `relevant`, an empty list included, one for the call `partial`. The support audit runs first for each row; then both sides of each call run whatever the other side does, except that the interpreter sides are not run on an `unsupported` row or after the audit raises. A time limit the handback states applies separately to each request stage, to the audit and to each side. The outcome is the first that applies:
 
 | Outcome | When | Carries |
 |---|---|---|
-| `unsupported` | the support audit, `DmInterpreter.validate` on the row's document as at `d2ac4c039`, declines a rule; recorded on both calls of the row, whose kernel sides still run; no other unsupported list is read, and an assertion elsewhere that nothing is declined is a `raise` | the audit's declined rule paths |
-| `raise` | a `Throwable` escapes a side's handling of the call; reading the row's document and the support audit belong to the interpreter side of both calls; a side exceeding a per-side time limit the handback states is `Timeout`, and a run process that dies is `ProcessExit` on the side, call and row it was running, the run then resuming in a fresh process at the next side, call or row | the side, `kernel`, `interpreter` or `both`, and for each raising side the fully qualified class of the outermost throwable or the token `Timeout` or `ProcessExit`, without a message |
+| `unsupported` | the support audit, `DmInterpreter.validate` on the row's document as at `d2ac4c039`, returns a non-empty `unsupported` list; recorded on both calls of the row; no other unsupported list is read, and an assertion elsewhere that nothing is declined is a `raise` | each entry's `rulePath` |
+| `raise` | a `Throwable` escapes a side's handling of the call; when reading the row's document or the audit raises, exceeds its limit or ends the process, that class or token is the interpreter side of both calls, and the run continues with the `full` kernel side; a side exceeding its limit is `Timeout`, and the run process ending before recording a running side's result is `ProcessExit` on that side, call and row, the run then resuming in a fresh process at the next side, call or row | the side, `kernel`, `interpreter` or `both`, and for each raising side the fully qualified class of the outermost throwable or the token `Timeout` or `ProcessExit`, without a message |
 | `diff` | a compared channel disagrees | each disagreeing line as the comparison prints it, with its channel and side |
 | `ok` | otherwise | nothing more |
 
@@ -56,7 +56,7 @@ A rule failure the kernel reports as a message is a message and compares as one.
 ## Acceptance gates
 
 1. **Coverage.** Each of the 672 requests appears exactly once; a request that is not `notRun` has exactly one outcome per row for `full`, and one for `partial` exactly on the rows naming `relevant`.
-2. **Instrument.** Each instrument change has a red/green regression test: a request whose one row raises on the interpreter side reports that row's kernel side and outcomes for its other rows, and a message both sides report, one of them twice, is a `diff`.
+2. **Instrument.** Each instrument change has a red/green regression test: a request whose one row raises on the interpreter side of `full` records that row's `full` as `raise` on side `interpreter` alone, and outcomes for its `partial` call and its other rows, and a message both sides report, one of them twice, is a `diff`.
 3. **Unchanged interpreter.** The interpreter diff above is empty at R and the checkout is clean before and after the run.
 
 ## Handback
