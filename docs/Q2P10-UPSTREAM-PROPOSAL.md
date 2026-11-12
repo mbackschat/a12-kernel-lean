@@ -6,7 +6,7 @@
 
 The owner, as a12-dmkits' owner, adds **field fillability** to contradiction detection: for one field of a model, whether an accepted document fills it, and when none does, a contradiction explanation of why. SME's Rule Contradictions report such fields beside whole-model conflicts, by a12-dmkits' SME comparison of 2026-11-12, which this repository has not re-read.
 
-The question is the test data generator's, asked of a rewritten model: profile `test-data-v1`, kernel 31.3.1, DM 29.8.0, both acceptance relations, the encoder, solver protocol, interpreter replay, model check and contradiction search are those a12-dmkits hands back for Q2-P9 at the revision the hand-off task names, unchanged in meaning: `model generate-test-data` and contradiction detection without a field keep their semantics and result bytes.
+The question is the test data generator's, asked of a rewritten model: profile `test-data-v1`, kernel 31.3.1, DM 29.8.0, both acceptance relations, the encoder, solver protocol, interpreter replay, model check and contradiction search are those a12-dmkits handed back for Q2-P9 at `543a718e0348bcdcad8f3b403ebe2ece122bd932`, implementation `4882b48424b6f85213297db6e71461c8b9b90c50`, unchanged in meaning: `model generate-test-data` and contradiction detection without a field keep their semantics and result bytes.
 
 The code and the roadmap are a12-dmkits'; this repository supplies the contract and checks the handback.
 
@@ -27,7 +27,7 @@ In short: for a field `E` and one relation, the goal model is the model plus one
 
 - **a12-dmkits** writes the goal model, renders the goal rule in the model's condition language with a name, code and texts no model element already uses, and runs the generator on it unchanged. When the generator's admission refuses the goal model, that refusal is the goal model's result, and the result still carries the model's own answer.
 - **The model's own answer** is the generator's result for the model under the same relation, row bounds and limits as the goal model; a12-dmkits may compute it once and reuse it for every field it asks of that model and relation.
-- **The explanation** follows Q2-P9's responsibilities, admission screen, final verification and no-set rule on the goal model, whose removable constraints are the model's own; where Q2-P9 names the model and its own answer, read the goal model and its answer. Each removal witness fills `E`, since every final model keeps the goal rule.
+- **The explanation** is contradiction detection as handed back, under Q2-P9's `admission`, `explanation-runs` and `result`, run on the goal model, whose removable constraints are the model's own; where Q2-P9 names the model and its own answer, read the goal model and its answer. Each removal witness fills `E`, since every final model keeps the goal rule.
 - **This repository** owns the semantics in `spec/` and the contract in Q2-P10, and answers a semantic disagreement through its normal route. It writes no a12-dmkits code.
 
 ## Public surface

@@ -2,6 +2,16 @@
 
 [Source registry](../SOURCES.md) owns authority and drill routing. Handbacks from a12-dmkits' test data generator work on Q2 ([plan](../PLAN.md#q2-preparation-checklist)), each with its reviewed revision and claim limits; earlier handbacks stay in [the general shard](inbound-handbacks.md).
 
+<a id="src-inbound-2026-11-12"></a>
+## Reviewed the 2026-11-12 Q2-P9 handback: contradiction detection passes gates 1 to 3 and every removal witness agrees with Lean
+
+- `source`: Peer handback `a12-kernel-lean-spec-corrections-2026-11-12.md`, carried by the owner and kept as no file; Q2-P9's terminal handback, superseding the same session's unsent preliminary draft.
+- `revision`: a12-dmkits `543a718e0348bcdcad8f3b403ebe2ece122bd932` on `feature/q2`, read with `git` only, an evidence-only commit on the implementation `4882b48424b6f85213297db6e71461c8b9b90c50`; the contract read is a12-kernel-lean `1d601b699fa046781fec06c75810233bc4bc54ee`, named in every explanation, and every embedded generator result keeps `6ae7515f1e60837b365d1c601c8892276b08f8a7`. All 58 files of `test-data-generator/evidence/contradictions-2026-11-12/MANIFEST.sha256` match.
+- `oracle`: kernel 31.3.1, both strategies, through `:adapter:kernelProbe` on dmtool 0.16.0 at the clean producer `4882b4842`, read here from the committed artifacts. The gates command was not rerun here.
+- `gates`: `scripts/run-typescript.sh "Contradiction gates" scripts/typescript/tdg-contradiction-gates.ts <fresh output directory>`, reported passing gates 1 to 3, with Q2's gates 1 to 4 reported passing at the same revision. Each of the four controls under each relation is answered `verifiedContradictionExplanation` with nothing fixed by admission: the three `A` rules for `XUnrelated`, the `B` trio for `XDisjoint`, the required role of `A` with both rules for `XRequired`, and `NLow`, `maxValue` of `N` and the required role of `N` for `XBound`, each one of the sets [`ExplainedUnsatControlLocks`](../../A12Kernel/Reference/Dm/ExplainedUnsatControlLocks.lean) lists. The three named seams are killed.
+- `review`: A HIGH reconciliation on 2026-11-12 replayed the 24 removal witnesses through Lean against the twelve kernel artifacts: every row is accepted under both relations on both sides, and each of the twelve reduced models equals, as JSON, the lock's own model keeping the explanation without the removed member.
+- `adopted`: no semantic change; the owner's names apply, `model detect-contradictions` for the operation and contradiction explanation for a verified set, and [Q2-P9](../PLAN.md#q2-preparation-checklist) is closed.
+
 <a id="src-inbound-2026-11-11e"></a>
 ## Reviewed the 2026-11-11e Q2 terminal handback: gates 1 to 4 pass, a captured `Having` read makes the rule iterate, and the gate-4 refusals agree with Lean
 
