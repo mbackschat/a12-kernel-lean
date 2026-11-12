@@ -1,0 +1,115 @@
+{
+ "header": {
+  "id": "FRowBound_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "FRowBound_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/Probe",
+     "name": "Probe",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Group",
+        "id": "/Probe/Rows",
+        "name": "Rows",
+        "Group": {
+         "repeatability": 3,
+         "elements": [
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/X",
+           "name": "X",
+           "Field": {
+            "fieldType": {
+             "type": "NumberType",
+             "NumberType": {
+              "maxFractionalDigits": 0,
+              "minValue": 0,
+              "maxValue": 5
+             }
+            }
+           }
+          },
+          {
+           "type": "Field",
+           "id": "/Probe/Rows/Y",
+           "name": "Y",
+           "Field": {
+            "fieldType": {
+             "type": "BooleanType",
+             "BooleanType": {}
+            }
+           }
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/XLow",
+        "name": "XLow",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/X",
+         "errorCode": "XLow",
+         "errorCondition": "FieldFilled(Rows/X) And [Rows/X] < 10",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "XLow"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/Probe/GoalY",
+        "name": "GoalY",
+        "Rule": {
+         "errorEntityRelPath": "../Rows/Y",
+         "errorCode": "GoalY",
+         "errorCondition": "NumberOfFilledFields(Rows/Y) == 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "GoalY"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}
