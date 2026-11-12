@@ -583,8 +583,10 @@ def OrderedNumericComparison.evalSelectedResult (comparison : OrderedNumericComp
   let right ← comparison.right.mapM (·.resolveResult context isRelevant)
   let resolved : NumericComparisonOf (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
     { comparison with left, right }
+  if resolved.reachesPowerScaleRange id then throw .powerScaleRange
   pure (resolved.evalWith id)
 
+/-- The addressed counterpart of `evalSelectedResult`; a power's scale-range raise is a fault the rule handler catches. -/
 def OrderedNumericComparison.evalAddressedResult (comparison : OrderedNumericComparison model)
     (context : AddressedValidationEvaluationContext model) :
     Except (Sum CheckedAddressingError ScalarTemporalEvaluationFault) Verdict := do
@@ -592,6 +594,7 @@ def OrderedNumericComparison.evalAddressedResult (comparison : OrderedNumericCom
   let right ← comparison.right.mapM (·.resolveAddressedResult context)
   let resolved : NumericComparisonOf (Except NumericValidationUnavailable NumericArithmeticOutcome) :=
     { comparison with left, right }
+  if resolved.reachesPowerScaleRange id then throw (.inr .powerScaleRange)
   pure (resolved.evalWith id)
 
 private def resolvePartialValueCount (context : AddressedValidationEvaluationContext model)
@@ -761,6 +764,7 @@ def OrderedNumericComparison.evalAddressedPartialResult?
         right
         suppressExactScaleWarning := comparison.suppressExactScaleWarning
       }
+      if resolved.reachesPowerScaleRange id then throw (.inr .powerScaleRange)
       pure (resolved.evalWith id)
   else
     none

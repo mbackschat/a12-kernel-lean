@@ -235,7 +235,7 @@ theorem numericArithmeticOutcome_power_rejected_exponent
     (rejected : checkedPowerExponent? exponent = none) :
     NumericArithmeticOutcome.power
       (.value base baseFill) (.value exponent exponentFill) = .notEvaluated := by
-  simp [NumericArithmeticOutcome.power, powerNumeric, rejected]
+  simp [NumericArithmeticOutcome.power, powerNumeric, powerChecked, rejected]
 
 theorem numericArithmeticOutcome_power_values_notEvaluated_iff
     (base exponent : Rat) (baseFill exponentFill : NumericFillability) :

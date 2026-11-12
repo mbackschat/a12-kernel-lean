@@ -221,19 +221,21 @@ theorem validationCondition_hasHaving_or
       (left.hasHaving || right.hasHaving) := by
   rfl
 
-/-- A relevant checked numeric comparison evaluates exactly as its existing resolved core. -/
+/-- A relevant checked numeric comparison without a power evaluates exactly as its existing resolved core; one holding a power reads through the ordered carrier, which reports the power's scale-range raise. -/
 @[simp]
 theorem validationCondition_numeric_evalSelected_of_relevant
     (model : FlatModel) (comparison : NumericComparison)
     (context : ValidationEvaluationContext)
     (isRelevant : FlatRelevance)
-    (relevant : comparison.allRelevant isRelevant = true) :
+    (relevant : comparison.allRelevant isRelevant = true)
+    (noPower : (comparison.left.holdsPower || comparison.right.holdsPower) = false) :
     (ValidationCondition.numeric (model := model) comparison).evalSelected
         context isRelevant =
       comparison.evalSelectedWithGroups context := by
+  simp only [Bool.or_eq_false_iff] at noPower
   simp [ValidationCondition.numeric, ValidationCondition.evalSelected, ValidationCondition.evalSelectedResult, ValidationCondition.evalWithTemporalResult,
     Except.mapError, Except.toOption,
-    ValidationConditionLeaf.evalSelected, relevant]
+    ValidationConditionLeaf.evalSelected, relevant, noPower.1, noPower.2]
 
 /-- A reached resolved group leaf delegates exactly to the established product-state operator. -/
 @[simp]

@@ -1,4 +1,5 @@
 import A12Kernel.Semantics.NumericArithmetic
+import A12Kernel.Semantics.NumericComputationResult
 
 /-! # Precision-50 numeric-arithmetic separating cases -/
 
@@ -101,8 +102,8 @@ private def powerSevenAtWorkingPrecision (precision : Nat) (base : Rat) : Rat :=
 private def workingPrecisionBase : Rat := 484893708568307 / 10 ^ 15
 
 /- Exponent seven requires work precision 52; omitting X3.274's final guard digit changes the result. -/
-example : positivePower workingPrecisionBase 7 =
-    63026885189266057080768245915433088146473404170653 / 10 ^ 52 := by
+example : (positivePower workingPrecisionBase 7).toOption =
+    some ((63026885189266057080768245915433088146473404170653 : Rat) / 10 ^ 52) := by
   native_decide
 
 example : powerSevenAtWorkingPrecision 51 workingPrecisionBase =
@@ -149,6 +150,45 @@ example : powerNumeric 1 1001 = .notEvaluated := by
   native_decide
 
 example : powerNumeric 1 (-1001) = .notEvaluated := by
+  native_decide
+
+private def nestedHostPower (base : HostDecimal) (exponents : List Nat) :
+    Except HostScaleRangeFailure HostDecimal :=
+  exponents.foldlM HostDecimal.power base
+
+/- The host's scale bound is exact: `10^-14` through `341`, `453` and `993` ends one below it, at scale
+`2147483646`, and through `359`, `633` and `675` ends 503 beyond it (Kernel rows `small-in-range-just-in`,
+which then fails at the comparison's rescale, and `small-underflow-just-out`). A zero base never raises: a
+zero left factor clamps the scale instead. `HostScaleRangeFailure` has one constructor, so `none` is the
+raise. -/
+example : (nestedHostPower ⟨1, 14⟩ [341, 453, 993]).toOption = some ⟨1, 2147483646⟩ ∧
+    (nestedHostPower ⟨1, 14⟩ [359, 633, 675]).toOption = none ∧
+    (nestedHostPower ⟨0, 14⟩ [359, 633, 675]).toOption = some ⟨0, hostScaleMax⟩ := by
+  native_decide
+
+/- Rounding lowers the scale and can cross the lower bound when the product's own scale is in range. -/
+example : (HostDecimal.roundToPrecision 50 ⟨10 ^ 60 - 1, hostScaleMin + 5⟩).toOption = none ∧
+    (HostDecimal.roundToPrecision 50 ⟨10 ^ 60 - 1, hostScaleMin + 11⟩).toOption =
+      some ⟨10 ^ 49, hostScaleMin⟩ := by
+  native_decide
+
+private def nestedPowerChecked (base : Rat) (exponents : List Rat) :
+    Except HostScaleRangeFailure NumericArithmeticResult :=
+  exponents.foldlM (fun result exponent => match result with
+    | .value amount => powerChecked amount exponent
+    | .notEvaluated => .ok .notEvaluated) (.value base)
+
+/- The KF690 rows: `1000` and `0.001` through `1000` three times raise, `1` stays `1`, and the exponent
+`1001` is the quiet domain failure. -/
+example : (nestedPowerChecked 1000 [1000, 1000, 1000]).toOption = none ∧
+    (nestedPowerChecked (1 / 1000) [1000, 1000, 1000]).toOption = none ∧
+    (nestedPowerChecked 1 [1000, 1000, 1000]).toOption = some (.value 1) ∧
+    (nestedPowerChecked 1000 [1001, 1001, 1001]).toOption = some .notEvaluated := by
+  native_decide
+
+/- The raise has no value for power's consumers: a computation's target receives it as a domain failure. -/
+example : powerNumeric (10 ^ 3000000 : Nat) 1000 = .notEvaluated ∧
+    NumericComputationResult.evalPower (.value (10 ^ 3000000 : Nat)) (.value 1000) = .domainFailure := by
   native_decide
 
 end A12Kernel.Conformance.NumericArithmetic

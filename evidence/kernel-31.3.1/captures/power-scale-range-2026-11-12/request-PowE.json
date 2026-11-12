@@ -1,0 +1,75 @@
+{
+ "model": "PowE.json",
+ "clock": "2026-11-12T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull",
+  "compute"
+ ],
+ "rows": [
+  {
+   "name": "malformed-sibling",
+   "documentInline": {
+    "P": {
+     "Big": 999999999999999,
+     "E1": 1000,
+     "E2": 1000,
+     "E3": 144,
+     "Z": 1,
+     "M": 1.5
+    }
+   }
+  },
+  {
+   "name": "empty-sibling",
+   "documentInline": {
+    "P": {
+     "Big": 999999999999999,
+     "E1": 1000,
+     "E2": 1000,
+     "E3": 144,
+     "Z": 1
+    }
+   }
+  },
+  {
+   "name": "zero-divisor-sibling",
+   "documentInline": {
+    "P": {
+     "Big": 999999999999999,
+     "E1": 1000,
+     "E2": 1000,
+     "E3": 144,
+     "Z": 0,
+     "M": 1
+    }
+   }
+  },
+  {
+   "name": "valued-sibling-control",
+   "documentInline": {
+    "P": {
+     "Big": 999999999999999,
+     "E1": 1000,
+     "E2": 1000,
+     "E3": 144,
+     "Z": 1,
+     "M": 1
+    }
+   }
+  },
+  {
+   "name": "in-range-malformed-control",
+   "documentInline": {
+    "P": {
+     "Big": 999999999999999,
+     "E1": 1000,
+     "E2": 1000,
+     "E3": 1,
+     "Z": 1,
+     "M": 1.5
+    }
+   }
+  }
+ ]
+}

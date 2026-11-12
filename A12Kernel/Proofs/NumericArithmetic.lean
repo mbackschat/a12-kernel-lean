@@ -96,18 +96,25 @@ theorem divideNumeric_zero_dividend (divisor : Rat) (nonzero : divisor ≠ 0) :
     roundMathContext50_zero]
 
 theorem positivePower_zero (base : Rat) :
-    positivePower base 0 = 1 := by
+    positivePower base 0 = .ok 1 := by
   rfl
 
 theorem powerNumeric_of_rejected_exponent (base exponent : Rat)
     (rejected : checkedPowerExponent? exponent = none) :
     powerNumeric base exponent = .notEvaluated := by
-  simp [powerNumeric, rejected]
+  simp [powerNumeric, powerChecked, rejected]
 
-theorem powerNumeric_of_nonnegative_exponent (base exponent : Rat) (magnitude : Nat)
-    (accepted : checkedPowerExponent? exponent = some (.ofNat magnitude)) :
-    powerNumeric base exponent = .value (positivePower base magnitude) := by
-  simp [powerNumeric, accepted]
+theorem powerNumeric_of_nonnegative_exponent (base exponent amount : Rat) (magnitude : Nat)
+    (accepted : checkedPowerExponent? exponent = some (.ofNat magnitude))
+    (inRange : positivePower base magnitude = .ok amount) :
+    powerNumeric base exponent = .value amount := by
+  simp [powerNumeric, powerChecked, accepted, inRange, Functor.map, Except.map]
+
+/-- A scale-range raise leaves power without a value, as a domain failure does. -/
+theorem powerNumeric_of_scale_range (base exponent : Rat)
+    (raised : powerChecked base exponent = .error .outOfRange) :
+    powerNumeric base exponent = .notEvaluated := by
+  simp [powerNumeric, raised]
 
 theorem powerNumeric_zero_exponent (base : Rat) :
     powerNumeric base 0 = .value 1 := by
@@ -116,13 +123,13 @@ theorem powerNumeric_zero_exponent (base : Rat) :
 theorem powerNumeric_zero_negative_exponent (exponent : Rat) (predecessor : Nat)
     (accepted : checkedPowerExponent? exponent = some (.negSucc predecessor)) :
     powerNumeric 0 exponent = .notEvaluated := by
-  simp [powerNumeric, accepted, divideNumeric]
+  simp [powerNumeric, powerChecked, accepted, divideNumeric]
 
-theorem powerNumeric_negative_exponent (base exponent : Rat) (predecessor : Nat)
+theorem powerNumeric_negative_exponent (base exponent amount : Rat) (predecessor : Nat)
     (accepted : checkedPowerExponent? exponent = some (.negSucc predecessor))
-    (nonzero : base ≠ 0) :
-    powerNumeric base exponent =
-      .value (positivePower (roundMathContext50 (1 / base)) (predecessor + 1)) := by
-  simp [powerNumeric, accepted, divideNumeric, nonzero]
+    (nonzero : base ≠ 0)
+    (inRange : positivePower (roundMathContext50 (1 / base)) (predecessor + 1) = .ok amount) :
+    powerNumeric base exponent = .value amount := by
+  simp [powerNumeric, powerChecked, accepted, divideNumeric, nonzero, inRange, Functor.map, Except.map]
 
 end A12Kernel

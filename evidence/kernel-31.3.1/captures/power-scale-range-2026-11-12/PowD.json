@@ -1,0 +1,221 @@
+{
+ "header": {
+  "id": "PowD_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "PowD_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Big",
+        "name": "Big",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -999999999999999,
+           "maxValue": 999999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E3",
+        "name": "E3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/M",
+        "name": "M",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Z",
+        "name": "Z",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/PowThenM",
+        "name": "PowThenM",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "PowThenM",
+         "errorCondition": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3] + [M] < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "PowThenM"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/MThenPow",
+        "name": "MThenPow",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "MThenPow",
+         "errorCondition": "[M] + { { [Big] ^ [E1] } ^ [E2] } ^ [E3] < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "MThenPow"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/PowThenDiv",
+        "name": "PowThenDiv",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "PowThenDiv",
+         "errorCondition": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3] + { [M] / [Z] } < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "PowThenDiv"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/DivThenPow",
+        "name": "DivThenPow",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "DivThenPow",
+         "errorCondition": "{ [M] / [Z] } + { { [Big] ^ [E1] } ^ [E2] } ^ [E3] < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "DivThenPow"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

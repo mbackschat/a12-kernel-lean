@@ -1,0 +1,1585 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.15.0",
+  "kernel": {
+   "builtAgainst": "31.3.1",
+   "runtime": "31.3.1"
+  },
+  "source": {
+   "revision": "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "PowA.json",
+  "locale": "en_US",
+  "clock": "2026-11-12T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "unit-control",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "big-overflow-144",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "small-underflow-just-out",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "small-in-range-just-in",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "small-reciprocal-overflow",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/Big",
+        "P/E1",
+        "P/E2",
+        "P/E3"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallLt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "big-negative-odd-overflow",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "BigGt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLt",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "BigLtWarn",
+       "field": "P/Big",
+       "severity": "WARNING",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validatePart",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "big-exponent-domain-control",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "P/E3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/E3"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "P/E3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/E3"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "P/E3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/E3"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "partialMessages": [
+      {
+       "code": "SmallGt",
+       "field": "P/Small",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/F1",
+        "P/F2",
+        "P/F3",
+        "P/Small"
+       ],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlZuGross",
+       "field": "P/E3",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/E3"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

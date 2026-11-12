@@ -1429,6 +1429,7 @@ run_cmd do
 #print axioms A12Kernel.positivePower_zero
 #print axioms A12Kernel.powerNumeric_of_rejected_exponent
 #print axioms A12Kernel.powerNumeric_of_nonnegative_exponent
+#print axioms A12Kernel.powerNumeric_of_scale_range
 #print axioms A12Kernel.powerNumeric_zero_exponent
 #print axioms A12Kernel.powerNumeric_zero_negative_exponent
 #print axioms A12Kernel.powerNumeric_negative_exponent

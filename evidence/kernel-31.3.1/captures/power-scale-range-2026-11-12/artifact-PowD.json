@@ -1,0 +1,795 @@
+{
+ "schemaVersion": 1,
+ "producer": {
+  "dmtoolVersion": "0.15.0",
+  "kernel": {
+   "builtAgainst": "31.3.1",
+   "runtime": "31.3.1"
+  },
+  "source": {
+   "revision": "505683610a0c57711fe59fb6ca70d315e6a2f2a1",
+   "state": "CLEAN"
+  }
+ },
+ "request": {
+  "model": "PowD.json",
+  "locale": "en_US",
+  "clock": "2026-11-12T10:00:00Z"
+ },
+ "rows": [
+  {
+   "name": "malformed-sibling",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "P/M",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/M"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "P/M",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/M"
+       ],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "empty-sibling",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/M",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/M"
+       ],
+       "fillToFix": [
+        "P/M"
+       ]
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "mandatoryField",
+       "field": "P/M",
+       "severity": "ERROR",
+       "type": "OMISSION_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/M"
+       ],
+       "fillToFix": [
+        "P/M"
+       ]
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "zero-divisor-sibling",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "valued-sibling-control",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "DivThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "MThenPow",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenDiv",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      },
+      {
+       "code": "PowThenM",
+       "field": "P/Big",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [],
+       "fillToFix": []
+      }
+     ],
+     "evaluationRaises": [
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      },
+      {
+       "observation": "validateFull",
+       "origin": "kernel",
+       "chain": [
+        {
+         "type": "java.lang.ArithmeticException",
+         "message": "[redacted]"
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "name": "in-range-malformed-control",
+   "enginesAgree": true,
+   "engines": [
+    {
+     "engine": "kernel-groovy-dynamic",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "P/M",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/M"
+       ],
+       "fillToFix": []
+      }
+     ]
+    },
+    {
+     "engine": "kernel-java-static",
+     "messages": [
+      {
+       "code": "zahlHatDezimalTrenner",
+       "field": "P/M",
+       "severity": "ERROR",
+       "type": "VALUE_ERROR",
+       "message": "[redacted]",
+       "referenced": [
+        "P/M"
+       ],
+       "fillToFix": []
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

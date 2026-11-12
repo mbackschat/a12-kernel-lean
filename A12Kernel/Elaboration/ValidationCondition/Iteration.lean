@@ -591,8 +591,9 @@ def wellFormedBool (condition : ValidationCondition model)
   condition.repetitionNotUniqueSources.length < 2 &&
     condition.allLeaves fun leaf => leaf.wellFormedBool rowGroup declaringGroup
 
-/-- Reached temporal runtime failure aborts the enclosing rule, rather than entering the
-truth algebra as an ordinary fired leaf (temporal review grid, 2026-10-03). Structural failures
+/-- Reached temporal runtime failure, and a numeric comparison's power scale-range raise, abort the
+enclosing rule rather than entering the truth algebra as an ordinary fired leaf (temporal review grid,
+2026-10-03; spec/04 §3). Structural failures
 remain in the caller's error domain. -/
 def evalWithTemporalResult (condition : ValidationCondition model)
     (context : ValidationEvaluationContext) (isRelevant : FlatRelevance)
@@ -628,7 +629,12 @@ def evalWithTemporalResult (condition : ValidationCondition model)
               (comparison.evalResult .validation fields addressed row (filtered := temporalFiltered)).mapError Sum.inr
             else pure .unknown
         | leaf@(.orderedNumeric _ comparison) =>
-            if comparison.hasTemporalExpression then numericResult comparison
+            if comparison.hasTemporalExpression || comparison.holdsPower then numericResult comparison
+            else (evaluate leaf).mapError Sum.inl
+        -- A flat comparison holding a power reads through the ordered carrier, as partial validation
+        -- already reads every flat comparison, so that the power's raise reaches the rule (spec/04 §3).
+        | leaf@(.numeric _ comparison) =>
+            if comparison.left.holdsPower || comparison.right.holdsPower then numericResult comparison.toOrdered
             else (evaluate leaf).mapError Sum.inl
         | leaf => (evaluate leaf).mapError Sum.inl
   let readLeaf := fun leaf => (readLeaf leaf).mapError fun
@@ -656,6 +662,7 @@ def evalWithTemporalResult (condition : ValidationCondition model)
         condition.evalVerdictExcept fun leaf =>
           match readLeaf leaf with
           | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid)
+          | .error (.inr .powerScaleRange)
           | .error (.inr (.addressing .typeValidityValueFailure))
           | .error (.inr (.addressing (.stringExpression .emptyPattern))) => .ok .unknown
           | result => result
@@ -664,6 +671,7 @@ def evalWithTemporalResult (condition : ValidationCondition model)
   | .error (.inl error) => .error error
   | .error (.inr fault@(.dateTimeLabelUnresolved))
   | .error (.inr fault@(.componentNumberInvalid))
+  | .error (.inr fault@(.powerScaleRange))
   | .error (.inr fault@(.addressing .typeValidityValueFailure))
   | .error (.inr fault@(.addressing (.stringExpression .emptyPattern)))
   | .error (.inr fault@(.addressing (.customCondition (.missingRegistration _))))

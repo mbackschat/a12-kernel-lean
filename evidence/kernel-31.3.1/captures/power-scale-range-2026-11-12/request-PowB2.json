@@ -1,0 +1,25 @@
+{
+ "model": "PowB2.json",
+ "clock": "2026-11-12T10:00:00Z",
+ "locale": "en_US",
+ "observe": [
+  "validateFull"
+ ],
+ "rows": [
+  {
+   "name": "two-powers-fifteen-million-digits",
+   "documentInline": {
+    "P": {
+     "Big": 999999999999999,
+     "Small": 0.1,
+     "E1": 1000,
+     "E2": 1000,
+     "E3": 1,
+     "F1": 1,
+     "F2": 1,
+     "F3": 1
+    }
+   }
+  }
+ ]
+}

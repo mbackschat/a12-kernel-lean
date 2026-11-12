@@ -1,0 +1,291 @@
+{
+ "header": {
+  "id": "PowB1_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "PowB1_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Big",
+        "name": "Big",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -999999999999999,
+           "maxValue": 999999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Small",
+        "name": "Small",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 14,
+           "minValue": 0,
+           "maxValue": 0.1
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E3",
+        "name": "E3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/F1",
+        "name": "F1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/F2",
+        "name": "F2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/F3",
+        "name": "F3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/BigLt",
+        "name": "BigLt",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "BigLt",
+         "errorCondition": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3] < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "BigLt"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/BigGt",
+        "name": "BigGt",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "BigGt",
+         "errorCondition": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "BigGt"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/BigLtWarn",
+        "name": "BigLtWarn",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "BigLtWarn",
+         "errorCondition": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3] < 0",
+         "severity": "WARNING",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "BigLtWarn"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/SmallLt",
+        "name": "SmallLt",
+        "Rule": {
+         "errorEntityRelPath": "../Small",
+         "errorCode": "SmallLt",
+         "errorCondition": "{ { [Small] ^ [F1] } ^ [F2] } ^ [F3] < 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "SmallLt"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/SmallGt",
+        "name": "SmallGt",
+        "Rule": {
+         "errorEntityRelPath": "../Small",
+         "errorCode": "SmallGt",
+         "errorCondition": "{ { [Small] ^ [F1] } ^ [F2] } ^ [F3] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "SmallGt"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Rule",
+        "id": "/P/TwoGt",
+        "name": "TwoGt",
+        "Rule": {
+         "errorEntityRelPath": "../Big",
+         "errorCode": "TwoGt",
+         "errorCondition": "{ [Big] ^ [E1] } ^ [E2] > 0",
+         "severity": "ERROR",
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TwoGt"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

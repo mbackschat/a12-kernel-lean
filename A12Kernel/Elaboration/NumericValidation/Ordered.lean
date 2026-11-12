@@ -321,6 +321,17 @@ def OrderedNumericComparison.hasTemporalExpression (comparison : OrderedNumericC
     | _ => false
   comparison.left.anyAtom temporal || comparison.right.anyAtom temporal
 
+/-- Whether an authored tree holds a power node anywhere. -/
+def AuthoredNumericExpr.holdsPower {Atom : Type} : AuthoredNumericExpr Atom → Bool
+  | .atom _ | .literal _ => false
+  | .power _ _ => true
+  | .group body | .abs body | .extremumCall _ body | .round _ _ body => body.holdsPower
+  | .binary _ left right | .extremum _ left right => left.holdsPower || right.holdsPower
+
+/-- Whether the comparison holds a power, whose scale-range raise only the result evaluators report ([spec/04 §3](../../../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive)). -/
+def OrderedNumericComparison.holdsPower (comparison : OrderedNumericComparison model) : Bool :=
+  comparison.left.holdsPower || comparison.right.holdsPower
+
 /-- Whether partial addressed evaluation has an exact interpretation for an atom. Supported ordinary atoms use per-field relevance, entity-list aggregates use their source-owned extent relevance, and the mixed filled-group count walks its counted groups' own instances. `false` is structural unsupported information, never numeric UNKNOWN.
 
     A bound repetition coordinate **is** supported, and it is the one supported atom that reads no cell: it answers from the row environment, so its relevance query is vacuously satisfied and no coverage can mask it. That is the Kernel's behaviour — a rule reading it answers under a coverage that drives its field-reading twin to UNKNOWN ([checkpoint](../../../docs/sources/group-and-iteration-probes.md#src-repetition-operand-partial-relevance)) — and refusing it here made the whole rule structurally unsupported rather than merely unmasked. Unmaskable is not unconditional: the separate error-field gate still skips the row before any of this is reached, so a coverage naming neither field reports nothing. -/

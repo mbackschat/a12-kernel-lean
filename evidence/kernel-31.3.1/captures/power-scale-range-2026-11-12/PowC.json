@@ -1,0 +1,273 @@
+{
+ "header": {
+  "id": "PowC_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "PowC_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Big",
+        "name": "Big",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -999999999999999,
+           "maxValue": 999999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Small",
+        "name": "Small",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 14,
+           "minValue": 0,
+           "maxValue": 0.1
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E3",
+        "name": "E3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/F1",
+        "name": "F1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/F2",
+        "name": "F2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/F3",
+        "name": "F3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/TgtSmall",
+        "name": "TgtSmall",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minValue": -9999999999999,
+           "maxValue": 9999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/TgtSmallComp",
+        "name": "TgtSmallComp",
+        "Computation": {
+         "computedFieldRelPath": "../TgtSmall",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "{ { [Small] ^ [F1] } ^ [F2] } ^ [F3]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorCodesToSuppress": [
+          "MVK_INVALID_COMPARE_DEC_PLACES"
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TgtSmallComp"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/TgtBig",
+        "name": "TgtBig",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minValue": -9999999999999,
+           "maxValue": 9999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/TgtBigComp",
+        "name": "TgtBigComp",
+        "Computation": {
+         "computedFieldRelPath": "../TgtBig",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorCodesToSuppress": [
+          "MVK_INVALID_COMPARE_DEC_PLACES"
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "TgtBigComp"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

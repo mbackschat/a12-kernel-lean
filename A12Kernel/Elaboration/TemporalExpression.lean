@@ -811,7 +811,7 @@ def evalAt (comparison : CheckedScalarTemporalComparison model) (phase : Phase)
     (filtered : FilteredShiftAmountReader model := .unavailable) : Verdict :=
   match comparison.evalResult phase context addressed row (filtered := filtered) with
   | .ok verdict => verdict
-  | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => .fired .value
+  | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid | .error .powerScaleRange => .fired .value
   | .error .calendarUnavailable | .error .indexedOperandNotSupported | .error (.addressing _) => .unknown
 
 def eval (comparison : CheckedScalarTemporalComparison model) (context : FlatContext) (addressed : Option ComputationFillContext := none) (row : Env := []) : Verdict :=

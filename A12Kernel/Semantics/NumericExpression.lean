@@ -753,6 +753,34 @@ def NumericComparisonOf.evalWith
   | some left, some right => comparison.op.evalArithmeticWith left right
   | _, _ => .unknown
 
+/--
+Whether evaluating the tree reaches a power the host raises on because a product's scale leaves its range ([spec/04 §3](../../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive)). A power raises only when its base and exponent both have values, as the host's power returns an invalid number for an invalid operand without computing; a sibling without a value does not stop it, which reads the host's operand-first method calls rather than a measured row.
+-/
+def LoweredNumericExpr.reachesPowerScaleRange
+    (read : Atom → Except Error NumericArithmeticOutcome) :
+    LoweredNumericExpr Atom → Bool
+  | .atom _ | .literal _ => false
+  | .binary _ left right | .extremum _ left right =>
+      left.reachesPowerScaleRange read || right.reachesPowerScaleRange read
+  | .power base exponent =>
+      base.reachesPowerScaleRange read || exponent.reachesPowerScaleRange read ||
+        match base.evalNumericOperationTree read, exponent.evalNumericOperationTree read with
+        | .ok (.value baseValue _), .ok (.value exponentValue _) =>
+            match powerChecked baseValue exponentValue with
+            | .error _ => true
+            | .ok _ => false
+        | _, _ => false
+  | .abs body | .extremumCall _ _ body | .round _ _ body => body.reachesPowerScaleRange read
+
+/-- Whether either admitted side of the comparison reaches a power's scale-range raise. `evalWith` alone sees that power as unavailable, so a consumer that fails the rule on the raise asks this first. -/
+def NumericComparisonOf.reachesPowerScaleRange
+    (comparison : NumericComparisonOf Atom)
+    (resolve : Atom → Except Error NumericArithmeticOutcome) : Bool :=
+  let left := comparison.left.lowerForEvaluation
+  let right := comparison.right.lowerForEvaluation
+  (left.isNumericOperation && left.reachesPowerScaleRange resolve) ||
+    (right.isNumericOperation && right.reachesPowerScaleRange resolve)
+
 namespace NumericComputationResult
 
 /-- Combine two already-reached arithmetic operands through the shared poison/domain/value table. -/

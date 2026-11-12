@@ -214,7 +214,7 @@ private def correlationError : CorrelationRuntimeFault → ComputationPredicateE
   | .groupUnavailable path => .addressing (.unsupportedGroupOperand path)
 
 private def temporalError : ScalarTemporalEvaluationFault → ComputationPredicateError
-  | .dateTimeLabelUnresolved | .componentNumberInvalid => .valueFailure
+  | .dateTimeLabelUnresolved | .componentNumberInvalid | .powerScaleRange => .valueFailure
   | .addressing .worldUnavailable => .contextRequired
   | .addressing (.addressing (.storedTextUnavailable field)) => .addressing (.storedTextUnavailable field)
   | .addressing error => if error.isFilterValueFailure then .valueFailure else .temporalUnavailable

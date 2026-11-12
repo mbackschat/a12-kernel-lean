@@ -1,0 +1,321 @@
+{
+ "header": {
+  "id": "PowE_DM",
+  "modelType": "document",
+  "modelVersion": "29.8.0",
+  "locales": [
+   {
+    "code": "en_US"
+   }
+  ],
+  "labels": [],
+  "annotations": [],
+  "modelReferences": []
+ },
+ "content": {
+  "modelInfo": {
+   "name": "PowE_DM",
+   "variant": "cockpit",
+   "revision": "Arbeitsversion",
+   "immutable": false
+  },
+  "modelConfig": {
+   "decimalSeparator": ".",
+   "timeZone": "Europe/Berlin",
+   "conditionLanguage": {
+    "code": "en_US"
+   },
+   "fieldRefByShortNameAllowed": true
+  },
+  "modelRoot": {
+   "rootGroups": [
+    {
+     "type": "Group",
+     "id": "/P",
+     "name": "P",
+     "Group": {
+      "repeatability": 1,
+      "elements": [
+       {
+        "type": "Field",
+        "id": "/P/Big",
+        "name": "Big",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -999999999999999,
+           "maxValue": 999999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E1",
+        "name": "E1",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E2",
+        "name": "E2",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/E3",
+        "name": "E3",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/M",
+        "name": "M",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/Z",
+        "name": "Z",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 0,
+           "minValue": -1000,
+           "maxValue": 1000
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/TPowThenM",
+        "name": "TPowThenM",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minValue": -9999999999999,
+           "maxValue": 9999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/TMThenPow",
+        "name": "TMThenPow",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minValue": -9999999999999,
+           "maxValue": 9999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/TPowThenDiv",
+        "name": "TPowThenDiv",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minValue": -9999999999999,
+           "maxValue": 9999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Field",
+        "id": "/P/TDivThenPow",
+        "name": "TDivThenPow",
+        "Field": {
+         "fieldType": {
+          "type": "NumberType",
+          "NumberType": {
+           "maxFractionalDigits": 2,
+           "minValue": -9999999999999,
+           "maxValue": 9999999999999
+          }
+         },
+         "requirednessConfig": {
+          "mode": "absoluteOrRelativeToNextRepAncestor"
+         }
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CPowThenM",
+        "name": "CPowThenM",
+        "Computation": {
+         "computedFieldRelPath": "../TPowThenM",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3] + [M]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorCodesToSuppress": [
+          "MVK_INVALID_COMPARE_DEC_PLACES"
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "CPowThenM"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CMThenPow",
+        "name": "CMThenPow",
+        "Computation": {
+         "computedFieldRelPath": "../TMThenPow",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "[M] + { { [Big] ^ [E1] } ^ [E2] } ^ [E3]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorCodesToSuppress": [
+          "MVK_INVALID_COMPARE_DEC_PLACES"
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "CMThenPow"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CPowThenDiv",
+        "name": "CPowThenDiv",
+        "Computation": {
+         "computedFieldRelPath": "../TPowThenDiv",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "{ { [Big] ^ [E1] } ^ [E2] } ^ [E3] + { [M] / [Z] }",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorCodesToSuppress": [
+          "MVK_INVALID_COMPARE_DEC_PLACES"
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "CPowThenDiv"
+          }
+         ]
+        }
+       },
+       {
+        "type": "Computation",
+        "id": "/P/CDivThenPow",
+        "name": "CDivThenPow",
+        "Computation": {
+         "computedFieldRelPath": "../TDivThenPow",
+         "roundingMode": "RoundDown",
+         "computationAlternatives": [
+          {
+           "operation": "{ [M] / [Z] } + { { [Big] ^ [E1] } ^ [E2] } ^ [E3]",
+           "toleranceRangeOp": "DiffersWithToleranceRange1"
+          }
+         ],
+         "errorCodesToSuppress": [
+          "MVK_INVALID_COMPARE_DEC_PLACES"
+         ],
+         "errorMessage": [
+          {
+           "locale": "en_US",
+           "text": "CDivThenPow"
+          }
+         ]
+        }
+       }
+      ]
+     }
+    }
+   ]
+  }
+ }
+}

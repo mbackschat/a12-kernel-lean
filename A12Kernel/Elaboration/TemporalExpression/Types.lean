@@ -95,11 +95,13 @@ def ScalarTemporalExpressionError.dateValidityDiagnostic? : ScalarTemporalExpres
   | .dateComponents .onlyConstantsUsed => some .onlyConstantsUsed
   | _ => none
 
+/-- Reached runtime faults a validation rule's handler sorts: value failures it catches, and context faults that stay structural. Besides the temporal faults it carries a numeric comparison's power raise (`powerScaleRange`, spec/04 §3) and addressing faults. -/
 inductive ScalarTemporalEvaluationFault where
   | indexedOperandNotSupported
   | dateTimeLabelUnresolved
   | componentNumberInvalid
   | calendarUnavailable
+  | powerScaleRange
   | addressing (error : CheckedAddressingError)
   deriving Repr, DecidableEq
 

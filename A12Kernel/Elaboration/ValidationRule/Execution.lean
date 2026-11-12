@@ -649,7 +649,7 @@ private def evalOrdinaryRepeatableAt
         pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
       else throw (.conditionAddressing error)
   | .error (.inr .calendarUnavailable) | .error (.inr .indexedOperandNotSupported) => throw (.conditionAddressing .temporalUnavailable)
-  | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) =>
+  | .error (.inr .dateTimeLabelUnresolved) | .error (.inr .componentNumberInvalid) | .error (.inr .powerScaleRange) =>
       pure (.abort environment (rule.core.emitRuntimeFailureAt failureErrorPath))
 
 /-- `fullRowsAndRepetitionResults` over an already staged full preliminary. -/

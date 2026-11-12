@@ -356,7 +356,7 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
                 if error.isFilterValueFailure then return (.valueError .time, DocumentComputationReadBack.poison)
                 else throw (.temporalExpressionAddressing error)
             | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .time, DocumentComputationReadBack.poison)
+            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid | .error .powerScaleRange => return (.valueError .time, DocumentComputationReadBack.poison)
           let outcome := target.evaluate (match result with
             | .value (.time value) _ => .value value
             | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
@@ -382,7 +382,7 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
                 if error.isFilterValueFailure then return (.valueError .dateTime, DocumentComputationReadBack.poison)
                 else throw (.temporalExpressionAddressing error)
             | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .dateTime, DocumentComputationReadBack.poison)
+            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid | .error .powerScaleRange => return (.valueError .dateTime, DocumentComputationReadBack.poison)
           let outcome ← (target.evaluate (match result with
             | .value (.instant value) _ => .value value
             | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
@@ -408,7 +408,7 @@ def checkTemporalExpressionComputation? (expression : CheckedScalarTemporalExpre
                 if error.isFilterValueFailure then return (.valueError .fullDate, DocumentComputationReadBack.poison)
                 else throw (.temporalExpressionAddressing error)
             | .error .calendarUnavailable | .error .indexedOperandNotSupported => throw .temporalExpressionUnavailable
-            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid => return (.valueError .fullDate, DocumentComputationReadBack.poison)
+            | .error .dateTimeLabelUnresolved | .error .componentNumberInvalid | .error .powerScaleRange => return (.valueError .fullDate, DocumentComputationReadBack.poison)
           let outcome := match result with
             | .value (.date value) _ | .value (.yearless value _ _) _ => target.evaluateParts value.parts
             | .value .noValue _ | .value .nonRelevant _ | .notEvaluated => .noValue
