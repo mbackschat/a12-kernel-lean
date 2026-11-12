@@ -112,6 +112,15 @@ The new mechanism note in the 2026-08-26 handback was independently inspected at
 - `limit`: The accepted two-fixed-group computation persisted, read back as `NumberOfFilledGroups(Beta, Gamma)`, and survived `model check`, all `KERNEL_CONFIRMED`. This is static consistency evidence only and does not widen the measured compute-time presence account to repeatable operands or nested descendants of an operand group.
 
 
+<a id="src-interpreter-corpus-sample"></a>
+#### The interpreter disagrees with kernel 31.3.1 on 7 of 61 sampled corpus requests where Lean agrees, measured 2026-11-12
+
+- `route`: `./build.sh --offline -q :adapter:probeDifferential -Prequest=<request>` on the [measurement checkout](#src-measurement-checkout-route) at `505683610a0c57711fe59fb6ca70d315e6a2f2a1`, its status clean before and after; about 27 s per request. The outputs are interpreter and kernel lines and are kept as no file.
+- `sample`: of the 305 corpus directories holding a request named `req*.json` or `request*.json` without custom bindings, every fifth in path order with its first such request, 61 requests, from the [interpreter verification corpus](../PLAN.md#interpreter-verification-checklist) as `prepare` wrote it.
+- `result`: 52 requests agree on every row and call. Seven disagree on 25 verdicts: `firstfilled-temporal-companions/request.json`, `indexed-time-components-2026-10-06/request.json`, `message-cache-legal-names-2026-10-10/request-after.json`, `message-cache-renamed-2026-10-10/request.json`, `negated-corpus-2026-10-02/016/request.json`, `selected-group-predicates-2026-10-10/request.json` and `selected-typed-comparison-2026-10-09/runtime/request.json`, on the messages, possible-cause, computation-outcome and authored-text channels; `message-references-2026-10-14/request.json` is declined for one rule on every row; and `number-ingress-2026-10-13/request-de.json` stops with the interpreter's typed document-decoding limit on a field's raw code units, which the kernel evaluates.
+- `lean`: `lake exe a12-kernel-replay` over four of the disagreeing requests, `indexed-time-components`, `message-cache-legal-names`, `negated-corpus` `016` and `selected-group-predicates`, matches the kernel artifacts on every line, the disagreeing rows included. The replay compares no possible-cause groups, the only disagreeing channel of `message-cache-renamed` and `selected-typed-comparison`.
+- `limit`: the pin is 108 commits behind a12-dmkits `d2ac4c039`, with about 300 changed lines under its interpreter and adapter sources, so some disagreements may be gone there; the mechanisms are read from row names and output lines, not established.
+
 <a id="src-runtime-observation-route"></a>
 #### Runtime probe observation channels and claim limits
 

@@ -52,6 +52,7 @@ For runtime claims, consult the maintained probe’s [observation channels and l
 - [Measurement checkout, pin and calibration](sources/cross-layer-routes.md#src-measurement-checkout-route)
 <a id="src-runtime-observation-route"></a>
 - [Runtime observation channels and claim limits](sources/cross-layer-routes.md#src-runtime-observation-route)
+- [Interpreter corpus sample](sources/cross-layer-routes.md#src-interpreter-corpus-sample): the interpreter against kernel 31.3.1 over 61 corpus requests at the measurement pin, 2026-11-12.
 
 The `.st` files are mandatory review inputs whenever generated control flow matters. They decide, among other things, rule-level early returns, computation alternative continuation, loop placement, exception handling, and validation-versus-computation structure. A template that only interpolates a backing-bean property does not decide the operation.
 
