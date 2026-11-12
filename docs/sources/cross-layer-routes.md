@@ -121,6 +121,14 @@ The new mechanism note in the 2026-08-26 handback was independently inspected at
 - `lean`: `lake exe a12-kernel-replay` over four of the disagreeing requests, `indexed-time-components`, `message-cache-legal-names`, `negated-corpus` `016` and `selected-group-predicates`, matches the kernel artifacts on every line, the disagreeing rows included. The replay compares no possible-cause groups, the only disagreeing channel of `message-cache-renamed` and `selected-typed-comparison`.
 - `limit`: the pin is 108 commits behind a12-dmkits `d2ac4c039`, with about 300 changed lines under its interpreter and adapter sources, so some disagreements may be gone there; the mechanisms are read from row names and output lines, not established.
 
+<a id="src-interpreter-baseline"></a>
+#### a12-dmkits' interpreter agrees with kernel 31.3.1 on 6,564 of 6,904 calls over this repository's 672-request corpus, handed back 2026-11-12
+
+- `producer`: a12-dmkits `9ece9d5e5f1d9b51160c6fd94a396575be0007c4` on `feature/q2`, from the [IV-P4](../PLAN.md#interpreter-verification-checklist) contract at this repository's `462e195f4f30dd3b0b9abee51a1e26731de23946`; the dynamic kernel 31.3.1 in `en_US` on JDK 21 with assertions off and UTC, in 42 sequential batches of at most 16 requests.
+- `result`: 6,564 calls `ok`, 230 `diff`, 78 `unsupported` and 32 `raise` over 650 handled requests; 22 requests `notRun`, 16 for bindings, 3 refused by the model check and 3 refused before their rows. No call needed a process token.
+- `checked`: here on 2026-11-12, the table's manifest verifies and its SHA-256 is `92ddc1828fa2f88da0e62dea97e2bd8130ce96c87eb084678a0fb3c3782e52bd`. A corpus rebuilt from `462e195f4` in a scratch extract, with the two KF690 requests read at a12-dmkits `b334b0e73`, gives the same 672 requests once each, and every handled request has exactly one `full` call per row and one `partial` call per row naming `relevant`. `git diff d2ac4c039 9ece9d5e5 -- interpreter/src interpreter/build.gradle shared-regex/src` is empty and the a12-dmkits checkout is clean. Gate 2's two tests exist at `9ece9d5e5` in `ProbeRequestDifferentialTest`; they were not re-run here.
+- `retained`: the table stays in the owner's exchange directory beside the handback letter, outside both repositories, because its lines carry kernel-rendered text; this repository keeps only the hash above and, from IV-P6, codes, paths, outcomes and exception classes.
+
 <a id="src-runtime-observation-route"></a>
 #### Runtime probe observation channels and claim limits
 
