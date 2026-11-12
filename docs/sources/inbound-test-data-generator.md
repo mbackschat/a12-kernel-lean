@@ -2,6 +2,16 @@
 
 [Source registry](../SOURCES.md) owns authority and drill routing. Handbacks from a12-dmkits' test data generator work on Q2 ([plan](../PLAN.md#q2-preparation-checklist)), each with its reviewed revision and claim limits; earlier handbacks stay in [the general shard](inbound-handbacks.md).
 
+<a id="src-inbound-2026-11-12a"></a>
+## Reviewed the 2026-11-12a Q2-P10 handback: field fillability passes gates 1 to 3 and every witness agrees with Lean
+
+- `source`: Peer handback `a12-kernel-lean-spec-corrections-2026-11-12a.md`, carried by the owner and kept as no file; Q2-P10's terminal handback, leaving the Q2-P9 letter unchanged.
+- `revision`: a12-dmkits `d2ac4c0397d5629c9934739e55159ff95d0fd152` on `feature/q2`, read with `git` only, an evidence-only commit on the implementation `3f4574c1788a05f4767555ec2a45d2f41d7a35fc`, a successor of `543a718e0`. Every field result names the contract a12-kernel-lean `8511d71d04b1dd2992de5a27054496a1afa5e91d`, every embedded contradiction explanation keeps `1d601b699fa046781fec06c75810233bc4bc54ee` and every embedded generator result keeps `6ae7515f1e60837b365d1c601c8892276b08f8a7`. All files of the manifests `MANIFEST.sha256` in `test-data-generator/evidence/fillability-2026-11-12`, `q2p9-fillability-regression-2026-11-12` and `q2-fillability-regression-2026-11-12` match, and the three retained original models are byte-identical to the [controls capture](kernel-31-calibration-probes.md#src-q2p10-fillability-controls).
+- `oracle`: kernel 31.3.1, both strategies, through `:adapter:kernelProbe` on dmtool 0.16.0 at the clean producer `3f4574c17`, read here from the committed artifacts. The gates command was not rerun here.
+- `gates`: `scripts/run-typescript.sh "Fillability gates" scripts/typescript/tdg-fillability-gates.ts <fresh output directory>`, reported passing gates 1 to 3, with Q2-P9's gates 1 to 3 and Q2's gates 1 to 4 reported passing at the same revision. Under each relation every model's own answer is `verifiedSat`; `A` of `FForbidden` is explained by `AForbidden`, `A` of `FRequired` by `ABTrue`, `ABFalse` and the required role of `B`, and `X` of `FRowBound` by `XLow` and the `maxValue` of `X`, each `verifiedContradictionExplanation` with nothing fixed by admission and the set [`FillabilityControlLocks`](../../A12Kernel/Reference/Dm/FillabilityControlLocks.lean) lists; `C` of `FForbidden` and `Y` of `FRowBound` are `verifiedSat`. The four named seams are killed, the unstarred count by the model check's `MVK_PARAMSIZE_INVALIDN`.
+- `review`: A HIGH reconciliation on 2026-11-12 replayed the 22 witnesses, the models' own, the filled fields' and the removal witnesses, through Lean against the eleven kernel artifacts: every row is accepted under both relations on both sides, each witness is the one its result reports, each goal model without its goal rule equals its original, and each of the seven reduced goal models and six kept models equals, as JSON, the lock's own reduction of the goal model.
+- `adopted`: no semantic change; [Q2-P10](../PLAN.md#q2-preparation-checklist) is closed, field fillability being an option of `model detect-contradictions`.
+
 <a id="src-inbound-2026-11-12"></a>
 ## Reviewed the 2026-11-12 Q2-P9 handback: contradiction detection passes gates 1 to 3 and every removal witness agrees with Lean
 
