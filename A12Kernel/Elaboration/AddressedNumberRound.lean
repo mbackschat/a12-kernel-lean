@@ -51,7 +51,7 @@ private def evaluateSource
     .field operation.numberSource.placement.sourceDeclaration
   let expression : LoweredNumericExpr (ResolvedNumericAtom FlatFieldDecl) :=
     .round operation.mode operation.places (.atom atom)
-  expression.evalComputation
+  expression.evalComputation (some .powerScaleRange)
     (operation.numberSource.placement.evaluateSourceAtom sourceCell)
 
 /-- Execute the certified rounding expression through the shared addressed placement. -/

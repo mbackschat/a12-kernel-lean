@@ -270,7 +270,7 @@ def powerChecked (base exponent : Rat) : Except HostScaleRangeFailure NumericAri
       | .notEvaluated => .ok .notEvaluated
       | .value reciprocal => NumericArithmeticResult.value <$> positivePower reciprocal (predecessor + 1)
 
-/-- Power without the raise: a scale-range raise has no value, which a computation's target receives exactly as a domain failure (measured, spec/04 §3). A consumer that must tell the raise apart reads `powerChecked`. -/
+/-- Power without the raise: a scale-range raise has no value and reads as a domain failure. That is right only where nothing after the power is read; a computation's ordered evaluator and a validation comparison tell the raise apart through `powerChecked` (spec/04 §3). -/
 def powerNumeric (base exponent : Rat) : NumericArithmeticResult :=
   match powerChecked base exponent with
   | .ok result => result

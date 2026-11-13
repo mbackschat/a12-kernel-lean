@@ -392,7 +392,7 @@ def poisonThenRefusedCount :
 example :
     (poisonThenRefusedCount.evaluateCheckedComputation
         { read := malformedBeside.read }).toOption = none ∧
-      (poisonThenRefusedCount.lowerForEvaluation.evalComputation
+      (poisonThenRefusedCount.lowerForEvaluation.evalComputation (some .powerScaleRange)
         (ScalarComputationContext.readCheckedNumericComputationAtom
           { read := malformedBeside.read })).toOption =
         some (.poison .malformed) := by

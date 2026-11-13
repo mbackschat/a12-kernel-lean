@@ -157,7 +157,9 @@ def evaluateComputation {Error : Type} (checked : CheckedSumOfTerms model) (docu
   -- capacity is never consumed, though the filter reads it.
   let step (total : Rat) (row : Env) : Except Error (Rat ⊕ NumericComputationResult) := do
     if !topology.environments.contains row then return .inl total
-    match ← lowered.evalComputation
+    -- A term's power raise reads as the domain failure the sum skips; the Kernel's answer on a term
+    -- is unmeasured (SG5), while a division by zero there is measured as skipped.
+    match ← lowered.evalComputation none
         (HavingNumericAtom.readComputationResolving termContext { innerEnv := row, outerEnv := outer }) with
     | .value amount => pure (.inl (NumericArithmeticOp.add.eval total amount))
     | .domainFailure => pure (.inl total)

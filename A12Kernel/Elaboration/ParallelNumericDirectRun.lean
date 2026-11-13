@@ -260,8 +260,8 @@ def evaluateSelected
     (checked : CheckedIsolatedParallelNumericDirectRun model)
     (context : ParallelNumericGuardContext) :
     Except ExecutionError NumericTargetOutcome := do
-  let value ← checked.expression.evaluateComputationWith
-      ParallelNumericOperationAtom.numericComputationFault? (·.read context)
+  let value ← NumericComputationFault.reachTarget (checked.expression.evaluateComputationWith
+      ParallelNumericOperationAtom.numericComputationFault? (·.read context))
       |>.mapError .numeric
   let checkedTarget := match checked.bandedRounding with
     | some mode => checked.route.targetPolicy.checkBanded mode value

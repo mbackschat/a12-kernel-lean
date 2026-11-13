@@ -549,14 +549,29 @@ theorem numericComputation_zeroToNegativePower_domainFailure
         context = .ok .domainFailure := by
   rfl
 
+/-- A power whose scale leaves the host's range ends a computation before its right sibling is read:
+whatever that sibling would give, poison included, the raise is the result. A domain failure in the same
+place is replaced by a later poisoned operand instead (spec/04 §3). -/
+theorem numericComputation_powerRaise_endsEvaluation {Fault : Type}
+    (raise : Fault) (read : Atom → Except Fault NumericComputationResult)
+    (op : NumericScaleBinaryOp) (base exponent : Rat) (right : LoweredNumericExpr Atom)
+    (raised : ∃ failure, powerChecked base exponent = .error failure) :
+    (LoweredNumericExpr.binary op (.power (.literal base) (.literal exponent)) right).evalComputation
+      (some raise) read = .error raise := by
+  obtain ⟨failure, raised⟩ := raised
+  simp [LoweredNumericExpr.evalComputation, NumericComputationResult.evalOrdered,
+    NumericComputationResult.evalPowerOrRaise, raised, bind, Except.bind, pure, Except.pure, throw,
+    throwThe, MonadExceptOf.throw]
+
 /-- Rounding preserves a domain-failed lowered child instead of manufacturing a numeric value. -/
 theorem numericComputation_round_preserves_domainFailure
+    (raise : Option NumericComputationFault)
     (read : Atom →
       Except NumericComputationFault NumericComputationResult)
     (mode : DecimalRoundingMode) (places : RoundingPlaces)
     (body : LoweredNumericExpr Atom)
-    (failed : body.evalComputation read = .ok .domainFailure) :
-    (LoweredNumericExpr.round mode places body).evalComputation read =
+    (failed : body.evalComputation raise read = .ok .domainFailure) :
+    (LoweredNumericExpr.round mode places body).evalComputation raise read =
       .ok .domainFailure := by
   simp only [LoweredNumericExpr.evalComputation]
   rw [failed]
@@ -564,12 +579,13 @@ theorem numericComputation_round_preserves_domainFailure
 
 /-- Absolute value delegates every evaluated child result to the shared value-only transformation. -/
 theorem numericComputation_abs_delegates
+    (raise : Option NumericComputationFault)
     (read : Atom →
       Except NumericComputationFault NumericComputationResult)
     (body : LoweredNumericExpr Atom)
     (result : NumericComputationResult)
-    (evaluated : body.evalComputation read = .ok result) :
-    (LoweredNumericExpr.abs body).evalComputation read =
+    (evaluated : body.evalComputation raise read = .ok result) :
+    (LoweredNumericExpr.abs body).evalComputation raise read =
       .ok result.absolute := by
   simp only [LoweredNumericExpr.evalComputation]
   rw [evaluated]

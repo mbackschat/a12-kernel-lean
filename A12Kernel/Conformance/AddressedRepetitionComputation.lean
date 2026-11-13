@@ -574,4 +574,25 @@ example :
         (.atom (.currentRepetition { base := .absolute, groups := ancInner }))).isOk = false := by
   native_decide
 
+/-- `{ { 1000 ^ 1000 } ^ 1000 } ^ last + [Scalar] + CurrentRepetition` over a malformed `Scalar`: with
+`last = 1000` the power's scale leaves the host's range and raises, with `1001` it is the quiet
+out-of-range exponent. -/
+private def raisingBeforeMalformed (last : Rat) : Option (List (List Nat × NumericTargetOutcome)) := do
+  let checked ← (operation (.binary .add (.binary .add
+    (.power (.group (.power (.group (.power (literal 1000) (literal 1000))) (literal 1000))) (literal last))
+    scalar) (repetition innerPath))).toOption
+  let outcomes ← (checked.executeWithRead input fun address =>
+    .ok (target.checkRaw (if address.field == 4 then .rejected .malformed else .parsed (.num 9)))).toOption
+  pure (outcomes.map fun entry => (entry.targetField.path, entry.outcome))
+
+/- The raise ends the expression before the malformed operand is read, and the shared target projection
+records it as the value failure; the quiet exponent is a domain failure, which that later poison replaces
+(spec/04 §3). The row outside the target's capacity stays without a value. -/
+example :
+    let rows (outcome : NumericTargetOutcome) := [([2, 3], outcome), ([2, 1], outcome), ([2, 2], outcome),
+      ([2, 4], NumericTargetOutcome.noValue)]
+    raisingBeforeMalformed 1000 = some (rows (.invalidNoValue .calculationValue)) ∧
+      raisingBeforeMalformed 1001 = some (rows (.inheritedPoison .malformed)) := by
+  native_decide
+
 end A12Kernel.Conformance.AddressedRepetitionComputation

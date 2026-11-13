@@ -410,7 +410,8 @@ def evaluateAtEnvironmentWithRead
     (operation : CheckedAddressedRepetitionComputation model)
     (read : CellAddr → Except CheckedDocumentError CheckedCell) (environment : Env) :
     Except AddressedNumericLeafFault NumericComputationResult :=
-  operation.expression.lowerForEvaluation.evalComputation (·.readAt read environment)
+  operation.expression.lowerForEvaluation.evalComputation (some (.evaluation .powerScaleRange))
+    (·.readAt read environment)
 
 def executeWithRead (operation : CheckedAddressedRepetitionComputation model)
     (input : CheckedDocument model)

@@ -736,7 +736,7 @@ def evaluateComputation (expression : AuthoredNumericExpr FlatFieldDecl)
   let lowered := expression.lowerForEvaluation
   match lowered.computationFault? with
   | some fault => .error fault
-  | none => lowered.evalComputation context.readNumeric
+  | none => lowered.evalComputation (some .powerScaleRange) context.readNumeric
 
 /-- Lower once, preflight every atom, then evaluate through one caller-supplied atom reader. -/
 def evaluateComputationWith
@@ -748,7 +748,7 @@ def evaluateComputationWith
   let lowered := expression.lowerForEvaluation
   match lowered.computationFaultWith? fault? with
   | some fault => .error fault
-  | none => lowered.evalComputation read
+  | none => lowered.evalComputation (some .powerScaleRange) read
 
 def evaluateResolvedComputation
     (expression : AuthoredNumericExpr NumericComputationAtom)

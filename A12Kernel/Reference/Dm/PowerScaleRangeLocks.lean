@@ -1,21 +1,27 @@
 import Lean.Data.Json
 import A12Kernel.Reference.Dm.SampleAcceptance
 import A12Kernel.Reference.Dm.LoneSurrogate
+import A12Kernel.Reference.Dm.ComputeMessages
 
-/-! # A power whose scale leaves the host's range fails its rule, through the reader
+/-! # A power whose scale leaves the host's range fails its rule and ends its computation, through the reader
 
-A product inside power whose decimal scale leaves the host's signed 32-bit range raises, and the rule
-handler reports the raise as one VALUE message with the rule's code, its severity and empty reference
-sets, under full and partial validation alike
+A product inside power whose decimal scale leaves the host's signed 32-bit range raises
 ([spec/04 §3](../../../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive)).
-Every lock replays each rule against the Kernel's messages and reference sets through
-[`replayRules`](Replay.lean), or its partial counterpart.
+The rule handler reports the raise as one VALUE message with the rule's code, its severity and empty
+reference sets, under full and partial validation alike; the validation locks replay each rule against
+the Kernel's messages and reference sets through [`replayRules`](Replay.lean), or its partial
+counterpart. In a computation the raise ends the expression and leaves the Number target without a
+value; the computation locks run the model's computations through `runModelComputationsWithMessages`
+and compare the computed outcomes and the formal-error channel by pointer and code, not the
+validation messages.
 
 Kernel oracles: the [power-range capture](../../../evidence/kernel-31.3.1/captures/power-scale-range-2026-11-12/MANIFEST.sha256)
-(`PowA`, `PowB2` and `PowD`), whose rows are written out below with their message text left out, and a12-dmkits'
-KF690 control, `test-data-generator/evidence/power-scale-2026-11-11/` at `b334b0e73`, whose two models
-are rebuilt here field for field. The capture's in-range rows `small-in-range-just-in` and `PowB1` fail
-later, at the comparison's rescale, which the theory does not model, so they have no lock here.
+(`PowA`, `PowB2` and `PowD` for rules, `PowC` and `PowE` for computations), whose rows are written out
+below with their message text left out, and a12-dmkits' KF690 control,
+`test-data-generator/evidence/power-scale-2026-11-11/` at `b334b0e73`, whose two models are rebuilt here
+field for field. The capture's in-range rows `small-in-range-just-in` (in `PowA` and `PowC`) and `PowB1`
+fail later, at the comparison's or the target's rescale, which the theory does not model, so they have
+no lock here.
 -/
 
 namespace A12Kernel.Dm.PowerScaleRangeLocks
@@ -173,5 +179,67 @@ example : (do
       agrees positive (parcel 1000 1001) [] none]) = some (List.replicate 8 true) := by
   native_decide
 
+private def capturedComputedModel : String :=
+  include_str "../../../evidence/kernel-31.3.1/captures/power-scale-range-2026-11-12/PowC.json"
+
+private def capturedComputedRequest : String :=
+  include_str "../../../evidence/kernel-31.3.1/captures/power-scale-range-2026-11-12/request-PowC.json"
+
+private def capturedOrderModel : String :=
+  include_str "../../../evidence/kernel-31.3.1/captures/power-scale-range-2026-11-12/PowE.json"
+
+private def capturedOrderRequest : String :=
+  include_str "../../../evidence/kernel-31.3.1/captures/power-scale-range-2026-11-12/request-PowE.json"
+
+/-- A row's computed outcomes beside the call's formal-error channel. -/
+private def computed (modelText requestText name : String) :
+    Option (List ComputedOutcome × List ComputedMessage) := do
+  let dm ← ((parseModelJson modelText).bind (readModel ·)).toOption
+  let document ← documentOf requestText name
+  let input ← (readDocument dm document).toOption
+  if !input.refusals.isEmpty then none
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler dm.flat).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  (runModelComputationsWithMessages dm .english world prepared checked).toOption
+
+/-- Whether a row's computed outcomes and its formal-error channel, each in any order, equal the Kernel's. -/
+private def computes (modelText requestText name : String) (outcomes : List (String × String))
+    (channel : List (String × String)) : Bool :=
+  match computed modelText requestText name with
+  | some (observed, messages) =>
+      let sorted (entries : List ComputedOutcome) := entries.mergeSort (compare · · != Ordering.gt)
+      sorted observed == sorted (outcomes.map fun (pointer, outcome) => { pointer, outcome }) &&
+        messages.mergeSort (compare · · != Ordering.gt) ==
+          (channel.map fun (pointer, code) => ({ pointer, code } : ComputedMessage)).mergeSort
+            (compare · · != Ordering.gt)
+  | none => false
+
+private def valueless (target : String) : String × String := (s!"P/{target}", "berechnungsWertFehler")
+
+/-- `PowC`: a power that raises leaves its two-decimal target without a value and reports
+`berechnungsWertFehler` there, while the other chain's target computes; an exponent above the field's
+maximum stays a formal finding that poisons its target silently. The in-range row `small-in-range-just-in`
+raises at the target's rescale, which the theory does not model, so it has no lock here. -/
+example : [("unit-control", [("P/TgtBig", "value 1"), ("P/TgtSmall", "value 0")], []),
+    ("big-overflow-144", [("P/TgtSmall", "value 0")], [valueless "TgtBig"]),
+    ("small-underflow-just-out", [("P/TgtBig", "value 1")], [valueless "TgtSmall"]),
+    ("small-reciprocal-overflow", [("P/TgtBig", "value 1")], [valueless "TgtSmall"]),
+    ("big-negative-odd-overflow", [("P/TgtSmall", "value 0")], [valueless "TgtBig"]),
+    ("big-exponent-domain-control", [("P/TgtSmall", "value 0")], [("P/E3", "zahlZuGross")])].all
+      (fun (name, outcomes, channel) =>
+        computes capturedComputedModel capturedComputedRequest name outcomes channel) = true := by
+  native_decide
+
+/-- `PowE`: the raise ends a computation's evaluation, so a power left of a malformed operand reports
+`berechnungsWertFehler` on its target, while a malformed operand left of the power poisons its target
+first and silently. An empty or zero-divided sibling, or a valued one, leaves every target reporting. -/
+example : [("malformed-sibling",
+      [valueless "TPowThenDiv", valueless "TPowThenM", ("P/M", "zahlHatDezimalTrenner")]),
+    ("empty-sibling", ["TDivThenPow", "TMThenPow", "TPowThenDiv", "TPowThenM"].map valueless),
+    ("zero-divisor-sibling", ["TDivThenPow", "TMThenPow", "TPowThenDiv", "TPowThenM"].map valueless),
+    ("valued-sibling-control", ["TDivThenPow", "TMThenPow", "TPowThenDiv", "TPowThenM"].map valueless),
+    ("in-range-malformed-control", [("P/M", "zahlHatDezimalTrenner")])].all
+      (fun (name, channel) => computes capturedOrderModel capturedOrderRequest name [] channel) = true := by
+  native_decide
 
 end A12Kernel.Dm.PowerScaleRangeLocks

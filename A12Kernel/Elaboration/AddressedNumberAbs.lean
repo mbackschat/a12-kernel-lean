@@ -35,7 +35,7 @@ private def evaluateSource
     .field operation.numberSource.placement.sourceDeclaration
   let expression : LoweredNumericExpr (ResolvedNumericAtom FlatFieldDecl) :=
     .abs (.atom atom)
-  expression.evalComputation
+  expression.evalComputation (some .powerScaleRange)
     (operation.numberSource.placement.evaluateSourceAtom sourceCell)
 
 /-- Execute the certified absolute-value expression through the shared addressed placement. -/

@@ -87,21 +87,42 @@ inductive NumericComputationFault where
   | groupCountNeedsModel
   | repeatableContextRequired
   | repeatableAddressing (error : StarAddressingError)
+  /-- A reached power whose product's decimal scale leaves the host's range raised
+  ([spec/04 §3](../../../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive)).
+  It is not the arithmetic domain failure a `NumericComputationResult` carries: that one is replaced by
+  a later poisoned operand, while the raise ends the expression first. -/
+  | powerScaleRange
   deriving Repr, DecidableEq
 
 /-- Reached runtime value failures escape the expression fold before the target handler records
-VALUE, so no later operand is read: a filter failure (spec/07 §3), and a temporal operand's
+VALUE, so no later operand is read: a filter failure (spec/07 §3), a temporal operand's
 unresolvable model-zone label or unconvertible component, whose reached failure is reported although
 a later operand is formally invalid (the effects batch of the
 [recursive temporal checkpoint](../../../docs/sources/temporal-and-message-probes.md#src-recursive-temporal-numeric-expression),
-`leftGap` on `badClock`). Formal poison and unavailable host inputs retain their separate channels. -/
+`leftGap` on `badClock`), and a power's scale-range raise, reported the same way past a later
+malformed operand (`PowE` row `malformed-sibling` of the
+[power-range checkpoint](../../../docs/sources/kernel-31-calibration-probes.md#src-power-scale-range)).
+Formal poison and unavailable host inputs retain their separate channels. -/
 def NumericComputationFault.isReachedValueFailure : NumericComputationFault → Bool
   | .repeatableAddressing error => error.isFilterValueFailure
   | .indexSelection error => error.isFilterValueFailure
   | .guardBinding (.fieldFill (.addressing error)) => error.isFilterValueFailure
   | .temporalExpression (.addressing error) => error.isFilterValueFailure
   | .temporalExpression .dateTimeLabelUnresolved | .temporalExpression .componentNumberInvalid => true
+  | .powerScaleRange => true
   | _ => false
+
+/-- What a computed target receives from its expression: a reached value failure has ended the
+expression and arrives as the target's value failure, as an arithmetic domain failure does there;
+every other fault stays structural. The scalar, parallel and addressed computation consumers apply
+this one projection, so none of them turns a reached failure into a failed run; generated computation
+validation instead surfaces the fault for its consumer to classify. -/
+def NumericComputationFault.reachTarget
+    (result : Except NumericComputationFault NumericComputationResult) :
+    Except NumericComputationFault NumericComputationResult :=
+  match result with
+  | .error fault => if fault.isReachedValueFailure then .ok .domainFailure else .error fault
+  | .ok value => .ok value
 
 /-- The bounded runtime inputs needed when one checked numeric expression contains repeatable entity-list atoms. This is an expression evaluator context, not a document scheduler or dependency overlay. -/
 structure NumericComputationEvaluationContext where

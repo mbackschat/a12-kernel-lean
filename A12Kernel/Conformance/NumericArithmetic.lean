@@ -186,7 +186,8 @@ example : (nestedPowerChecked 1000 [1000, 1000, 1000]).toOption = none ∧
     (nestedPowerChecked 1000 [1001, 1001, 1001]).toOption = some .notEvaluated := by
   native_decide
 
-/- The raise has no value for power's consumers: a computation's target receives it as a domain failure. -/
+/- Without a raise channel the raise reads as a domain failure, as `powerNumeric` and `evalPower` give it;
+the ordered computation evaluator instead throws it (`numericComputation_powerRaise_endsEvaluation`). -/
 example : powerNumeric (10 ^ 3000000 : Nat) 1000 = .notEvaluated ∧
     NumericComputationResult.evalPower (.value (10 ^ 3000000 : Nat)) (.value 1000) = .domainFailure := by
   native_decide

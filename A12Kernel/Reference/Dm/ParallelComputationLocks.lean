@@ -1,5 +1,6 @@
 import A12Kernel.Reference.Dm.Compute
 import A12Kernel.Reference.Dm.Document
+import A12Kernel.Reference.Dm.ComputeMessages
 
 /-! # Parallel numeric reader and mixed-plan locks
 
@@ -66,6 +67,36 @@ example : run [total] [demandRow "A" "10", demandRow "B" "20"] [row "B" "2", row
 example : run [total] [demandRow "A" "10"] [row "" "2"] = some [("Form/Supply/Total", "cleared")] ∧
     run [total] [demandRow "A" "bad"] [row "A" "2"] = some [("Form/Supply/Total", "cleared")] ∧
     run [total] [] [] = some [] := by native_decide
+
+/-- `{ { [Amount] ^ 1000 } ^ 1000 } ^ last + [/Form/Demand/Amount]` for one supply row whose amount is 1000,
+beside one demand row whose amount is `demand`: the outcomes and the formal-error channel. -/
+private def raisingFirst (last demand : String) : Option (List ComputedOutcome × List ComputedMessage) := do
+  let definition := definition "Supply" "Total"
+    [{ operation := "{ { [Amount] ^ 1000 } ^ 1000 } ^ " ++ last ++ " + [/Form/Demand/Amount]", precondition := none }]
+  let dm : DmModel := {
+    flat := model, rules := [], computations := [definition], conditionLanguage := "en_US", refusals := [] }
+  let input ← (readDocument dm (Json.mkObj [("Form", Json.mkObj [
+    ("Demand", Json.arr #[demandRow "A" demand]), ("Supply", Json.arr #[row "A" "1000"]), ("Out", "999")])])).toOption
+  if !input.refusals.isEmpty then none
+  let world : World := { now := { epochMillis := 0 } }
+  let prepared ← (prepareFlatStringContext world builtinStringPatternCompiler model).toOption
+  let checked ← (checkDocument prepared "en_US" input.data).toOption
+  (runModelComputationsWithMessages dm .english world prepared checked).toOption
+
+private def channel (last demand : String) : Option (List String × List String) :=
+  (raisingFirst last demand).map fun (result : List ComputedOutcome × List ComputedMessage) =>
+    (result.1.map toString, result.2.map toString)
+
+/- A raising power left of a malformed demand amount ends the parallel expression before that amount is
+read, so the target reports `berechnungsWertFehler` beside the amount's own finding; the quiet exponent
+`1001` is a domain failure, which the later poison replaces silently. With a valued amount the raise
+still reaches the target rather than failing the run. This is the shared target projection and the
+ordered evaluator (spec/04 §3) on this carrier; the Kernel is unmeasured here. -/
+example : channel "1000" "bad" = some (["Form/Supply/Total=cleared"],
+      ["Form/Demand/Amount:zahlHatUngueltigeZeichen", "Form/Supply/Total:berechnungsWertFehler"]) ∧
+    channel "1001" "bad" = some (["Form/Supply/Total=cleared"], ["Form/Demand/Amount:zahlHatUngueltigeZeichen"]) ∧
+    channel "1000" "10" = some (["Form/Supply/Total=cleared"], ["Form/Supply/Total:berechnungsWertFehler"]) := by
+  native_decide
 
 private def downstream : DmComputation := {
   group := ["Form"], name := "Out", targetRelPath := "../Out", commonPrecondition := none,

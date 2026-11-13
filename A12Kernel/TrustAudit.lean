@@ -997,6 +997,7 @@ run_cmd do
 #print axioms A12Kernel.numericComputation_divideByZero_domainFailure
 #print axioms A12Kernel.numericComputationResult_evalPower_values
 #print axioms A12Kernel.numericComputation_zeroToNegativePower_domainFailure
+#print axioms A12Kernel.numericComputation_powerRaise_endsEvaluation
 #print axioms A12Kernel.numericComputation_round_preserves_domainFailure
 #print axioms A12Kernel.numericComputation_abs_delegates
 #print axioms A12Kernel.numericComputationResult_mapValue_domainFailure

@@ -59,6 +59,16 @@ def NumericComputationResult.evalPower :
           NumericComputationResult.ofArithmetic (powerNumeric base exponent))
         left right
 
+/-- Power over two reached operands in a computation, throwing `raise` where a product's decimal scale leaves the host's range ([spec/04 §3](../../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive)). The raise ends the computation's evaluation. A consumer without a channel for it passes `none` and reads the raise as `evalPower` does, as a domain failure; that is right only where nothing after the power is read. -/
+def NumericComputationResult.evalPowerOrRaise {Fault : Type} (raise : Option Fault) :
+    NumericComputationResult → NumericComputationResult → Except Fault NumericComputationResult
+  | .value base, .value exponent =>
+      match powerChecked base exponent, raise with
+      | .ok result, _ => pure (ofArithmetic result)
+      | .error _, some fault => throw fault
+      | .error _, none => pure .domainFailure
+  | left, right => pure (evalPower left right)
+
 /-- Select two reached operand-list computation results through the shared poison/domain/value combiner. The evaluator is responsible for not reaching the right operand after a left poison. -/
 def NumericExtremumOp.selectComputationResult (op : NumericExtremumOp) :
     NumericComputationResult → NumericComputationResult → NumericComputationResult

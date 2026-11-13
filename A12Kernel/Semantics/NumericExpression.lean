@@ -808,8 +808,8 @@ end NumericComputationResult
 
 namespace LoweredNumericExpr
 
-/-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic, including runtime-invalid power. -/
-def evalComputation {Fault : Type}
+/-- Evaluate the admitted computation fragment left-to-right. A reached poison aborts the remaining expression; arithmetic domain failure remains a value-level result and propagates through later arithmetic, including runtime-invalid power. A power whose scale leaves the host's range throws `raise` instead, ending the expression before any later operand is read (spec/04 §3); a consumer with no channel for that raise passes `none`. -/
+def evalComputation {Fault : Type} (raise : Option Fault)
     (read : Atom → Except Fault NumericComputationResult) :
     LoweredNumericExpr Atom →
       Except Fault NumericComputationResult
@@ -817,21 +817,21 @@ def evalComputation {Fault : Type}
   | .literal amount => pure (.value amount)
   | .binary op left right =>
       NumericComputationResult.evalOrdered
-        (left.evalComputation read) (fun _ => right.evalComputation read)
+        (left.evalComputation raise read) (fun _ => right.evalComputation raise read)
         (NumericComputationResult.evalBinary op)
-  | .power base exponent =>
-      NumericComputationResult.evalOrdered
-        (base.evalComputation read) (fun _ => exponent.evalComputation read)
-        NumericComputationResult.evalPower
+  | .power base exponent => do
+      match ← base.evalComputation raise read with
+      | .poison cause => pure (.poison cause)
+      | left => NumericComputationResult.evalPowerOrRaise raise left (← exponent.evalComputation raise read)
   | .abs body => do
-      pure ((← body.evalComputation read).absolute)
+      pure ((← body.evalComputation raise read).absolute)
   | .extremum op left right =>
       NumericComputationResult.evalOrdered
-        (left.evalComputation read) (fun _ => right.evalComputation read)
+        (left.evalComputation raise read) (fun _ => right.evalComputation raise read)
         op.selectComputationResult
-  | .extremumCall _ _ body => body.evalComputation read
+  | .extremumCall _ _ body => body.evalComputation raise read
   | .round mode places body => do
-      pure ((← body.evalComputation read).round mode places)
+      pure ((← body.evalComputation raise read).round mode places)
 
 end LoweredNumericExpr
 
@@ -876,15 +876,17 @@ def NumericComparisonOf.admittedWith (comparison : NumericComparisonOf Atom)
     | _, _ => false
 
 /-- Compare complete numeric expressions in computation order. A reached poison stops the
-right side; arithmetic domain failure still reaches it and otherwise supplies clean non-holding. -/
+right side; arithmetic domain failure still reaches it and otherwise supplies clean non-holding. A
+power's scale-range raise has no channel here and reads as a domain failure; the Kernel's answer on a
+computation's condition is unmeasured (spec/04 §3). -/
 def NumericComparisonOf.evalComputationWith (comparison : NumericComparisonOf Atom)
     (read : Atom → Except Error NumericComputationResult) :
     Except Error ComputationConditionResult := do
-  let left ← comparison.left.lowerForEvaluation.evalComputation read
+  let left ← comparison.left.lowerForEvaluation.evalComputation none read
   match left with
   | .poison cause => pure (.poison cause)
   | _ =>
-      let right ← comparison.right.lowerForEvaluation.evalComputation read
+      let right ← comparison.right.lowerForEvaluation.evalComputation none read
       match left, right with
       | _, .poison cause => pure (.poison cause)
       | .value left, .value right =>

@@ -263,7 +263,11 @@ private def executeAtEnvironmentUsing (placement : CheckedAddressedNumericTarget
       })
     (fun environment => do
       let targetAddress ← addressAt environment
-      let outcome ← match checkTarget (← evaluate environment) with
+      let result ← match evaluate environment with
+        | .error (.evaluation fault) =>
+            (NumericComputationFault.reachTarget (.error fault)).mapError .evaluation
+        | other => other
+      let outcome ← match checkTarget result with
         | .supported outcome => pure outcome
         | .unsupported cause => throw (.targetCheck cause)
       pure {

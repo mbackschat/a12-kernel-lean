@@ -66,17 +66,13 @@ def checkResult (operation : CheckedNumericTargetComputationOperation model)
 def evaluate (operation : CheckedNumericTargetComputationOperation model)
     (context : ScalarComputationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  match operation.operation.evaluate context with
-  | .ok result => pure (operation.checkResult result)
-  | .error error => if error.isReachedValueFailure then pure (operation.checkResult .domainFailure) else throw error
+  pure (operation.checkResult (← NumericComputationFault.reachTarget (operation.operation.evaluate context)))
 
 /-- Preserve the same retained target-policy dispatch after repeatable expression evaluation. Source-relative target policy and result classification are not recomputed or reordered. -/
 def evaluateIn (operation : CheckedNumericTargetComputationOperation model)
     (context : NumericComputationEvaluationContext) :
     Except NumericComputationFault NumericTargetCheckResult := do
-  match operation.operation.evaluateIn context with
-  | .ok result => pure (operation.checkResult result)
-  | .error error => if error.isReachedValueFailure then pure (operation.checkResult .domainFailure) else throw error
+  pure (operation.checkResult (← NumericComputationFault.reachTarget (operation.operation.evaluateIn context)))
 
 end CheckedNumericTargetComputationOperation
 
