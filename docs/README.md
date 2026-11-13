@@ -48,7 +48,6 @@ The following names and locations form the intentional reader-facing surface. Th
 - [`IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md`](IMPLEMENTER-KIT-FLAT-EMPTY-LOGIC.md) and [`IMPLEMENTER-KIT-CORRELATION.md`](IMPLEMENTER-KIT-CORRELATION.md) — current self-contained 0.3.0/V2 capability handovers;
 - [`IMPLEMENTER-KIT-EVALUATOR.md`](IMPLEMENTER-KIT-EVALUATOR.md) — the U01 evaluator handover that travels in the frozen packet.
 - [`IMPLEMENTER-KIT-SMT.md`](IMPLEMENTER-KIT-SMT.md) — the U03 SMT-analysis handover, read at the theory commit U03 pins.
-- [`INTERPRETER-FIXES-UPSTREAM-PROPOSAL.md`](INTERPRETER-FIXES-UPSTREAM-PROPOSAL.md) — the temporary interpreter fix request to a12-dmkits, deleted once its handback is accepted.
 
 The remaining documents are public technical or maintainer surfaces. They may be consolidated, split, or reorganized when doing so makes their single ownership clearer, provided links and stable reader paths remain intact.
 
@@ -62,7 +61,6 @@ The remaining documents are public technical or maintainer surfaces. They may be
 | Project-owned [`../spec/`](../spec/) | Semantics readers and cross-project maintainers | Evolving versioned bridge | Canonical language-neutral semantic body; never implementation status, Lean design, evidence inventory, or working notes |
 | [`PROJECT-DESIGN.md`](PROJECT-DESIGN.md) | Contributors and stakeholders | Stable constitution | Mission, audience, authority and evidence doctrine, semantic capsules, consumer-probe lifecycle, consumer shipments, controlled-interleaving and risk-first method, coverage horizons, success criteria, and long-term potential |
 | [`PRODUCT-PROPOSAL.md`](PRODUCT-PROPOSAL.md) | Product stakeholders | Proposal until adopted or replaced | Consumer-task taxonomy, proposed release boundary, public product claim, product gates, and progression |
-| [`INTERPRETER-FIXES-UPSTREAM-PROPOSAL.md`](INTERPRETER-FIXES-UPSTREAM-PROPOSAL.md) | a12-dmkits owner | Temporary until its handback is accepted, then deleted | The interpreter fix request: classified defects with exemplars, the instrument correction, what is not requested, acceptance gates and handback |
 | [`USE-CASES.md`](USE-CASES.md) | General users and probe designers | Stable reader guide | Reader-facing consumer-probe catalog, possible later products, and Lean's concrete contribution and limits across the general task categories |
 | [`ARTIFACTS.md`](ARTIFACTS.md) | Users and reviewers | Stable lifecycle guide | Contents, authority, generation, retention, immutability, and drift policy for scenario questions, `evidence/`, `reference/`, `examples/`, and retained historical qualification records |
 | [`PRODUCTION-RELEASE.md`](PRODUCTION-RELEASE.md) | Release maintainers | Evolving engineering contract and measured experiment record | Artifact qualification, platform support, reproducibility, packaging, dependencies, signing, size experiments, publication, and rollback |
