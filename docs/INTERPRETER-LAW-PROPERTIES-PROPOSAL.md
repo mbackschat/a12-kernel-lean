@@ -14,7 +14,7 @@ A passing property is evidence over its samples, not a proof that the interprete
 
 ## What a12-dmkits already checks
 
-The property pack sweeps lazy and eager polarity, Kleene monotonicity, row permutation, empty-row append (IF53, IF54, IF46), aggregate identities, the indexed join against the scan, index identity across stages (`IndexIdentityStagePropertyTest`), determinism, rule independence and unavailable-cell tallies. The `adapter` law and differential tests pin examples of several laws below against the kernel, but none sweeps them. Control N2 overlaps `EmptyRowAppendPropertyTest`'s IF54 case on a flat field instead of a phantom row; no law here repeats an existing property.
+The property pack sweeps lazy and eager polarity, Kleene monotonicity, row permutation, empty-row append (IF53, IF54, IF46), aggregate identities, the indexed join against the scan, index identity across stages (`IndexIdentityStagePropertyTest`), determinism, rule independence and unavailable-cell tallies. The `adapter` law and differential tests pin examples of several laws below against the kernel, and `PartialValidationFuzzDiffTest` sweeps documents and relevant sets against the kernel, but none checks these laws. Control N2 overlaps `EmptyRowAppendPropertyTest`'s IF54 case on a flat field instead of a phantom row; no law here repeats an existing property.
 
 ## Laws
 
@@ -22,19 +22,19 @@ Each law names its Lean theorems in `A12Kernel/Proofs/` at this repository's rev
 
 ### Shared fragment for P1, P2 and P3
 
-The Lean theorems quantify over the flat condition fragment only. A scenario for these laws has a nonrepeatable model with no computations and no required, unique or index fields. Its rules have no `Having` and no `CustomCondition`, and each condition is an `And`/`Or` tree of these leaves, with exactly these operators:
+The Lean theorems quantify over the flat condition fragment only. A scenario for these laws has a nonrepeatable model with no computations and no required, unique or index fields. Its rules have no `Having` and no `CustomCondition`, each rule's error field is a field its condition reads, and each condition is an `And`/`Or` tree of these leaves, with exactly these operators, field on the left and literal on the right as the Lean constructors take them:
 
 - a Number field compared with a Number literal by `==`, `!=`, `<`, `<=`, `>`, `>=` or a tolerance operator;
 - a String field's length compared with a literal by `<`, `<=`, `>` or `>=`;
 - a Boolean, String or Enumeration field compared with a literal, or a Confirm field tested, by `==` or `!=`;
 - two Boolean, text or DateRange fields compared by `==` or `!=`;
-- two Date, DateTime or Time fields compared by an ordering or equality operator;
-- text or Enumeration fields, or Number fields, under one of the five `…ValueIncludedInValueList` operators;
+- two fields of the same temporal family (Date with Date, DateTime with DateTime, Time with Time) compared by an ordering or equality operator;
+- text or Enumeration fields, or Number fields against integer literals or Number fields, under one of the five `…ValueIncludedInValueList` operators;
 - `FieldFilled` or `FieldNotFilled`.
 
-Excluded: arithmetic, Number field-against-field comparisons, functions, fill-list quantifiers such as `NoFieldFilled`, DateRange against a literal, and temporal literals, `Now` and `Today`. The temporal exclusion is a hypothesis of the theorems, not a scenario convenience: the flat projection they quantify over reads an unresolvable temporal label as unknown, while the kernel fails the whole rule when such a label is reached (spec/10, "A runtime failure fails the rule, not the validation").
+Excluded: arithmetic, Number field-against-field comparisons, functions other than the String length, fill-list quantifiers such as `NoFieldFilled`, DateRange against a literal, and temporal literals, `Now` and `Today`. The temporal exclusion is a hypothesis of the theorems, not a scenario convenience: the flat projection they quantify over reads an unresolvable temporal label as unknown, while the kernel fails the whole rule when such a label is reached (spec/10, "A runtime failure fails the rule, not the validation").
 
-Messages are keyed by `rulePath` and pointer, and each law compares only the messages whose `rulePath` is a scenario rule; the format messages malformed cells produce are expected. The evaluation clock and every other world input are fixed per sample through `DmInterpreter`'s clock source, since the theorems hold the world equal between the two documents.
+Messages are keyed by `rulePath` and pointer, and each law compares only the messages whose `rulePath` is a scenario rule; the format messages malformed cells produce are expected. For every law, the interpreter is constructed with a fixed `clock: EvalClock`, since the theorems hold the world equal between the two documents or runs.
 
 ### P1 — partial firing persists into full validation
 
@@ -56,7 +56,7 @@ Messages are keyed by `rulePath` and pointer, and each law compares only the mes
 
 - **Theorem:** `flatRule_metadata_doesNotChangeVerdict` (`ValidationRule.lean`), stated for full validation. Under `validatePart` no theorem states it; it holds by construction, since `FlatCondition.evalPartial` (`Semantics/PartialValidation.lean`) takes no code, severity or text.
 - **Law:** changing a rule's code, severity or message text changes neither whether it fires nor its type.
-- **Hypotheses:** the shared fragment; the error field is not changed; the changed texts contain no `$…$` parameters, since the Lean rule takes its text as already resolved.
+- **Hypotheses:** the shared fragment; the error field is not changed; the changed texts contain no `$` character, since the Lean rule takes its text as already resolved while the interpreter renders parameters.
 - **Observe:** for each scenario rule, its fired pointers and types before and after the change, under `validate` and under `validatePart` with the relevant sets of P1.
 - **Scenarios:** the rules of the scenarios with their codes, severities and texts changed, WARNING and INFO among the severities, including a rule that fires changed to WARNING.
 - **Seeded defect:** rules of severity WARNING are skipped.
@@ -65,7 +65,7 @@ Messages are keyed by `rulePath` and pointer, and each law compares only the mes
 
 - **Theorems:** `applyAbsoluteRequired_preserves_computation`, `withRequiredFinding_preserves_computation` and `requiredFinding_empty_phase_split` (`Required.lean`).
 - **Law:** `compute(D)` is the same whether a field is declared absolutely required or not: a required empty cell is unknown to validation but an ordinary empty value to computation.
-- **Hypotheses:** a nonrepeatable model with no index fields; absolute requiredness only; parent-relative requiredness is not covered.
+- **Hypotheses:** a nonrepeatable model with no index fields; absolute requiredness only, toggled on fields the computations read and never on a computation's target, since the theorems cover reads; parent-relative requiredness is not covered.
 - **Observe:** the computed outcomes, and that `validate` reports the requiredness message on the empty cell.
 - **Scenarios:** computations that read fields toggled between required and not required, over empty, filled and malformed cells, including a computation whose outcome differs between an empty operand and a poisoned one, such as arithmetic over the field beside a filled operand.
 - **Seeded defect:** a required empty cell poisons the computation that reads it.
@@ -74,12 +74,12 @@ Messages are keyed by `rulePath` and pointer, and each law compares only the mes
 
 Each control is reached when a test asserts its witness pair on a sample the law's scenarios produce. Scenarios that never reach it are too weak for the laws it serves.
 
-- **N1, for P1 and P2.** Partial non-firing does not imply full non-firing: a rule silent under `validatePart(D, R)` can fire under `validate(D')` once a masked cell is filled. For example, `FieldFilled(A) And [B] > 5` with error field `A`, `A` filled and in `R`, and `B` outside `R`: partial validation is silent because `B` is unknown, and a completion with `B` = 6 fires ([LEAN-FINDINGS LF66](LEAN-FINDINGS.md#lf66--partial-value-list-relevance-is-per-cell-and-per-star-extent-while-only-firing-is-completion-stable): only firing is completion-stable).
+- **N1, for P1 and P2, witnessed on P1's samples, whose documents P2's scenarios share.** Partial non-firing does not imply full non-firing: a rule silent under `validatePart(D, R)` can fire under `validate(D')` once a masked cell is filled. For example, `FieldFilled(A) And [B] > 5` with error field `A`, `A` filled and in `R`, and `B` outside `R`: partial validation is silent because `B` is unknown, and a completion with `B` = 6 fires ([LEAN-FINDINGS LF66](LEAN-FINDINGS.md#lf66--partial-value-list-relevance-is-per-cell-and-per-star-extent-while-only-firing-is-completion-stable): only firing is completion-stable).
 - **N2, for P1.** Partial validation does not require root content: a relevant cell is evaluated even when the root instance has no content, where `validate` does not evaluate it (IF54). The witness pair is a document `D` with no valued placement and `R` holding the error field, where the rule fires under `validatePart(D, R)` and stays silent under `validate(D)`; for example `[Price] < 10` with error field `Price`. This is why P1 requires `D'` to have content.
 
 ## Observation, not a request
 
-`DmInterpreter.validatePart`'s KDoc says that with the whole document relevant it equals `validate`. Two cases contradict it: N2 above, and a rule with `Having`, which partial validation skips for every relevant set (`partialFilteredRule_skipped`, and a12-dmkits' own `PartialValidationFilterSkipDiffTest`). The sentence appears too broad; this repository did not run the interpreter to confirm it.
+`DmInterpreter.validatePart`'s KDoc says that with the whole document relevant it equals `validate`. Three cases contradict it: N2 above; a rule with `Having`, which partial validation skips for every relevant set (`partialFilteredRule_skipped`, and a12-dmkits' own `PartialValidationFilterSkipDiffTest`); and a rule whose error field is a group, which a12-dmkits' partial plan also skips (`skippedInPartial` in `ModelStaticPlans.kt`). The sentence appears too broad; this repository did not run the interpreter to confirm it.
 
 ## Not requested
 
@@ -92,7 +92,7 @@ Each control is reached when a test asserts its witness pair on a sample the law
 
 1. Each of P1–P4 runs as a property over a12-dmkits' deterministic samples on the JVM and on JS and passes at the handback revision.
 2. Each seeded defect, applied in a scratch change that is not committed, turns its property red; the handback records the red run.
-3. N1 is reached by the scenarios of P1 and P2, and N2 by those of P1.
+3. N1 and N2 are each reached on P1's samples.
 4. The existing property pack and `:interpreter:check` still pass.
 
 ## Handback
