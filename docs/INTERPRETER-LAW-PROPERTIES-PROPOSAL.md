@@ -8,13 +8,13 @@ The owner, as a12-dmkits' owner, asks a12-dmkits to check four laws that this re
 
 Work starts from a12-dmkits `03ea6e3c6e68f18f057df1b58de35eaddc0f116c` on `feature/q2`, or a successor. The interpreter is the `:interpreter` module through `DmInterpreter`'s calls `validate`, `validatePart` and `compute`, on the JVM and on JS, as the existing property pack in `interpreter/src/commonTest/.../property/` runs.
 
-The scenarios are what the existing pack uses: curated models in the style of `PropertySupport`'s `flat`, `singleRep` and `nested`, with documents drawn from its deterministic seeds. No model generator is requested. The first failing sample suffices as a counterexample; no shrinker is requested.
+The scenarios are curated models in the style of `PropertySupport`'s `flat`, `singleRep` and `nested`, with documents drawn from deterministic seeds. The existing scenarios do not contain the rules and documents each law and control needs, so new curated ones are expected; no model generator is requested. The first failing sample suffices as a counterexample; no shrinker is requested.
 
 A passing property is evidence over its samples, not a proof that the interpreter satisfies the law. A law's kernel correspondence is the Lean account's; this request does not re-measure the kernel.
 
 ## What a12-dmkits already checks
 
-The property pack sweeps lazy and eager polarity, Kleene monotonicity, row permutation, empty-row append (IF53, IF54, IF46), aggregate identities, the indexed join against the scan, index identity across stages (`IndexIdentityStagePropertyTest`), determinism, rule independence and unavailable-cell tallies. The `adapter` law and differential tests pin examples of several laws below against the kernel, but none sweeps them. Nothing here repeats an existing property.
+The property pack sweeps lazy and eager polarity, Kleene monotonicity, row permutation, empty-row append (IF53, IF54, IF46), aggregate identities, the indexed join against the scan, index identity across stages (`IndexIdentityStagePropertyTest`), determinism, rule independence and unavailable-cell tallies. The `adapter` law and differential tests pin examples of several laws below against the kernel, but none sweeps them. Control N2 overlaps `EmptyRowAppendPropertyTest`'s IF54 case on a flat field instead of a phantom row; no law here repeats an existing property.
 
 ## Laws
 
@@ -22,21 +22,26 @@ Each law names its Lean theorems in `A12Kernel/Proofs/` at this repository's rev
 
 ### Shared fragment for P1, P2 and P3
 
-The Lean theorems quantify over the flat condition fragment only. A scenario for these laws has a nonrepeatable model with no computations and no required, unique or index fields. Its rules have no `Having` and no `CustomCondition`, and each condition is an `And`/`Or` tree of these leaves:
+The Lean theorems quantify over the flat condition fragment only. A scenario for these laws has a nonrepeatable model with no computations and no required, unique or index fields. Its rules have no `Having` and no `CustomCondition`, and each condition is an `And`/`Or` tree of these leaves, with exactly these operators:
 
-- a Number, Boolean, String, String-length or Enumeration field compared with a literal;
-- two Boolean, text or DateRange fields compared with each other, or two temporal operands;
-- text or Enumeration fields, or Number fields, tested against a value list;
+- a Number field compared with a Number literal by `==`, `!=`, `<`, `<=`, `>`, `>=` or a tolerance operator;
+- a String field's length compared with a literal by `<`, `<=`, `>` or `>=`;
+- a Boolean, String or Enumeration field compared with a literal, or a Confirm field tested, by `==` or `!=`;
+- two Boolean, text or DateRange fields compared by `==` or `!=`;
+- two Date, DateTime or Time fields compared by an ordering or equality operator;
+- text or Enumeration fields, or Number fields, under one of the five `…ValueIncludedInValueList` operators;
 - `FieldFilled` or `FieldNotFilled`.
 
-Excluded: arithmetic, Number field-against-field comparisons, functions, fill-list quantifiers such as `NoFieldFilled`, and DateRange against a literal. The format messages that malformed cells produce are expected and legitimate; each law compares only the messages whose `rulePath` is a scenario rule. The evaluation clock and every other world input are fixed per sample, since the theorems hold the world equal between the two documents.
+Excluded: arithmetic, Number field-against-field comparisons, functions, fill-list quantifiers such as `NoFieldFilled`, DateRange against a literal, and temporal literals, `Now` and `Today`. The temporal exclusion is a hypothesis of the theorems, not a scenario convenience: the flat projection they quantify over reads an unresolvable temporal label as unknown, while the kernel fails the whole rule when such a label is reached (spec/10, "A runtime failure fails the rule, not the validation").
+
+Messages are keyed by `rulePath` and pointer, and each law compares only the messages whose `rulePath` is a scenario rule; the format messages malformed cells produce are expected. The evaluation clock and every other world input are fixed per sample through `DmInterpreter`'s clock source, since the theorems hold the world equal between the two documents.
 
 ### P1 — partial firing persists into full validation
 
 - **Theorem:** `partialRule_fired_implies_fullWithContent_fired_of_agreesOn` (`PartialValidation.lean`).
-- **Law:** if a rule fires under `validatePart(D, R)` and its error field is in `R`, then it fires under `validate(D')` for every document `D'` that agrees with `D` on the fields in `R` and on the global fields, and whose rule's root instance has content. Its type may differ.
-- **Hypotheses:** the shared fragment; `R` a set of field pointers only, never a group, since a relevant group makes its descendants relevant. `validatePart` counts global fields as relevant (IF37), so the agreement covers `R` together with every global field.
-- **Observe:** each `(code, pointer)` of a scenario rule in `validatePart(D, R)` whose error field is in `R` appears in `validate(D')`.
+- **Law:** if a rule fires under `validatePart(D, R)` and its error field is in `R`, then it fires under `validate(D')` for every document `D'` that agrees with `D` on the fields in `R` and on the global fields, and in which the error field's root instance has content. Its type may differ.
+- **Hypotheses:** the shared fragment; `R` a set of field pointers only, never a group, since a relevant group makes its descendants relevant. `validatePart` counts global fields as relevant (IF37), so the agreement covers `R` together with every global field. "Has content" means at least one well-formed filled cell under the error field's root group; a malformed-only root is not used.
+- **Observe:** each `(rulePath, pointer)` of a scenario rule in `validatePart(D, R)` whose error field is in `R` appears in `validate(D')`.
 - **Scenarios:** documents `D`, relevant sets `R`, and completions `D'` that change only cells outside `R` and outside the global fields, to empty, filled and malformed values, with `D'`'s root keeping content.
 - **Seeded defect:** partial validation reads cells outside `R` as their stored values instead of treating them as unknown.
 
@@ -45,24 +50,24 @@ Excluded: arithmetic, Number field-against-field comparisons, functions, fill-li
 - **Theorem:** `partialSelected_agreesOn` (`PartialValidation.lean`).
 - **Law:** `validatePart(D, R)` and `validatePart(D', R)` report the same scenario-rule messages whenever `D` and `D'` agree on the fields in `R` and on the global fields.
 - **Hypotheses, scenarios and seeded defect:** those of P1, except that `D'` need not have content.
-- **Observe:** the two lists of scenario-rule messages as multisets of code, type and pointer.
+- **Observe:** the two lists of scenario-rule messages as multisets of `rulePath`, type and pointer.
 
 ### P3 — rule metadata does not change firing
 
-- **Theorem:** `flatRule_metadata_doesNotChangeVerdict` (`ValidationRule.lean`), stated for full validation. Under `validatePart` it holds by construction: `FlatCondition.evalPartial` (`Semantics/PartialValidation.lean`) takes no code, severity or text.
+- **Theorem:** `flatRule_metadata_doesNotChangeVerdict` (`ValidationRule.lean`), stated for full validation. Under `validatePart` no theorem states it; it holds by construction, since `FlatCondition.evalPartial` (`Semantics/PartialValidation.lean`) takes no code, severity or text.
 - **Law:** changing a rule's code, severity or message text changes neither whether it fires nor its type.
-- **Hypotheses:** the shared fragment; the error field is not changed.
-- **Observe:** for each scenario rule, its fired pointers and types before and after the change, under `validate` and under `validatePart`.
-- **Scenarios:** the rules of the scenarios with their codes, severities and texts changed, WARNING and INFO among the severities.
+- **Hypotheses:** the shared fragment; the error field is not changed; the changed texts contain no `$…$` parameters, since the Lean rule takes its text as already resolved.
+- **Observe:** for each scenario rule, its fired pointers and types before and after the change, under `validate` and under `validatePart` with the relevant sets of P1.
+- **Scenarios:** the rules of the scenarios with their codes, severities and texts changed, WARNING and INFO among the severities, including a rule that fires changed to WARNING.
 - **Seeded defect:** rules of severity WARNING are skipped.
 
 ### P4 — absolute requiredness does not change computation
 
 - **Theorems:** `applyAbsoluteRequired_preserves_computation`, `withRequiredFinding_preserves_computation` and `requiredFinding_empty_phase_split` (`Required.lean`).
 - **Law:** `compute(D)` is the same whether a field is declared absolutely required or not: a required empty cell is unknown to validation but an ordinary empty value to computation.
-- **Hypotheses:** a nonrepeatable model, so that no index field is implicitly required; absolute requiredness only; parent-relative requiredness is not covered.
+- **Hypotheses:** a nonrepeatable model with no index fields; absolute requiredness only; parent-relative requiredness is not covered.
 - **Observe:** the computed outcomes, and that `validate` reports the requiredness message on the empty cell.
-- **Scenarios:** computations that read fields toggled between required and not required, over empty, filled and malformed cells.
+- **Scenarios:** computations that read fields toggled between required and not required, over empty, filled and malformed cells, including a computation whose outcome differs between an empty operand and a poisoned one, such as arithmetic over the field beside a filled operand.
 - **Seeded defect:** a required empty cell poisons the computation that reads it.
 
 ## Non-laws as scenario controls
@@ -70,7 +75,7 @@ Excluded: arithmetic, Number field-against-field comparisons, functions, fill-li
 Each control is reached when a test asserts its witness pair on a sample the law's scenarios produce. Scenarios that never reach it are too weak for the laws it serves.
 
 - **N1, for P1 and P2.** Partial non-firing does not imply full non-firing: a rule silent under `validatePart(D, R)` can fire under `validate(D')` once a masked cell is filled. For example, `FieldFilled(A) And [B] > 5` with error field `A`, `A` filled and in `R`, and `B` outside `R`: partial validation is silent because `B` is unknown, and a completion with `B` = 6 fires ([LEAN-FINDINGS LF66](LEAN-FINDINGS.md#lf66--partial-value-list-relevance-is-per-cell-and-per-star-extent-while-only-firing-is-completion-stable): only firing is completion-stable).
-- **N2, for P1.** Partial validation does not require root content: a relevant cell is evaluated even when the root instance has no content, where `validate` does not evaluate it (IF54). The witness pair is a contentless document `D` with `R` holding the error field, where the rule fires under `validatePart(D, R)` and stays silent under `validate(D)`; for example `[Price] < 10` with error field `Price` and no filled cell. This is why P1 requires `D'` to have content.
+- **N2, for P1.** Partial validation does not require root content: a relevant cell is evaluated even when the root instance has no content, where `validate` does not evaluate it (IF54). The witness pair is a document `D` with no valued placement and `R` holding the error field, where the rule fires under `validatePart(D, R)` and stays silent under `validate(D)`; for example `[Price] < 10` with error field `Price`. This is why P1 requires `D'` to have content.
 
 ## Observation, not a request
 
@@ -79,8 +84,8 @@ Each control is reached when a test asserts its witness pair on a sample the law
 ## Not requested
 
 - **The computed Number target's self-validation typing** (`ComputationSelfValidation.lean`) and **a computed target's stored value never being read** (`RepeatableNumberPlan.lean`, `ScalarComputationRun.lean`). Their hypotheses, which keep computed fields out of operand groups, fix the decided gate and make a stripped stored target observable, are not settled enough for a property; a later request may add them.
-- **Validity follows ERROR severity alone** (`flatRuleMessage_invalidates_iff_error`). `DmInterpreter`'s `ValidationOutcome` carries no validity verdict; the only one is `ValidationReport.noErrorOccurred`, a one-line definition reached through the `Interpreter` API that the pack does not use, so a property would add nothing over reading it.
-- Other Lean laws the inventory found, among them negation exclusivity and exhaustiveness, which would need a rule negator a12-dmkits does not have.
+- **Validity follows ERROR severity alone** (`flatRuleMessage_invalidates_iff_error`). `DmInterpreter`'s `ValidationOutcome` carries no validity verdict; the only one is `ValidationReport.noErrorOccurred` with its severity projection, reached through the public `io.github.mbackschat.a12.dm.interpreter.Interpreter`, which the pack does not use.
+- **Negation exclusivity and exhaustiveness.** a12-dmkits' complement, `ConditionPolarity.complement`, lives in the JVM-only `rulekit` module and declines quantifiers, custom conditions and tolerance comparisons; the multiplatform `:interpreter` pack does not depend on it. A later request may add them.
 - Re-measuring the kernel; repeatable and nested shapes beyond each law's hypotheses; a model generator or a shrinker.
 
 ## Acceptance
