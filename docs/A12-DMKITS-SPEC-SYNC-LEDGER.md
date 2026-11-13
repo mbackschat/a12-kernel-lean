@@ -52,9 +52,9 @@ An exact a12-dmkits revision must resolve when its handback is reviewed. If late
 <a id="spec-2026-11-12-01"></a>
 ### SPEC-2026-11-12-01 — A power's scale-range raise also comes from a comparison's rescale of an in-range result, reaches the rule past any sibling operand, fails WARNING rules and partial validation alike, and ends a computation
 
-- `status`: pending
+- `status`: handed-off
 - `canonical`: [spec/04 §3](../spec/04-numbers-and-decimals.md#3-arithmetic-domain-failures-are-consumer-sensitive)'s power-range paragraphs and [spec/10 §3.1](../spec/10-validation-and-polarity.md#31-truth-testing-and-message-classification)'s power case.
 - `delta`: Extends the KF690 account with the measured bound of the scale range, a second raise at a comparison's or a target's rescale of a power result inside that range, the raise reached past a malformed, empty or zero-divided sibling on either side, WARNING severity and partial validation under the same handler, and the computation consumer, where the raise ends evaluation and invalidates the Number target with `berechnungsWertFehler` instead of acting as a domain failure.
 - `basis`: Kernel 31.3.1 at a12-dmkits `505683610`, both strategies agreeing, [power-range checkpoint](sources/kernel-31-calibration-probes.md#src-power-scale-range).
-- `acceptance`: a12-dmkits' interpreter, under its interpreter gap IG191 or the IV-P7 fix request, reproduces the capture's rows or records why its account differs.
+- `acceptance`: a12-dmkits' interpreter reproduces the kernel's messages and computed outcomes on all 26 rows of the capture's six requests, or records per row why its account differs. IV-P7's KF690 repair at a12-dmkits `db0dac19a` covers only the raise inside the power under full validation of an ERROR rule.
 - `introducing commit`: first commit containing this stable entry ID, resolved by the ledger contract above.
